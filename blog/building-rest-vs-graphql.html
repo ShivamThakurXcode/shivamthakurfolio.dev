@@ -5,28 +5,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>REST vs GraphQL: Choosing the Right API Style — Shivam Thakur</title>
+    <title>REST vs GraphQL: The Complete Guide to Building Both APIs — Shivam Thakur</title>
     <meta name="description"
-        content="REST vs GraphQL compared for real projects: over-fetching, versioning, caching, tooling and team fit. A practical decision guide by full-stack developer Shivam Thakur.">
+        content="A complete, beginner-to-expert guide to building REST and GraphQL APIs: HTTP methods, status codes, auth, versioning, schemas, resolvers, the N+1 problem, and when to actually pick each. By full-stack developer Shivam Thakur.">
     <meta name="author" content="Shivam Thakur">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="canonical" href="https://shivamthakur.me/blog/building-rest-vs-graphql.html">
     <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
-    <meta name="keywords" content="REST vs GraphQL, API design, over-fetching, versioning, caching, Shivam Thakur">
+    <meta name="keywords" content="REST API tutorial, GraphQL tutorial, REST vs GraphQL, API design, over-fetching, N+1 problem, Apollo Server, Express API, Shivam Thakur">
 
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
-    <meta property="og:title" content="REST vs GraphQL: Choosing the Right API Style">
-    <meta property="og:description" content="Over-fetching, versioning, caching and team fit — how I choose between REST and GraphQL on real projects.">
+    <meta property="og:title" content="REST vs GraphQL: The Complete Guide to Building Both APIs">
+    <meta property="og:description" content="Everything from HTTP verbs and status codes to GraphQL schemas, resolvers and the N+1 problem — a hands-on guide for beginners and experts alike.">
     <meta property="og:url" content="https://shivamthakur.me/blog/building-rest-vs-graphql.html">
     <meta property="og:image" content="https://shivamthakur.me/assets/images/section/work-3.jpg">
     <meta property="article:published_time" content="2026-04-09">
     <meta property="article:author" content="Shivam Thakur">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="REST vs GraphQL: Choosing the Right API Style">
-    <meta name="twitter:description" content="Over-fetching, versioning, caching and team fit — how I choose between REST and GraphQL on real projects.">
+    <meta name="twitter:title" content="REST vs GraphQL: The Complete Guide to Building Both APIs">
+    <meta name="twitter:description" content="Everything from HTTP verbs and status codes to GraphQL schemas, resolvers and the N+1 problem — a hands-on guide for beginners and experts alike.">
     <meta name="twitter:image" content="https://shivamthakur.me/assets/images/section/work-3.jpg">
 
     <link rel="stylesheet" href="../assets/fonts/fonts.css">
@@ -40,18 +40,103 @@
     <link rel="shortcut icon" href="../assets/images/logo/favicon.svg">
     <link rel="apple-touch-icon-precomposed" href="../assets/images/logo/favicon.svg">
 
+    <style>
+        /* Extra styling for long-form technical content: code blocks, tables, image-spot placeholders */
+        .article-blog-body pre {
+            background: #1e1e1e;
+            color: #f1f1f1;
+            padding: 20px 24px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-size: 13.5px;
+            line-height: 1.65;
+            margin: 24px 0;
+        }
+        .article-blog-body code {
+            font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+        }
+        .article-blog-body p code,
+        .article-blog-body li code {
+            background: rgba(127,127,127,.16);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .article-blog-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0 28px;
+            font-size: 14.5px;
+        }
+        .article-blog-body th, .article-blog-body td {
+            padding: 10px 14px;
+            text-align: left;
+            border: 1px solid rgba(127,127,127,.3);
+            vertical-align: top;
+        }
+        .article-blog-body th {
+            font-weight: 600;
+        }
+        .article-blog-body ul, .article-blog-body ol {
+            margin: 0 0 20px;
+            padding-left: 22px;
+        }
+        .article-blog-body li {
+            margin-bottom: 8px;
+        }
+        .article-blog-body h3 {
+            margin-top: 8px;
+        }
+        .image-spot {
+            margin: 28px 0;
+        }
+        .image-spot img {
+            width: 100%;
+            border-radius: 16px;
+            display: block;
+        }
+        .image-spot .img-note {
+            font-size: 12px;
+            opacity: .6;
+            font-style: italic;
+            margin-top: 8px;
+        }
+        .toc-box {
+            border: 1px solid rgba(127,127,127,.3);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin: 8px 0 28px;
+        }
+        .toc-box p {
+            margin: 0 0 10px;
+            font-weight: 600;
+        }
+        .toc-box ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .toc-box li {
+            margin-bottom: 6px;
+        }
+        .toc-box a {
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    </style>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
-      "headline": "REST vs GraphQL: Choosing the Right API Style",
-      "description": "REST vs GraphQL compared for real projects: over-fetching, versioning, caching, tooling and team fit.",
+      "headline": "REST vs GraphQL: The Complete Guide to Building Both APIs",
+      "description": "A complete, beginner-to-expert guide to building REST and GraphQL APIs: HTTP methods, status codes, auth, versioning, schemas, resolvers, the N+1 problem, and when to actually pick each.",
       "image": "https://shivamthakur.me/assets/images/section/work-3.jpg",
       "datePublished": "2026-04-09",
-      "dateModified": "2026-04-09",
+      "dateModified": "2026-07-08",
       "inLanguage": "en",
-      "wordCount": 800,
-      "keywords": "REST, GraphQL, API design, over-fetching, caching",
+      "wordCount": 2600,
+      "keywords": "REST, GraphQL, API design, over-fetching, caching, N+1 problem, Apollo Server, Express",
       "articleSection": "API Design",
       "mainEntityOfPage": "https://shivamthakur.me/blog/building-rest-vs-graphql.html",
       "author": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/", "jobTitle": "Full Stack Developer" },
@@ -88,6 +173,11 @@
           "@type": "Question",
           "name": "Which is easier for a small team to maintain?",
           "acceptedAnswer": { "@type": "Answer", "text": "For a small team building a conventional CRUD product, REST is usually easier: fewer moving parts, mature tooling and no schema/resolver layer to maintain. Reach for GraphQL when the data graph is genuinely complex or many diverse clients consume the same API." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the N+1 problem in GraphQL?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It happens when a query fetches a list of items and then runs a separate database query for each item's related data, turning one logical request into many database calls. It is usually fixed with a batching library like DataLoader." }
         }
       ]
     }
@@ -181,59 +271,541 @@
                                     <i class="icon icon-tes"></i>
                                     <a href="../index.html" class="link text-black-56">Home</a>&nbsp;/&nbsp;<a href="../blog.html" class="link text-black-56">Blog</a>&nbsp;/&nbsp;<span class="text-black-72">REST vs GraphQL</span>
                                 </nav>
-                                <h1 class="s-title letter-space--2 text-black-72 split-text effect-blur-fade">REST vs GraphQL: <br class="d-none d-lg-block">choosing the right style</h1>
+                                <h1 class="s-title letter-space--2 text-black-72 split-text effect-blur-fade">REST vs GraphQL: <br class="d-none d-lg-block">the complete build guide</h1>
                                 <div class="meta-list scrolling-effect effectTop">
                                     <span class="meta-item text-body-3 text-black-56"><i class="icon icon-user-circle"></i> Shivam Thakur</span>
                                     <span class="meta-item text-body-3 text-black-56"><i class="icon icon-tes"></i> <time datetime="2026-04-09">Apr 9, 2026</time></span>
-                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-high-light"></i> 6 min read</span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-high-light"></i> 14 min read</span>
                                 </div>
                             </div>
 
                             <article class="blog-single-wrap section-work flat-spacing">
                                 <div class="image scrolling-effect effectBottom"><img loading="lazy" width="700" height="427" src="../assets/images/section/work-3.jpg" alt="Side-by-side diagram of a REST endpoint and a GraphQL query"></div>
-                                <div class="entry-content">
+                                <div class="entry-content article-blog-body">
+
                                     <p class="s-desc text-black-56">
-                                        &ldquo;Should we use REST or GraphQL?&rdquo; is one of the most common questions I get at
-                                        the start of a project. The honest answer is: it depends on the shape of your data and
-                                        who consumes it. Here is how I actually decide.
+                                        So you want to build an API. Cool. But then someone in your team chat drops
+                                        &ldquo;should we just use GraphQL?&rdquo; and suddenly there&rsquo;s a 45-message
+                                        thread, three people arguing about &ldquo;over-fetching,&rdquo; and someone
+                                        linked a decade-old blog post like it&rsquo;s scripture. Take a breath. Grab
+                                        your coffee &mdash; we&rsquo;re going to walk through this together, like I&rsquo;m
+                                        sitting next to you with a marker at the whiteboard, explaining why your friend&rsquo;s
+                                        startup picked GraphQL and why your bank&rsquo;s API will probably never touch it.
                                     </p>
 
-                                    <h2 class="s-title letter-space--2 text-black-72">Where REST wins</h2>
+                                    <div class="toc-box text-black-56">
+                                        <p class="text-black-72">In this guide</p>
+                                        <ol>
+                                            <li><a href="#analogy">The restaurant analogy (why this whole debate exists)</a></li>
+                                            <li><a href="#what-is-rest">What REST actually is</a></li>
+                                            <li><a href="#build-rest">Building a real REST API, step by step</a></li>
+                                            <li><a href="#what-is-graphql">What GraphQL actually is</a></li>
+                                            <li><a href="#build-graphql">Building a real GraphQL API, step by step</a></li>
+                                            <li><a href="#comparison">REST vs GraphQL &mdash; the honest comparison</a></li>
+                                            <li><a href="#mistakes">Common mistakes with both</a></li>
+                                            <li><a href="#tools">Tools worth bookmarking</a></li>
+                                            <li><a href="#wrap-up">Wrapping this up</a></li>
+                                        </ol>
+                                    </div>
+
+                                    <h2 id="analogy" class="s-title letter-space--2 text-black-72">The restaurant analogy (why this whole debate exists)</h2>
                                     <p class="s-desc text-black-56">
-                                        REST is simple, predictable and gets HTTP caching almost for free. If your API is
-                                        resource-based &mdash; users, orders, products &mdash; and consumed by a handful of known
-                                        clients, REST is usually the lower-maintenance choice. CDNs and browsers cache GET
-                                        requests by URL, which is a huge, often overlooked, performance advantage.
+                                        Imagine two restaurants. <strong>Restaurant REST</strong> has a menu with fixed
+                                        combos &mdash; you order &ldquo;Combo #3&rdquo; and get everything in it, rice,
+                                        dal, sabzi, roti, even if you only wanted the dal. Want just the dal? Order it
+                                        separately, on another trip to the counter. <strong>Restaurant GraphQL</strong>
+                                        hands you a blank order sheet instead. You write exactly what you want &mdash;
+                                        &ldquo;just dal, extra roti, no rice, and a lassi&rdquo; &mdash; one order, one
+                                        trip, exactly what you asked for. Nothing more, nothing less.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        That one analogy explains most of the REST vs GraphQL debate. Keep it in your
+                                        back pocket &mdash; we&rsquo;ll come back to it.
                                     </p>
 
-                                    <h2 class="s-title letter-space--2 text-black-72">Where GraphQL wins</h2>
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/work-1.jpg" alt="Illustration comparing a fixed combo meal to a custom order sheet, representing REST vs GraphQL">
+                                        <p class="img-note">Image spot &mdash; swap in an illustration of a fixed combo meal (REST) next to a custom order sheet (GraphQL).</p>
+                                    </div>
+
+                                    <h2 id="what-is-rest" class="s-title letter-space--2 text-black-72">What REST actually is</h2>
                                     <p class="s-desc text-black-56">
-                                        GraphQL earns its keep when clients need flexible, nested data and you want to stop
-                                        over-fetching and under-fetching. A single query can pull exactly the fields a screen
-                                        needs from several sources, which is powerful when many different clients (web, mobile,
-                                        partners) consume the same graph.
+                                        REST stands for <strong>Re</strong>presentational <strong>S</strong>tate
+                                        <strong>T</strong>ransfer &mdash; a fancy name for a simple idea, defined by
+                                        Roy Fielding in his year-2000 PhD thesis (yes, REST is old enough to have a
+                                        driver&rsquo;s license). The core idea: everything is a <em>resource</em>, and
+                                        you interact with resources using standard HTTP methods.
                                     </p>
+                                    <p class="s-desc text-black-56">
+                                        Think of your app&rsquo;s data as nouns &mdash; a user is <code>/users</code>,
+                                        a specific user is <code>/users/42</code>, that user&rsquo;s orders are
+                                        <code>/users/42/orders</code>. HTTP verbs are the actions you take on those
+                                        nouns:
+                                    </p>
+                                    <table>
+                                        <thead><tr><th>HTTP method</th><th>What it does</th><th>Plain-English version</th></tr></thead>
+                                        <tbody>
+                                            <tr><td><code>GET</code></td><td>Read data</td><td>&ldquo;Show me&rdquo;</td></tr>
+                                            <tr><td><code>POST</code></td><td>Create new data</td><td>&ldquo;Make a new one&rdquo;</td></tr>
+                                            <tr><td><code>PUT</code></td><td>Replace data entirely</td><td>&ldquo;Replace the whole thing&rdquo;</td></tr>
+                                            <tr><td><code>PATCH</code></td><td>Update part of the data</td><td>&ldquo;Just tweak this field&rdquo;</td></tr>
+                                            <tr><td><code>DELETE</code></td><td>Remove data</td><td>&ldquo;Get rid of it&rdquo;</td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p class="s-desc text-black-56">
+                                        So <code>GET /users/42</code> means &ldquo;show me user 42.&rdquo;
+                                        <code>DELETE /users/42</code> means &ldquo;delete user 42.&rdquo; Simple,
+                                        predictable, and exactly why REST took over the internet for two decades.
+                                    </p>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">The rules that make an API &ldquo;RESTful&rdquo;</h3>
+                                    <p class="s-desc text-black-56">Not every JSON-over-HTTP API is truly RESTful. To earn the name, an API should follow:</p>
+                                    <ol class="text-black-56">
+                                        <li><strong>Client&ndash;server separation</strong> &mdash; frontend and backend only need to agree on the contract, not each other&rsquo;s internals.</li>
+                                        <li><strong>Statelessness</strong> &mdash; every request carries everything needed to process it; the server doesn&rsquo;t remember you between calls.</li>
+                                        <li><strong>Cacheability</strong> &mdash; responses should indicate whether they can be cached, saving everyone bandwidth.</li>
+                                        <li><strong>Uniform interface</strong> &mdash; consistent naming and structure across every endpoint.</li>
+                                        <li><strong>Layered system</strong> &mdash; the client shouldn&rsquo;t need to know if it&rsquo;s talking to the server directly or through a proxy or gateway.</li>
+                                    </ol>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/award-1.jpg" alt="Diagram of a client sending an HTTP request through a server to a database">
+                                        <p class="img-note">Image spot &mdash; a simple flow diagram: Client &rarr; HTTP request (GET/POST/PUT/DELETE) &rarr; Server &rarr; Database.</p>
+                                    </div>
+
+                                    <h2 id="build-rest" class="s-title letter-space--2 text-black-72">Building a real REST API, step by step</h2>
+                                    <p class="s-desc text-black-56">Let&rsquo;s actually build one &mdash; a simple Blog Posts API using Node.js and Express, the friendliest combo for beginners.</p>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 1: Set up your project</h3>
+                                    <pre><code>mkdir rest-blog-api &amp;&amp; cd rest-blog-api
+npm init -y
+npm install express</code></pre>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 2: Design your resources first</h3>
+                                    <p class="s-desc text-black-56">This is the step beginners skip and regret later. Sketch your endpoints before writing code:</p>
+                                    <pre><code>GET    /posts          &rarr; get all posts
+GET    /posts/:id      &rarr; get one post
+POST   /posts          &rarr; create a post
+PATCH  /posts/:id      &rarr; update a post
+DELETE /posts/:id      &rarr; delete a post</code></pre>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 3: Write the server</h3>
+                                    <pre><code>// server.js
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+let posts = [
+  { id: 1, title: "Hello World", content: "My first post!" }
+];
+
+// GET all posts
+app.get('/posts', (req, res) =&gt; {
+  res.json(posts);
+});
+
+// GET single post
+app.get('/posts/:id', (req, res) =&gt; {
+  const post = posts.find(p =&gt; p.id === parseInt(req.params.id));
+  if (!post) return res.status(404).json({ error: "Post not found" });
+  res.json(post);
+});
+
+// CREATE a post
+app.post('/posts', (req, res) =&gt; {
+  const newPost = { id: posts.length + 1, ...req.body };
+  posts.push(newPost);
+  res.status(201).json(newPost);
+});
+
+// UPDATE a post
+app.patch('/posts/:id', (req, res) =&gt; {
+  const post = posts.find(p =&gt; p.id === parseInt(req.params.id));
+  if (!post) return res.status(404).json({ error: "Post not found" });
+  Object.assign(post, req.body);
+  res.json(post);
+});
+
+// DELETE a post
+app.delete('/posts/:id', (req, res) =&gt; {
+  posts = posts.filter(p =&gt; p.id !== parseInt(req.params.id));
+  res.status(204).send();
+});
+
+app.listen(3000, () =&gt; console.log("REST API running on port 3000"));</code></pre>
+                                    <p class="s-desc text-black-56">Run it with <code>node server.js</code>, and you&rsquo;ve got a working REST API.</p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/work-2.jpg" alt="Screenshot placeholder of an API testing tool showing a GET request response">
+                                        <p class="img-note">Image spot &mdash; a screenshot of Postman or Insomnia hitting <code>GET /posts</code> with the JSON response shown.</p>
+                                    </div>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 4: Status codes actually matter</h3>
+                                    <p class="s-desc text-black-56">This is where a lot of &ldquo;REST&rdquo; APIs quietly fail &mdash; don&rsquo;t just return 200 for everything:</p>
+                                    <table>
+                                        <thead><tr><th>Code</th><th>Meaning</th><th>When to use it</th></tr></thead>
+                                        <tbody>
+                                            <tr><td><code>200 OK</code></td><td>Success</td><td>Successful GET/PATCH</td></tr>
+                                            <tr><td><code>201 Created</code></td><td>New resource made</td><td>Successful POST</td></tr>
+                                            <tr><td><code>204 No Content</code></td><td>Success, nothing to return</td><td>Successful DELETE</td></tr>
+                                            <tr><td><code>400 Bad Request</code></td><td>Client sent garbage</td><td>Missing/invalid fields</td></tr>
+                                            <tr><td><code>401 Unauthorized</code></td><td>Not logged in</td><td>Missing/invalid auth token</td></tr>
+                                            <tr><td><code>403 Forbidden</code></td><td>Logged in, not allowed</td><td>Permission issue</td></tr>
+                                            <tr><td><code>404 Not Found</code></td><td>Resource doesn&rsquo;t exist</td><td>Wrong ID</td></tr>
+                                            <tr><td><code>500 Internal Server Error</code></td><td>Something broke server-side</td><td>Unhandled exception</td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p class="s-desc text-black-56">A friend once shipped an API that returned <code>200 OK</code> even on failure, with the error tucked inside the JSON body. Debugging that was a nightmare &mdash; don&rsquo;t be that friend.</p>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 5: Add authentication</h3>
+                                    <p class="s-desc text-black-56">The industry standard today is <strong>JWT (JSON Web Tokens)</strong>. A rough flow looks like this:</p>
+                                    <pre><code>const jwt = require('jsonwebtoken');
+const SECRET = "your-secret-key";
+
+// Login route generates a token
+app.post('/login', (req, res) =&gt; {
+  // ... validate username/password ...
+  const token = jwt.sign({ userId: 1 }, SECRET, { expiresIn: '1h' });
+  res.json({ token });
+});
+
+// Middleware to protect routes
+function authenticate(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: "No token provided" });
+  try {
+    req.user = jwt.verify(token, SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: "Invalid token" });
+  }
+}
+
+// Protected route
+app.delete('/posts/:id', authenticate, (req, res) =&gt; {
+  // only reachable with a valid token
+});</code></pre>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 6: Versioning</h3>
+                                    <p class="s-desc text-black-56">Never break existing users. Version your API from day one:</p>
+                                    <pre><code>/api/v1/posts
+/api/v2/posts</code></pre>
+                                    <p class="s-desc text-black-56">When you make breaking changes, ship v2 and give people time to migrate off v1.</p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/award-1.jpg" alt="Diagram showing API version 1 and version 2 running side by side">
+                                        <p class="img-note">Image spot &mdash; a diagram of v1 and v2 running side by side, each pointing to its own codebase.</p>
+                                    </div>
 
                                     <div class="blockquote-wrap">
                                         <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
-                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">Pick the style that fits the shape of your data and the number of clients &mdash; not the one that is trending this year.</blockquote>
+                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">Pick the style that fits the shape of your data and the number of clients &mdash; not the one that&rsquo;s trending this year.</blockquote>
                                     </div>
 
-                                    <h2 class="s-title letter-space--2 text-black-72">The trade-offs that matter</h2>
+                                    <h2 id="what-is-graphql" class="s-title letter-space--2 text-black-72">What GraphQL actually is</h2>
                                     <p class="s-desc text-black-56">
-                                        REST versioning is explicit but noisy; GraphQL evolves the schema with deprecations
-                                        instead. REST caches at the HTTP layer; GraphQL caches in a normalized client store.
-                                        GraphQL adds a schema and resolver layer to maintain, and needs guardrails (depth limits,
-                                        query cost analysis) to stay safe. Weigh these against your team&rsquo;s size and the
-                                        genuine complexity of your data graph.
+                                        GraphQL was built by Facebook in 2012 (released publicly in 2015) because
+                                        their mobile app was making a dozen REST calls just to render one screen,
+                                        pulling way more data than needed on slow mobile networks. Sound familiar?
+                                        That&rsquo;s the &ldquo;over-fetching, under-fetching&rdquo; problem.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        <strong>Over-fetching:</strong> <code>GET /users/42</code> returns the user&rsquo;s
+                                        name, email, address, bio, join date, and last login &mdash; but your app only
+                                        needed the name and photo. You pay the bandwidth cost for data you&rsquo;ll
+                                        never use. <strong>Under-fetching:</strong> you need a user&rsquo;s name AND
+                                        their last five orders &mdash; that&rsquo;s two separate calls for one screen.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        GraphQL fixes both with one core idea: <strong>the client asks for exactly
+                                        the shape of data it wants, in a single request.</strong>
                                     </p>
 
-                                    <h2 class="s-title letter-space--2 text-black-72">My default</h2>
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/work-3.jpg" alt="Split screen comparing multiple REST calls versus a single GraphQL call for the same screen">
+                                        <p class="img-note">Image spot &mdash; split screen: REST making three separate calls to build one screen vs. GraphQL making one call for the same screen.</p>
+                                    </div>
+
+                                    <p class="s-desc text-black-56">Here&rsquo;s what a GraphQL query actually looks like:</p>
+                                    <pre><code>query {
+  user(id: 42) {
+    name
+    profilePicture
+    orders(limit: 5) {
+      id
+      total
+      status
+    }
+  }
+}</code></pre>
+                                    <p class="s-desc text-black-56">And the response mirrors exactly that shape:</p>
+                                    <pre><code>{
+  "data": {
+    "user": {
+      "name": "Riya Sharma",
+      "profilePicture": "riya.jpg",
+      "orders": [
+        { "id": 101, "total": 599, "status": "delivered" },
+        { "id": 102, "total": 250, "status": "pending" }
+      ]
+    }
+  }
+}</code></pre>
+                                    <p class="s-desc text-black-56">No extra fields, no extra calls &mdash; one request, exact shape. That&rsquo;s the whole trick.</p>
+
+                                    <h2 id="build-graphql" class="s-title letter-space--2 text-black-72">Building a real GraphQL API, step by step</h2>
+                                    <p class="s-desc text-black-56">Let&rsquo;s build the same Blog Posts API, this time in GraphQL, using Apollo Server.</p>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 1: Set up your project</h3>
+                                    <pre><code>mkdir graphql-blog-api &amp;&amp; cd graphql-blog-api
+npm init -y
+npm install @apollo/server graphql</code></pre>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 2: Define your schema</h3>
                                     <p class="s-desc text-black-56">
-                                        For a conventional CRUD product with a small team, I start with REST and only introduce
-                                        GraphQL when the data graph clearly justifies it. Complexity you do not need is still
-                                        complexity you have to maintain.
+                                        Before writing any logic, you write a <strong>schema</strong> &mdash; a contract
+                                        of exactly what data and operations exist. This alone eliminates a huge amount
+                                        of miscommunication between frontend and backend teams.
                                     </p>
+                                    <pre><code>type Post {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+type Query {
+  posts: [Post]
+  post(id: ID!): Post
+}
+
+type Mutation {
+  createPost(title: String!, content: String!): Post
+  updatePost(id: ID!, title: String, content: String): Post
+  deletePost(id: ID!): Boolean
+}</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Notice: REST bakes <code>GET</code>/<code>POST</code>/<code>PATCH</code>/<code>DELETE</code>
+                                        into HTTP itself. GraphQL splits everything into just two buckets &mdash;
+                                        <strong>Query</strong> (reading, like GET) and <strong>Mutation</strong>
+                                        (changing data, like POST/PATCH/DELETE combined).
+                                    </p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/award-1.jpg" alt="Visual of a GraphQL schema with arrows connecting Query and Mutation types to their data types">
+                                        <p class="img-note">Image spot &mdash; a visual of a GraphQL schema with arrows connecting Query/Mutation types to their corresponding data types.</p>
+                                    </div>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 3: Write your resolvers</h3>
+                                    <p class="s-desc text-black-56">Resolvers are just functions that know how to fetch or change data for each field in your schema.</p>
+                                    <pre><code>// server.js
+const { ApolloServer } = require('@apollo/server');
+const { startStandaloneServer } = require('@apollo/server/standalone');
+
+let posts = [
+  { id: "1", title: "Hello World", content: "My first post!" }
+];
+
+const typeDefs = `#graphql
+  type Post {
+    id: ID!
+    title: String!
+    content: String!
+  }
+
+  type Query {
+    posts: [Post]
+    post(id: ID!): Post
+  }
+
+  type Mutation {
+    createPost(title: String!, content: String!): Post
+    updatePost(id: ID!, title: String, content: String): Post
+    deletePost(id: ID!): Boolean
+  }
+`;
+
+const resolvers = {
+  Query: {
+    posts: () =&gt; posts,
+    post: (_, { id }) =&gt; posts.find(p =&gt; p.id === id),
+  },
+  Mutation: {
+    createPost: (_, { title, content }) =&gt; {
+      const newPost = { id: String(posts.length + 1), title, content };
+      posts.push(newPost);
+      return newPost;
+    },
+    updatePost: (_, { id, title, content }) =&gt; {
+      const post = posts.find(p =&gt; p.id === id);
+      if (!post) return null;
+      if (title) post.title = title;
+      if (content) post.content = content;
+      return post;
+    },
+    deletePost: (_, { id }) =&gt; {
+      const exists = posts.some(p =&gt; p.id === id);
+      posts = posts.filter(p =&gt; p.id !== id);
+      return exists;
+    },
+  },
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+startStandaloneServer(server, { listen: { port: 4000 } }).then(({ url }) =&gt; {
+  console.log(`GraphQL API running at ${url}`);
+});</code></pre>
+                                    <p class="s-desc text-black-56">Run it, and Apollo gives you a built-in playground at <code>http://localhost:4000</code> to test queries visually.</p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/work-2.jpg" alt="Screenshot placeholder of Apollo Sandbox showing a GraphQL query and results">
+                                        <p class="img-note">Image spot &mdash; a screenshot of Apollo Sandbox / GraphQL Playground running a query with results shown alongside.</p>
+                                    </div>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 4: Try some queries</h3>
+                                    <p class="s-desc text-black-56">Get all posts, but only titles &mdash; no content:</p>
+                                    <pre><code>query {
+  posts {
+    id
+    title
+  }
+}</code></pre>
+                                    <p class="s-desc text-black-56">Create a new post:</p>
+                                    <pre><code>mutation {
+  createPost(title: "GraphQL is fun", content: "Seriously, it is.") {
+    id
+    title
+  }
+}</code></pre>
+                                    <p class="s-desc text-black-56">See how the client controls the shape every single time? That&rsquo;s the whole philosophy.</p>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">Step 5: The N+1 problem</h3>
+                                    <p class="s-desc text-black-56">Here&rsquo;s the thing nobody warns beginners about. Say you query:</p>
+                                    <pre><code>query {
+  posts {
+    title
+    author {
+      name
+    }
+  }
+}</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        With 100 posts, a naive resolver runs one query to get the posts, then 100
+                                        <em>separate</em> queries to fetch each author. That&rsquo;s the dreaded
+                                        <strong>N+1 problem</strong>, and it will quietly wreck your database
+                                        performance. The fix is a library called <strong>DataLoader</strong>, which
+                                        batches and caches those lookups into one efficient query:
+                                    </p>
+                                    <pre><code>const DataLoader = require('dataloader');
+
+const authorLoader = new DataLoader(async (authorIds) =&gt; {
+  const authors = await db.getAuthorsByIds(authorIds);
+  return authorIds.map(id =&gt; authors.find(a =&gt; a.id === id));
+});</code></pre>
+                                    <p class="s-desc text-black-56">Every serious GraphQL API uses this pattern. Learn it early, thank yourself later.</p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/work-1.jpg" alt="Diagram of the N+1 problem showing one query fanning out into many database calls, fixed by DataLoader batching">
+                                        <p class="img-note">Image spot &mdash; the N+1 problem: one query fanning out into many database calls vs. DataLoader batching them into one.</p>
+                                    </div>
+
+                                    <h2 id="comparison" class="s-title letter-space--2 text-black-72">REST vs GraphQL &mdash; the honest comparison</h2>
+                                    <table>
+                                        <thead><tr><th></th><th>REST</th><th>GraphQL</th></tr></thead>
+                                        <tbody>
+                                            <tr><td>Data fetching</td><td>Fixed shape per endpoint</td><td>Client defines exact shape</td></tr>
+                                            <tr><td>Number of endpoints</td><td>Many (one per resource)</td><td>Usually just one (<code>/graphql</code>)</td></tr>
+                                            <tr><td>Over/under-fetching</td><td>Common problem</td><td>Solved by design</td></tr>
+                                            <tr><td>Caching</td><td>Easy (HTTP caching, CDNs)</td><td>Harder (needs custom setup)</td></tr>
+                                            <tr><td>File uploads</td><td>Native and simple</td><td>Needs extra libraries/specs</td></tr>
+                                            <tr><td>Learning curve</td><td>Gentle, widely known</td><td>Steeper (schemas, resolvers)</td></tr>
+                                            <tr><td>Versioning</td><td>Needs <code>/v1</code>, <code>/v2</code>, etc.</td><td>Usually versionless &mdash; add fields instead</td></tr>
+                                            <tr><td>Tooling maturity</td><td>Extremely mature, huge ecosystem</td><td>Mature, but younger</td></tr>
+                                            <tr><td>Best for</td><td>Public APIs, simple CRUD apps, caching-heavy use cases</td><td>Complex frontends, mobile apps, deeply related data</td></tr>
+                                        </tbody>
+                                    </table>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">When to actually pick REST</h3>
+                                    <ul class="text-black-56">
+                                        <li>You&rsquo;re building a public API that many third parties will consume &mdash; REST is more universally understood.</li>
+                                        <li>HTTP caching at the CDN level is critical for performance.</li>
+                                        <li>Your data model is simple, without deeply nested relationships.</li>
+                                        <li>Your team is more comfortable with it and time-to-market matters.</li>
+                                    </ul>
+
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">When to actually pick GraphQL</h3>
+                                    <ul class="text-black-56">
+                                        <li>You have multiple clients (web, iOS, Android) each needing different slices of the same data.</li>
+                                        <li>Your screens need deeply nested, related data &mdash; think dashboards or social feeds.</li>
+                                        <li>You&rsquo;re on mobile or low-bandwidth and over-fetching genuinely costs you.</li>
+                                        <li>Your frontend team wants independence from backend release cycles.</li>
+                                    </ul>
+                                    <p class="s-desc text-black-56">
+                                        Real talk: a lot of companies use both &mdash; GraphQL as a layer in front of
+                                        internal REST microservices is a very common pattern. It&rsquo;s literally
+                                        what GraphQL was invented to solve at Facebook.
+                                    </p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/award-1.jpg" alt="Decision tree flowchart for choosing between REST and GraphQL">
+                                        <p class="img-note">Image spot &mdash; a simple decision-tree flowchart: few clients and simple data &rarr; REST; multiple clients with nested, mobile-heavy data &rarr; GraphQL.</p>
+                                    </div>
+
+                                    <h2 id="mistakes" class="s-title letter-space--2 text-black-72">Common mistakes with both</h2>
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">REST mistakes</h3>
+                                    <ol class="text-black-56">
+                                        <li><strong>Not using proper HTTP status codes</strong> &mdash; returning 200 for errors makes debugging painful.</li>
+                                        <li><strong>Verbs in URLs</strong> &mdash; <code>/getUser</code> instead of <code>GET /user</code>. Resources are nouns; methods are verbs.</li>
+                                        <li><strong>No pagination</strong> &mdash; <code>GET /posts</code> returning 100,000 rows will eventually break your app. Always paginate.</li>
+                                        <li><strong>Ignoring HATEOAS</strong> &mdash; not mandatory, but including links to related actions genuinely helps discoverability.</li>
+                                        <li><strong>Deeply nested URLs</strong> &mdash; <code>/users/42/posts/12/comments/5/replies/3</code> gets absurd fast. Flatten when you can.</li>
+                                    </ol>
+                                    <h3 class="s-title letter-space--2 text-black-72 h5">GraphQL mistakes</h3>
+                                    <ol class="text-black-56">
+                                        <li><strong>Ignoring the N+1 problem</strong> until production traffic exposes it painfully.</li>
+                                        <li><strong>No query depth limiting</strong> &mdash; a careless or malicious client can crash your server with a deeply nested query. Always cap depth and complexity.</li>
+                                        <li><strong>Treating every field as always-fetched</strong> &mdash; the whole point is selective fetching; don&rsquo;t defeat that with resolvers that do heavy work regardless of what&rsquo;s requested.</li>
+                                        <li><strong>Skipping schema documentation</strong> &mdash; your schema is self-documenting if you add descriptions to types and fields. Use it.</li>
+                                        <li><strong>No error handling strategy</strong> &mdash; GraphQL returns <code>200 OK</code> even on errors (they live in an <code>errors</code> array), which trips up developers used to REST status codes.</li>
+                                    </ol>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/work-3.jpg" alt="Illustration of a bug near a stack of database queries, representing common API mistakes">
+                                        <p class="img-note">Image spot &mdash; a &ldquo;gotcha&rdquo;-style illustration of a bug crawling near a stack of database queries.</p>
+                                    </div>
+
+                                    <h2 id="tools" class="s-title letter-space--2 text-black-72">Tools worth bookmarking</h2>
+                                    <p class="s-desc text-black-56"><strong>For REST:</strong> Postman, Insomnia or Thunder Client for testing endpoints; Swagger/OpenAPI for documenting and auto-generating client SDKs; Express, FastAPI, Django REST Framework or Spring Boot as popular frameworks.</p>
+                                    <p class="s-desc text-black-56"><strong>For GraphQL:</strong> Apollo Server/Client as the most popular stack; GraphQL Yoga as a lighter alternative; Postman (it supports GraphQL now); GraphiQL or Apollo Sandbox for built-in query playgrounds; DataLoader for solving N+1; Hasura or PostGraphile to auto-generate a GraphQL API straight from your database.</p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/work-1.jpg" alt="Logo grid placeholder for API tools like Postman, Apollo, and Swagger">
+                                        <p class="img-note">Image spot &mdash; a logo grid of the tools mentioned above (Postman, Apollo, Swagger, etc).</p>
+                                    </div>
+
+                                    <h2 id="wrap-up" class="s-title letter-space--2 text-black-72">Wrapping this up</h2>
+                                    <p class="s-desc text-black-56">
+                                        Here&rsquo;s the truth nobody tells you upfront: REST and GraphQL aren&rsquo;t
+                                        rivals fighting to the death &mdash; they&rsquo;re two tools solving two
+                                        flavors of the same problem. REST is the reliable friend who&rsquo;s been
+                                        around forever and rarely surprises you. GraphQL is the newer friend who&rsquo;s
+                                        incredibly flexible, but asks a bit more of you upfront &mdash; schema design,
+                                        N+1 awareness, query complexity limits.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        If you&rsquo;re a beginner, start with REST. It teaches HTTP fundamentals that
+                                        make you a better engineer no matter what you build later. If you&rsquo;re
+                                        already experienced and picking for a real project, go back to the restaurant
+                                        analogy: does your client need the whole combo meal, or a custom order? That
+                                        question alone gets you to the right answer nine times out of ten.
+                                    </p>
+                                    <p class="s-desc text-black-56">Now go build something. 😄</p>
+
+                                    <div class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/section/award-1.jpg" alt="Friendly illustration of REST and GraphQL characters shaking hands">
+                                        <p class="img-note">Image spot &mdash; a friendly closing illustration of two API &ldquo;characters&rdquo; (REST and GraphQL) shaking hands or high-fiving.</p>
+                                    </div>
+
                                 </div>
 
                                 <div class="br-line"></div>
@@ -276,6 +848,14 @@
                                             <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
                                         </div>
                                         <div id="faq-3" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">For a small team building a conventional CRUD product, REST is usually easier: fewer moving parts, mature tooling and no schema or resolver layer to maintain. Reach for GraphQL when the data graph is genuinely complex or many diverse clients consume the same API.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-4" role="button" data-bs-toggle="collapse" aria-controls="faq-4" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is the N+1 problem in GraphQL?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-4" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">It happens when a query fetches a list of items and then runs a separate database query for each item&rsquo;s related data, turning one logical request into many database calls. It is usually fixed with a batching library like DataLoader.</p></div></div>
                                     </div>
                                 </div>
                             </section>
