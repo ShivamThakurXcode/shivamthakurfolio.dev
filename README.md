@@ -99,7 +99,7 @@ Every listing/detail page uses a **breadcrumb page-title header** at the top of 
 **Per-page `<head>` (every page incl. index):**
 - Unique `<title>` — pattern `<Page> — Shivam Thakur | Full Stack Developer` (≤60 chars).
 - `<meta name="description">` unique, 150–160 chars.
-- `<link rel="canonical" href="https://shivamthakurfolio.dev/<path>">`.
+- `<link rel="canonical" href="https://shivamthakur.me/<path>">`.
 - `<meta name="robots" content="index,follow,max-image-preview:large">`.
 - `<meta name="theme-color">` (light `#EBEBEB`, dark via media) ; `<meta name="author" content="Shivam Thakur">` (fix themesflat).
 - Open Graph: `og:type` (website/article/profile), `og:title`, `og:description`, `og:url`, `og:image` (absolute, reuse a section jpg), `og:site_name`.
@@ -118,7 +118,7 @@ Every listing/detail page uses a **breadcrumb page-title header** at the top of 
 **GEO / semantic HTML upgrades (apply on new pages; light touch on index):** wrap main region in `<main>`, listing cards region in `<section>`, detail body in `<article>`, breadcrumb in `<nav aria-label="Breadcrumb">`, dates in `<time datetime>`, add `#main-content` skip-link as first focusable element, meaningful `alt` on all images, single `<h1>` per page (page-title becomes the H1 via `.s-title` on an `<h1>` or an sr-only H1).
 
 **Sitewide files:**
-- `robots.txt` — allow all, point to `Sitemap: https://shivamthakurfolio.dev/sitemap.xml`.
+- `robots.txt` — allow all, point to `Sitemap: https://shivamthakur.me/sitemap.xml`.
 - `sitemap.xml` — all 15 URLs (index, 3 listings, 4 blog, 3 case studies, 5 services) with `<lastmod>`.
 - `llms.txt` — Markdown site summary for LLMs (who Shivam is, page map with links + one-line descriptions) per the emerging llms.txt convention.
 

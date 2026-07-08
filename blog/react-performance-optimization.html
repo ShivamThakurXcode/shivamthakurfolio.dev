@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>React Performance Optimization: A Practical Checklist — Shivam Thakur</title>
+    <meta name="description"
+        content="A practical React performance checklist: memoization, list virtualization, code splitting, avoiding wasted re-renders, and measuring with the Profiler. Real techniques by Shivam Thakur.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://shivamthakur.me/blog/react-performance-optimization.html">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="React performance, memoization, useMemo, virtualization, code splitting, re-renders, Shivam Thakur">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:title" content="React Performance Optimization: A Practical Checklist">
+    <meta property="og:description"
+        content="Memoization, virtualization, code splitting and measuring re-renders — the checklist I run to make React apps fast.">
+    <meta property="og:url" content="https://shivamthakur.me/blog/react-performance-optimization.html">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/section/work-2.jpg">
+    <meta property="article:published_time" content="2026-04-28">
+    <meta property="article:author" content="Shivam Thakur">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="React Performance Optimization: A Practical Checklist">
+    <meta name="twitter:description"
+        content="Memoization, virtualization, code splitting and measuring re-renders — the checklist I run to make React apps fast.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/section/work-2.jpg">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../assets/images/logo/favicon.svg">
+    <link rel="apple-touch-icon-precomposed" href="../assets/images/logo/favicon.svg">
+
+    <!-- Structured Data: BlogPosting + Breadcrumb + FAQ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "React Performance Optimization: A Practical Checklist",
+      "description": "A practical React performance checklist: memoization, list virtualization, code splitting, avoiding wasted re-renders, and measuring with the Profiler.",
+      "image": "https://shivamthakur.me/assets/images/section/work-2.jpg",
+      "datePublished": "2026-04-28",
+      "dateModified": "2026-04-28",
+      "inLanguage": "en",
+      "wordCount": 820,
+      "keywords": "React, performance, memoization, virtualization, code splitting",
+      "articleSection": "Frontend",
+      "mainEntityOfPage": "https://shivamthakur.me/blog/react-performance-optimization.html",
+      "author": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/", "jobTitle": "Full Stack Developer" },
+      "publisher": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shivamthakur.me/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shivamthakur.me/blog.html" },
+        { "@type": "ListItem", "position": 3, "name": "React Performance Optimization", "item": "https://shivamthakur.me/blog/react-performance-optimization.html" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I wrap every component in React.memo?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. React.memo has a cost of its own and only helps when a component re-renders often with the same props. Measure with the Profiler first, then memoize the specific components that show up as expensive and frequently re-rendered." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the most common cause of slow React apps?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Wasted re-renders. New object or function references created on every render, unstable context values, and large lists rendered in full are the usual culprits. Stabilise references and virtualize long lists before anything else." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does code splitting really improve performance?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, for load time. Splitting routes and heavy components with React.lazy and dynamic imports reduces the initial JavaScript bundle, so the first screen becomes interactive faster. It does not change runtime render cost, only what ships up front." }
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo"><div class="spinner"></div></div>
+    </div>
+
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+        <div class="bg-video video-dark">
+            <video class="video" muted="" autoplay="" loop="" playsinline="">
+                <source src="../assets/images/overlay-2.mp4" type="video/mp4">
+            </video>
+            <div class="overlay-1"></div>
+        </div>
+    </div>
+
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2"><div class="btn-mobile-menu"><span></span></div></div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item"><a href="../index.html#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="../index.html#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+                <li class="nav-item"><a href="../case-studies.html" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+                <li class="nav-item"><a href="../services.html" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+                <li class="nav-item"><a href="../blog.html" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="../index.html#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-tools pst-v1">
+        <div class="nav-top"><div class="tf-btn-icon toggle-switch-mode"><i class="icon icon-light"></i></div></div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../index.html#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="../index.html#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+            <li class="nav-item"><a href="../case-studies.html" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+            <li class="nav-item"><a href="../services.html" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+            <li class="nav-item"><a href="../blog.html" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="../index.html#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+        </ul>
+        <div class="nav-bottom"><a href="#" class="tf-btn-icon go-top"><i class="icon icon-arrow-top"></i></a></div>
+    </div>
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+        <div class="tf-header-wrap">
+            <a href="../index.html" class="logo-site d-lg-none">
+                <img class="image-switch" data-light="../assets/images/logo/logo.svg" data-dark="../assets/images/logo/logo-2.svg" loading="lazy" width="40" height="40" src="../assets/images/logo/logo.svg" alt="Shivam Thakur logo">
+            </a>
+            <div class="left"><div class="time-local text-body-3"><p class="date"></p><p class="clock"></p></div></div>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="wrap">
+                <div class="user-image">
+                    <div class="image"><img loading="lazy" width="468" height="856" src="../assets/images/avatar/avatar-3.png" alt="Portrait of Shivam Thakur"></div>
+                    <div class="meta-left d-none d-sm-block">
+                        <div class="bg-item-svg"><img class="image-switch" data-dark="../assets/images/item/vector-user_dark.svg" width="32" height="227" src="../assets/images/item/vector-user.svg" alt=""></div>
+                        <p class="avaiable-dot vertical text-body-3 text-black-72 fw-medium"><span class="text-vertical">Available for Work</span><span class="dot"></span></p>
+                    </div>
+                </div>
+                <div class="user-logo d-none d-lg-block"><img class="image-switch" data-light="../assets/images/logo/logo.svg" data-dark="../assets/images/logo/logo-2.svg" loading="lazy" width="40" height="40" src="../assets/images/logo/logo.svg" alt="Shivam Thakur logo"></div>
+                <ul class="tf-social-icon-2 user-social d-grid">
+                    <li><a href="https://x.com/" target="_blank" rel="noopener" aria-label="X profile"><i class="icon icon-x"></i></a></li>
+                    <li><a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><i class="icon icon-linkin"></i></a></li>
+                    <li><a href="https://github.com/" target="_blank" rel="noopener" aria-label="GitHub profile"><i class="icon icon-tech-stack"></i></a></li>
+                </ul>
+                <div class="user-info">
+                    <p class="avaiable-dot text-body-3 fw-medium d-sm-none"><span class="dot"></span><span>Available for Work</span></p>
+                    <h2 class="greeting letter-space--2 text-white h5">Shivam Thakur</h2>
+                    <p class="introduce text-white-56 letter-space--05 text-body-3">Full Stack Developer building fast, scalable web apps with React, Node.js and modern tooling.</p>
+                    <div class="br-line"></div>
+                    <div class="action-group">
+                        <a href="../index.html#contact" class="tf-btn-action">
+                            <span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span>
+                            <span class="text text-body-3 letter-space--05 fw-medium">Let&rsquo;s talk</span>
+                            <span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span>
+                        </a>
+                        <a href="#" class="action-down"><i class="icon icon-download"></i><span class="text-body-3">Download CV</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-xl-8 ms-auto">
+                        <div class="wrap-container" id="main-content">
+
+                            <div class="section-about flat-spacing">
+                                <nav class="sect-tag text-caption fw-medium effectFade fadeUp no-div" aria-label="Breadcrumb">
+                                    <i class="icon icon-tes"></i>
+                                    <a href="../index.html" class="link text-black-56">Home</a>&nbsp;/&nbsp;<a href="../blog.html" class="link text-black-56">Blog</a>&nbsp;/&nbsp;<span class="text-black-72">React Performance</span>
+                                </nav>
+                                <h1 class="s-title letter-space--2 text-black-72 split-text effect-blur-fade">
+                                    React performance <br class="d-none d-lg-block">
+                                    optimization checklist
+                                </h1>
+                                <div class="meta-list scrolling-effect effectTop">
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-user-circle"></i> Shivam Thakur</span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-tes"></i> <time datetime="2026-04-28">Apr 28, 2026</time></span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-high-light"></i> 7 min read</span>
+                                </div>
+                            </div>
+
+                            <article class="blog-single-wrap section-work flat-spacing">
+                                <div class="image scrolling-effect effectBottom">
+                                    <img loading="lazy" width="700" height="427" src="../assets/images/section/work-2.jpg" alt="React DevTools Profiler flame graph showing component render timings">
+                                </div>
+                                <div class="entry-content">
+                                    <p class="s-desc text-black-56">
+                                        React is fast by default, but it is easy to make it slow by accident. Almost every
+                                        performance problem I have debugged comes down to the same short list. Here is the
+                                        checklist I run, roughly in order, whenever a React app starts feeling sluggish.
+                                    </p>
+
+                                    <h2 class="s-title letter-space--2 text-black-72">1. Measure with the Profiler first</h2>
+                                    <p class="s-desc text-black-56">
+                                        Open the React DevTools Profiler, record an interaction, and read the flame graph.
+                                        You are looking for components that render often and take a long time. Optimising
+                                        without this step is guessing &mdash; and you will usually guess wrong.
+                                    </p>
+
+                                    <h2 class="s-title letter-space--2 text-black-72">2. Eliminate wasted re-renders</h2>
+                                    <p class="s-desc text-black-56">
+                                        The number one cause of slowness is re-rendering things that did not change. Stabilise
+                                        references with <strong>useMemo</strong> and <strong>useCallback</strong>, split large
+                                        context providers so a change to one value does not re-render everything, and lift state
+                                        only as high as it truly needs to go.
+                                    </p>
+
+                                    <h2 class="s-title letter-space--2 text-black-72">3. Memoize the expensive components</h2>
+                                    <p class="s-desc text-black-56">
+                                        Wrap the specific components the Profiler flagged in <strong>React.memo</strong>. Do not
+                                        blanket-memoize everything &mdash; memoization has a cost and only pays off when a
+                                        component re-renders frequently with unchanged props.
+                                    </p>
+
+                                    <div class="blockquote-wrap">
+                                        <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
+                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">
+                                            Do not optimise what you have not measured. The Profiler tells you where the time
+                                            actually goes &mdash; trust it over intuition.
+                                        </blockquote>
+                                    </div>
+
+                                    <h2 class="s-title letter-space--2 text-black-72">4. Virtualize long lists</h2>
+                                    <p class="s-desc text-black-56">
+                                        Rendering thousands of rows kills performance. Use a windowing library such as
+                                        <strong>react-window</strong> so only the visible rows are in the DOM. This is often the
+                                        single biggest win for data-heavy screens.
+                                    </p>
+
+                                    <h2 class="s-title letter-space--2 text-black-72">5. Code-split to shrink the bundle</h2>
+                                    <p class="s-desc text-black-56">
+                                        Load routes and heavy components lazily with <strong>React.lazy</strong> and dynamic
+                                        imports so the first screen ships less JavaScript. Combine with a good loading state and
+                                        the app feels instant even before everything has downloaded.
+                                    </p>
+                                </div>
+
+                                <div class="br-line"></div>
+
+                                <div class="entry-footer">
+                                    <div class="tags-links">
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">React</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Performance</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Frontend</span>
+                                    </div>
+                                    <div class="social-links">
+                                        <a href="https://twitter.com/intent/tweet?url=https://shivamthakur.me/blog/react-performance-optimization.html" target="_blank" rel="noopener" aria-label="Share on X"><i class="icon icon-x"></i></a>
+                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://shivamthakur.me/blog/react-performance-optimization.html" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><i class="icon icon-linkin"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <section class="section-service flat-spacing" aria-label="Frequently asked questions">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div mb-0"><i class="icon icon-service"></i> FAQ</div>
+                                <div class="" id="accordion-faq">
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-1" role="button" data-bs-toggle="collapse" aria-controls="faq-1" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Should I wrap every component in React.memo?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-1" class="collapse show" data-bs-parent="#accordion-faq">
+                                            <div class="accordion-content"><p class="service-desc text-black-56">No. React.memo has a cost of its own and only helps when a component re-renders often with the same props. Measure with the Profiler first, then memoize the specific components that show up as expensive and frequently re-rendered.</p></div>
+                                        </div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-2" role="button" data-bs-toggle="collapse" aria-controls="faq-2" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is the most common cause of slow React apps?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-2" class="collapse show" data-bs-parent="#accordion-faq">
+                                            <div class="accordion-content"><p class="service-desc text-black-56">Wasted re-renders. New object or function references created on every render, unstable context values, and large lists rendered in full are the usual culprits. Stabilise references and virtualize long lists before anything else.</p></div>
+                                        </div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-3" role="button" data-bs-toggle="collapse" aria-controls="faq-3" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Does code splitting really improve performance?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-3" class="collapse show" data-bs-parent="#accordion-faq">
+                                            <div class="accordion-content"><p class="service-desc text-black-56">Yes, for load time. Splitting routes and heavy components with React.lazy and dynamic imports reduces the initial JavaScript bundle, so the first screen becomes interactive faster. It does not change runtime render cost, only what ships up front.</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="section-work flat-spacing" aria-label="Related posts">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div"><i class="icon icon-tes"></i> Related articles</div>
+                                <div class="tf-grid-layout sm-col-2">
+                                    <article class="article-blog scrolling-effect effectBottom">
+                                        <div class="blog-image"><a href="scaling-nodejs-apis.html"><img loading="lazy" width="700" height="427" src="../assets/images/section/work-1.jpg" alt="Scaling Node.js APIs"></a></div>
+                                        <div class="blog-content">
+                                            <div>
+                                                <p class="infor_sub text-body-3 text-black-56">Backend &middot; <time datetime="2026-05-12">May 12, 2026</time></p>
+                                                <h3 class="infor_name h6 text-black-72"><a href="scaling-nodejs-apis.html" class="link">Scaling Node.js APIs to Handle 10x Traffic</a></h3>
+                                            </div>
+                                            <a href="scaling-nodejs-apis.html" class="btn-action" aria-label="Read: Scaling Node.js APIs"><i class="icon icon-arrow-right-top"></i></a>
+                                        </div>
+                                    </article>
+                                    <article class="article-blog scrolling-effect effectBottom">
+                                        <div class="blog-image"><a href="building-rest-vs-graphql.html"><img loading="lazy" width="700" height="427" src="../assets/images/section/work-3.jpg" alt="REST vs GraphQL"></a></div>
+                                        <div class="blog-content">
+                                            <div>
+                                                <p class="infor_sub text-body-3 text-black-56">API Design &middot; <time datetime="2026-04-09">Apr 9, 2026</time></p>
+                                                <h3 class="infor_name h6 text-black-72"><a href="building-rest-vs-graphql.html" class="link">REST vs GraphQL: Choosing the Right API Style</a></h3>
+                                            </div>
+                                            <a href="building-rest-vs-graphql.html" class="btn-action" aria-label="Read: REST vs GraphQL"><i class="icon icon-arrow-right-top"></i></a>
+                                        </div>
+                                    </article>
+                                </div>
+                            </section>
+
+                            <div class="section-contact flat-spacing">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div"><i class="icon icon-send"></i> Let&rsquo;s build</div>
+                                <h2 class="s-title letter-space--2 split-text effect-blur-fade h4">Frontend feeling slow? <br class="d-none d-lg-block">Let&rsquo;s make it fast.</h2>
+                                <div class="action-group effectFade fadeUp no-div">
+                                    <a href="../index.html#contact" class="tf-btn-action">
+                                        <span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span>
+                                        <span class="text text-body-3 letter-space--05 fw-medium">Start a conversation</span>
+                                        <span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div id="footer" class="tf-footer flat-spacing">
+                                <div class="block-quote effectFade fadeUp no-div">
+                                    <h2 class="quote-text font-3 fw-normal text-black-72 h5"><span class="text-black-56">&ldquo;</span> Premature optimization is the root of all evil &mdash; but measured optimization is engineering. <span class="text-black-56">&rdquo;</span></h2>
+                                    <p class="quote-author font-3 text-black-56 h6 text-end ">Donald Knuth</p>
+                                </div>
+                                <div class="br-line"></div>
+                                <div class="foot-bottom">
+                                    <p class="text-nocopy text-black-56">&copy; 2026 Shivam Thakur Portfolio</p>
+                                    <p class="text-nocopy text-black-56">All rights reserved</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.nice-select.min.js"></script>
+    <script src="../assets/js/jquery-validate.js"></script>
+    <script src="../assets/js/swiper-bundle.min.js"></script>
+    <script src="../assets/js/carousel.js"></script>
+    <script src="../assets/js/infinityslide.js"></script>
+    <script src="../assets/js/ScrollSmooth.js"></script>
+    <script src="../assets/js/gsap.min.js"></script>
+    <script src="../assets/js/SplitText.min.js"></script>
+    <script src="../assets/js/ScrollTrigger.min.js"></script>
+    <script src="../assets/js/ScrollToPlugin.min.js"></script>
+    <script src="../assets/js/gsapAnimation.js"></script>
+    <script src="../assets/js/countto.js"></script>
+    <script src="../assets/js/animation-change-text.js"></script>
+    <script src="../assets/js/main.js"></script>
+
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="../index.html#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="nav-item"><a href="../case-studies.html" class="item-link"><i class="icon icon-high-light"></i><span class="tool-tip">Work</span></a></li>
+            <li class="nav-item"><a href="../blog.html" class="item-link active"><i class="icon icon-tes"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../index.html#contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+            <li class="nav-item nav-more">
+                <a href="javascript:void(0)" class="item-link more-link" id="moreNavBtn"><i class="icon icon-more"></i><span class="tool-tip">More</span></a>
+                <div class="nav-dropdown" id="navDropdown">
+                    <ul class="nav-dropdown-list">
+                        <li class="nav-item"><a href="../index.html#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+                        <li class="nav-item"><a href="../services.html" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+                        <li class="nav-item"><a href="../index.html#tech" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Tech</span></a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
