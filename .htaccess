@@ -1,0 +1,30 @@
+# ---- Clean URLs (no .html) ----
+RewriteEngine On
+
+# Stop mod_dir from adding a trailing slash when a name matches a real
+# directory (blog/, case-studies/, services/). Without this, /case-studies
+# would 301 to /case-studies/ and shadow the case-studies.html listing.
+DirectorySlash Off
+
+# Redirect /index.html and /index -> site root (canonical home)
+RewriteCond %{THE_REQUEST} \s/(.+/)?index(\.html)?[\s?] [NC]
+RewriteRule ^(.+/)?index(\.html)?$ /%1 [R=301,L]
+
+# Externally redirect direct .html requests to the extensionless URL (301)
+RewriteCond %{THE_REQUEST} \s/+([^?\s]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Internally rewrite extensionless URL to the real .html file.
+# Checking the .html file FIRST means /case-studies serves case-studies.html
+# even though a case-studies/ directory also exists.
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Serve directory root as its index (so "/" -> index.html)
+DirectoryIndex index.html
+
+# ---- Nice-to-haves ----
+# Custom 404 (optional): ErrorDocument 404 /404.html
+
+# Do not list directory contents
+Options -Indexes
