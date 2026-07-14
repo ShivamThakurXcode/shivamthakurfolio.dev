@@ -440,6 +440,23 @@
     };
 
     
+    /* Preload safety net
+    ----------------------------------------------------------
+       The preloader (#preload) is normally faded out by gsapAnimation.js on
+       window load. But that file starts with a top-level gsap.registerPlugin()
+       call — if GSAP fails to load, the whole file throws and the preloader is
+       never removed, leaving an invisible full-screen overlay (z-index 1e11)
+       that blocks every click. This guarantees the overlay always lifts,
+       independent of GSAP. */
+    var forcePreloadHide = function () {
+        var $p = $("#preload");
+        if (!$p.length) return;
+        $p.fadeOut("slow", function () { $(this).remove(); });
+    };
+    $(window).on("load", forcePreloadHide);
+    // Fallback: never trap the user, even if 'load' never fires.
+    setTimeout(forcePreloadHide, 1500);
+
     // Dom Ready
     $(function () {
         ajaxContactForm();

@@ -543,6 +543,18 @@ p {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* CSS safety net: the JS in gsapAnimation.js removes this overlay, but if
+     GSAP throws, JS never runs and this full-screen overlay traps every click.
+     Auto-hide after 2s regardless of JS so the page is always usable. */
+  animation: preloadAutoHide 0s ease 2s forwards;
+}
+
+@keyframes preloadAutoHide {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 .spinner {
@@ -4703,12 +4715,7 @@ button.animate-btn::after,
   }
 }
 
-.main-content {
-  pointer-events: none;
-}
-.main-content .wrap-container {
-  pointer-events: all;
-}
+
 
 .sidebar-tools {
   position: fixed;

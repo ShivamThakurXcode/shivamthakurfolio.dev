@@ -513,7 +513,9 @@ gsap.registerPlugin(ScrollTrigger);
     /*== End - Preload ==*/
 
     $(function () {
-        runAnimations();
+        // Lift the preloader FIRST — if any animation below throws, the
+        // full-screen #preload overlay must still come off or it traps clicks.
         loaderV2();
+        runAnimations();
     });
 })(jQuery);
