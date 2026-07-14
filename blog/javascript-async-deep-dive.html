@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Async JavaScript Deep Dive: Callbacks, Promises, async/await & the Event Loop — Shivam Thakur</title>
+    <meta name="description"
+        content="Truly understand asynchronous JavaScript: the call stack, event loop, microtasks vs macrotasks, callbacks, promises, async/await, and running tasks in parallel — with clear code and the gotchas that trip people up. By full-stack developer Shivam Thakur.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://shivamthakur.me/blog/javascript-async-deep-dive">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="async JavaScript, event loop, promises, async await, callbacks, microtasks, macrotasks, Promise.all, JavaScript concurrency, Shivam Thakur">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:title" content="Async JavaScript Deep Dive: Callbacks, Promises, async/await & the Event Loop">
+    <meta property="og:description" content="The call stack, event loop, microtasks vs macrotasks, promises and async/await — asynchronous JavaScript finally made clear.">
+    <meta property="og:url" content="https://shivamthakur.me/blog/javascript-async-deep-dive">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/blog/js-event-loop.png">
+    <meta property="article:published_time" content="2026-07-14">
+    <meta property="article:author" content="Shivam Thakur">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Async JavaScript Deep Dive: Callbacks, Promises, async/await & the Event Loop">
+    <meta name="twitter:description" content="The call stack, event loop, microtasks vs macrotasks, promises and async/await — asynchronous JavaScript finally made clear.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/blog/js-event-loop.png">
+
+    <link rel="stylesheet" href="../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../assets/icon/icomoon/style.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
+
+    <link rel="shortcut icon" href="../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/images/logo/favicon.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Async JavaScript Deep Dive: Callbacks, Promises, async/await & the Event Loop",
+      "description": "Truly understand asynchronous JavaScript: the call stack, event loop, microtasks vs macrotasks, callbacks, promises, async/await, and running tasks in parallel.",
+      "image": "https://shivamthakur.me/assets/images/blog/js-event-loop.png",
+      "datePublished": "2026-07-14",
+      "dateModified": "2026-07-14",
+      "inLanguage": "en",
+      "wordCount": 2100,
+      "keywords": "async JavaScript, event loop, promises, async await, microtasks, Promise.all",
+      "articleSection": "JavaScript",
+      "mainEntityOfPage": "https://shivamthakur.me/blog/javascript-async-deep-dive",
+      "author": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/", "jobTitle": "Full Stack Developer" },
+      "publisher": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shivamthakur.me/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shivamthakur.me/blog" },
+        { "@type": "ListItem", "position": 3, "name": "Async JavaScript Deep Dive", "item": "https://shivamthakur.me/blog/javascript-async-deep-dive" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is JavaScript single-threaded or multi-threaded?",
+          "acceptedAnswer": { "@type": "Answer", "text": "JavaScript runs your code on a single thread, meaning one thing at a time. It stays responsive by handing slow tasks (timers, network requests) to the browser or Node, which notify it when they finish via the event loop. So it is single-threaded but non-blocking." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between microtasks and macrotasks?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Promise callbacks are microtasks and setTimeout callbacks are macrotasks. After each piece of code finishes, the event loop drains all pending microtasks before running the next macrotask, which is why a resolved promise runs before a setTimeout of zero." }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use Promise.all?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Use Promise.all when you have several independent async tasks that can run at the same time and you need all of them to finish. It runs them in parallel and resolves when every promise resolves, which is much faster than awaiting them one by one." }
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <div class="preload preload-container" id="preload"><div class="preload-logo"><div class="spinner"></div></div></div>
+
+    <div class="body-background">
+        <div class="bg-item"><img loading="lazy" width="1440" height="900" src="../assets/images/item/cloud-bg.png" alt="Ambient cloud background"></div>
+        <div class="bg-video video-dark"><video class="video" muted="" autoplay="" loop="" playsinline=""><source src="../assets/images/overlay-2.mp4" type="video/mp4"></video><div class="overlay-1"></div></div>
+    </div>
+
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2"><div class="btn-mobile-menu"><span></span></div></div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+                <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+                <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+                <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-tools pst-v1">
+        <div class="nav-top"><div class="tf-btn-icon toggle-switch-mode"><i class="icon icon-light"></i></div></div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+        </ul>
+        <div class="nav-bottom"><a href="#" class="tf-btn-icon go-top"><i class="icon icon-arrow-top"></i></a></div>
+    </div>
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site d-lg-none"><img class="image-switch" data-light="../assets/images/logo/logo.svg" data-dark="../assets/images/logo/logo-2.svg" loading="lazy" width="40" height="40" src="../assets/images/logo/logo.svg" alt="Shivam Thakur logo"></a>
+            <div class="left"><div class="time-local text-body-3"><p class="date"></p><p class="clock"></p></div></div>
+        </div>
+        <div class="main-content" id="main-content">
+            <div class="container">
+                <div class="row">
+
+                            <div class="section-about flat-spacing">
+                                <nav class="sect-tag text-caption fw-medium effectFade fadeUp no-div" aria-label="Breadcrumb">
+                                    <i class="icon icon-tes"></i>
+                                    <a href="/" class="link text-black-56">Home</a>&nbsp;/&nbsp;<a href="../blog" class="link text-black-56">Blog</a>&nbsp;/&nbsp;<span class="text-black-72">Async JavaScript Deep Dive</span>
+                                </nav>
+                                <h1 class="s-title letter-space--2 text-black-72 split-text effect-blur-fade">Async JavaScript, <br class="d-none d-lg-block">finally demystified</h1>
+                                <div class="meta-list scrolling-effect effectTop">
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-user-circle"></i> Shivam Thakur</span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-tes"></i> <time datetime="2026-07-14">Jul 14, 2026</time></span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-high-light"></i> 12 min read</span>
+                                </div>
+                            </div>
+
+                            <article class="blog-single-wrap section-work flat-spacing">
+                                <div class="image scrolling-effect effectBottom"><img loading="lazy" width="700" height="427" src="../assets/images/blog/js-event-loop.png" alt="Diagram of the JavaScript event loop with call stack, web APIs, callback queue and microtask queue"></div>
+                                <div class="entry-content">
+
+                                    <p class="s-desc text-black-56">
+                                        Async is where most developers hit a wall. You can write <code>async/await</code>
+                                        and it mostly works &mdash; until it doesn&rsquo;t, and suddenly you&rsquo;re
+                                        staring at logs printing in an order that makes no sense. The fix isn&rsquo;t
+                                        memorizing more syntax. It&rsquo;s understanding the <strong>one mental model</strong>
+                                        underneath it all: the event loop. Get that, and async stops being magic. I&rsquo;m
+                                        Shivam Thakur &mdash; let&rsquo;s build that model, piece by piece.
+                                    </p>
+
+                                    <div class="toc-box text-black-56">
+                                        <p class="text-black-72">In this guide</p>
+                                        <ol>
+                                            <li><a href="#single-thread">JavaScript does one thing at a time</a></li>
+                                            <li><a href="#event-loop">The event loop, explained</a></li>
+                                            <li><a href="#callbacks">Callbacks &amp; callback hell</a></li>
+                                            <li><a href="#promises">Promises</a></li>
+                                            <li><a href="#async-await">async / await</a></li>
+                                            <li><a href="#parallel">Running tasks in parallel</a></li>
+                                            <li><a href="#micro-macro">Microtasks vs macrotasks</a></li>
+                                            <li><a href="#wrap-up">Wrapping this up</a></li>
+                                        </ol>
+                                    </div>
+
+                                    <h2 id="single-thread" class="s-title letter-space--2 text-black-72">JavaScript does one thing at a time</h2>
+                                    <p class="s-desc text-black-56">
+                                        JavaScript is <strong>single-threaded</strong> &mdash; it has one call stack and
+                                        runs one line at a time. So how does it handle a network request that takes two
+                                        seconds without freezing the whole page? It doesn&rsquo;t wait. It hands the slow
+                                        job to the browser (or Node.js), keeps running your other code, and gets notified
+                                        when the job is done. That hand-off system is the <strong>event loop</strong>.
+                                    </p>
+
+                                    <h2 id="event-loop" class="s-title letter-space--2 text-black-72">The event loop, explained</h2>
+                                    <p class="s-desc text-black-56">There are four pieces you need to picture:</p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Call stack</strong> &mdash; where your code actually runs, one frame at a time.</li>
+                                        <li><strong>Web APIs</strong> &mdash; the browser/Node features that handle slow work (timers, <code>fetch</code>).</li>
+                                        <li><strong>Callback queue</strong> &mdash; where finished tasks line up, waiting for their turn.</li>
+                                        <li><strong>Event loop</strong> &mdash; the traffic cop that moves queued tasks onto the stack when it&rsquo;s empty.</li>
+                                    </ul>
+
+                                    <figure class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/blog/js-event-loop.png" alt="Diagram showing the call stack, web APIs, callback queue and microtask queue feeding the event loop">
+                                        <figcaption class="img-note">The event loop moves finished tasks from the queue onto the call stack &mdash; but only when the stack is empty.</figcaption>
+                                    </figure>
+
+                                    <p class="s-desc text-black-56">This classic example proves the model:</p>
+                                    <pre><code class="language-javascript">console.log("1");
+
+setTimeout(() =&gt; console.log("2"), 0);
+
+console.log("3");
+
+// Output: 1, 3, 2   ← not 1, 2, 3!</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Even with a <code>0ms</code> delay, <code>"2"</code> prints last. The
+                                        <code>setTimeout</code> callback is sent to the queue and can only run
+                                        <em>after</em> the main code (the synchronous <code>"1"</code> and <code>"3"</code>)
+                                        finishes. The event loop never interrupts running code.
+                                    </p>
+
+                                    <h2 id="callbacks" class="s-title letter-space--2 text-black-72">Callbacks &amp; callback hell</h2>
+                                    <p class="s-desc text-black-56">
+                                        The original way to handle async was a <strong>callback</strong> &mdash; &ldquo;run
+                                        this function when you&rsquo;re done.&rdquo; It works, but nesting them for
+                                        step-by-step tasks gets ugly fast:
+                                    </p>
+                                    <pre><code class="language-javascript">getUser(1, (user) =&gt; {
+  getOrders(user, (orders) =&gt; {
+    getDetails(orders[0], (details) =&gt; {
+      console.log(details);   // 3 levels deep and climbing 😵
+    });
+  });
+});</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        This rightward drift is the infamous <strong>&ldquo;callback hell&rdquo;</strong>
+                                        (or &ldquo;pyramid of doom&rdquo;). Promises were invented to flatten it out.
+                                    </p>
+
+                                    <h2 id="promises" class="s-title letter-space--2 text-black-72">Promises</h2>
+                                    <p class="s-desc text-black-56">
+                                        A <strong>promise</strong> is an object representing a value that will arrive
+                                        later. It&rsquo;s in one of three states: <em>pending</em>, <em>fulfilled</em>, or
+                                        <em>rejected</em>. You chain <code>.then()</code> for success and
+                                        <code>.catch()</code> for errors:
+                                    </p>
+                                    <pre><code class="language-javascript">fetch("https://api.example.com/user")
+  .then(response =&gt; response.json())
+  .then(user =&gt; getOrders(user))
+  .then(orders =&gt; console.log(orders))
+  .catch(error =&gt; console.log("Failed:", error));</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        The nesting is gone &mdash; it reads as a flat chain. Each <code>.then()</code>
+                                        passes its result to the next. One <code>.catch()</code> at the end handles a
+                                        failure anywhere in the chain.
+                                    </p>
+
+                                    <h2 id="async-await" class="s-title letter-space--2 text-black-72">async / await</h2>
+                                    <p class="s-desc text-black-56">
+                                        <code>async/await</code> is syntactic sugar over promises that lets async code
+                                        <em>read like synchronous code</em>. Same logic as above, but linear:
+                                    </p>
+                                    <pre><code class="language-javascript">async function loadOrders() {
+  try {
+    const response = await fetch("https://api.example.com/user");
+    const user = await response.json();
+    const orders = await getOrders(user);
+    console.log(orders);
+  } catch (error) {
+    console.log("Failed:", error);
+  }
+}
+
+loadOrders();</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Two rules: <code>await</code> only works inside an <code>async</code> function, and
+                                        <code>await</code> pauses <em>that function</em> (not the whole page) until the
+                                        promise settles. Wrap it in <code>try/catch</code> so a rejected promise
+                                        doesn&rsquo;t crash silently.
+                                    </p>
+
+                                    <div class="blockquote-wrap">
+                                        <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
+                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">async/await didn&rsquo;t replace promises &mdash; it&rsquo;s a nicer way to write them. Under the hood, it&rsquo;s promises all the way down.</blockquote>
+                                    </div>
+
+                                    <h2 id="parallel" class="s-title letter-space--2 text-black-72">Running tasks in parallel</h2>
+                                    <p class="s-desc text-black-56">
+                                        Here&rsquo;s a mistake that quietly makes apps slow. If tasks don&rsquo;t depend on
+                                        each other, <code>await</code>-ing them one by one wastes time:
+                                    </p>
+                                    <pre><code class="language-javascript">// ❌ Slow — waits for each in turn (3s total)
+const a = await fetchA();   // 1s
+const b = await fetchB();   // 1s
+const c = await fetchC();   // 1s
+
+// ✅ Fast — all at once (1s total)
+const [a, b, c] = await Promise.all([fetchA(), fetchB(), fetchC()]);</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        <code>Promise.all</code> fires them all off together and waits for the slowest.
+                                        Use it whenever independent async work can overlap. (If you want results even when
+                                        some fail, reach for <code>Promise.allSettled</code>.)
+                                    </p>
+
+                                    <h2 id="micro-macro" class="s-title letter-space--2 text-black-72">Microtasks vs macrotasks</h2>
+                                    <p class="s-desc text-black-56">
+                                        The final piece that explains &ldquo;why did <em>this</em> log first?&rdquo;
+                                        There are two queues, and one has priority. <strong>Promise callbacks are
+                                        microtasks; <code>setTimeout</code> callbacks are macrotasks.</strong> After each
+                                        chunk of code, the loop drains <em>all</em> microtasks before touching the next
+                                        macrotask:
+                                    </p>
+                                    <pre><code class="language-javascript">console.log("start");
+
+setTimeout(() =&gt; console.log("timeout"), 0);   // macrotask
+
+Promise.resolve().then(() =&gt; console.log("promise"));  // microtask
+
+console.log("end");
+
+// Output: start, end, promise, timeout</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        The promise beats the <code>setTimeout(0)</code> because microtasks always run
+                                        first. Knowing this single rule explains 90% of &ldquo;why is my async order
+                                        weird&rdquo; confusion.
+                                    </p>
+
+                                    <h2 id="wrap-up" class="s-title letter-space--2 text-black-72">Wrapping this up</h2>
+                                    <p class="s-desc text-black-56">
+                                        JavaScript runs one thing at a time, offloads slow work, and the event loop feeds
+                                        finished tasks back onto the stack &mdash; microtasks (promises) before macrotasks
+                                        (timers). Callbacks became promises, promises got the <code>async/await</code>
+                                        makeover, and <code>Promise.all</code> lets independent work run together. That&rsquo;s
+                                        the whole picture.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        Still shaky on the basics? Start with my
+                                        <a href="javascript-complete-guide-for-beginners" class="link">complete JavaScript guide for beginners</a>.
+                                        Then open your console and run the two ordering examples above &mdash; predicting
+                                        the output before you hit Enter is how this locks in. 🚀
+                                    </p>
+
+                                </div>
+
+                                <div class="br-line"></div>
+
+                                <div class="entry-footer">
+                                    <div class="tags-links">
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">JavaScript</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Async</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Event Loop</span>
+                                    </div>
+                                    <div class="social-links">
+                                        <a href="https://twitter.com/intent/tweet?url=https://shivamthakur.me/blog/javascript-async-deep-dive" target="_blank" rel="noopener" aria-label="Share on X"><i class="icon icon-x"></i></a>
+                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://shivamthakur.me/blog/javascript-async-deep-dive" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><i class="icon icon-linkin"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <section class="section-service flat-spacing" aria-label="Frequently asked questions">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div mb-0"><i class="icon icon-service"></i> FAQ</div>
+                                <div class="" id="accordion-faq">
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-1" role="button" data-bs-toggle="collapse" aria-controls="faq-1" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Is JavaScript single-threaded or multi-threaded?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-1" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">JavaScript runs your code on a single thread, meaning one thing at a time. It stays responsive by handing slow tasks (timers, network requests) to the browser or Node, which notify it when they finish via the event loop. So it is single-threaded but non-blocking.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-2" role="button" data-bs-toggle="collapse" aria-controls="faq-2" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is the difference between microtasks and macrotasks?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-2" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Promise callbacks are microtasks and setTimeout callbacks are macrotasks. After each piece of code finishes, the event loop drains all pending microtasks before running the next macrotask, which is why a resolved promise runs before a setTimeout of zero.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-3" role="button" data-bs-toggle="collapse" aria-controls="faq-3" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">When should I use Promise.all?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-3" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Use Promise.all when you have several independent async tasks that can run at the same time and you need all of them to finish. It runs them in parallel and resolves when every promise resolves, which is much faster than awaiting them one by one.</p></div></div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="section-contact flat-spacing">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div"><i class="icon icon-send"></i> Let&rsquo;s build</div>
+                                <h2 class="s-title letter-space--2 split-text effect-blur-fade h4">Fighting a tricky async bug? <br class="d-none d-lg-block">Let&rsquo;s trace it together.</h2>
+                                <div class="action-group effectFade fadeUp no-div">
+                                    <a href="/#contact" class="tf-btn-action"><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span><span class="text text-body-3 letter-space--05 fw-medium">Start a conversation</span><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span></a>
+                                </div>
+                            </div>
+
+                            <div id="footer" class="tf-footer flat-spacing">
+                                <div class="block-quote effectFade fadeUp no-div">
+                                    <h2 class="quote-text font-3 fw-normal text-black-72 h5"><span class="text-black-56">&ldquo;</span> Understand the event loop once, and async stops being magic. <span class="text-black-56">&rdquo;</span></h2>
+                                    <p class="quote-author font-3 text-black-56 h6 text-end ">Shivam Thakur</p>
+                                </div>
+                                <div class="br-line"></div>
+                                <div class="foot-bottom"><p class="text-nocopy text-black-56">&copy; 2026 Shivam Thakur Portfolio</p><p class="text-nocopy text-black-56">All rights reserved</p></div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.nice-select.min.js"></script>
+    <script src="../assets/js/jquery-validate.js"></script>
+    <script src="../assets/js/swiper-bundle.min.js"></script>
+    <script src="../assets/js/carousel.js"></script>
+    <script src="../assets/js/infinityslide.js"></script>
+    <script src="../assets/js/ScrollSmooth.js"></script>
+    <script src="../assets/js/gsap.min.js"></script>
+    <script src="../assets/js/SplitText.min.js"></script>
+    <script src="../assets/js/ScrollTrigger.min.js"></script>
+    <script src="../assets/js/ScrollToPlugin.min.js"></script>
+    <script src="../assets/js/gsapAnimation.js"></script>
+    <script src="../assets/js/countto.js"></script>
+    <script src="../assets/js/animation-change-text.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+</body>
+
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>JavaScript Closures Explained Simply (With Real Examples) — Shivam Thakur</title>
+    <meta name="description"
+        content="Closures finally make sense: what they are, why they exist, the scope chain, lexical scope, and the classic loop bug — explained in plain English with copy-paste examples. By full-stack developer Shivam Thakur.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://shivamthakur.me/blog/javascript-closures-explained">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="JavaScript closures, closures explained, lexical scope, scope chain, JavaScript closure example, closure loop bug, Shivam Thakur">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:title" content="JavaScript Closures Explained Simply (With Real Examples)">
+    <meta property="og:description" content="What closures are, why they exist, the scope chain, and the classic loop bug — plain English with copy-paste examples.">
+    <meta property="og:url" content="https://shivamthakur.me/blog/javascript-closures-explained">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/blog/js-closures-scope.png">
+    <meta property="article:published_time" content="2026-07-14">
+    <meta property="article:author" content="Shivam Thakur">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JavaScript Closures Explained Simply (With Real Examples)">
+    <meta name="twitter:description" content="What closures are, why they exist, the scope chain, and the classic loop bug — plain English with copy-paste examples.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/blog/js-closures-scope.png">
+
+    <link rel="stylesheet" href="../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../assets/icon/icomoon/style.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
+
+    <link rel="shortcut icon" href="../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/images/logo/favicon.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "JavaScript Closures Explained Simply (With Real Examples)",
+      "description": "What closures are, why they exist, the scope chain, lexical scope, and the classic loop bug, explained in plain English with copy-paste examples.",
+      "image": "https://shivamthakur.me/assets/images/blog/js-closures-scope.png",
+      "datePublished": "2026-07-14",
+      "dateModified": "2026-07-14",
+      "inLanguage": "en",
+      "wordCount": 1900,
+      "keywords": "JavaScript closures, lexical scope, scope chain, closure example",
+      "articleSection": "JavaScript",
+      "mainEntityOfPage": "https://shivamthakur.me/blog/javascript-closures-explained",
+      "author": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/", "jobTitle": "Full Stack Developer" },
+      "publisher": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shivamthakur.me/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shivamthakur.me/blog" },
+        { "@type": "ListItem", "position": 3, "name": "JavaScript Closures Explained", "item": "https://shivamthakur.me/blog/javascript-closures-explained" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a closure in JavaScript in simple terms?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A closure is a function that remembers the variables from the place where it was created, even after that outer function has finished running. In short, an inner function keeps a live link to its outer function's variables." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are closures useful?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Closures let you create private variables, build function factories, remember state between calls (like counters), and are the foundation of patterns like memoization and event handlers. They are one of the most-used features in real JavaScript, even when you do not realize it." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my closure inside a loop print the wrong value?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Because var is function-scoped, so every closure in the loop shares the same single variable, which ends up at its final value. Fix it by using let instead of var, which creates a fresh binding on every iteration." }
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <div class="preload preload-container" id="preload"><div class="preload-logo"><div class="spinner"></div></div></div>
+
+    <div class="body-background">
+        <div class="bg-item"><img loading="lazy" width="1440" height="900" src="../assets/images/item/cloud-bg.png" alt="Ambient cloud background"></div>
+        <div class="bg-video video-dark"><video class="video" muted="" autoplay="" loop="" playsinline=""><source src="../assets/images/overlay-2.mp4" type="video/mp4"></video><div class="overlay-1"></div></div>
+    </div>
+
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2"><div class="btn-mobile-menu"><span></span></div></div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+                <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+                <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+                <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-tools pst-v1">
+        <div class="nav-top"><div class="tf-btn-icon toggle-switch-mode"><i class="icon icon-light"></i></div></div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+        </ul>
+        <div class="nav-bottom"><a href="#" class="tf-btn-icon go-top"><i class="icon icon-arrow-top"></i></a></div>
+    </div>
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site d-lg-none"><img class="image-switch" data-light="../assets/images/logo/logo.svg" data-dark="../assets/images/logo/logo-2.svg" loading="lazy" width="40" height="40" src="../assets/images/logo/logo.svg" alt="Shivam Thakur logo"></a>
+            <div class="left"><div class="time-local text-body-3"><p class="date"></p><p class="clock"></p></div></div>
+        </div>
+        <div class="main-content" id="main-content">
+            <div class="container">
+                <div class="row">
+
+                            <div class="section-about flat-spacing">
+                                <nav class="sect-tag text-caption fw-medium effectFade fadeUp no-div" aria-label="Breadcrumb">
+                                    <i class="icon icon-tes"></i>
+                                    <a href="/" class="link text-black-56">Home</a>&nbsp;/&nbsp;<a href="../blog" class="link text-black-56">Blog</a>&nbsp;/&nbsp;<span class="text-black-72">JavaScript Closures Explained</span>
+                                </nav>
+                                <h1 class="s-title letter-space--2 text-black-72 split-text effect-blur-fade">Closures, without <br class="d-none d-lg-block">the confusion</h1>
+                                <div class="meta-list scrolling-effect effectTop">
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-user-circle"></i> Shivam Thakur</span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-tes"></i> <time datetime="2026-07-14">Jul 14, 2026</time></span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-high-light"></i> 10 min read</span>
+                                </div>
+                            </div>
+
+                            <article class="blog-single-wrap section-work flat-spacing">
+                                <div class="image scrolling-effect effectBottom"><img loading="lazy" width="700" height="427" src="../assets/images/blog/js-closures-scope.png" alt="Diagram of a JavaScript closure showing an inner function keeping access to its outer function's variables"></div>
+                                <div class="entry-content">
+
+                                    <p class="s-desc text-black-56">
+                                        &ldquo;Closure&rdquo; is the word that makes beginners feel like frauds. You nod
+                                        along in interviews, you&rsquo;ve <em>used</em> them a hundred times without
+                                        knowing it, but if someone asked you to explain one out loud&hellip; awkward
+                                        silence. Let&rsquo;s end that today. By the time you finish this page, closures
+                                        will feel obvious &mdash; because honestly, they are. I&rsquo;m Shivam Thakur,
+                                        and this is the explanation I wish someone had given me on day one.
+                                    </p>
+
+                                    <div class="toc-box text-black-56">
+                                        <p class="text-black-72">In this guide</p>
+                                        <ol>
+                                            <li><a href="#scope">First, you need scope</a></li>
+                                            <li><a href="#definition">What a closure actually is</a></li>
+                                            <li><a href="#why">Why closures are everywhere</a></li>
+                                            <li><a href="#private">Private variables with closures</a></li>
+                                            <li><a href="#loop-bug">The classic loop bug (and the fix)</a></li>
+                                            <li><a href="#wrap-up">Wrapping this up</a></li>
+                                        </ol>
+                                    </div>
+
+                                    <h2 id="scope" class="s-title letter-space--2 text-black-72">First, you need scope</h2>
+                                    <p class="s-desc text-black-56">
+                                        You can&rsquo;t understand closures without <strong>scope</strong> &mdash; the set
+                                        of variables a piece of code can &ldquo;see.&rdquo; The key rule: an inner function
+                                        can see the variables of the function that wraps it, but not the other way around.
+                                    </p>
+                                    <pre><code class="language-javascript">function outer() {
+  const message = "I'm from outer";
+
+  function inner() {
+    console.log(message);   // ✅ inner can see outer's variable
+  }
+
+  inner();
+}
+
+outer();   // "I'm from outer"</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        This is called <strong>lexical scope</strong>: a function&rsquo;s scope is decided
+                                        by <em>where it is written</em> in the code, not where it&rsquo;s called from. That
+                                        one sentence is the whole foundation of closures.
+                                    </p>
+
+                                    <figure class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/blog/js-closures-scope.png" alt="Nested boxes showing an inner function scope inside an outer function scope inside the global scope">
+                                        <figcaption class="img-note">Lexical scope: inner functions can reach outward into the scopes that surround them, forming a chain.</figcaption>
+                                    </figure>
+
+                                    <h2 id="definition" class="s-title letter-space--2 text-black-72">What a closure actually is</h2>
+                                    <p class="s-desc text-black-56">
+                                        A <strong>closure</strong> is what you get when an inner function keeps access to
+                                        its outer function&rsquo;s variables <em>even after the outer function has already
+                                        returned</em>. The inner function &ldquo;closes over&rdquo; those variables and
+                                        carries them along.
+                                    </p>
+                                    <pre><code class="language-javascript">function makeGreeting(name) {
+  // `name` lives here
+  return function () {
+    console.log("Hello, " + name);   // still remembers `name`
+  };
+}
+
+const greetRiya = makeGreeting("Riya");
+// makeGreeting has already finished running...
+greetRiya();   // "Hello, Riya"  ← but `name` is still alive!</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Read that last line again. <code>makeGreeting</code> finished executing, yet
+                                        <code>greetRiya</code> still remembers <code>name</code>. That memory <em>is</em>
+                                        the closure. The variable didn&rsquo;t get thrown away because a function that
+                                        needs it is still holding on.
+                                    </p>
+
+                                    <h2 id="why" class="s-title letter-space--2 text-black-72">Why closures are everywhere</h2>
+                                    <p class="s-desc text-black-56">
+                                        You&rsquo;ve already written closures without noticing. Every event handler, every
+                                        <code>setTimeout</code> callback, every array method that uses an outside variable
+                                        is a closure:
+                                    </p>
+                                    <pre><code class="language-javascript">const label = "Clicked!";
+
+button.addEventListener("click", function () {
+  console.log(label);   // closure: remembers `label` from outside
+});</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        A common practical use is a <strong>counter that remembers its own state</strong>
+                                        between calls &mdash; no global variable needed:
+                                    </p>
+                                    <pre><code class="language-javascript">function createCounter() {
+  let count = 0;
+  return function () {
+    count++;
+    return count;
+  };
+}
+
+const next = createCounter();
+next();   // 1
+next();   // 2
+next();   // 3   ← the same `count` survives across calls</code></pre>
+
+                                    <div class="blockquote-wrap">
+                                        <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
+                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">A closure is just a function remembering where it was born, and the variables it grew up with.</blockquote>
+                                    </div>
+
+                                    <h2 id="private" class="s-title letter-space--2 text-black-72">Private variables with closures</h2>
+                                    <p class="s-desc text-black-56">
+                                        Before JavaScript had private class fields, closures were <em>the</em> way to hide
+                                        data. Anything inside the outer function is untouchable from the outside &mdash;
+                                        only the methods you return can reach it:
+                                    </p>
+                                    <pre><code class="language-javascript">function createBankAccount(initial) {
+  let balance = initial;   // truly private
+
+  return {
+    deposit(amount) { balance += amount; },
+    getBalance() { return balance; },
+  };
+}
+
+const account = createBankAccount(100);
+account.deposit(50);
+account.getBalance();   // 150
+account.balance;        // undefined ← can't touch it directly ✅</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        <code>balance</code> can only be changed through <code>deposit</code>. No outside
+                                        code can secretly set it to a million. That&rsquo;s data privacy, powered entirely
+                                        by a closure.
+                                    </p>
+
+                                    <h2 id="loop-bug" class="s-title letter-space--2 text-black-72">The classic loop bug (and the fix)</h2>
+                                    <p class="s-desc text-black-56">
+                                        This is <em>the</em> closure interview question, and the bug that&rsquo;s wasted
+                                        millions of developer-hours. Watch:
+                                    </p>
+                                    <pre><code class="language-javascript">for (var i = 0; i &lt; 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 100);
+}
+// Expected: 0, 1, 2
+// Actual:   3, 3, 3   😱</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Why? Because <code>var</code> is function-scoped &mdash; there&rsquo;s only
+                                        <em>one</em> <code>i</code>, shared by all three closures. By the time the timeouts
+                                        fire, the loop has finished and <code>i</code> is <code>3</code>. All three
+                                        closures read that same final value.
+                                    </p>
+                                    <p class="s-desc text-black-56">The fix is beautifully simple &mdash; use <code>let</code>:</p>
+                                    <pre><code class="language-javascript">for (let i = 0; i &lt; 3; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, 100);
+}
+// Actual: 0, 1, 2  ✅</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        <code>let</code> creates a <strong>fresh <code>i</code> on every iteration</strong>,
+                                        so each closure captures its own copy. This is the number-one reason to prefer
+                                        <code>let</code> over <code>var</code> &mdash; and now you can explain <em>why</em>
+                                        in an interview, not just parrot it.
+                                    </p>
+
+                                    <h2 id="wrap-up" class="s-title letter-space--2 text-black-72">Wrapping this up</h2>
+                                    <p class="s-desc text-black-56">
+                                        A closure is a function that remembers the variables from where it was created.
+                                        That&rsquo;s it. Everything else &mdash; private state, counters, the loop bug,
+                                        function factories &mdash; is just that one idea applied. You use closures every
+                                        day; now you actually understand them.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        New to the language, or want the full picture first? Start with my
+                                        <a href="javascript-complete-guide-for-beginners" class="link">complete JavaScript guide for beginners</a>,
+                                        then come back here. Now go write a counter from memory &mdash; that&rsquo;s how it sticks. 🚀
+                                    </p>
+
+                                </div>
+
+                                <div class="br-line"></div>
+
+                                <div class="entry-footer">
+                                    <div class="tags-links">
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">JavaScript</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Closures</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Scope</span>
+                                    </div>
+                                    <div class="social-links">
+                                        <a href="https://twitter.com/intent/tweet?url=https://shivamthakur.me/blog/javascript-closures-explained" target="_blank" rel="noopener" aria-label="Share on X"><i class="icon icon-x"></i></a>
+                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://shivamthakur.me/blog/javascript-closures-explained" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><i class="icon icon-linkin"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <section class="section-service flat-spacing" aria-label="Frequently asked questions">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div mb-0"><i class="icon icon-service"></i> FAQ</div>
+                                <div class="" id="accordion-faq">
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-1" role="button" data-bs-toggle="collapse" aria-controls="faq-1" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is a closure in JavaScript in simple terms?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-1" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">A closure is a function that remembers the variables from the place where it was created, even after that outer function has finished running. In short, an inner function keeps a live link to its outer function&rsquo;s variables.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-2" role="button" data-bs-toggle="collapse" aria-controls="faq-2" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Why are closures useful?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-2" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Closures let you create private variables, build function factories, remember state between calls (like counters), and are the foundation of patterns like memoization and event handlers. They are one of the most-used features in real JavaScript, even when you do not realize it.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-3" role="button" data-bs-toggle="collapse" aria-controls="faq-3" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Why does my closure inside a loop print the wrong value?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-3" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Because var is function-scoped, so every closure in the loop shares the same single variable, which ends up at its final value. Fix it by using let instead of var, which creates a fresh binding on every iteration.</p></div></div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="section-contact flat-spacing">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div"><i class="icon icon-send"></i> Let&rsquo;s build</div>
+                                <h2 class="s-title letter-space--2 split-text effect-blur-fade h4">Stuck on a tricky JS concept? <br class="d-none d-lg-block">Let&rsquo;s talk it through.</h2>
+                                <div class="action-group effectFade fadeUp no-div">
+                                    <a href="/#contact" class="tf-btn-action"><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span><span class="text text-body-3 letter-space--05 fw-medium">Start a conversation</span><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span></a>
+                                </div>
+                            </div>
+
+                            <div id="footer" class="tf-footer flat-spacing">
+                                <div class="block-quote effectFade fadeUp no-div">
+                                    <h2 class="quote-text font-3 fw-normal text-black-72 h5"><span class="text-black-56">&ldquo;</span> A closure is a function that remembers its birthplace. <span class="text-black-56">&rdquo;</span></h2>
+                                    <p class="quote-author font-3 text-black-56 h6 text-end ">Shivam Thakur</p>
+                                </div>
+                                <div class="br-line"></div>
+                                <div class="foot-bottom"><p class="text-nocopy text-black-56">&copy; 2026 Shivam Thakur Portfolio</p><p class="text-nocopy text-black-56">All rights reserved</p></div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.nice-select.min.js"></script>
+    <script src="../assets/js/jquery-validate.js"></script>
+    <script src="../assets/js/swiper-bundle.min.js"></script>
+    <script src="../assets/js/carousel.js"></script>
+    <script src="../assets/js/infinityslide.js"></script>
+    <script src="../assets/js/ScrollSmooth.js"></script>
+    <script src="../assets/js/gsap.min.js"></script>
+    <script src="../assets/js/SplitText.min.js"></script>
+    <script src="../assets/js/ScrollTrigger.min.js"></script>
+    <script src="../assets/js/ScrollToPlugin.min.js"></script>
+    <script src="../assets/js/gsapAnimation.js"></script>
+    <script src="../assets/js/countto.js"></script>
+    <script src="../assets/js/animation-change-text.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+</body>
+
+</html>

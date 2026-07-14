@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>JavaScript DOM & Events: Make Any Web Page Interactive — Shivam Thakur</title>
+    <meta name="description"
+        content="Learn to control the DOM with JavaScript: selecting elements, changing content and styles, creating and removing nodes, handling events, event bubbling and delegation — with copy-paste examples. By full-stack developer Shivam Thakur.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://shivamthakur.me/blog/javascript-dom-events">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="JavaScript DOM, DOM manipulation, addEventListener, event bubbling, event delegation, querySelector, createElement, Shivam Thakur">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:title" content="JavaScript DOM & Events: Make Any Web Page Interactive">
+    <meta property="og:description" content="Selecting elements, changing content, creating nodes, handling events, bubbling and delegation — DOM manipulation made practical.">
+    <meta property="og:url" content="https://shivamthakur.me/blog/javascript-dom-events">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/blog/js-dom-tree.png">
+    <meta property="article:published_time" content="2026-07-14">
+    <meta property="article:author" content="Shivam Thakur">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="JavaScript DOM & Events: Make Any Web Page Interactive">
+    <meta name="twitter:description" content="Selecting elements, changing content, creating nodes, handling events, bubbling and delegation — DOM manipulation made practical.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/blog/js-dom-tree.png">
+
+    <link rel="stylesheet" href="../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../assets/icon/icomoon/style.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
+
+    <link rel="shortcut icon" href="../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/images/logo/favicon.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "JavaScript DOM & Events: Make Any Web Page Interactive",
+      "description": "Learn to control the DOM with JavaScript: selecting elements, changing content and styles, creating and removing nodes, handling events, event bubbling and delegation.",
+      "image": "https://shivamthakur.me/assets/images/blog/js-dom-tree.png",
+      "datePublished": "2026-07-14",
+      "dateModified": "2026-07-14",
+      "inLanguage": "en",
+      "wordCount": 2000,
+      "keywords": "JavaScript DOM, DOM manipulation, addEventListener, event delegation, querySelector",
+      "articleSection": "JavaScript",
+      "mainEntityOfPage": "https://shivamthakur.me/blog/javascript-dom-events",
+      "author": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/", "jobTitle": "Full Stack Developer" },
+      "publisher": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shivamthakur.me/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shivamthakur.me/blog" },
+        { "@type": "ListItem", "position": 3, "name": "JavaScript DOM & Events", "item": "https://shivamthakur.me/blog/javascript-dom-events" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between innerHTML and textContent?",
+          "acceptedAnswer": { "@type": "Answer", "text": "textContent sets or reads plain text and is safe from HTML injection. innerHTML parses its value as HTML, which is powerful but risky with untrusted data because it can run injected markup and scripts. Prefer textContent unless you specifically need to insert HTML." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is event bubbling in JavaScript?",
+          "acceptedAnswer": { "@type": "Answer", "text": "When you click an element, the event fires on that element and then travels up through each parent to the document root. This upward travel is called bubbling, and it is what makes event delegation possible." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is event delegation and why use it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Event delegation means attaching one listener to a parent element instead of many listeners on each child. Thanks to bubbling, the parent catches events from all its children. It is more efficient and automatically works for elements added later." }
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <div class="preload preload-container" id="preload"><div class="preload-logo"><div class="spinner"></div></div></div>
+
+    <div class="body-background">
+        <div class="bg-item"><img loading="lazy" width="1440" height="900" src="../assets/images/item/cloud-bg.png" alt="Ambient cloud background"></div>
+        <div class="bg-video video-dark"><video class="video" muted="" autoplay="" loop="" playsinline=""><source src="../assets/images/overlay-2.mp4" type="video/mp4"></video><div class="overlay-1"></div></div>
+    </div>
+
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2"><div class="btn-mobile-menu"><span></span></div></div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+                <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+                <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+                <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-tools pst-v1">
+        <div class="nav-top"><div class="tf-btn-icon toggle-switch-mode"><i class="icon icon-light"></i></div></div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+        </ul>
+        <div class="nav-bottom"><a href="#" class="tf-btn-icon go-top"><i class="icon icon-arrow-top"></i></a></div>
+    </div>
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site d-lg-none"><img class="image-switch" data-light="../assets/images/logo/logo.svg" data-dark="../assets/images/logo/logo-2.svg" loading="lazy" width="40" height="40" src="../assets/images/logo/logo.svg" alt="Shivam Thakur logo"></a>
+            <div class="left"><div class="time-local text-body-3"><p class="date"></p><p class="clock"></p></div></div>
+        </div>
+        <div class="main-content" id="main-content">
+            <div class="container">
+                <div class="row">
+
+                            <div class="section-about flat-spacing">
+                                <nav class="sect-tag text-caption fw-medium effectFade fadeUp no-div" aria-label="Breadcrumb">
+                                    <i class="icon icon-tes"></i>
+                                    <a href="/" class="link text-black-56">Home</a>&nbsp;/&nbsp;<a href="../blog" class="link text-black-56">Blog</a>&nbsp;/&nbsp;<span class="text-black-72">JavaScript DOM &amp; Events</span>
+                                </nav>
+                                <h1 class="s-title letter-space--2 text-black-72 split-text effect-blur-fade">Make any page <br class="d-none d-lg-block">come alive</h1>
+                                <div class="meta-list scrolling-effect effectTop">
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-user-circle"></i> Shivam Thakur</span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-tes"></i> <time datetime="2026-07-14">Jul 14, 2026</time></span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-high-light"></i> 11 min read</span>
+                                </div>
+                            </div>
+
+                            <article class="blog-single-wrap section-work flat-spacing">
+                                <div class="image scrolling-effect effectBottom"><img loading="lazy" width="700" height="427" src="../assets/images/blog/js-dom-tree.png" alt="Tree diagram of the DOM with html branching into head and body and their child elements"></div>
+                                <div class="entry-content">
+
+                                    <p class="s-desc text-black-56">
+                                        Every button you&rsquo;ve ever clicked, every menu that slid open, every form that
+                                        yelled &ldquo;invalid email&rdquo; &mdash; that&rsquo;s the DOM being manipulated by
+                                        JavaScript. This is the exact skill that turns a static page into an <em>app</em>,
+                                        and it&rsquo;s far simpler than it looks: there&rsquo;s really just one pattern to
+                                        learn, repeated forever. I&rsquo;m Shivam Thakur &mdash; let me hand you that
+                                        pattern.
+                                    </p>
+
+                                    <div class="toc-box text-black-56">
+                                        <p class="text-black-72">In this guide</p>
+                                        <ol>
+                                            <li><a href="#what-dom">What the DOM really is</a></li>
+                                            <li><a href="#select">Selecting elements</a></li>
+                                            <li><a href="#change">Changing content &amp; styles</a></li>
+                                            <li><a href="#create">Creating &amp; removing elements</a></li>
+                                            <li><a href="#events">Handling events</a></li>
+                                            <li><a href="#bubbling">Bubbling &amp; delegation</a></li>
+                                            <li><a href="#wrap-up">Wrapping this up</a></li>
+                                        </ol>
+                                    </div>
+
+                                    <h2 id="what-dom" class="s-title letter-space--2 text-black-72">What the DOM really is</h2>
+                                    <p class="s-desc text-black-56">
+                                        When a browser loads your HTML, it builds a live, in-memory tree of objects called
+                                        the <strong>DOM</strong> (Document Object Model). Every tag becomes a node; nesting
+                                        becomes parent-child relationships. JavaScript can read and rewrite that tree at any
+                                        moment &mdash; and the page updates instantly.
+                                    </p>
+
+                                    <figure class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/blog/js-dom-tree.png" alt="DOM tree showing the document node branching into html, then head and body, then headings, paragraphs and buttons">
+                                        <figcaption class="img-note">Your HTML becomes a tree of nodes. JavaScript grabs any node and changes it live.</figcaption>
+                                    </figure>
+
+                                    <h2 id="select" class="s-title letter-space--2 text-black-72">Selecting elements</h2>
+                                    <p class="s-desc text-black-56">
+                                        Before you can change something, you have to grab it. Modern code uses two methods
+                                        for almost everything &mdash; <code>querySelector</code> (first match) and
+                                        <code>querySelectorAll</code> (all matches), both using CSS selectors:
+                                    </p>
+                                    <pre><code class="language-javascript">// One element (first match)
+const title = document.querySelector("h1");
+const box = document.querySelector(".card");     // by class
+const menu = document.querySelector("#navbar");  // by id
+
+// Many elements → a NodeList you can loop over
+const buttons = document.querySelectorAll(".btn");
+buttons.forEach(btn =&gt; console.log(btn.textContent));</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        If you learn just these two, you can select anything on any page. The older
+                                        <code>getElementById</code> still works, but <code>querySelector</code> covers it
+                                        and more with one consistent syntax.
+                                    </p>
+
+                                    <h2 id="change" class="s-title letter-space--2 text-black-72">Changing content &amp; styles</h2>
+                                    <p class="s-desc text-black-56">Once you&rsquo;ve got an element, you change it through its properties:</p>
+                                    <pre><code class="language-javascript">const title = document.querySelector("h1");
+
+title.textContent = "Updated by JS";       // set plain text (safe)
+title.style.color = "tomato";               // inline style
+title.classList.add("active");              // add a CSS class
+title.classList.toggle("hidden");           // flip a class on/off
+title.setAttribute("data-id", "42");        // set any attribute</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        One safety note: prefer <code>textContent</code> over <code>innerHTML</code> when
+                                        you&rsquo;re inserting user-provided text. <code>innerHTML</code> parses its value
+                                        as HTML, which can run injected scripts &mdash; a classic security hole (XSS). Use
+                                        <code>innerHTML</code> only with content you control.
+                                    </p>
+
+                                    <h2 id="create" class="s-title letter-space--2 text-black-72">Creating &amp; removing elements</h2>
+                                    <p class="s-desc text-black-56">You can build new nodes from scratch and drop them into the page:</p>
+                                    <pre><code class="language-javascript">// Create
+const li = document.createElement("li");
+li.textContent = "New item";
+li.classList.add("list-item");
+
+// Add it to a list
+const list = document.querySelector("ul");
+list.appendChild(li);
+
+// Remove it later
+li.remove();</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        This create &rarr; configure &rarr; append flow is exactly how a to-do list adds a
+                                        row, or how search results appear without a page reload. Build a tiny to-do app with
+                                        just this and the DOM will click permanently.
+                                    </p>
+
+                                    <div class="blockquote-wrap">
+                                        <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
+                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">The whole DOM game is one move, repeated: select an element, then do something to it.</blockquote>
+                                    </div>
+
+                                    <h2 id="events" class="s-title letter-space--2 text-black-72">Handling events</h2>
+                                    <p class="s-desc text-black-56">
+                                        Interactivity comes from <strong>events</strong> &mdash; clicks, keypresses, form
+                                        submits, mouse moves. You listen with <code>addEventListener</code>:
+                                    </p>
+                                    <pre><code class="language-javascript">const button = document.querySelector("button");
+
+button.addEventListener("click", (event) =&gt; {
+  console.log("Clicked!", event.target);
+});
+
+// Reacting to typing
+const input = document.querySelector("input");
+input.addEventListener("input", (e) =&gt; {
+  console.log("Current value:", e.target.value);
+});</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        That <code>event</code> object is packed with useful info: <code>event.target</code>
+                                        (what was clicked), <code>event.key</code> (which key), and
+                                        <code>event.preventDefault()</code> (stop the browser&rsquo;s default, like a form
+                                        reloading the page).
+                                    </p>
+                                    <pre><code class="language-javascript">form.addEventListener("submit", (e) =&gt; {
+  e.preventDefault();   // stop the page from reloading
+  console.log("Form handled by JS instead");
+});</code></pre>
+
+                                    <h2 id="bubbling" class="s-title letter-space--2 text-black-72">Bubbling &amp; delegation</h2>
+                                    <p class="s-desc text-black-56">
+                                        When you click an element, the event doesn&rsquo;t stop there &mdash; it
+                                        <strong>bubbles</strong> up through every ancestor to the document. That sounds like
+                                        trivia, but it unlocks a powerful pattern: <strong>event delegation</strong>.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        Instead of adding a listener to every one of 100 list items, add <em>one</em> to the
+                                        parent and let bubbling bring the clicks to you:
+                                    </p>
+                                    <pre><code class="language-javascript">const list = document.querySelector("ul");
+
+list.addEventListener("click", (e) =&gt; {
+  // Did the click come from an &lt;li&gt;?
+  if (e.target.tagName === "LI") {
+    console.log("You clicked:", e.target.textContent);
+  }
+});</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        One listener handles all items &mdash; even items you add <em>later</em>. That&rsquo;s
+                                        more efficient and less code than wiring up each child. It&rsquo;s the professional
+                                        way to handle lists, tables, and dynamic content.
+                                    </p>
+
+                                    <h2 id="wrap-up" class="s-title letter-space--2 text-black-72">Wrapping this up</h2>
+                                    <p class="s-desc text-black-56">
+                                        Select with <code>querySelector</code>, change with <code>textContent</code> /
+                                        <code>classList</code> / <code>style</code>, build with <code>createElement</code>
+                                        and <code>appendChild</code>, react with <code>addEventListener</code>, and scale
+                                        with delegation. That toolkit builds every interactive UI you&rsquo;ll ever need in
+                                        plain JavaScript &mdash; and it&rsquo;s the foundation frameworks are built on top of.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        Newer to JS? Read my
+                                        <a href="javascript-complete-guide-for-beginners" class="link">complete JavaScript guide for beginners</a>
+                                        first. Then build a to-do list tonight using only what&rsquo;s on this page &mdash;
+                                        add, remove, and mark items done. That one project teaches the whole DOM. 🚀
+                                    </p>
+
+                                </div>
+
+                                <div class="br-line"></div>
+
+                                <div class="entry-footer">
+                                    <div class="tags-links">
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">JavaScript</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">DOM</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Events</span>
+                                    </div>
+                                    <div class="social-links">
+                                        <a href="https://twitter.com/intent/tweet?url=https://shivamthakur.me/blog/javascript-dom-events" target="_blank" rel="noopener" aria-label="Share on X"><i class="icon icon-x"></i></a>
+                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://shivamthakur.me/blog/javascript-dom-events" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><i class="icon icon-linkin"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <section class="section-service flat-spacing" aria-label="Frequently asked questions">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div mb-0"><i class="icon icon-service"></i> FAQ</div>
+                                <div class="" id="accordion-faq">
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-1" role="button" data-bs-toggle="collapse" aria-controls="faq-1" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is the difference between innerHTML and textContent?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-1" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">textContent sets or reads plain text and is safe from HTML injection. innerHTML parses its value as HTML, which is powerful but risky with untrusted data because it can run injected markup and scripts. Prefer textContent unless you specifically need to insert HTML.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-2" role="button" data-bs-toggle="collapse" aria-controls="faq-2" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is event bubbling in JavaScript?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-2" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">When you click an element, the event fires on that element and then travels up through each parent to the document root. This upward travel is called bubbling, and it is what makes event delegation possible.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-3" role="button" data-bs-toggle="collapse" aria-controls="faq-3" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is event delegation and why use it?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-3" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Event delegation means attaching one listener to a parent element instead of many listeners on each child. Thanks to bubbling, the parent catches events from all its children. It is more efficient and automatically works for elements added later.</p></div></div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="section-contact flat-spacing">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div"><i class="icon icon-send"></i> Let&rsquo;s build</div>
+                                <h2 class="s-title letter-space--2 split-text effect-blur-fade h4">Building an interactive UI? <br class="d-none d-lg-block">Let&rsquo;s make it smooth.</h2>
+                                <div class="action-group effectFade fadeUp no-div">
+                                    <a href="/#contact" class="tf-btn-action"><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span><span class="text text-body-3 letter-space--05 fw-medium">Start a conversation</span><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span></a>
+                                </div>
+                            </div>
+
+                            <div id="footer" class="tf-footer flat-spacing">
+                                <div class="block-quote effectFade fadeUp no-div">
+                                    <h2 class="quote-text font-3 fw-normal text-black-72 h5"><span class="text-black-56">&ldquo;</span> Select an element, then change it. That&rsquo;s the entire DOM. <span class="text-black-56">&rdquo;</span></h2>
+                                    <p class="quote-author font-3 text-black-56 h6 text-end ">Shivam Thakur</p>
+                                </div>
+                                <div class="br-line"></div>
+                                <div class="foot-bottom"><p class="text-nocopy text-black-56">&copy; 2026 Shivam Thakur Portfolio</p><p class="text-nocopy text-black-56">All rights reserved</p></div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.nice-select.min.js"></script>
+    <script src="../assets/js/jquery-validate.js"></script>
+    <script src="../assets/js/swiper-bundle.min.js"></script>
+    <script src="../assets/js/carousel.js"></script>
+    <script src="../assets/js/infinityslide.js"></script>
+    <script src="../assets/js/ScrollSmooth.js"></script>
+    <script src="../assets/js/gsap.min.js"></script>
+    <script src="../assets/js/SplitText.min.js"></script>
+    <script src="../assets/js/ScrollTrigger.min.js"></script>
+    <script src="../assets/js/ScrollToPlugin.min.js"></script>
+    <script src="../assets/js/gsapAnimation.js"></script>
+    <script src="../assets/js/countto.js"></script>
+    <script src="../assets/js/animation-change-text.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+</body>
+
+</html>
