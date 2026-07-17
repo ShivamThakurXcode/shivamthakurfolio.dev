@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Deploying a Full-Stack App on Vercel: The Complete Guide — Shivam Thakur</title>
+    <meta name="description"
+        content="A practical, end-to-end guide to deploying a full-stack app on Vercel: how builds and preview deployments work, environment variables, serverless functions and Fluid Compute, databases and connection pooling, caching, custom domains, cron jobs, cost control and the mistakes that bite in production. By full-stack developer Shivam Thakur.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <link rel="canonical" href="https://shivamthakur.me/blog/deploying-fullstack-on-vercel">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="deploy on Vercel, full-stack deployment, Vercel serverless functions, preview deployments, environment variables, connection pooling, Fluid Compute, Next.js deployment, Vercel cron jobs, Shivam Thakur">
+
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:title" content="Deploying a Full-Stack App on Vercel: The Complete Guide">
+    <meta property="og:description" content="Builds, preview deployments, env vars, serverless functions, databases, caching, domains and cost control — everything it takes to ship a full-stack app on Vercel.">
+    <meta property="og:url" content="https://shivamthakur.me/blog/deploying-fullstack-on-vercel">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/blog/vercel-deployment-flow.png">
+    <meta property="article:published_time" content="2026-07-17">
+    <meta property="article:author" content="Shivam Thakur">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Deploying a Full-Stack App on Vercel: The Complete Guide">
+    <meta name="twitter:description" content="Builds, preview deployments, env vars, serverless functions, databases, caching, domains and cost control — everything it takes to ship a full-stack app on Vercel.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/blog/vercel-deployment-flow.png">
+
+    <link rel="stylesheet" href="../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../assets/icon/icomoon/style.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
+
+    <link rel="shortcut icon" href="../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/images/logo/favicon.png">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Deploying a Full-Stack App on Vercel: The Complete Guide",
+      "description": "A practical, end-to-end guide to deploying a full-stack app on Vercel: builds and preview deployments, environment variables, serverless functions, databases and connection pooling, caching, custom domains, cron jobs and cost control.",
+      "image": "https://shivamthakur.me/assets/images/blog/vercel-deployment-flow.png",
+      "datePublished": "2026-07-17",
+      "dateModified": "2026-07-17",
+      "inLanguage": "en",
+      "wordCount": 2600,
+      "keywords": "deploy on Vercel, full-stack deployment, serverless functions, preview deployments, environment variables, connection pooling, Next.js",
+      "articleSection": "DevOps",
+      "mainEntityOfPage": "https://shivamthakur.me/blog/deploying-fullstack-on-vercel",
+      "author": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/", "jobTitle": "Full Stack Developer" },
+      "publisher": { "@type": "Person", "name": "Shivam Thakur", "url": "https://shivamthakur.me/" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://shivamthakur.me/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://shivamthakur.me/blog" },
+        { "@type": "ListItem", "position": 3, "name": "Deploying a Full-Stack App on Vercel", "item": "https://shivamthakur.me/blog/deploying-fullstack-on-vercel" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can you host a full-stack app with a backend on Vercel?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your backend runs as serverless functions rather than a server you keep running yourself. API routes deploy as functions that start when a request arrives and stop when it finishes. The one thing Vercel does not host is your database, which lives with a provider like Neon, Supabase or PlanetScale and is reached over the network." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my database connection fail or hit connection limits on Vercel?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Because each serverless function instance opens its own database connection, and under traffic you can have hundreds of instances at once, which exhausts the database connection limit. The fix is a connection pooler such as PgBouncer, Neon's pooled endpoint or Prisma Accelerate, plus reusing the client across invocations instead of creating a new one per request." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between a preview and a production deployment on Vercel?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Every push to a non-production branch creates a preview deployment with its own permanent URL, which is ideal for reviewing a pull request against the real build. Merging to your production branch creates a production deployment served on your custom domain. Both come from the same build pipeline, so a working preview is strong evidence production will work too." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my code work locally but break after deploying to Vercel?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The three usual causes are missing environment variables that only existed in your local .env file, writing to the filesystem which is read-only apart from the temporary directory, and relying on in-memory state that does not survive because each request may hit a different function instance. Check the build and runtime logs in the Vercel dashboard first, as they name the failing line directly." }
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <div class="preload preload-container" id="preload"><div class="preload-logo"><div class="spinner"></div></div></div>
+
+    <div class="body-background">
+        <div class="bg-item"><img loading="lazy" width="1440" height="900" src="../assets/images/item/cloud-bg.png" alt="Ambient cloud background"></div>
+        <div class="bg-video video-dark"><video class="video" muted="" autoplay="" loop="" playsinline=""><source src="../assets/images/overlay-2.mp4" type="video/mp4"></video><div class="overlay-1"></div></div>
+    </div>
+
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2"><div class="btn-mobile-menu"><span></span></div></div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+                <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+                <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+                <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+                <li class="br-line"></li>
+                <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="sidebar-tools pst-v1">
+        <div class="nav-top"><div class="tf-btn-icon toggle-switch-mode"><i class="icon icon-light"></i></div></div>
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><p class="tool-tip text-caption">Home</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><p class="tool-tip text-caption">About</p></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><p class="tool-tip text-caption">Case Studies</p></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><p class="tool-tip text-caption">Services</p></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><p class="tool-tip text-caption">Blog</p></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><p class="tool-tip text-caption">Contact</p></a></li>
+        </ul>
+        <div class="nav-bottom"><a href="#" class="tf-btn-icon go-top"><i class="icon icon-arrow-top"></i></a></div>
+    </div>
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site d-lg-none"><img class="image-switch" data-light="../assets/images/logo/logo.svg" data-dark="../assets/images/logo/logo-2.svg" loading="lazy" width="40" height="40" src="../assets/images/logo/logo.svg" alt="Shivam Thakur logo"></a>
+            <div class="left"><div class="time-local text-body-3"><p class="date"></p><p class="clock"></p></div></div>
+        </div>
+        <div class="main-content" id="main-content">
+            <div class="container">
+                <div class="row">
+
+                            <div class="section-about flat-spacing">
+                                <nav class="sect-tag text-caption fw-medium effectFade fadeUp no-div" aria-label="Breadcrumb">
+                                    <i class="icon icon-tes"></i>
+                                    <a href="/" class="link text-black-56">Home</a>&nbsp;/&nbsp;<a href="../blog" class="link text-black-56">Blog</a>&nbsp;/&nbsp;<span class="text-black-72">Deploying Full-Stack on Vercel</span>
+                                </nav>
+                                <h1 class="s-title letter-space--2 text-black-72 split-text effect-blur-fade">Deploying a full-stack app <br class="d-none d-lg-block">on Vercel, properly</h1>
+                                <div class="meta-list scrolling-effect effectTop">
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-user-circle"></i> Shivam Thakur</span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-tes"></i> <time datetime="2026-07-17">Jul 17, 2026</time></span>
+                                    <span class="meta-item text-body-3 text-black-56"><i class="icon icon-high-light"></i> 14 min read</span>
+                                </div>
+                            </div>
+
+                            <article class="blog-single-wrap section-work flat-spacing">
+                                <div class="image scrolling-effect effectBottom"><img loading="lazy" width="700" height="427" src="../assets/images/blog/vercel-deployment-flow.png" alt="Diagram of the Vercel deployment flow from a git push through build, preview deployment and production promotion"></div>
+                                <div class="entry-content">
+
+                                    <p class="s-desc text-black-56">
+                                        Getting a full-stack app onto Vercel takes about ninety seconds: connect the repo,
+                                        hit deploy, done. Keeping it healthy once real traffic and a real database show up
+                                        is a different story &mdash; and that&rsquo;s where the surprises live. Your
+                                        connections mysteriously max out. A file you wrote at runtime vanishes. The bill
+                                        triples after one viral day. None of that is Vercel misbehaving; it&rsquo;s
+                                        <strong>serverless behaving exactly as designed</strong> while you write code like
+                                        it&rsquo;s a long-lived server. I&rsquo;m Shivam Thakur &mdash; here&rsquo;s the
+                                        whole picture, from first push to production.
+                                    </p>
+
+                                    <div class="toc-box text-black-56">
+                                        <p class="text-black-72">In this guide</p>
+                                        <ol>
+                                            <li><a href="#mental-model">The mental model that prevents most bugs</a></li>
+                                            <li><a href="#first-deploy">Your first deploy</a></li>
+                                            <li><a href="#previews">Preview deployments &amp; rollbacks</a></li>
+                                            <li><a href="#env-vars">Environment variables done right</a></li>
+                                            <li><a href="#backend">The backend: serverless functions</a></li>
+                                            <li><a href="#database">Databases &amp; the connection pooling trap</a></li>
+                                            <li><a href="#caching">Caching &amp; rendering strategy</a></li>
+                                            <li><a href="#domains">Custom domains &amp; cron jobs</a></li>
+                                            <li><a href="#gotchas">Five gotchas that bite in production</a></li>
+                                            <li><a href="#cost">Keeping the bill sane</a></li>
+                                            <li><a href="#checklist">Pre-launch checklist</a></li>
+                                            <li><a href="#wrap-up">Wrapping this up</a></li>
+                                        </ol>
+                                    </div>
+
+                                    <h2 id="mental-model" class="s-title letter-space--2 text-black-72">The mental model that prevents most bugs</h2>
+                                    <p class="s-desc text-black-56">
+                                        On a traditional VPS you rent a computer. It boots once, your app runs forever, and
+                                        anything you put in memory or on disk stays there. Vercel is not that. Your app is
+                                        split into two very different halves:
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Static assets</strong> &mdash; HTML, CSS, JS, images. Built once, pushed to a global CDN, served from the edge location nearest your visitor. Ridiculously fast, effectively free.</li>
+                                        <li><strong>Serverless functions</strong> &mdash; your API routes and server rendering. Each one boots <em>on demand</em> when a request arrives, does its job, and is thrown away.</li>
+                                    </ul>
+                                    <p class="s-desc text-black-56">
+                                        That last word is the whole game. <strong>Thrown away.</strong> Internalise these
+                                        three consequences and you&rsquo;ve pre-empted most of what goes wrong:
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Memory doesn&rsquo;t persist.</strong> A variable you set on one request may not exist on the next &mdash; different instance. No in-memory sessions, no in-memory rate limiter, no in-memory cache you actually trust.</li>
+                                        <li><strong>The filesystem is read-only</strong> apart from <code>/tmp</code>, which is also temporary. Uploads go to blob storage, never to disk.</li>
+                                        <li><strong>Nothing runs between requests.</strong> No background worker ticking away, no <code>setInterval</code> that survives. Scheduled work needs cron.</li>
+                                    </ul>
+
+                                    <figure class="image-spot">
+                                        <img loading="lazy" width="700" height="427" src="../assets/images/blog/vercel-deployment-flow.png" alt="Diagram showing a git push triggering a build, producing static assets on the CDN and serverless functions, with a preview URL and production promotion">
+                                        <figcaption class="img-note">One push &rarr; one build &rarr; static assets to the CDN, server code to functions. Preview URLs come free with every branch.</figcaption>
+                                    </figure>
+
+                                    <h2 id="first-deploy" class="s-title letter-space--2 text-black-72">Your first deploy</h2>
+                                    <p class="s-desc text-black-56">
+                                        The happy path genuinely is short. Push your repo to GitHub, import it at
+                                        <code>vercel.com/new</code>, and Vercel detects the framework and its build settings
+                                        on its own. Prefer the terminal?
+                                    </p>
+                                    <pre><code class="language-bash">npm i -g vercel
+
+vercel          # deploys a preview, links the project on first run
+vercel --prod   # deploys to production</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        For most frameworks you need <em>no config file at all</em> &mdash; and that&rsquo;s
+                                        the recommended state. Reach for <code>vercel.json</code> only when you want
+                                        something the defaults don&rsquo;t give you, like redirects, cron jobs or per-function
+                                        limits:
+                                    </p>
+                                    <pre><code class="language-json">{
+  "redirects": [
+    { "source": "/old-pricing", "destination": "/pricing", "permanent": true }
+  ],
+  "functions": {
+    "app/api/report/route.ts": { "maxDuration": 60 }
+  },
+  "crons": [
+    { "path": "/api/cron/digest", "schedule": "0 9 * * *" }
+  ]
+}</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        A note that saves real debugging time: <strong>Vercel builds run
+                                        <code>npm install</code> from your lockfile, not from your <code>node_modules</code>.</strong>
+                                        If a package works locally but explodes in the build, nine times out of ten
+                                        it&rsquo;s a dependency you installed and never committed to
+                                        <code>package.json</code>. Delete <code>node_modules</code> locally, reinstall
+                                        clean, and you&rsquo;ll reproduce the failure before Vercel does.
+                                    </p>
+
+                                    <h2 id="previews" class="s-title letter-space--2 text-black-72">Preview deployments &amp; rollbacks</h2>
+                                    <p class="s-desc text-black-56">
+                                        This is the feature that quietly changes how a team works, and the one people
+                                        under-use. <strong>Every push to any non-production branch gets its own live URL</strong>
+                                        &mdash; a real build, real functions, real environment. Not a mock. Not
+                                        &ldquo;works on my machine.&rdquo; A link you can drop in a pull request and have a
+                                        designer or client click.
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Preview</strong> &mdash; every branch push. Permanent URL, shareable, safely disposable.</li>
+                                        <li><strong>Production</strong> &mdash; a merge to your production branch. Served on your custom domain.</li>
+                                    </ul>
+                                    <p class="s-desc text-black-56">
+                                        Because both come out of the same pipeline, a green preview is strong evidence
+                                        production will behave. And when something slips through anyway, every past
+                                        deployment stays addressable, so recovery is a promotion rather than a panicked
+                                        revert-and-rebuild:
+                                    </p>
+                                    <pre><code class="language-bash">vercel rollback          # back to the previous production deployment
+vercel ls                # list deployments
+vercel promote &lt;url&gt;     # promote any past deployment to production</code></pre>
+
+                                    <div class="blockquote-wrap">
+                                        <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
+                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">A rollback should be boring. If shipping on Friday scares you, the problem isn&rsquo;t Friday &mdash; it&rsquo;s that you can&rsquo;t undo in one command.</blockquote>
+                                    </div>
+
+                                    <h2 id="env-vars" class="s-title letter-space--2 text-black-72">Environment variables done right</h2>
+                                    <p class="s-desc text-black-56">
+                                        Your local <code>.env</code> file does not travel with your code &mdash; it&rsquo;s
+                                        gitignored, as it should be. Secrets live in the Vercel dashboard (or the CLI), scoped
+                                        to three environments:
+                                    </p>
+                                    <pre><code class="language-bash">vercel env add DATABASE_URL production
+vercel env add DATABASE_URL preview
+vercel env pull .env.local   # pull them down for local dev</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        The rule that matters most here, and the one that causes genuine security incidents:
+                                        <strong>anything prefixed <code>NEXT_PUBLIC_</code> is baked into the JavaScript
+                                        bundle and visible to every visitor.</strong> View source and it&rsquo;s right
+                                        there. Same idea for <code>VITE_</code> in Vite apps.
+                                    </p>
+                                    <pre><code class="language-javascript">// ✅ Safe — server-only, never reaches the browser
+const db = process.env.DATABASE_URL;
+const stripeSecret = process.env.STRIPE_SECRET_KEY;
+
+// ✅ Fine to expose — genuinely public values
+const analyticsId = process.env.NEXT_PUBLIC_ANALYTICS_ID;
+
+// ❌ Catastrophic — your secret key is now public
+const key = process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY;</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Two habits worth forming. Give <strong>preview a separate database</strong> from
+                                        production &mdash; previews are for experiments, and experiments shouldn&rsquo;t be
+                                        able to drop real customer data. And remember env vars are read <em>at build
+                                        time</em> for anything statically rendered: changing a value in the dashboard does
+                                        nothing until you redeploy.
+                                    </p>
+
+                                    <h2 id="backend" class="s-title letter-space--2 text-black-72">The backend: serverless functions</h2>
+                                    <p class="s-desc text-black-56">
+                                        Anything in your API folder becomes a function. No Express app to boot, no port to
+                                        listen on, no process to keep alive:
+                                    </p>
+                                    <pre><code class="language-javascript">// app/api/users/route.js  — Next.js App Router
+export async function GET(request) {
+  const users = await db.user.findMany();
+  return Response.json(users);
+}
+
+export async function POST(request) {
+  const body = await request.json();
+  const user = await db.user.create({ data: body });
+  return Response.json(user, { status: 201 });
+}</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Two runtimes are available, and picking wrong is a common source of
+                                        &ldquo;why doesn&rsquo;t my library work here&rdquo;:
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Node.js runtime</strong> (the default) &mdash; the full Node API and any npm package. This is what you want for database clients, SDKs, file processing. Start here.</li>
+                                        <li><strong>Edge runtime</strong> &mdash; a lighter, faster-starting sandbox running close to the user, but with a restricted API surface: no native Node modules, so most database drivers won&rsquo;t load. Great for auth checks, redirects, geolocation, A/B tests.</li>
+                                    </ul>
+                                    <p class="s-desc text-black-56">
+                                        Worth knowing: with <strong>Fluid Compute</strong> &mdash; now the default for new
+                                        projects &mdash; a single function instance can serve multiple concurrent requests
+                                        instead of one-at-a-time. That change matters for you in two ways: cold starts get
+                                        rarer, and because you&rsquo;re billed for actual CPU rather than idle wall-clock
+                                        time, I/O-heavy work (waiting on a database or an AI API) gets dramatically cheaper.
+                                        It also makes reusing a database client across invocations more valuable than ever.
+                                    </p>
+
+                                    <h2 id="database" class="s-title letter-space--2 text-black-72">Databases &amp; the connection pooling trap</h2>
+                                    <p class="s-desc text-black-56">
+                                        Vercel doesn&rsquo;t host your database &mdash; it connects to one over the network.
+                                        Neon, Supabase, PlanetScale and MongoDB Atlas all work well, and the marketplace
+                                        wires the credentials in as env vars automatically. So far, simple.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        <strong>Here&rsquo;s the trap that catches nearly everyone.</strong> Traffic
+                                        spikes, Vercel spins up hundreds of function instances, each one opens its own
+                                        database connection &mdash; and your Postgres instance, which caps out at maybe 100,
+                                        starts refusing everything. Your app doesn&rsquo;t slow down; it falls over. And it
+                                        only happens under load, so it never shows up in testing.
+                                    </p>
+                                    <p class="s-desc text-black-56">Two fixes, and you want both. First, never create a client per request:</p>
+                                    <pre><code class="language-javascript">// ❌ New connection on every single invocation
+export async function GET() {
+  const client = new PrismaClient();   // don't
+  return Response.json(await client.user.findMany());
+}
+
+// ✅ Reuse across invocations on the same instance
+// lib/db.js
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = globalThis;
+export const db = globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Second &mdash; and this is the non-negotiable one &mdash; <strong>put a pooler in
+                                        front of the database.</strong> A pooler keeps a small set of real connections and
+                                        multiplexes every function&rsquo;s request through them, so a thousand instances
+                                        still map to a handful of connections:
+                                    </p>
+                                    <pre><code class="language-bash"># ❌ Direct connection — will exhaust connection limits under load
+DATABASE_URL="postgres://user:pass@db.example.com:5432/mydb"
+
+# ✅ Pooled endpoint (Neon example — note -pooler and pgbouncer=true)
+DATABASE_URL="postgres://user:pass@db-pooler.example.com:5432/mydb?pgbouncer=true&amp;connection_limit=1"</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Neon exposes a pooled hostname, Supabase gives you a pooler port, and Prisma
+                                        Accelerate does the job provider-agnostically. One caveat to file away: schema
+                                        migrations need the <em>direct</em> connection, not the pooled one &mdash; hence
+                                        Prisma&rsquo;s separate <code>directUrl</code>.
+                                    </p>
+
+                                    <h2 id="caching" class="s-title letter-space--2 text-black-72">Caching &amp; rendering strategy</h2>
+                                    <p class="s-desc text-black-56">
+                                        The fastest function is the one that never runs. Every page you can serve from the
+                                        CDN instead of computing per request is money saved and latency removed. Decide
+                                        deliberately, per route:
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Static</strong> &mdash; rendered at build time, served from the CDN. Marketing pages, docs, blog posts. Nearly free, nearly instant.</li>
+                                        <li><strong>ISR</strong> &mdash; static, but regenerated on a timer. Product listings, feeds &mdash; content that changes hourly, not per user.</li>
+                                        <li><strong>Dynamic</strong> &mdash; rendered per request. Dashboards, anything personalised. Necessary, but the expensive option.</li>
+                                    </ul>
+                                    <pre><code class="language-javascript">// Static — the default
+export default function Page() { return &lt;h1&gt;About&lt;/h1&gt;; }
+
+// ISR — rebuild at most once an hour
+export const revalidate = 3600;
+
+// Dynamic — every request, no caching
+export const dynamic = "force-dynamic";</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        For API routes, cache headers are the lever. Even a short
+                                        <code>s-maxage</code> collapses a traffic spike into a handful of real executions,
+                                        and <code>stale-while-revalidate</code> means nobody waits for the refresh:
+                                    </p>
+                                    <pre><code class="language-javascript">export async function GET() {
+  const posts = await db.post.findMany();
+
+  return Response.json(posts, {
+    headers: {
+      // Serve cached for 60s, then serve stale while refreshing in background
+      "Cache-Control": "s-maxage=60, stale-while-revalidate=300",
+    },
+  });
+}</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        A default I&rsquo;d push on anyone: <strong>start static, go dynamic only when the
+                                        page genuinely needs per-request data.</strong> The instinct to make everything
+                                        dynamic &ldquo;just in case&rdquo; is what turns a $0 project into a $200 one.
+                                    </p>
+
+                                    <h2 id="domains" class="s-title letter-space--2 text-black-72">Custom domains &amp; cron jobs</h2>
+                                    <p class="s-desc text-black-56">
+                                        Domains are the easy part. Add it in the dashboard, point the DNS records Vercel
+                                        gives you, and SSL is provisioned and renewed automatically &mdash; no certbot, no
+                                        expiry reminders in your calendar.
+                                    </p>
+                                    <pre><code class="language-bash">vercel domains add example.com</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Scheduled work needs cron, because &mdash; as established &mdash; nothing of yours
+                                        runs between requests. A cron job is just Vercel calling one of your routes on a
+                                        schedule:
+                                    </p>
+                                    <pre><code class="language-javascript">// app/api/cron/cleanup/route.js
+export async function GET(request) {
+  // Anyone can hit this URL — verify it's actually Vercel calling
+  const auth = request.headers.get("authorization");
+  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  await db.session.deleteMany({ where: { expiresAt: { lt: new Date() } } });
+  return Response.json({ ok: true });
+}</code></pre>
+                                    <p class="s-desc text-black-56">
+                                        Note the auth check &mdash; it isn&rsquo;t optional. Cron routes are public URLs
+                                        like any other, and an unprotected one is an open invitation to have your cleanup
+                                        job (or worse, your billing job) triggered by a stranger. Set
+                                        <code>CRON_SECRET</code> and Vercel sends it automatically.
+                                    </p>
+
+                                    <h2 id="gotchas" class="s-title letter-space--2 text-black-72">Five gotchas that bite in production</h2>
+                                    <p class="s-desc text-black-56">
+                                        Every one of these follows from the mental model at the top. They still catch
+                                        people, so let&rsquo;s make them explicit:
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Writing files.</strong> <code>fs.writeFile("./uploads/x.png")</code> throws &mdash; read-only filesystem. Only <code>/tmp</code> is writable, and it evaporates. Uploads belong in Vercel Blob or S3.</li>
+                                        <li><strong>In-memory anything.</strong> A rate limiter or cache in a module-level variable works locally with one process, then silently fails across many instances. Use Redis (Upstash) or Edge Config.</li>
+                                        <li><strong>Long-running jobs.</strong> Functions have a duration ceiling; video encoding or a big report will hit it. Push the work to a queue or Vercel Workflow, and return immediately.</li>
+                                        <li><strong>WebSockets.</strong> Functions are request/response &mdash; they can&rsquo;t hold a socket open. Realtime needs Pusher, Ably, or Supabase Realtime.</li>
+                                        <li><strong>Fat bundles.</strong> Import a 200MB SDK into a function and you get slow cold starts and deploy failures. Import only what you use; check the bundle size in the build output.</li>
+                                    </ul>
+
+                                    <h2 id="cost" class="s-title letter-space--2 text-black-72">Keeping the bill sane</h2>
+                                    <p class="s-desc text-black-56">
+                                        Vercel&rsquo;s free tier carries a real hobby project comfortably. The horror
+                                        stories you&rsquo;ve read almost always trace back to the same handful of causes,
+                                        all of which are preventable:
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li><strong>Everything rendered dynamically</strong> when most of it could be static or ISR.</li>
+                                        <li><strong>Unoptimised images</strong> &mdash; shipping a 4MB hero JPEG to every visitor instead of letting the image component resize and re-encode it.</li>
+                                        <li><strong>No cache headers on API routes</strong>, so identical requests re-execute forever.</li>
+                                        <li><strong>A bot or scraper</strong> hammering a dynamic route with nobody watching.</li>
+                                    </ul>
+                                    <p class="s-desc text-black-56">
+                                        Do three things and you&rsquo;ve covered it: <strong>set a spend limit</strong> in
+                                        the dashboard, turn on <strong>bot protection</strong> for expensive routes, and
+                                        actually <em>look</em> at the analytics tab occasionally to see which route is
+                                        burning your budget. A surprise bill is nearly always a monitoring failure before
+                                        it&rsquo;s a pricing one.
+                                    </p>
+
+                                    <h2 id="checklist" class="s-title letter-space--2 text-black-72">Pre-launch checklist</h2>
+                                    <p class="s-desc text-black-56">
+                                        Before you point a real domain at it and tell people, walk this list. It&rsquo;s
+                                        short on purpose:
+                                    </p>
+                                    <ul class="text-black-56">
+                                        <li>Production env vars set &mdash; and no secret carrying a <code>NEXT_PUBLIC_</code> prefix.</li>
+                                        <li>Database behind a <strong>pooled</strong> connection string, client reused across invocations.</li>
+                                        <li>Preview pointed at a separate database from production.</li>
+                                        <li>Static or ISR everywhere that doesn&rsquo;t truly need per-request rendering.</li>
+                                        <li>Cache headers on public API routes.</li>
+                                        <li>Cron routes protected with <code>CRON_SECRET</code>.</li>
+                                        <li>Custom domain added, SSL confirmed, <code>www</code> redirecting the way you want.</li>
+                                        <li>Spend limit set. Rollback tried <em>once</em>, so you know it works before you need it.</li>
+                                    </ul>
+
+                                    <h2 id="wrap-up" class="s-title letter-space--2 text-black-72">Wrapping this up</h2>
+                                    <p class="s-desc text-black-56">
+                                        Vercel makes deploying trivial and makes <em>everything else</em> a question of
+                                        whether you&rsquo;ve accepted how serverless works. Static assets go to the edge,
+                                        server code runs in functions that appear and vanish per request, and every problem
+                                        in this article &mdash; connection exhaustion, lost files, evaporating memory,
+                                        runaway bills &mdash; is that one fact showing up in a different costume.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        So: pool your database connections, keep state in a real store, cache aggressively,
+                                        and let preview deployments carry your review process. Do that and Vercel stops
+                                        being a thing you fight and becomes the boring, reliable layer it&rsquo;s meant to
+                                        be.
+                                    </p>
+                                    <p class="s-desc text-black-56">
+                                        Designing the API that sits behind all this? My
+                                        <a href="building-rest-vs-graphql" class="link">REST vs GraphQL guide</a> covers
+                                        picking the right style. Then deploy something small this week &mdash; a single API
+                                        route hitting a pooled database. Nothing teaches this faster than watching your
+                                        first preview URL go live. 🚀
+                                    </p>
+
+                                </div>
+
+                                <div class="br-line"></div>
+
+                                <div class="entry-footer">
+                                    <div class="tags-links">
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Vercel</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Deployment</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Serverless</span>
+                                        <span class="tag-item text-body-3 fw-medium text-black-72">Full Stack</span>
+                                    </div>
+                                    <div class="social-links">
+                                        <a href="https://twitter.com/intent/tweet?url=https://shivamthakur.me/blog/deploying-fullstack-on-vercel" target="_blank" rel="noopener" aria-label="Share on X"><i class="icon icon-x"></i></a>
+                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://shivamthakur.me/blog/deploying-fullstack-on-vercel" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><i class="icon icon-linkin"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <section class="section-service flat-spacing" aria-label="Frequently asked questions">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div mb-0"><i class="icon icon-service"></i> FAQ</div>
+                                <div class="" id="accordion-faq">
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-1" role="button" data-bs-toggle="collapse" aria-controls="faq-1" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Can you host a full-stack app with a backend on Vercel?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-1" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Yes. Your backend runs as serverless functions rather than a server you keep running yourself. API routes deploy as functions that start when a request arrives and stop when it finishes. The one thing Vercel does not host is your database, which lives with a provider like Neon, Supabase or PlanetScale and is reached over the network.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-2" role="button" data-bs-toggle="collapse" aria-controls="faq-2" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Why does my database connection fail or hit connection limits on Vercel?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-2" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Because each serverless function instance opens its own database connection, and under traffic you can have hundreds of instances at once, which exhausts the database connection limit. The fix is a connection pooler such as PgBouncer, Neon's pooled endpoint or Prisma Accelerate, plus reusing the client across invocations instead of creating a new one per request.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-3" role="button" data-bs-toggle="collapse" aria-controls="faq-3" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">What is the difference between a preview and a production deployment?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-3" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">Every push to a non-production branch creates a preview deployment with its own permanent URL, which is ideal for reviewing a pull request against the real build. Merging to your production branch creates a production deployment served on your custom domain. Both come from the same build pipeline, so a working preview is strong evidence production will work too.</p></div></div>
+                                    </div>
+                                    <div class="br-line scrolling-effect effectBottom"></div>
+                                    <div class="service-accordion_item scrolling-effect effectBottom" role="presentation">
+                                        <div class="accordion-action" data-bs-target="#faq-4" role="button" data-bs-toggle="collapse" aria-controls="faq-4" aria-expanded="true">
+                                            <h2 class="text letter-space--2 text-black-72 h4">Why does my code work locally but break after deploying?</h2>
+                                            <div class="ic-wrap"><span class="ic-accordion-custom"></span></div>
+                                        </div>
+                                        <div id="faq-4" class="collapse show" data-bs-parent="#accordion-faq"><div class="accordion-content"><p class="service-desc text-black-56">The three usual causes are missing environment variables that only existed in your local .env file, writing to the filesystem which is read-only apart from the temporary directory, and relying on in-memory state that does not survive because each request may hit a different function instance. Check the build and runtime logs in the Vercel dashboard first, as they name the failing line directly.</p></div></div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="section-contact flat-spacing">
+                                <div class="sect-tag text-caption fw-medium effectFade fadeUp no-div"><i class="icon icon-send"></i> Let&rsquo;s build</div>
+                                <h2 class="s-title letter-space--2 split-text effect-blur-fade h4">Deployment fighting back? <br class="d-none d-lg-block">Let&rsquo;s get you shipping.</h2>
+                                <div class="action-group effectFade fadeUp no-div">
+                                    <a href="/#contact" class="tf-btn-action"><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span><span class="text text-body-3 letter-space--05 fw-medium">Start a conversation</span><span class="ic-wrap"><i class="icon icon-arrow-right-top"></i></span></a>
+                                </div>
+                            </div>
+
+                            <div id="footer" class="tf-footer flat-spacing">
+                                <div class="block-quote effectFade fadeUp no-div">
+                                    <h2 class="quote-text font-3 fw-normal text-black-72 h5"><span class="text-black-56">&ldquo;</span> Deploying is the easy part. Designing for a server that disappears after every request &mdash; that&rsquo;s the skill. <span class="text-black-56">&rdquo;</span></h2>
+                                    <p class="quote-author font-3 text-black-56 h6 text-end ">Shivam Thakur</p>
+                                </div>
+                                <div class="br-line"></div>
+                                <div class="foot-bottom"><p class="text-nocopy text-black-56">&copy; 2026 Shivam Thakur Portfolio</p><p class="text-nocopy text-black-56">All rights reserved</p></div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.nice-select.min.js"></script>
+    <script src="../assets/js/jquery-validate.js"></script>
+    <script src="../assets/js/swiper-bundle.min.js"></script>
+    <script src="../assets/js/carousel.js"></script>
+    <script src="../assets/js/infinityslide.js"></script>
+    <script src="../assets/js/ScrollSmooth.js"></script>
+    <script src="../assets/js/gsap.min.js"></script>
+    <script src="../assets/js/SplitText.min.js"></script>
+    <script src="../assets/js/ScrollTrigger.min.js"></script>
+    <script src="../assets/js/ScrollToPlugin.min.js"></script>
+    <script src="../assets/js/gsapAnimation.js"></script>
+    <script src="../assets/js/countto.js"></script>
+    <script src="../assets/js/animation-change-text.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../case-studies" class="item-link"><i class="icon icon-high-light"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../blog" class="item-link active"><i class="icon icon-tes"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+</body>
+
+</html>
