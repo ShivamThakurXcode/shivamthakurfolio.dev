@@ -1504,7 +1504,7 @@ h6,
   margin-right: auto;
   padding-right: 16px;
   padding-left: 16px;
-  width: 1176px;
+  width: 1560px;
   max-width: 100%;
 }
 
@@ -1712,6 +1712,12 @@ h6,
     margin: 0 2px;
   }
   .sidebar-tools.pst-v1 .tf-btn-icon {
+    width: 32px;
+    height: 32px;
+  }
+  /* Keep the circular wrapper in step with the smaller button. */
+  .sidebar-tools.pst-v1 .nav-top,
+  .sidebar-tools.pst-v1 .nav-bottom {
     width: 32px;
     height: 32px;
   }
@@ -2252,56 +2258,88 @@ h6,
   font-size: 13px;
   color: var(--black-40);
 }
-.blog-single-wrap .entry-content .toc-box {
+.toc-box {
   margin: 8px 0 40px;
   padding: 24px 28px;
   background-color: var(--white);
   border: 1px solid var(--black-15);
   border-radius: 16px;
 }
-.dark-mode .blog-single-wrap .entry-content .toc-box {
+.dark-mode .toc-box {
   background-color: var(--dark);
 }
-.blog-single-wrap .entry-content .toc-box > p {
+.toc-box > p {
   margin: 0 0 12px;
   font-weight: 600;
 }
-.blog-single-wrap .entry-content .toc-box ol {
+.toc-box ol {
   margin: 0;
   padding-left: 20px;
 }
-.blog-single-wrap .entry-content .toc-box li {
+.toc-box li {
   margin-bottom: 8px;
 }
-.blog-single-wrap .entry-content .toc-box li:last-child {
+.toc-box li:last-child {
   margin-bottom: 0;
 }
-.blog-single-wrap .entry-content .toc-box a {
+.toc-box a {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.blog-single-wrap .entry-content .toc-box a:hover {
+.toc-box a:hover {
   color: var(--primary);
 }
-/* Float the TOC into the left gutter only once the gutter is genuinely wide
-   enough for it: 1176px container + 2 * (260px TOC + 24px breathing room). */
-@media (min-width: 1750px) {
-  .blog-single-wrap .entry-content .toc-box {
-    position: fixed;
-    top: 50%;
-    left: calc((100vw - 1176px) / 2 - 284px);
-    transform: translateY(-50%);
-    width: 260px;
-    max-height: calc(100vh - 64px);
-    overflow-y: auto;
-    margin: 0;
+/* Below laptop the TOC sits first in the markup (it needs to be a direct grid
+   child on wide screens), so reorder it back under the title and hero image. */
+@media (max-width: 1199px) {
+  .blog-article-row {
+    display: flex;
+    flex-direction: column;
+  }
+  .blog-article-row > .section-about {
+    order: 1;
+  }
+  .blog-article-row > .toc-box {
+    order: 2;
+    margin: 0 0 40px;
+  }
+  .blog-article-row > .blog-single-wrap {
+    order: 3;
   }
 }
-@media (min-width: 1870px) {
-  .blog-single-wrap .entry-content .toc-box {
-    left: calc((100vw - 1176px) / 2 - 332px);
-    width: 300px;
+/* Laptop and up: one shared two-column grid for the whole article page, so
+   the header, hero image and body all line up in the right-hand column while
+   the TOC sticks in the left gutter. Grid keeps the TOC in flow, so it can
+   never overlap the prose the way the old fixed-position version did. */
+@media (min-width: 1200px) {
+  .blog-article-row {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    column-gap: 48px;
+    align-items: start;
+  }
+  /* Header block and article both sit in the right column... */
+  .blog-article-row > * {
+    grid-column: 2;
+  }
+  /* ...while the TOC takes the left gutter and sticks alongside them. */
+  .blog-article-row > .toc-box {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: 24px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    margin: 0;
+    align-self: start;
+  }
+  /* Header and article stack in the right column, starting at the same row. */
+  .blog-article-row > .section-about {
+    grid-row: 1;
+  }
+  .blog-article-row > .blog-single-wrap {
+    grid-row: 2;
   }
 }
 .blog-single-wrap .entry-content .blockquote-wrap {
@@ -4852,13 +4890,26 @@ button.animate-btn::after,
     transform: unset;
     top: unset;
     bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    /* Theme toggle stacked above the go-top button, clear of the bottom nav
+       pills that sit at the left edge. */
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
     gap: 8px;
   }
   .sidebar-tools.pst-v1 .nav-list {
     display: none;
+  }
+  /* Keep each pill a true circle: match the 40px button so the 999px radius
+     resolves to a circle rather than a stretched oval. */
+  .sidebar-tools.pst-v1 .nav-top,
+  .sidebar-tools.pst-v1 .nav-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
   }
 }
 @media (max-width: 767px) {
@@ -7135,6 +7186,17 @@ button.animate-btn::after,
     margin-top: 40px;
     margin-bottom: 40px;
   }
+  /* Stack the copyright lines instead of pushing them to opposite edges,
+     where they'd otherwise collide on a narrow screen. */
+  .tf-footer .foot-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  /* These are nowrap by default, which overflows once the row is this narrow. */
+  .tf-footer .foot-bottom .text-nocopy {
+    white-space: normal;
+  }
 }
 
 /*------------ Mode ---------------- */
@@ -7913,6 +7975,9 @@ button.animate-btn::after,
 .cs-card:not(:last-child) {
   margin-bottom: 24px;
 }
+.cs-grid .cs-card:not(:last-child) {
+  margin-bottom: 0;
+}
 .cs-card .cs-detail {
   position: relative;
   background-color: var(--bg-3);
@@ -8034,6 +8099,76 @@ button.animate-btn::after,
   .cs-card {
     grid-template-columns: minmax(300px, 400px) 1fr;
     align-items: stretch;
+  }
+}
+
+/* ---- Case studies: two cards per row ---- */
+.cs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+@media (min-width: 1200px) {
+  .cs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* keep detail-left / image-right inside each card, but proportional so it
+     fits at half width instead of the fixed 300-400px floor. Text column is
+     the smaller share so the 4/3 image gets the room it needs. */
+  .cs-grid .cs-card {
+    grid-template-columns: 5fr 6fr;
+    align-items: stretch;
+  }
+  .cs-grid .cs-card .cs-detail {
+    padding: 20px 18px;
+  }
+  /* dial the type + spacing down to fit the narrower panel */
+  .cs-grid .cs-card .cs-detail .w-title {
+    font-size: 22px;
+    line-height: 28px;
+    margin-bottom: 8px;
+  }
+  .cs-grid .cs-card .cs-detail .w-head {
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .cs-grid .cs-card .cs-detail .w-head .w-logo img {
+    width: 32px;
+    height: 32px;
+  }
+  .cs-grid .cs-card .cs-detail .w-desc {
+    font-size: 14px;
+    line-height: 21px;
+    margin-bottom: 16px;
+  }
+  .cs-grid .cs-card .cs-detail .w-highlight {
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  /* Year / Role: labels to caption size, values down from 20px */
+  .cs-grid .cs-card .cs-detail .box-high {
+    gap: 2px;
+  }
+  .cs-grid .cs-card .cs-detail .box-high .text-body-3 {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .cs-grid .cs-card .cs-detail .box-high .text-body-1 {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  /* tech badges */
+  .cs-grid .cs-card .cs-detail .w-tag-list .tag {
+    padding: 4px 9px;
+  }
+  .cs-grid .cs-card .cs-detail .w-tag-list .tag .text-body-3 {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .cs-grid .cs-card .cs-detail .group-action {
+    flex-wrap: wrap;
+    gap: 10px;
   }
 }
 @media (max-width: 767px) {
