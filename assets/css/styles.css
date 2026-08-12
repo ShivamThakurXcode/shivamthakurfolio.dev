@@ -7046,6 +7046,7 @@ button.animate-btn::after,
   margin-bottom: 32px;
 }
 .service-accordion_item .service-image {
+  min-width: 0;
   padding: 4px;
   border-radius: 24px;
   background-color: var(--white);
@@ -7092,6 +7093,18 @@ button.animate-btn::after,
 @media (min-width: 1200px) {
   .service-accordion_item .service-image:nth-child(2) {
     transform: translateX(0);
+  }
+}
+/* 3-up columns are narrow: tighten the gutter and drop the 200px floor so the
+   images keep their proportions instead of rendering tall and cropped. */
+@media (min-width: 992px) and (max-width: 1399px) {
+  .service-accordion_item .accordion-content .tf-grid-layout {
+    column-gap: 16px;
+  }
+  .service-accordion_item .service-image img {
+    min-height: 0;
+    aspect-ratio: 340/206;
+    height: auto;
   }
 }
 
@@ -8215,11 +8228,24 @@ body.inner-page .sidebar-user {
 }
 @media (min-width: 992px) {
   /* Widen the container and let the content column span the full width,
-     leaving room only for the fixed icon nav rail on the right. */
+     leaving room only for the fixed icon nav rail on the right.
+     The rail occupies 68px (right:16px + 40px item + 6px list padding each
+     side), so padding-right must always stay clear of that. */
   body.inner-page .main-content > .container {
     max-width: none;
     padding-left: 48px;
     padding-right: 104px;
+  }
+  /* These pages use .row as a plain wrapper, not a grid parent, so its
+     -16px gutter margins just push content past the container padding
+     (and under the fixed rail). Neutralise the gutter here. */
+  body.inner-page .main-content > .container > .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  body.inner-page .main-content > .container > .row > * {
+    padding-left: 0;
+    padding-right: 0;
   }
   body.inner-page .main-content .col-lg-7 {
     width: 100%;
@@ -8227,6 +8253,15 @@ body.inner-page .sidebar-user {
     margin-left: 0;
     margin-right: 0;
     flex: 0 0 100%;
+  }
+  /* Grid/flex children default to min-width:auto and refuse to shrink below
+     their intrinsic content width, which pushes wide rows out past the
+     container padding and under the fixed rail. Let them shrink instead. */
+  body.inner-page .main-content .tf-grid-layout > * {
+    min-width: 0;
+  }
+  body.inner-page .main-content img {
+    max-width: 100%;
   }
 }
 @media (min-width: 1600px) {
@@ -8496,6 +8531,27 @@ svg.icon {
   flex-shrink: 0;
   width: 1em;
   height: 1em;
+}
+
+/* The markup carries fill="none" on the <svg>, so the duotone layers must be
+   painted here: solid = full strength, soft = the 50% backing shape. Both
+   follow currentColor, which the nav hover/active/dark-mode rules already set. */
+svg.icon .ico-solid {
+  fill: currentColor;
+}
+svg.icon .ico-soft {
+  fill: currentColor;
+  opacity: 0.5;
+}
+/* Active nav item tints the solid layer with the per-icon accent. The soft
+   layer stays muted so the two-tone shape reads instead of flattening into
+   one silhouette. */
+.item-link.active svg.icon .ico-solid {
+  fill: var(--ico, currentColor);
+}
+.item-link.active svg.icon .ico-soft {
+  fill: var(--ico, currentColor);
+  opacity: 0.35;
 }
 
 /*# sourceMappingURL=styles.css.map */
