@@ -180,69 +180,90 @@
 
                             <article class="blog-single-wrap section-work flat-spacing">
                                 <div class="entry-content">
-                                    <h2 class="s-title letter-space--2 text-black-72"><span class="slashes">// </span>Overview</h2>
-                                    <p class="s-desc text-black-56">
-                                        A platform for sending email to a lot of people at once, without the parts that
-                                        usually go wrong. Contacts are imported and segmented, campaigns are built from
-                                        reusable templates, sending is queued and rate-controlled, and what came back
-                                        &mdash; opens, clicks, bounces, unsubscribes &mdash; lands against the contact it
-                                        belongs to.
-                                    </p>
-
-                                    <h2 class="s-title letter-space--2 text-black-72"><span class="slashes">// </span>The problem</h2>
-                                    <p class="s-desc text-black-56">
-                                        Bulk email is easy to send badly. A naive implementation loops over a list in one
-                                        request, times out halfway, and nobody knows which half was delivered &mdash; so it
-                                        gets run again and part of the list is mailed twice. Meanwhile bounces and
-                                        unsubscribes pile up unhandled, and every campaign to those dead addresses drags
-                                        the sending domain further down until legitimate mail starts landing in spam.
-                                    </p>
-
-                                    <h2 class="s-title letter-space--2 text-black-72"><span class="slashes">// </span>What I built</h2>
-                                    <p class="s-desc text-black-56">
-                                        A full-stack SaaS platform. A <strong>Next.js</strong> dashboard handles contact
-                                        lists, segment rules, the template editor and campaign reporting; a
-                                        <strong>Node.js</strong> API owns campaign logic and talks to the email provider.
-                                        <strong>PostgreSQL</strong> stores contacts, campaigns and one row per recipient
-                                        per send, which is what makes the reporting exact rather than approximate.
-                                    </p>
-
-                                    <p class="s-desc text-black-56">
-                                        Sending is the part worth describing. A campaign is never sent in a single request
-                                        &mdash; it is expanded into per-recipient jobs on a <strong>Redis</strong> queue and
-                                        drained by background workers at a controlled rate. That one decision buys three
-                                        things at once: the send respects the provider&rsquo;s throughput limits, it
-                                        survives a process restart, and a failure retries one message instead of
-                                        re-mailing the whole list. Each job is keyed by campaign and recipient, so a retry
-                                        that runs twice still only sends once.
-                                    </p>
-
-                                    <p class="s-desc text-black-56">
-                                        Deliverability gets the same treatment. Bounces and complaints come back over
-                                        provider webhooks and are written to the contact; hard bounces and complaints
-                                        <strong>suppress</strong> the address permanently, and the suppression list is
-                                        checked at send time rather than at import time &mdash; so someone who
-                                        unsubscribes after a campaign is queued still never receives it.
-                                    </p>
-
-                                    <div class="blockquote-wrap">
-                                        <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
-                                        <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">Queue every recipient separately, and a failed campaign costs one retry instead of a second send to the whole list.</blockquote>
+                                    <div class="case-block">
+                                        <h2 class="case-block-label text-caption fw-medium text-black-56"><span class="slashes">//</span> Overview</h2>
+                                        <div class="case-block-body">
+                                            <p class="s-desc text-black-56">
+                                                A platform for sending email to a lot of people at once, without the parts that
+                                                usually go wrong. Contacts are imported and segmented, campaigns are built from
+                                                reusable templates, sending is queued and rate-controlled, and what came back
+                                                &mdash; opens, clicks, bounces, unsubscribes &mdash; lands against the contact it
+                                                belongs to.
+                                            </p>
+                                        </div>
                                     </div>
 
-                                    <h2 class="s-title letter-space--2 text-black-72"><span class="slashes">// </span>Highlights</h2>
-                                    <div class="counter tf-grid-layout sm-col-2 md-col-3">
-                                        <div class="box-high"><p class="text-black-72 h3">Queued</p><p class="text-body-3 text-black-56">Rate-controlled bulk sending</p></div>
-                                        <div class="box-high"><p class="text-black-72 h3">Tracked</p><p class="text-body-3 text-black-56">Opens, clicks and bounces</p></div>
-                                        <div class="box-high"><p class="text-black-72 h3">Protected</p><p class="text-body-3 text-black-56">Suppression at send time</p></div>
+                                    <div class="case-block">
+                                        <h2 class="case-block-label text-caption fw-medium text-black-56"><span class="slashes">//</span> The problem</h2>
+                                        <div class="case-block-body">
+                                            <p class="s-desc text-black-56">
+                                                Bulk email is easy to send badly. A naive implementation loops over a list in one
+                                                request, times out halfway, and nobody knows which half was delivered &mdash; so it
+                                                gets run again and part of the list is mailed twice. Meanwhile bounces and
+                                                unsubscribes pile up unhandled, and every campaign to those dead addresses drags
+                                                the sending domain further down until legitimate mail starts landing in spam.
+                                            </p>
+                                        </div>
                                     </div>
 
-                                    <h2 class="s-title letter-space--2 text-black-72"><span class="slashes">// </span>Gallery</h2>
-                                    <div class="case-gallery-grid scrolling-effect effectBottom">
-                                        <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster campaign dashboard with delivery status"></div>
-                                        <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster email template editor"></div>
-                                        <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster contact list and segment builder"></div>
-                                        <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster open and click tracking report"></div>
+                                    <div class="case-block">
+                                        <h2 class="case-block-label text-caption fw-medium text-black-56"><span class="slashes">//</span> What I built</h2>
+                                        <div class="case-block-body">
+                                            <p class="s-desc text-black-56">
+                                                A full-stack SaaS platform. A <strong>Next.js</strong> dashboard handles contact
+                                                lists, segment rules, the template editor and campaign reporting; a
+                                                <strong>Node.js</strong> API owns campaign logic and talks to the email provider.
+                                                <strong>PostgreSQL</strong> stores contacts, campaigns and one row per recipient
+                                                per send, which is what makes the reporting exact rather than approximate.
+                                            </p>
+
+                                            <p class="s-desc text-black-56">
+                                                Sending is the part worth describing. A campaign is never sent in a single request
+                                                &mdash; it is expanded into per-recipient jobs on a <strong>Redis</strong> queue and
+                                                drained by background workers at a controlled rate. That one decision buys three
+                                                things at once: the send respects the provider&rsquo;s throughput limits, it
+                                                survives a process restart, and a failure retries one message instead of
+                                                re-mailing the whole list. Each job is keyed by campaign and recipient, so a retry
+                                                that runs twice still only sends once.
+                                            </p>
+
+                                            <p class="s-desc text-black-56">
+                                                Deliverability gets the same treatment. Bounces and complaints come back over
+                                                provider webhooks and are written to the contact; hard bounces and complaints
+                                                <strong>suppress</strong> the address permanently, and the suppression list is
+                                                checked at send time rather than at import time &mdash; so someone who
+                                                unsubscribes after a campaign is queued still never receives it.
+                                            </p>
+
+                                            <div class="blockquote-wrap">
+                                                <img loading="lazy" src="../assets/images/logo/logo-2.svg" alt="">
+                                                <blockquote class="quote-text font-3 fw-normal text-white-72 h5 mb-0">Queue every recipient separately, and a failed campaign costs one retry instead of a second send to the whole list.</blockquote>
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="case-block">
+                                        <h2 class="case-block-label text-caption fw-medium text-black-56"><span class="slashes">//</span> Highlights</h2>
+                                        <div class="case-block-body">
+                                            <div class="case-metrics">
+                                                <div class="box-high"><p class="metric-value text-black-72">Queued</p><p class="metric-label text-body-3 text-black-56">Rate-controlled bulk sending</p></div>
+                                                <div class="box-high"><p class="metric-value text-black-72">Tracked</p><p class="metric-label text-body-3 text-black-56">Opens, clicks and bounces</p></div>
+                                                <div class="box-high"><p class="metric-value text-black-72">Protected</p><p class="metric-label text-body-3 text-black-56">Suppression at send time</p></div>
+                                                <div class="box-high"><p class="metric-value text-black-72">&mdash;</p><p class="metric-label text-body-3 text-black-56">Add a real metric</p></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="case-block">
+                                        <h2 class="case-block-label text-caption fw-medium text-black-56"><span class="slashes">//</span> Gallery</h2>
+                                        <div class="case-block-body">
+                                            <div class="case-gallery-grid scrolling-effect effectBottom">
+                                                <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster campaign dashboard with delivery status"></div>
+                                                <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster email template editor"></div>
+                                                <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster contact list and segment builder"></div>
+                                                <div class="gallery-item"><img loading="lazy" width="700" height="427" src="../assets/images/blue-project-bg.png" alt="MailMaster open and click tracking report"></div>
+                                        </div>
+                                        </div>
                                     </div>
                                 </div>
 
