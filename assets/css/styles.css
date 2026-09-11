@@ -8733,10 +8733,10 @@ svg.icon .ico-soft {
 
 .case-block {
   display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  -moz-column-gap: 32px;
-       column-gap: 32px;
+  -moz-column-gap: 40px;
+       column-gap: 40px;
   padding: 40px 0;
   border-top: 1px solid var(--black-6);
 }
@@ -8752,9 +8752,9 @@ svg.icon .ico-soft {
 /* Left label: static, optically aligned to the first line of body text. */
 .case-block h2.case-block-label {
   margin: 0;
-  padding-top: 5px;
-  font-size: 12px;
-  line-height: 16px;
+  padding-top: 4px;
+  font-size: 15px;
+  line-height: 22px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -8773,56 +8773,27 @@ svg.icon .ico-soft {
   margin-bottom: 0;
 }
 .case-block .case-block-body .s-desc {
-  max-width: 62ch;
-}
-
-/* Card/grid blocks sit clear of the paragraph above them. */
-.case-block .case-block-body .blockquote-wrap {
-  margin-top: 28px;
-}
-/* Gallery and metrics use the full column width, not the text measure. */
-.case-block .case-block-body .case-gallery-grid,
-.case-block .case-block-body .case-metrics {
   max-width: none;
+  font-size: 18px;
+  line-height: 30px;
 }
 
-/* ---- Metrics row: big figure over a quiet label, 4-up like the reference ---- */
-.case-metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+/* Gallery sits outside the two-column grid: no label column, full width,
+   2x2 so each shot stays large. */
+.blog-single-wrap .entry-content > .case-gallery-grid {
+  width: 100%;
+  margin-top: 8px;
+  padding-top: 40px;
+  border-top: 1px solid var(--black-6);
 }
-.case-metrics .box-high {
-  background-color: var(--white);
-  border: 1px solid var(--black-6);
-  border-radius: 12px;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.03);
-  padding: 22px 20px;
-  display: grid;
-  gap: 6px;
-  align-content: start;
-}
-.blog-single-wrap .entry-content .case-metrics .box-high > * {
+.blog-single-wrap .entry-content > .case-gallery-grid > .gallery-item {
   margin-bottom: 0;
-}
-.case-metrics .metric-value {
-  font-size: clamp(28px, 2.4vw + 8px, 38px);
-  line-height: 1.1;
-  letter-spacing: -0.5px;
-}
-.case-metrics .metric-label {
-  margin-bottom: 0;
-}
-.dark-mode .case-metrics .box-high {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-  box-shadow: 0px 0.5px 0.5px 0px rgba(0, 0, 0, 0.0588235294), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.0588235294), 0px 3px 3px -1.5px rgba(0, 0, 0, 0.0588235294), 0px 5px 5px -2.5px rgba(0, 0, 0, 0.1215686275), 0px 0.5px 0.5px 0px rgba(255, 255, 255, 0.0784313725) inset, 0px 1px 3px 0px rgba(255, 255, 255, 0.031372549) inset, 0px -4px 12px 0px rgba(255, 255, 255, 0.0392156863) inset;
 }
 
 @media (max-width: 1199px) {
   .case-block {
-    grid-template-columns: 140px minmax(0, 1fr);
-    -moz-column-gap: 24px;
-         column-gap: 24px;
+    -moz-column-gap: 32px;
+         column-gap: 32px;
   }
 }
 @media (max-width: 991px) {
@@ -8833,16 +8804,66 @@ svg.icon .ico-soft {
   }
   .case-block h2.case-block-label {
     padding-top: 0;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .case-block .case-block-body .s-desc {
+    font-size: 16px;
+    line-height: 27px;
   }
   .blog-single-wrap.section-work {
     padding-top: 16px;
   }
-  .case-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .blog-single-wrap .entry-content > .case-gallery-grid {
+    padding-top: 32px;
   }
 }
-@media (max-width: 575px) {
-  .case-metrics {
-    grid-template-columns: 1fr;
-  }
+
+/* ---- Social badges: white pill buttons on the light case-study footer.
+   The base .social-links treatment is translucent white for dark panels, so
+   this variant repaints it rather than inheriting an invisible background. ---- */
+.social-links.social-badges {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.social-links.social-badges a {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--white);
+  border: 1px solid var(--black-6);
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 4px 10px -4px rgba(0, 0, 0, 0.08);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: #141414;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.social-links.social-badges a .icon {
+  font-size: 17px;
+  color: currentColor;
+}
+.social-links.social-badges a:hover {
+  background: var(--primary);
+  color: #141414;
+  transform: translateY(-2px);
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.06), 0px 10px 20px -6px rgba(0, 0, 0, 0.14);
+}
+/* Divider between "my profiles" and "share this page". */
+.social-links.social-badges .social-sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 2px;
+  background: var(--black-6);
+  flex-shrink: 0;
+}
+.dark-mode .social-links.social-badges a {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0px 0.5px 0.5px 0px rgba(0, 0, 0, 0.0588235294), 0px 1px 1px -0.5px rgba(0, 0, 0, 0.0588235294), 0px 3px 3px -1.5px rgba(0, 0, 0, 0.0588235294), 0px 5px 5px -2.5px rgba(0, 0, 0, 0.1215686275), 0px 0.5px 0.5px 0px rgba(255, 255, 255, 0.0784313725) inset, 0px 1px 3px 0px rgba(255, 255, 255, 0.031372549) inset;
+  color: #fff;
+}
+.dark-mode .social-links.social-badges a:hover {
+  background: var(--primary);
+  color: #141414;
 }
