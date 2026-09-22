@@ -5708,6 +5708,71 @@ button.tf-btn-action {
 .section-about .s-desc {
   margin-bottom: 0;
 }
+/* On article banners the subtitle is followed by the author/date row, so it
+   needs back the gap the rule above removes. */
+.blog-article-row .section-about .s-desc {
+  margin-bottom: 20px;
+}
+/* Case-study banners end with a live-site link under the subtitle. */
+.section-about .case-hero-action {
+  margin-top: 24px;
+}
+
+/* ---- Dark page banner -------------------------------------------------
+   Same panel recipe as the footer's .foot-dark, and dark in BOTH themes.
+   The text classes in the markup (.text-black-56/72) resolve to near-black
+   in light mode and only flip white under .dark-mode, so on this always-dark
+   panel they must be overridden here with literal rgba(255,255,255,...)
+   values. Tokens that invert are avoided; --primary does not invert. */
+.section-about.banner-dark {
+  background-color: #0F0F0F;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 0;
+  border-radius: 0 0 16px 16px;
+  padding: 48px !important;
+  margin-bottom: 48px;
+  color: #fff;
+}
+/* The wrapper's own divider is redundant inside a bordered panel. */
+.section-about.banner-dark .br-line {
+  display: none;
+}
+.section-about.banner-dark .s-title,
+.section-about.banner-dark .s-desc,
+.section-about.banner-dark .meta-list .meta-item {
+  color: #fff;
+}
+.section-about.banner-dark .s-desc,
+.section-about.banner-dark .meta-list .meta-item {
+  color: rgba(255, 255, 255, 0.72);
+}
+.section-about.banner-dark .s-desc {
+  max-width: 760px;
+}
+/* The breadcrumb pill is a white chip by default; restyle for the dark panel. */
+.section-about.banner-dark .sect-tag {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+}
+.section-about.banner-dark .sect-tag a,
+.section-about.banner-dark .sect-tag span {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+.section-about.banner-dark .sect-tag a:hover {
+  color: var(--primary) !important;
+}
+.section-about.banner-dark .meta-list .meta-item .icon,
+.section-about.banner-dark .sect-tag .icon {
+  color: var(--primary);
+}
+@media (max-width: 767px) {
+  .section-about.banner-dark {
+    padding: 28px !important;
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 32px;
+  }
+}
 .section-about.type-2 .s-desc {
   padding-bottom: 73px;
   margin-bottom: 0;
@@ -8256,7 +8321,7 @@ button.tf-btn-action {
 }
 .cs-card .cs-detail {
   position: relative;
-  background-color: var(--bg-3);
+  background-color: #0F0F0F;
   border: 1px solid var(--white-8);
   border-radius: 20px;
   padding: 32px 28px;
@@ -8267,24 +8332,9 @@ button.tf-btn-action {
   min-width: 0;
   overflow: hidden;
 }
-.cs-card .cs-detail::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: var(--cs-bg);
-  background-size: cover;
-  background-position: center;
-  filter: blur(24px);
-  transform: scale(1.15);
-  z-index: 0;
-}
-.cs-card .cs-detail::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 15, 15, 0.78);
-  z-index: 1;
-}
+/* Solid dark panel. The blurred --cs-bg thumbnail layer and its translucent
+   film were removed, so the background-color above is the whole treatment;
+   --cs-bg is still set in the markup but is deliberately unused. */
 .cs-card .cs-detail > * {
   position: relative;
   z-index: 2;
@@ -8378,6 +8428,7 @@ button.tf-btn-action {
   border-radius: 20px;
   overflow: hidden;
   min-width: 0;
+  aspect-ratio: 16 / 9;
 }
 .cs-card .cs-image img {
   width: 100%;
@@ -8391,6 +8442,10 @@ button.tf-btn-action {
     grid-template-columns: minmax(300px, 400px) 1fr;
     align-items: stretch;
   }
+  /* stretch would override the 16/9 ratio, so pin this item to its own height */
+  .cs-card .cs-image {
+    align-self: start;
+  }
 }
 
 /* ---- Case studies: two cards per row ---- */
@@ -8399,14 +8454,22 @@ button.tf-btn-action {
   grid-template-columns: 1fr;
   gap: 24px;
 }
-@media (min-width: 1200px) {
-  /* keep detail-left / image-right inside each card, but proportional so it
-     fits at half width instead of the fixed 300-400px floor. Text column is
-     the smaller share so the 4/3 image gets the room it needs. */
-  .cs-grid .cs-card {
-    grid-template-columns: 5fr 6fr;
-    align-items: stretch;
+/* Two cards per row from tablet up. */
+@media (min-width: 768px) {
+  .cs-grid {
+    grid-template-columns: 1fr 1fr;
   }
+  /* Each card stacks vertically at half width: image on top, text below.
+     Overrides the side-by-side .cs-card rule from the 768px block above. */
+  .cs-grid .cs-card {
+    grid-template-columns: 1fr;
+    align-content: start;
+  }
+  .cs-grid .cs-card .cs-image {
+    order: -1;
+  }
+}
+@media (min-width: 1200px) {
   .cs-grid .cs-card .cs-detail {
     padding: 20px 18px;
   }
@@ -8470,7 +8533,6 @@ button.tf-btn-action {
   .cs-card .cs-image {
     order: -1;
     border-radius: 16px;
-    aspect-ratio: 16 / 11;
   }
   .cs-card .cs-detail {
     border-radius: 16px;
