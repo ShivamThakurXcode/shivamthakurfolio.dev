@@ -2264,92 +2264,6 @@ h6,
   font-size: 13px;
   color: var(--black-40);
 }
-.toc-box {
-  margin: 8px 0 40px;
-  padding: 28px 32px;
-  background-color: var(--white);
-  border: 1px solid var(--black-15);
-  border-radius: 16px;
-}
-.dark-mode .toc-box {
-  background-color: var(--dark);
-}
-.toc-box > p {
-  margin: 0 0 12px;
-  font-weight: 600;
-}
-.toc-box ol {
-  margin: 0;
-  padding-left: 0;
-  list-style: none;
-}
-.toc-box li {
-  margin-bottom: 8px;
-}
-.toc-box li:last-child {
-  margin-bottom: 0;
-}
-.toc-box a {
-  color: inherit;
-  text-decoration: none;
-  text-underline-offset: 3px;
-}
-.toc-box a:hover {
-  color: var(--primary);
-  text-decoration: underline;
-}
-/* Below laptop the TOC sits first in the markup (it needs to be a direct grid
-   child on wide screens), so reorder it back under the title and hero image. */
-@media (max-width: 1199px) {
-  .blog-article-row {
-    display: flex;
-    flex-direction: column;
-  }
-  .blog-article-row > .section-about {
-    order: 1;
-  }
-  .blog-article-row > .toc-box {
-    order: 2;
-    margin: 0 0 40px;
-  }
-  .blog-article-row > .blog-single-wrap {
-    order: 3;
-  }
-}
-/* Laptop and up: one shared two-column grid for the whole article page, so
-   the header, hero image and body all line up in the right-hand column while
-   the TOC sticks in the left gutter. Grid keeps the TOC in flow, so it can
-   never overlap the prose the way the old fixed-position version did. */
-@media (min-width: 1200px) {
-  .blog-article-row {
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
-    column-gap: 48px;
-    align-items: start;
-  }
-  /* Header block and article both sit in the right column... */
-  .blog-article-row > * {
-    grid-column: 2;
-  }
-  /* ...while the TOC takes the left gutter and sticks alongside them. */
-  .blog-article-row > .toc-box {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    position: sticky;
-    top: 24px;
-    max-height: calc(100vh - 48px);
-    overflow-y: auto;
-    margin: 0;
-    align-self: start;
-  }
-  /* Header and article stack in the right column, starting at the same row. */
-  .blog-article-row > .section-about {
-    grid-row: 1;
-  }
-  .blog-article-row > .blog-single-wrap {
-    grid-row: 2;
-  }
-}
 .blog-single-wrap .entry-content .blockquote-wrap {
   margin-bottom: 40px;
 }
@@ -5009,6 +4923,146 @@ button.tf-btn-action {
     right: 48px;
   }
 }
+
+/* Desktop: the pst-v1 rail reads as a centered top bar instead of a fixed
+   right-edge column. Mobile (<=991px) keeps its own rules below. */
+@media (min-width: 992px) {
+  .sidebar-tools.pst-v1 {
+    top: 24px;
+    right: auto;
+    left: 50%;
+    bottom: auto;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .sidebar-tools.pst-v1 .nav-list {
+    display: flex;
+    align-items: center;
+    padding: 3px;
+  }
+  /* Dividers between every item. The markup only ships two <li class=
+     "br-line"> (after Home, before Contact), so drop those and draw a rule
+     on each item instead — even spacing without touching 68 files. */
+  .sidebar-tools.pst-v1 .nav-list .br-line {
+    display: none;
+  }
+  .sidebar-tools.pst-v1 .nav-item {
+    position: relative;
+  }
+  /* Every item except the first gets a divider. `+ .nav-item` would skip
+     the items sitting after the two hidden <li class="br-line"> (About and
+     Contact), so key off "not the first item" instead. */
+  .sidebar-tools.pst-v1 .nav-item:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 16px;
+    /* --black-6 (6% opacity) is effectively invisible at 1px. */
+    background-color: var(--black-15);
+  }
+  /* Labels sit inline beside the icon instead of floating on hover, so the
+     bar reads as icon+text. Undo the tooltip pill styling entirely. */
+  .sidebar-tools.pst-v1 .item-link {
+    width: auto;
+    height: 34px;
+    margin: 3px 0;
+    gap: 6px;
+    padding: 0 12px;
+    border-radius: 999px;
+  }
+  .sidebar-tools.pst-v1 .item-link .tool-tip {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    height: auto;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: inherit;
+    white-space: nowrap;
+  }
+  .sidebar-tools.pst-v1 .item-link .icon {
+    font-size: 20px;
+  }
+  /* --black-40 is too faint once the labels are visible text. */
+  .sidebar-tools.pst-v1 .item-link {
+    color: var(--black-72);
+  }
+  .sidebar-tools.pst-v1 .item-link:hover {
+    color: var(--black);
+  }
+  /* Active item reads as a filled dark pill rather than just green text. */
+  .sidebar-tools.pst-v1 .item-link.active {
+    background-color: var(--black, #0F0F0F);
+    color: #ffffff;
+    border-radius: 999px;
+  }
+  .sidebar-tools.pst-v1 .item-link.active .tool-tip {
+    color: inherit;
+  }
+  /* Drop the divider hugging either side of the active pill. */
+  .sidebar-tools.pst-v1 .nav-item:has(.item-link.active)::before {
+    display: none;
+  }
+  /* The item directly after the active one, whether or not a hidden
+     br-line sits between them. */
+  .sidebar-tools.pst-v1 .nav-item:has(.item-link.active) + .nav-item::before,
+  .sidebar-tools.pst-v1 .nav-item:has(.item-link.active) + .br-line + .nav-item::before {
+    display: none;
+  }
+  /* The 1199px rule below hides .tool-tip; these are labels now, not
+     tooltips, so keep them visible down to the mobile breakpoint. */
+  .sidebar-tools.pst-v1 .tool-tip {
+    display: block !important;
+  }
+  /* Right-edge clearance was only for the vertical rail; the bar now needs
+     top clearance instead so it never sits over page content. */
+  body:not(.inner-page) .main-content > .container {
+    padding-right: 0;
+  }
+  .main-content {
+    padding-top: 88px;
+  }
+  /* Full-width fade band behind the bar, so content scrolling up softens
+     out instead of running into the pill. Hosted on .tf-header-wrap (empty
+     on desktop) rather than a .sidebar-tools pseudo-element, whose
+     transformed parent would trap a position:fixed child in its own box. */
+  .tf-header-wrap::before {
+    content: "";
+    /* Hidden at the top of the page — nothing behind it to soften there.
+       body.has-scrolled is toggled by headerScrolled() in main.js. The blur
+       is applied only in the scrolled state below, so at the top the band
+       does not sample the backdrop at all. */
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    pointer-events: none;
+    z-index: 96;
+    /* Blur + a light tint, both faded out downward by the mask. A solid
+       page-coloured gradient alone greys out dark content passing under it;
+       the blur keeps whatever is behind reading as itself, just softened. */
+    background: linear-gradient(to bottom, rgba(240, 240, 240, 0.72) 0%, rgba(240, 240, 240, 0.4) 50%, rgba(240, 240, 240, 0) 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
+  }
+  body.has-scrolled .tf-header-wrap::before {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
 @media (max-width: 1199px) {
   .sidebar-tools .tool-tip {
     display: none !important;
@@ -5727,8 +5781,7 @@ button.tf-btn-action {
 .section-about.banner-dark {
   background-color: #0F0F0F;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-top: 0;
-  border-radius: 0 0 16px 16px;
+  border-radius: 16px;
   padding: 48px !important;
   margin-bottom: 48px;
   color: #fff;
@@ -5750,10 +5803,22 @@ button.tf-btn-action {
   max-width: 760px;
 }
 /* The breadcrumb pill is a white chip by default; restyle for the dark panel. */
+/* Breadcrumb sits as a full-bleed strip across the top of the banner with a
+   rule under it. Negative margins cancel the panel's 48px padding so it
+   reaches the edges; the top radius is inherited so corners stay round. */
 .section-about.banner-dark .sect-tag {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px 16px 0 0;
   box-shadow: none;
+  display: flex;
+  align-items: center;
+  /* Base .sect-tag pins height:28px, which would crush the strip. */
+  height: auto;
+  margin: -48px -48px 32px;
+  padding: 16px 48px;
+  width: auto;
 }
 .section-about.banner-dark .sect-tag a,
 .section-about.banner-dark .sect-tag span {
@@ -5769,8 +5834,13 @@ button.tf-btn-action {
 @media (max-width: 767px) {
   .section-about.banner-dark {
     padding: 28px !important;
-    border-radius: 0 0 12px 12px;
+    border-radius: 12px;
     margin-bottom: 32px;
+  }
+  .section-about.banner-dark .sect-tag {
+    border-radius: 12px 12px 0 0;
+    margin: -28px -28px 24px;
+    padding: 12px 28px;
   }
 }
 .section-about.type-2 .s-desc {
@@ -7770,6 +7840,42 @@ button.tf-btn-action {
 .dark-mode .sidebar-tools .nav-list .br-line {
   background-color: var(--black-8);
 }
+/* Top-bar labels are inline text, not floating pills — drop the dark-mode
+   tooltip chrome so they inherit the link colour. */
+@media (min-width: 992px) {
+  .dark-mode .sidebar-tools.pst-v1 .item-link .tool-tip {
+    background: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    color: inherit;
+  }
+}
+/* A black active pill vanishes against the dark bar — invert it. */
+@media (min-width: 992px) {
+  .dark-mode .sidebar-tools.pst-v1 .item-link.active {
+    background-color: #ffffff;
+    color: #0F0F0F;
+  }
+}
+/* --surface is only defined at :root, so the band would stay light here.
+   Match the dark page background instead. */
+@media (min-width: 992px) {
+  .dark-mode .tf-header-wrap::before {
+    background: linear-gradient(to bottom, rgba(15, 15, 15, 0.72) 0%, rgba(15, 15, 15, 0.4) 50%, rgba(15, 15, 15, 0) 100%);
+  }
+}
+/* Solid dark pills in dark mode — no translucent gradient, no backdrop blur.
+   Covers the nav bar, the theme toggle and the go-to-top button. */
+@media (min-width: 992px) {
+  .dark-mode .sidebar-tools.pst-v1 .nav-list,
+  .dark-mode .sidebar-tools.pst-v1 .nav-top,
+  .dark-mode .sidebar-tools.pst-v1 .nav-bottom {
+    background: #0F0F0F;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+}
 .dark-mode .sidebar-user .user-image {
   background: var(--dark);
 }
@@ -8580,7 +8686,7 @@ body.inner-page .sidebar-user {
     width: 100%;
     max-width: 1400px;
     padding-left: 48px;
-    padding-right: 104px;
+    padding-right: 48px;
   }
   /* These pages use .row as a plain wrapper, not a grid parent, so its
      -16px gutter margins just push content past the container padding
@@ -8589,7 +8695,7 @@ body.inner-page .sidebar-user {
     margin-left: 0;
     margin-right: 0;
   }
-  body.inner-page .main-content > .container > .row > *:not(.toc-box) {
+  body.inner-page .main-content > .container > .row > * {
     padding-left: 0;
     padding-right: 0;
   }
@@ -8613,7 +8719,7 @@ body.inner-page .sidebar-user {
 @media (min-width: 1600px) {
   body.inner-page .main-content > .container {
     padding-left: 80px;
-    padding-right: 120px;
+    padding-right: 80px;
   }
 }
 

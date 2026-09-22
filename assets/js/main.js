@@ -457,8 +457,28 @@
     // Fallback: never trap the user, even if 'load' never fires.
     setTimeout(forcePreloadHide, 1500);
 
+    /* Header fade band only once the page has actually scrolled — at the top
+       there is nothing behind it to soften, so it should be invisible. */
+    var headerScrolled = function () {
+        var toggle = function () {
+            var y = window.pageYOffset
+                || window.scrollY
+                || document.documentElement.scrollTop
+                || document.body.scrollTop
+                || 0;
+            document.body.classList.toggle("has-scrolled", y > 8);
+        };
+        toggle();
+        // Listen on window and document: ScrollSmooth/ScrollTrigger may drive
+        // the scroll from either, and scroll events do not bubble from
+        // elements, so a capture-phase document listener catches the rest.
+        window.addEventListener("scroll", toggle, { passive: true });
+        document.addEventListener("scroll", toggle, { passive: true, capture: true });
+    };
+
     // Dom Ready
     $(function () {
+        headerScrolled();
         ajaxContactForm();
         scrollLink();
         textRotate();
