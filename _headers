@@ -1,0 +1,20 @@
+# Netlify response headers (replaces the mod_headers/mod_expires rules in .htaccess).
+
+# Filenames are not content-hashed, so CSS/JS get a moderate TTL: edits reach
+# returning visitors within a day. Bump a ?v= query string to force it sooner.
+/assets/css/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/assets/js/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Images, fonts and icons rarely change once published.
+/assets/images/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/icon/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

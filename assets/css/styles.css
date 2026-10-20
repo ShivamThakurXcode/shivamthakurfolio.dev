@@ -1816,12 +1816,120 @@ h6,
   align-items: center;
   gap: 16px;
 }
+/* Header row: a full-width bar fixed to the top at every width, with the
+   logo on the left and the theme toggle on the right. On desktop the pill
+   nav (.sidebar-tools.pst-v1, fixed on its own) sits centered over it.
+   --white is not inverted by .dark-mode, so both surfaces are explicit. */
+.tf-header-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 96;
+  height: 64px;
+  padding: 0 16px;
+  background-color: var(--white);
+  /* Same border as the footer panel, mirrored: 1px at 16% strength on the
+     sides and the edge, none on the flush side. Going down the sides as well
+     as along the edge keeps the line the same thickness through the rounded
+     corners instead of thinning to nothing. */
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-top: 0;
+  /* Mirrors the footer's rounded top: 24px on mobile, 32px from 992px. */
+  border-radius: 0 0 24px 24px;
+}
+/* Dark mode: the header bar is matte black, like the footer. */
+.dark-mode .tf-header-wrap {
+  background: #0F0F0F;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+/* Only the nav pill and theme button take the lighter black: the .sect-tag
+   badge gradient over solid #0F0F0F, so they lift off the matte bar. */
+.dark-mode .sidebar-tools.pst-v1 .nav-list,
+.dark-mode .header-theme .tf-btn-icon {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%), #0F0F0F;
+}
 @media (min-width: 992px) {
   .tf-header-wrap {
-    padding: 0;
-    position: absolute;
-    top: 52px;
-    right: 32px;
+    height: 72px;
+    padding: 0 24px;
+    border-radius: 0 0 32px 32px;
+  }
+}
+@media (min-width: 1600px) {
+  .tf-header-wrap {
+    padding: 0 48px;
+  }
+}
+/* Mobile: content starts below the 64px bar. Desktop sets 112px below. */
+@media (max-width: 991px) {
+  .main-content {
+    padding-top: 80px;
+  }
+}
+
+/* Logo: real mark plus name. The name hides only at 992-1199px, where the
+   centered nav bar would run into it. */
+.tf-header-wrap .logo-site {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tf-header-wrap .logo-site img {
+  width: 28px;
+  height: 28px;
+}
+.tf-header-wrap .logo-site-name {
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: #0F0F0F;
+}
+.dark-mode .tf-header-wrap .logo-site-name {
+  color: rgba(255, 255, 255, 0.92);
+}
+@media (min-width: 992px) {
+  .tf-header-wrap .logo-site img {
+    width: 30px;
+    height: 30px;
+  }
+  .tf-header-wrap .logo-site-name {
+    font-size: 24px;
+  }
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .tf-header-wrap .logo-site-name {
+    display: none;
+  }
+}
+
+/* Theme toggle: rounded-square outlined button at the right end. */
+.header-theme .tf-btn-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--black-15);
+  background-color: var(--white);
+  color: var(--black-72);
+  cursor: pointer;
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+.header-theme .tf-btn-icon .icon {
+  font-size: 20px;
+}
+.header-theme .tf-btn-icon:hover {
+  border-color: var(--black-40);
+  color: var(--black);
+}
+.dark-mode .header-theme .tf-btn-icon {
+  color: rgba(255, 255, 255, 0.8);
+}
+@media (min-width: 992px) {
+  .header-theme .tf-btn-icon {
+    width: 44px;
+    height: 44px;
   }
 }
 @media (min-width: 1600px) {
@@ -4927,8 +5035,9 @@ button.tf-btn-action {
 /* Desktop: the pst-v1 rail reads as a centered top bar instead of a fixed
    right-edge column. Mobile (<=991px) keeps its own rules below. */
 @media (min-width: 992px) {
+  /* Centered in the 72px .tf-header-wrap bar: (72 - 48) / 2 = 12px. */
   .sidebar-tools.pst-v1 {
-    top: 24px;
+    top: 12px;
     right: auto;
     left: 50%;
     bottom: auto;
@@ -4938,10 +5047,40 @@ button.tf-btn-action {
     align-items: center;
   }
 
+  /* 4px inset on every side, so the active pill sits the same distance from
+     the bar's top, bottom and rounded ends: 4 + 40 + 4 = 48px. Sitting on the
+     white header bar, it reads as an outlined pill (a 1px ring that adds no
+     height) rather than a floating shadowed one. */
   .sidebar-tools.pst-v1 .nav-list {
+    --nav-ring-a: #F5A04A;
+    --nav-ring-b: #4C7DFF;
+    position: relative;
     display: flex;
     align-items: center;
-    padding: 3px;
+    padding: 4px;
+    background-color: var(--white);
+    box-shadow: none;
+  }
+  .dark-mode .sidebar-tools.pst-v1 .nav-list {
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+  /* Gradient ring: warm at both rounded ends, cool across the middle of the
+     top and bottom edges. A pseudo-element filled with the gradient, then
+     masked down to a 1.5px border (the content box is subtracted from the
+     full box), so the pill's own background and radius are untouched. The
+     ring is 1.5px and absolutely positioned, so it adds no height. */
+  .sidebar-tools.pst-v1 .nav-list::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1.5px;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--nav-ring-a) 0%, var(--nav-ring-a) 20%, var(--nav-ring-b) 50%, var(--nav-ring-a) 80%, var(--nav-ring-a) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    pointer-events: none;
   }
   /* Dividers between every item. The markup only ships two <li class=
      "br-line"> (after Home, before Contact), so drop those and draw a rule
@@ -4970,10 +5109,10 @@ button.tf-btn-action {
      bar reads as icon+text. Undo the tooltip pill styling entirely. */
   .sidebar-tools.pst-v1 .item-link {
     width: auto;
-    height: 34px;
-    margin: 3px 0;
+    height: 40px;
+    margin: 0;
     gap: 6px;
-    padding: 0 12px;
+    padding: 0 14px;
     border-radius: 999px;
   }
   .sidebar-tools.pst-v1 .item-link .tool-tip {
@@ -5028,39 +5167,10 @@ button.tf-btn-action {
   body:not(.inner-page) .main-content > .container {
     padding-right: 0;
   }
+  /* The header bar is 72px tall, so 112px leaves a 40px gap before the
+     first content block. */
   .main-content {
-    padding-top: 88px;
-  }
-  /* Full-width fade band behind the bar, so content scrolling up softens
-     out instead of running into the pill. Hosted on .tf-header-wrap (empty
-     on desktop) rather than a .sidebar-tools pseudo-element, whose
-     transformed parent would trap a position:fixed child in its own box. */
-  .tf-header-wrap::before {
-    content: "";
-    /* Hidden at the top of the page — nothing behind it to soften there.
-       body.has-scrolled is toggled by headerScrolled() in main.js. The blur
-       is applied only in the scrolled state below, so at the top the band
-       does not sample the backdrop at all. */
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    pointer-events: none;
-    z-index: 96;
-    /* Blur + a light tint, both faded out downward by the mask. A solid
-       page-coloured gradient alone greys out dark content passing under it;
-       the blur keeps whatever is behind reading as itself, just softened. */
-    background: linear-gradient(to bottom, rgba(240, 240, 240, 0.72) 0%, rgba(240, 240, 240, 0.4) 50%, rgba(240, 240, 240, 0) 100%);
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
-  }
-  body.has-scrolled .tf-header-wrap::before {
-    opacity: 1;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    padding-top: 112px;
   }
 }
 @media (max-width: 1199px) {
@@ -5069,30 +5179,10 @@ button.tf-btn-action {
   }
 }
 @media (max-width: 991px) {
+  /* On mobile the nav list is the bottom nav and the theme toggle lives in
+     .tf-header-wrap, so the desktop bar has nothing left to show. */
   .sidebar-tools.pst-v1 {
-    transform: unset;
-    top: unset;
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    /* Theme toggle stacked above the go-top button, clear of the bottom nav
-       pills that sit at the left edge. */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-  }
-  .sidebar-tools.pst-v1 .nav-list {
     display: none;
-  }
-  /* Keep each pill a true circle: match the 40px button so the 999px radius
-     resolves to a circle rather than a stretched oval. */
-  .sidebar-tools.pst-v1 .nav-top,
-  .sidebar-tools.pst-v1 .nav-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    flex: 0 0 auto;
   }
 }
 @media (max-width: 767px) {
@@ -7488,32 +7578,80 @@ button.tf-btn-action {
    --black- alpha tokens: .dark-mode inverts those and would flip text against a
    background that does not flip. --primary does not invert, so it stays a token.
 
-   It sits flush at the bottom of the page: square bottom corners, no bottom
+   It sits outside .main-content's .container, so it spans the full viewport
+   width, flush at the bottom of the page: rounded top corners only, no bottom
    border, no gap beneath. .spacing-tight.flat-spacing is shared with
-   .section-contact, so its bottom padding is dropped here, not on that class. */
+   .section-contact, so its bottom padding is dropped here, not on that class.
+   z-index lifts it over the home page's fixed .sidebar-user card (z-index 1),
+   while the nav bars (z-index 97) stay on top. */
 .tf-footer.spacing-tight.flat-spacing {
+  position: relative;
+  z-index: 2;
   padding-bottom: 0;
 }
+.tf-footer > .br-line {
+  display: none;
+}
 .tf-footer .foot-dark {
+  width: 100%;
+  /* Matte black in both themes. */
   background-color: #0F0F0F;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-bottom: 0;
-  border-radius: 16px 16px 0 0;
-  padding: 48px;
+  border-radius: 32px 32px 0 0;
+  padding: 64px 48px 32px;
   color: #fff;
+}
+@media (min-width: 1600px) {
+  .tf-footer .foot-dark {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+}
+/* Below 992px the bottom nav overlays the page. #wrapper's 80px clearance for
+   it would leave a light strip under this dark panel, so the clearance moves
+   inside the footer and the panel runs to the bottom edge. */
+@media (max-width: 991px) {
+  #wrapper {
+    padding-bottom: 0;
+  }
+  .tf-footer .foot-dark {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
 }
 .tf-footer .foot-main {
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
   gap: 40px;
 }
+/* Same logo lockup as the header (.tf-header-wrap .logo-site): mark and name
+   in one row, 28px / 21px on mobile and 30px / 24px from 992px. */
 .tf-footer .foot-brand .f-logo-link {
   display: inline-flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 18px;
 }
-.tf-footer .foot-brand-name {
-  color: #fff;
-  margin: 0 0 8px;
+.tf-footer .foot-brand .f-logo-link img {
+  width: 28px;
+  height: 28px;
+}
+.tf-footer .f-logo-name {
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.92);
+}
+@media (min-width: 992px) {
+  .tf-footer .foot-brand .f-logo-link img {
+    width: 30px;
+    height: 30px;
+  }
+  .tf-footer .f-logo-name {
+    font-size: 24px;
+  }
 }
 .tf-footer .foot-brand-text {
   color: rgba(255, 255, 255, 0.72);
@@ -7596,8 +7734,10 @@ button.tf-btn-action {
 }
 @media (max-width: 767px) {
   .tf-footer .foot-dark {
-    padding: 28px;
-    border-radius: 12px 12px 0 0;
+    padding-top: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 24px 24px 0 0;
   }
   .tf-footer .foot-main {
     grid-template-columns: 1fr;
@@ -7855,25 +7995,6 @@ button.tf-btn-action {
   .dark-mode .sidebar-tools.pst-v1 .item-link.active {
     background-color: #ffffff;
     color: #0F0F0F;
-  }
-}
-/* --surface is only defined at :root, so the band would stay light here.
-   Match the dark page background instead. */
-@media (min-width: 992px) {
-  .dark-mode .tf-header-wrap::before {
-    background: linear-gradient(to bottom, rgba(15, 15, 15, 0.72) 0%, rgba(15, 15, 15, 0.4) 50%, rgba(15, 15, 15, 0) 100%);
-  }
-}
-/* Solid dark pills in dark mode — no translucent gradient, no backdrop blur.
-   Covers the nav bar, the theme toggle and the go-to-top button. */
-@media (min-width: 992px) {
-  .dark-mode .sidebar-tools.pst-v1 .nav-list,
-  .dark-mode .sidebar-tools.pst-v1 .nav-top,
-  .dark-mode .sidebar-tools.pst-v1 .nav-bottom {
-    background: #0F0F0F;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
   }
 }
 .dark-mode .sidebar-user .user-image {
@@ -9251,6 +9372,42 @@ svg.icon .ico-soft {
 .float-contact .float-btn:hover {
   transform: scale(1.08);
   color: var(--white);
+}
+
+/* Back-to-top, first in the stack. Hidden at the top of the page;
+   body.has-scrolled is toggled by headerScrolled() in main.js. */
+.float-contact .float-top {
+  background-color: #FFFFFF;
+  color: var(--black, #0F0F0F);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+.float-contact .float-top .icon {
+  font-size: 22px;
+}
+body.has-scrolled .float-contact .float-top {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+body.has-scrolled .float-contact .float-top:hover {
+  transform: scale(1.08);
+  color: var(--black, #0F0F0F);
+}
+.dark-mode .float-contact .float-top,
+.dark-mode.has-scrolled .float-contact .float-top:hover {
+  background-color: #1F1F1F;
+  color: #FFFFFF;
+}
+
+/* Keep the footer's bottom row (copyright, Sitemap, Back to top) clear of
+   the fixed bottom-right button stack. */
+@media (min-width: 768px) {
+  .tf-footer .foot-dark .foot-bottom {
+    padding-right: 48px;
+  }
 }
 
 @media (max-width: 767px) {

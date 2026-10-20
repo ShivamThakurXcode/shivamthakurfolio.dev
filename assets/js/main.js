@@ -246,6 +246,13 @@
 
             localStorage.setItem("darkMode", isDark ? "enabled" : "disabled");
         });
+        // The toggle is a div with role="button", so wire up keyboard activation.
+        $toggles.on("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                $(this).trigger("click");
+            }
+        });
     };
 
     /* Text Rotate
