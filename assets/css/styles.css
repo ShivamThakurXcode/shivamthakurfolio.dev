@@ -9524,3 +9524,188 @@ body.home-page .home-hero .sidebar-user .user-image .image img {
   aspect-ratio: 2 / 3;
   object-position: top center;
 }
+
+/* Hero: no box. A green wash at the top fades to transparent at the bottom,
+   so the hero blends into the page. Text follows the theme as normal. */
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  padding: 28px 20px;
+}
+/* The wash starts under the fixed header, so it has no visible top edge. */
+.home-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -120px;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 50% 14%, rgba(var(--primary-rgb), 0.28) 0%, rgba(var(--primary-rgb), 0) 100%),
+    linear-gradient(180deg, rgba(var(--primary-rgb), 0.30) 0%, rgba(var(--primary-rgb), 0.12) 45%, rgba(var(--primary-rgb), 0) 100%);
+}
+.home-hero .intro-title span {
+  color: var(--primary) !important;
+}
+.home-hero .box-counter .wg-counter {
+  padding-left: 16px;
+  border-left: 2px solid rgba(var(--primary-rgb), 0.55);
+}
+@media (min-width: 768px) {
+  .home-hero {
+    padding: 48px 40px;
+  }
+}
+@media (min-width: 992px) {
+  .home-hero {
+    padding: 64px 56px;
+  }
+}
+
+/* Hero fit: below the fixed header the panel fills the rest of the screen.
+   Desktop header (72px) + 40px gap above = 112px, plus 24px kept below. The
+   card is sized from the panel height, so the portrait crops to fit instead
+   of forcing the panel taller than the viewport. */
+.home-hero {
+  --hero-pad-y: 24px;
+  --hero-pad-x: 20px;
+  padding: var(--hero-pad-y) var(--hero-pad-x);
+  gap: 28px;
+}
+.home-hero .section-intro .intro-author {
+  margin-bottom: 28px;
+}
+.home-hero .section-intro .intro-title {
+  margin-bottom: 32px;
+}
+.home-hero .section-intro .box-counter {
+  margin-bottom: 32px;
+}
+.home-hero .section-intro .intro-client {
+  margin-bottom: 20px;
+}
+/* Phone and tablet: the card sits full width under the intro. */
+@media (max-width: 991px) {
+  body.home-page .home-hero .sidebar-user {
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 0;
+  }
+}
+@media (min-width: 768px) {
+  .home-hero {
+    --hero-pad-y: 40px;
+    --hero-pad-x: 40px;
+    gap: 40px;
+  }
+}
+@media (min-width: 992px) {
+  .home-hero {
+    --hero-pad-y: 40px;
+    --hero-pad-x: 48px;
+    --hero-h: calc(100vh - 112px - 24px);
+    --hero-h: calc(100svh - 112px - 24px);
+    min-height: max(560px, var(--hero-h));
+    padding: var(--hero-pad-y) var(--hero-pad-x);
+    align-items: center;
+  }
+  body.home-page .home-hero .sidebar-user {
+    height: calc(max(560px, var(--hero-h)) - 2 * var(--hero-pad-y));
+    align-self: center;
+  }
+  body.home-page .home-hero .sidebar-user .wrap,
+  body.home-page .home-hero .sidebar-user .user-image,
+  body.home-page .home-hero .sidebar-user .user-image .image {
+    height: 100%;
+  }
+  body.home-page .home-hero .sidebar-user .user-image .image img {
+    height: 100%;
+    aspect-ratio: auto;
+    object-position: top center;
+  }
+}
+@media (min-width: 1440px) {
+  .home-hero {
+    --hero-pad-x: 64px;
+    gap: 64px;
+  }
+}
+
+/* Bootstrap's `.row > *` (gutter padding, width) was beating the panel's
+   padding, so the content sat flush on the panel edge. Raise specificity. */
+body.home-page .home-hero {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--hero-pad-y) var(--hero-pad-x);
+}
+/* Type scales with the screen height so the whole intro fits in the panel. */
+body.home-page .home-hero .intro-title {
+  font-size: clamp(34px, 4.6vw, 64px);
+  line-height: 1.08;
+}
+body.home-page .home-hero .wg-counter .counter {
+  font-size: clamp(32px, 3.4vw, 52px);
+  line-height: 1.1;
+}
+body.home-page .home-hero .box-counter {
+  gap: 20px 32px;
+}
+@media (min-width: 992px) {
+  body.home-page .home-hero {
+    --hero-pad-y: 32px;
+    --hero-pad-x: 48px;
+  }
+  body.home-page .home-hero .intro-title {
+    font-size: clamp(34px, min(3.6vw, 6.2vh), 60px);
+  }
+  body.home-page .home-hero .wg-counter .counter {
+    font-size: clamp(30px, min(2.8vw, 5vh), 46px);
+  }
+  body.home-page .home-hero .section-intro .intro-author { margin-bottom: 2.6vh; }
+  body.home-page .home-hero .section-intro .intro-title { margin-bottom: 3vh; }
+  body.home-page .home-hero .section-intro .box-counter { margin-bottom: 3vh; }
+}
+@media (min-width: 1440px) {
+  body.home-page .home-hero {
+    --hero-pad-x: 64px;
+  }
+}
+
+/* Home hero: full-width panel. The page container capped the width, and
+   `body.inner-page .main-content > .container > .row > *` (specificity 0,4,1)
+   zeroed the panel's side padding, so both are overridden at higher weight. */
+body.home-page .main-content > .container {
+  max-width: none;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+body.home-page .main-content > .container > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+body.home-page .main-content > .container > .row > .home-hero {
+  width: 100%;
+  max-width: 100%;
+  padding-left: var(--hero-pad-x);
+  padding-right: var(--hero-pad-x);
+}
+@media (min-width: 1600px) {
+  body.home-page .main-content > .container {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+}
+@media (max-width: 575px) {
+  body.home-page .main-content > .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+body.home-page {
+  overflow-x: clip;
+}
