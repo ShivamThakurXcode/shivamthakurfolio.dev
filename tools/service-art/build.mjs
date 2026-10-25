@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "../../assets/images/service");
 const only = process.argv[2];
-const sets = ["webdev", "saas", "ai", "mobile", "integrations", "business", "ecommerce", "cloud"];
+const sets = ["webdev", "saas", "ai", "mobile", "integrations", "business", "ecommerce", "cloud", "detail"];
 for (const name of sets) {
   let mod;
   try { mod = (await import(`./${name}.mjs`)).default; } catch (e) { if (e.code === "ERR_MODULE_NOT_FOUND") continue; throw e; }

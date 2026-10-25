@@ -32,7 +32,7 @@ Confirmed decisions: **folders + slug URLs**; **full realistic content**; **retr
 │   └─ ecommerce-headless-storefront.html
 ├─ services/
 │   ├─ web-development.html
-│   └─ api-backend-development.html
+│   └─ api-integrations.html
 └─ assets/  (unchanged, referenced as ../assets/... from subfolder pages)
 ```
 
