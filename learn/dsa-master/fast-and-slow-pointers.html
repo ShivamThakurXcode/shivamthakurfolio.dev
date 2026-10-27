@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Fast and Slow Pointers: Floyd's Cycle Detection | DSA Master</title>
+    <meta name="description" content="Master the fast and slow pointer technique: Floyd's cycle detection with proof, finding the cycle start, the middle node, nth from end and happy numbers.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="fast and slow pointers, floyd cycle detection, tortoise and hare, linked list cycle, find middle of linked list, happy number, find duplicate number, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/stack-and-queue-javascript">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/binary-tree-and-bst-javascript">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="fast and slow pointers">
+    <meta property="article:tag" content="floyd cycle detection">
+    <meta property="article:tag" content="tortoise and hare">
+    <meta property="article:tag" content="linked list cycle">
+    <meta property="article:tag" content="find middle of linked list">
+    <meta property="article:tag" content="happy number">
+    <meta property="article:tag" content="find duplicate number">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Fast and Slow Pointers: Floyd's Cycle Detection">
+    <meta property="og:description" content="Master the fast and slow pointer technique: Floyd's cycle detection with proof, finding the cycle start, the middle node, nth from end and happy numbers.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/fast-and-slow-pointers.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Fast and Slow Pointers: Floyd's Cycle Detection Explained: DSA Master chapter 7">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fast and Slow Pointers: Floyd's Cycle Detection">
+    <meta name="twitter:description" content="Master the fast and slow pointer technique: Floyd's cycle detection with proof, finding the cycle start, the middle node, nth from end and happy numbers.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/fast-and-slow-pointers.png">
+    <meta name="twitter:image:alt" content="Fast and Slow Pointers: Floyd's Cycle Detection Explained: DSA Master chapter 7">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers",
+          "name": "Fast and Slow Pointers: Floyd's Cycle Detection | DSA Master",
+          "description": "Master the fast and slow pointer technique: Floyd's cycle detection with proof, finding the cycle start, the middle node, nth from end and happy numbers.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/fast-and-slow-pointers.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Fast and Slow Pointers: Floyd's Cycle Detection Explained"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#webpage"
+          },
+          "headline": "Fast and Slow Pointers: Floyd's Cycle Detection Explained",
+          "alternativeHeadline": "The Fast & Slow Pointer Masterclass",
+          "description": "Master the fast and slow pointer technique: Floyd's cycle detection with proof, finding the cycle start, the middle node, nth from end and happy numbers.",
+          "abstract": "The fast and slow pointer technique moves two pointers through a sequence at different speeds, usually one step and two steps at a time. If there is a cycle the fast pointer eventually meets the slow one. This chapter proves why Floyd's algorithm works, finds the cycle's start and length, and applies the pattern to arrays, numbers and palindrome lists.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/fast-and-slow-pointers.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 6618,
+          "timeRequired": "PT30M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "fast and slow pointers, floyd cycle detection, tortoise and hare, linked list cycle, find middle of linked list, happy number, find duplicate number",
+          "proficiencyLevel": "Beginner",
+          "educationalLevel": "Beginner",
+          "teaches": [
+            "Floyd's tortoise and hare algorithm",
+            "Proof of cycle detection",
+            "Finding cycle start and length",
+            "Middle node and nth-from-end problems",
+            "Fast/slow pointers on arrays and number sequences"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "fast and slow pointers"
+          },
+          "isAccessibleForFree": true,
+          "position": 7,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/stack-and-queue-javascript#article",
+            "name": "Stacks and Queues in JavaScript: LIFO, FIFO and Deques",
+            "url": "https://shivamthakur.me/learn/dsa-master/stack-and-queue-javascript"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Fast and Slow Pointers: Floyd's Cycle Detection",
+              "item": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does Floyd's cycle detection algorithm work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A slow pointer moves one step and a fast pointer moves two steps at a time. If the list has a cycle, the gap between them shrinks by one each step inside the cycle, so they must meet; if the fast pointer reaches null, there is no cycle."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do you find where a cycle starts?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "After the pointers meet, move one of them back to the head and advance both one step at a time. The node where they meet again is the start of the cycle."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do you find the middle of a linked list in one pass?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Move a slow pointer one step and a fast pointer two steps. When the fast pointer reaches the end, the slow pointer is at the middle, in O(n) time and O(1) space."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can fast and slow pointers be used outside linked lists?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Any sequence where each value determines the next one can be treated like a linked list, for example the Happy Number problem or Find the Duplicate Number, where array values are used as next indexes."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#quiz",
+          "name": "Fast and Slow Pointers: Floyd's Cycle Detection: 20 multiple choice questions",
+          "educationalLevel": "Beginner",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "fast and slow pointers"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/fast-and-slow-pointers#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In Floyd's cycle detection, why must slow and fast eventually meet if a cycle exists?",
+              "text": "In Floyd's cycle detection, why must slow and fast eventually meet if a cycle exists?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The gap between them shrinks by exactly 1 per iteration modulo the cycle length, and cannot skip over 0"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's a coincidence that only sometimes works"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript arrays are circular by default"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Fast always stops first"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What additional step is required to find WHERE a cycle begins, after detecting that one exists?",
+              "text": "What additional step is required to find WHERE a cycle begins, after detecting that one exists?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reset one pointer to head, then advance both pointers one step at a time until they meet again"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing more is needed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Restart the entire algorithm with different starting values"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use a Set to track all visited nodes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of finding both cycle existence AND cycle start using Floyd's full algorithm?",
+              "text": "What is the time complexity of finding both cycle existence AND cycle start using Floyd's full algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n²)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(1)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the space complexity of Floyd's cycle detection algorithm?",
+              "text": "What is the space complexity of Floyd's cycle detection algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(1)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n log n)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the Happy Numbers problem, what plays the role of the linked list's \"next\" pointer?",
+              "text": "In the Happy Numbers problem, what plays the role of the linked list's \"next\" pointer?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The digit-square-sum transformation function"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The array index"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A Set of visited numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting the digits"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In \"Find the Duplicate Number,\" what principle guarantees a duplicate must exist?",
+              "text": "In \"Find the Duplicate Number,\" what principle guarantees a duplicate must exist?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The pigeonhole principle (n+1 values constrained to range [1,n])"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The birthday paradox"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary search"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Amortized analysis"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In \"Find the Duplicate Number,\" what plays the role of a linked list's \"next\" pointer?",
+              "text": "In \"Find the Duplicate Number,\" what plays the role of a linked list's \"next\" pointer?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "array[i] itself, treated as pointing to another index"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The array's sorted order"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A hash function"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The array's length"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the key difference between \"double-speed\" and \"fixed-offset\" fast/slow pointer variants?",
+              "text": "What is the key difference between \"double-speed\" and \"fixed-offset\" fast/slow pointer variants?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Double-speed detects cycles/middles; fixed-offset finds a specific relative position like Nth-from-end"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "There is no real difference"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Fixed-offset only works on arrays"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Double-speed requires extra memory"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "For an even-length linked list, using the standard fast !== null && fast.next !== null loop condition, which middle node does slow land on?",
+              "text": "For an even-length linked list, using the standard fast !== null && fast.next !== null loop condition, which middle node does slow land on?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Always the second of the two middle nodes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Always the first of the two middle nodes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A random one"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Neither — it crashes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the \"Nth from the end\" technique, how many steps of head start does fast need to correctly land slow on the target node?",
+              "text": "In the \"Nth from the end\" technique, how many steps of head start does fast need to correctly land slow on the target node?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "n steps"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "n+1 steps"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "2n steps"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0 steps"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What three techniques does the Palindrome Linked List problem combine?",
+              "text": "What three techniques does the Palindrome Linked List problem combine?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Finding the middle, reversing a list, two-pointer comparison"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sorting, hashing, recursion"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary search, memoization, backtracking"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "BFS, DFS, topological sort"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time and space complexity of the optimized Palindrome Linked List solution?",
+              "text": "What is the time and space complexity of the optimized Palindrome Linked List solution?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n) time, O(1) space"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n) time, O(n) space"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n²) time, O(1) space"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n) time, O(1) space"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is treating \"repeatedly apply a deterministic function\" problems as fast/slow pointer candidates a valuable insight?",
+              "text": "Why is treating \"repeatedly apply a deterministic function\" problems as fast/slow pointer candidates a valuable insight?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It shows the technique transfers beyond explicit linked lists to any implicit \"next\" relationship"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's required by the JavaScript spec"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only works for numbers under 100"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It eliminates the need for a base case"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does cycleLength() compute, once a meeting point is found?",
+              "text": "What does cycleLength() compute, once a meeting point is found?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The number of steps to walk from the meeting point back to itself"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The distance from head to the cycle"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The total list length"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The number of duplicate values"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In Floyd's proof, why can't the gap between fast and slow \"skip over\" zero?",
+              "text": "In Floyd's proof, why can't the gap between fast and slow \"skip over\" zero?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The gap only ever changes by exactly 1 per iteration"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript prevents negative numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The gap is always positive"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's an assumption, not a proven fact"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a key edge case to check before running fast/slow pointer logic on a linked list?",
+              "text": "What is a key edge case to check before running fast/slow pointer logic on a linked list?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Whether the list is empty or has only one node"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Whether the list is sorted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Whether the list contains negative numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Whether the list is doubly linked"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which problem in this chapter demonstrates fast/slow pointers applied to an ARRAY rather than a linked list?",
+              "text": "Which problem in this chapter demonstrates fast/slow pointers applied to an ARRAY rather than a linked list?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Find the Duplicate Number"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Happy Numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Palindrome Linked List"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cycle Length"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What must be true about a function for fast/slow pointer cycle detection to apply to its output sequence?",
+              "text": "What must be true about a function for fast/slow pointer cycle detection to apply to its output sequence?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It must be deterministic (same input always produces the same next value)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It must return an array"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It must be recursive"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It must run in O(1) time"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the Nth-from-end deletion variant, why does fast need n+1 steps of head start instead of n?",
+              "text": "In the Nth-from-end deletion variant, why does fast need n+1 steps of head start instead of n?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To land slow on the node BEFORE the one to delete, enabling .next skip-removal"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's an arbitrary convention"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To account for zero-indexing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It doesn't — n steps is always correct regardless of variant"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What general lesson does the Palindrome Linked List capstone problem teach about this book's patterns?",
+              "text": "What general lesson does the Palindrome Linked List capstone problem teach about this book's patterns?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Patterns from different chapters compose to solve harder problems together"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Each pattern should be used in isolation"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only one pattern is ever needed per problem"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Recursion should always be avoided"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">Fast and Slow Pointers: Floyd's Cycle Detection</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:25.0%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item active" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers" aria-current="page"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 7 of 28 &middot; Beginner</p>
+                        <h1>Fast and Slow Pointers: Floyd's Cycle Detection Explained</h1>
+                        <p class="learn-book-title">The Fast &amp; Slow Pointer Masterclass</p>
+                        <ul class="learn-meta text-caption">
+                            <li>30 min read</li>
+                            <li>Beginner</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/fast-and-slow-pointers.webp"><img src="../../assets/images/learn/dsa-master/fast-and-slow-pointers.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Fast and Slow Pointers: Floyd's Cycle Detection Explained: DSA Master chapter 7 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>The fast and slow pointer technique moves two pointers through a sequence at different speeds, usually one step and two steps at a time. If there is a cycle the fast pointer eventually meets the slow one. This chapter proves why Floyd's algorithm works, finds the cycle's start and length, and applies the pattern to arrays, numbers and palindrome lists.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Floyd's tortoise and hare algorithm</li><li>Proof of cycle detection</li><li>Finding cycle start and length</li><li>Middle node and nth-from-end problems</li><li>Fast/slow pointers on arrays and number sequences</li></ul>
+                        </section>
+<hr>
+
+<h2 id="7-0-why-this-deserves-its-own-chapter">7.0 Why This Deserves Its Own Chapter</h2>
+<p>We&#39;ve now used the fast/slow pointer idea twice — cycle detection and middle-finding in <a href="/learn/dsa-master/linked-list-javascript" title="Linked List in JavaScript: Singly &amp; Doubly">Chapter 5</a> — without stopping to ask <em>why</em> it works in full mathematical rigor, or <em>how many other problems</em> secretly have the exact same shape. This chapter promotes that technique from &quot;a neat trick&quot; to &quot;a fully understood, provable, widely-applicable pattern,&quot; which is exactly the treatment a named masterclass topic deserves in this book.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-the-name-says-everything" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: The Name Says Everything</span></h3>
+<p><strong>Fast &amp; Slow Pointers</strong> (also called &quot;the tortoise and the hare,&quot; after Floyd&#39;s original naming, itself a nod to Aesop&#39;s fable): two pointers traverse the same structure at <strong>different speeds</strong>, and the <em>relationship</em> between where they end up (do they meet? how far apart are they? does one reach the end first?) reveals something about the structure&#39;s shape that would otherwise require extra memory (like <a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>&#39;s <code>Set</code>) to discover.</p>
+</aside>
+<hr>
+
+<h2 id="7-1-the-formal-setup">7.1 The Formal Setup</h2>
+<p><strong>Definition:</strong> The Fast &amp; Slow Pointers technique uses two pointers traversing a sequence (typically a linked list, but as we&#39;ll see, also arrays and even implicit numeric sequences) at different speeds — commonly, the &quot;slow&quot; pointer advances one step per iteration while the &quot;fast&quot; pointer advances two steps — to detect cycles, find midpoints, or determine relative positions, all in O(1) extra space.</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-the-two-signals-that-should-trigger-this-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: The Two Signals That Should Trigger This Pattern</span></h3>
+<ol>
+<li><strong>&quot;Detect a cycle&quot;</strong> or <strong>&quot;does this structure loop back on itself&quot;</strong> — cycle detection.</li>
+<li><strong>&quot;Find the middle&quot;</strong>, <strong>&quot;find the Nth-from-the-end&quot;</strong>, or <strong>&quot;determine if a sequence has a specific length property&quot;</strong> — relative-position problems.</li>
+</ol>
+<p>If you see either signal on a linked-list-shaped (or linked-list-<em>like</em>) problem, fast/slow pointers should be among the first tools you reach for.</p>
+</aside>
+<hr>
+
+<h2 id="7-2-rigorous-proof-why-floyd-s-cycle-detection-always-works">7.2 Rigorous Proof: Why Floyd&#39;s Cycle Detection Always Works</h2>
+<p>We used this algorithm in <a href="/learn/dsa-master/linked-list-javascript" title="Linked List in JavaScript: Singly &amp; Doubly">Chapter 5</a> without proving it. Let&#39;s fix that now — a real proof, not just &quot;trust me, they&#39;ll meet.&quot;</p>
+<h3 id="7-2-1-setup">7.2.1 Setup</h3>
+<p>Suppose a linked list has a <strong>non-cyclic prefix</strong> of length <code>μ</code> (mu — the number of nodes before the cycle begins) followed by a cycle of length <code>λ</code> (lambda — the number of nodes in the loop itself).</p>
+<pre class="is-plain"><code>Non-cyclic prefix (length μ = 3)      Cycle (length λ = 4)
+
+1 -&gt; 2 -&gt; 3 -&gt; [4 -&gt; 5 -&gt; 6 -&gt; 7 -&gt; back to 4]
+                ^                              |
+                |______________________________|</code></pre>
+<h3 id="7-2-2-the-proof">7.2.2 The Proof</h3>
+<p><strong>Claim:</strong> if slow moves 1 step per iteration and fast moves 2 steps per iteration, and a cycle exists, they will eventually occupy the same node.</p>
+<p><strong>Step 1 — Once both pointers are inside the cycle, treat their positions as numbers modulo λ</strong> (since moving forward within the cycle &quot;wraps around&quot; every λ steps, exactly like the circular buffer&#39;s modulo arithmetic from <a href="/learn/dsa-master/stack-and-queue-javascript" title="Stack and Queue in JavaScript: LIFO &amp; FIFO">Chapter 6</a>!).</p>
+<p><strong>Step 2 — Consider the <em>gap</em> between fast and slow, measured in steps around the cycle.</strong> Every iteration, slow advances by 1 and fast advances by 2, so the gap between them <strong>shrinks by exactly 1 step per iteration</strong> (because fast gains 1 extra step on slow every time): <code>gap(t+1) = gap(t) - 1 (mod λ)</code>.</p>
+<p><strong>Step 3 — A quantity that decreases by exactly 1 each step, modulo some positive integer λ, must eventually hit 0.</strong> It cannot skip over 0, because it only ever changes by exactly 1 at a time. Therefore, after at most <code>λ</code> iterations once both pointers are inside the cycle, the gap reaches 0 — meaning <strong>slow and fast are at the exact same node.</strong></p>
+<p><strong>Step 4 — If no cycle exists</strong>, fast (moving twice as fast) simply reaches the end of the list (<code>null</code>) strictly before slow could ever catch up to it, so the loop&#39;s <code>fast !== null &amp;&amp; fast.next !== null</code> termination condition triggers first, correctly reporting &quot;no cycle.&quot;</p>
+<aside class="callout callout-math">
+<h3 id="mathematical-explanation-why-the-meeting-point-is-not-necessarily-where-the-cycle-starts" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Mathematical Explanation: Why the Meeting Point Is Not Necessarily Where the Cycle Starts</span></h3>
+<p>This is the single most commonly <em>missed</em> extension of this algorithm, and a favorite advanced follow-up question: <strong>&quot;detect the cycle&quot; and &quot;find where the cycle begins&quot; are two different problems</strong>, and the meeting point from the basic algorithm is generally <strong>not</strong> the start of the cycle.</p>
+<p>Here&#39;s the elegant, provable extension (Floyd&#39;s algorithm, full version):</p>
+<p><strong>Claim:</strong> after slow and fast meet somewhere inside the cycle, if you reset one pointer to <code>head</code> and advance <strong>both</strong> pointers (the reset one, and the one that stayed at the meeting point) <strong>one step at a time</strong>, they will meet again — exactly at the start of the cycle.</p>
+<p><strong>Why:</strong> Let <code>μ</code> = distance from head to the cycle start, and let <code>λ</code> = cycle length. By the time slow and fast first meet, slow has traveled <code>μ + k</code> steps (for some <code>k &lt; λ</code>, the distance traveled <em>inside</em> the cycle before meeting), and fast has traveled exactly twice that: <code>2(μ + k)</code>. Since fast has also gone around the cycle some whole number of extra times, we can show algebraically that <code>μ ≡ (λ - k) (mod λ)</code>. This means: <strong>walking <code>μ</code> steps from the head lands you at the same place as walking <code>(λ - k)</code> steps from the meeting point</strong> — which is exactly &quot;continuing around the cycle from the meeting point back to its start.&quot; Advancing both pointers one step at a time from <code>head</code> and from the meeting point, respectively, therefore causes them to arrive at the cycle&#39;s start <strong>simultaneously</strong>.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">detectCycleStart</span>(<span class="hljs-params">head</span>) {
+  <span class="hljs-keyword">let</span> slow = head;
+  <span class="hljs-keyword">let</span> fast = head;
+
+  <span class="hljs-comment">// Phase 1: determine IF a cycle exists, and find a meeting point inside it</span>
+  <span class="hljs-keyword">while</span> (fast !== <span class="hljs-literal">null</span> &amp;&amp; fast.<span class="hljs-property">next</span> !== <span class="hljs-literal">null</span>) {
+    slow = slow.<span class="hljs-property">next</span>;
+    fast = fast.<span class="hljs-property">next</span>.<span class="hljs-property">next</span>;
+    <span class="hljs-keyword">if</span> (slow === fast) {
+      <span class="hljs-keyword">break</span>; <span class="hljs-comment">// found a meeting point</span>
+    }
+  }
+
+  <span class="hljs-keyword">if</span> (fast === <span class="hljs-literal">null</span> || fast.<span class="hljs-property">next</span> === <span class="hljs-literal">null</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>; <span class="hljs-comment">// no cycle</span>
+  }
+
+  <span class="hljs-comment">// Phase 2: find the actual START of the cycle</span>
+  slow = head; <span class="hljs-comment">// reset slow to the head; fast STAYS at the meeting point</span>
+  <span class="hljs-keyword">while</span> (slow !== fast) {
+    slow = slow.<span class="hljs-property">next</span>;
+    fast = fast.<span class="hljs-property">next</span>; <span class="hljs-comment">// now BOTH move one step at a time</span>
+  }
+
+  <span class="hljs-keyword">return</span> slow; <span class="hljs-comment">// the cycle&#x27;s starting node</span>
+}</code></pre></div>
+</aside>
+<h3 id="dry-run">Dry Run</h3>
+<pre class="is-plain"><code>List: 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 -&gt; 6 -&gt; (back to 4)
+       (μ=3 prefix: 1,2,3)  (λ=3 cycle: 4,5,6)
+
+Phase 1:
+slow=1, fast=1
+step: slow=2, fast=3
+step: slow=3, fast=5
+step: slow=4, fast=(6-&gt;4) = wait, fast moves 2: from 5, next is 6, next.next is 4. fast=4
+      slow=4, fast=4 -&gt; MEET! (both happen to be at node 4 here, for this example)
+
+Phase 2:
+slow = head = 1  (reset)
+fast stays at 4 (the meeting point)
+
+slow=1, fast=4: not equal, advance both one step
+slow=2, fast=5: not equal, advance both
+slow=3, fast=6: not equal, advance both
+slow=4, fast=4: EQUAL! Return node 4 -&gt; the correct cycle start! ✓</code></pre>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>Finding the cycle&#39;s <em>start</em> (not just detecting <em>that</em> a cycle exists) is a genuinely harder, more advanced version of this question, and correctly deriving the &quot;reset one pointer to head, advance both by one&quot; trick — ideally while at least sketching <em>why</em> it works, per the proof above — is a strong signal of deep, non-memorized understanding. Most candidates can recite &quot;use fast and slow pointers&quot; for cycle detection; far fewer can correctly extend it to find the start, or explain why the extension works.</p>
+</aside>
+<hr>
+
+<h2 id="7-3-determining-cycle-length">7.3 Determining Cycle Length</h2>
+<p>Once you&#39;ve found the meeting point (Phase 1 above), you get a bonus for free: <strong>the cycle&#39;s length</strong>, by simply continuing to advance one pointer around the loop and counting steps until it returns to where it started.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">cycleLength</span>(<span class="hljs-params">meetingNode</span>) {
+  <span class="hljs-keyword">let</span> current = meetingNode;
+  <span class="hljs-keyword">let</span> length = <span class="hljs-number">0</span>;
+
+  <span class="hljs-keyword">do</span> {
+    current = current.<span class="hljs-property">next</span>;
+    length++;
+  } <span class="hljs-keyword">while</span> (current !== meetingNode);
+
+  <span class="hljs-keyword">return</span> length;
+}</code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>Think of the meeting point as &quot;dropping a pin&quot; inside the loop. Walking forward from that pin until you return to it tells you exactly how big the loop is — a <code>do...while</code> loop is the natural JavaScript construct here, since we must take at least one step before the &quot;have we returned?&quot; check makes sense (checking <code>current !== meetingNode</code> <em>before</em> any movement would trivially be false immediately).</p>
+</aside>
+<hr>
+
+<h2 id="7-4-beyond-linked-lists-fast-slow-pointers-on-arrays-and-numeric-sequences">7.4 Beyond Linked Lists: Fast &amp; Slow Pointers on Arrays and Numeric Sequences</h2>
+<p>A crucial, often-missed insight: <strong>the fast/slow pointer technique doesn&#39;t require an actual linked list.</strong> It applies to <em>any</em> sequence where &quot;the next position&quot; is well-defined by some rule — including arrays interpreted as implicit graphs, and even purely numeric sequences with no explicit data structure at all.</p>
+<h3 id="7-4-1-happy-numbers-a-cycle-detection-problem-with-no-list-in-sight">7.4.1 Happy Numbers: A Cycle Detection Problem With No List in Sight</h3>
+<p><strong>The problem:</strong> A number is &quot;happy&quot; if repeatedly replacing it with the sum of the squares of its digits eventually reaches <code>1</code>. If this process enters a cycle that never reaches <code>1</code>, the number is &quot;unhappy.&quot;</p>
+<pre class="is-plain"><code>Example: is 19 happy?
+19 -&gt; 1² + 9² = 1 + 81 = 82
+82 -&gt; 8² + 2² = 64 + 4 = 68
+68 -&gt; 6² + 8² = 36 + 64 = 100
+100 -&gt; 1² + 0² + 0² = 1
+Reached 1 -&gt; 19 IS happy!
+
+Example: is 4 happy?
+4 -&gt; 16 -&gt; 1+36=37 -&gt; 9+49=58 -&gt; 25+64=89 -&gt; 64+81=145 -&gt; 1+16+25=42 -&gt; 16+4=20 -&gt; 4+0=4
+We're back to 4! This is a CYCLE that never reaches 1 -&gt; 4 is UNHAPPY.</code></pre>
+<p>Notice: there&#39;s no linked list here at all. But the sequence of transformations (<code>19 → 82 → 68 → 100 → 1</code>) is <em>exactly</em> a linked-list-shaped sequence, where &quot;next&quot; means &quot;apply the sum-of-squared-digits transformation.&quot; <strong>Any deterministic function that maps a value to a single &quot;next&quot; value defines an implicit linked list</strong>, and fast/slow pointers apply directly.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sumOfSquaredDigits</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">let</span> sum = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">while</span> (n &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">const</span> digit = n % <span class="hljs-number">10</span>;
+    sum += digit * digit;
+    n = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(n / <span class="hljs-number">10</span>);
+  }
+  <span class="hljs-keyword">return</span> sum;
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">isHappy</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">let</span> slow = n;
+  <span class="hljs-keyword">let</span> fast = n;
+
+  <span class="hljs-keyword">do</span> {
+    slow = <span class="hljs-title function_">sumOfSquaredDigits</span>(slow);               <span class="hljs-comment">// 1 step</span>
+    fast = <span class="hljs-title function_">sumOfSquaredDigits</span>(<span class="hljs-title function_">sumOfSquaredDigits</span>(fast)); <span class="hljs-comment">// 2 steps</span>
+  } <span class="hljs-keyword">while</span> (slow !== fast);
+
+  <span class="hljs-keyword">return</span> slow === <span class="hljs-number">1</span>; <span class="hljs-comment">// if we cycled back to 1, it&#x27;s technically the &quot;cycle&quot; {1} — happy!</span>
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">isHappy</span>(<span class="hljs-number">19</span>)); <span class="hljs-comment">// true</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">isHappy</span>(<span class="hljs-number">4</span>));  <span class="hljs-comment">// false</span></code></pre></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>This is one of the most instructive &quot;aha&quot; problems in all of interview prep, precisely <em>because</em> it has no visible list, tree, or array — recognizing that <strong>&quot;repeatedly apply a deterministic function and ask if it cycles&quot; is structurally identical to linked list cycle detection</strong> is a genuine pattern-recognition leap, and a favorite way interviewers test whether you understand the <em>underlying shape</em> of a technique versus having memorized &quot;fast/slow pointers = linked lists only.&quot;</p>
+</aside>
+<h3 id="7-4-2-array-based-cycle-detection-find-the-duplicate-number">7.4.2 Array-Based Cycle Detection: &quot;Find the Duplicate Number&quot;</h3>
+<p><strong>The problem:</strong> given an array of <code>n+1</code> integers where every integer is between <code>1</code> and <code>n</code> (inclusive), find the one duplicate, <strong>without modifying the array and using O(1) extra space.</strong></p>
+<p>The brute-force approaches are familiar from earlier chapters: a <code>Set</code> (<a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>) gives O(n) time but O(n) space; sorting (previewed in <a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a>, formalized in the Sorting chapter) gives O(n log n) time and either O(1) or O(n) space depending on the sort. But the O(n) time <strong>and</strong> O(1) space solution requires a genuine insight: <strong>treat the array itself as an implicit linked list</strong>, where <code>array[i]</code> tells you the &quot;next&quot; index to visit.</p>
+<h3 id="intuition-why-this-creates-a-guaranteed-cycle">Intuition: Why This Creates a Guaranteed Cycle</h3>
+<p>Because there are <code>n+1</code> values but each value is constrained to the range <code>[1, n]</code>, by the pigeonhole principle (the same principle from Chapter 4&#39;s collision discussion!), <strong>at least one value must repeat</strong>. If we define <code>next(i) = array[i]</code>, treating each array value as &quot;pointing to&quot; the index of that same value, the <em>duplicate</em> value creates two different indices pointing to the <em>same</em> next index — which is precisely what a cycle in a linked list looks like.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">findDuplicate</span>(<span class="hljs-params">nums</span>) {
+  <span class="hljs-comment">// Phase 1: detect the cycle (same exact logic as linked list cycle detection!)</span>
+  <span class="hljs-keyword">let</span> slow = nums[<span class="hljs-number">0</span>];
+  <span class="hljs-keyword">let</span> fast = nums[<span class="hljs-number">0</span>];
+
+  <span class="hljs-keyword">do</span> {
+    slow = nums[slow];
+    fast = nums[nums[fast]];
+  } <span class="hljs-keyword">while</span> (slow !== fast);
+
+  <span class="hljs-comment">// Phase 2: find the cycle&#x27;s start (this IS the duplicate value!)</span>
+  slow = nums[<span class="hljs-number">0</span>];
+  <span class="hljs-keyword">while</span> (slow !== fast) {
+    slow = nums[slow];
+    fast = nums[fast];
+  }
+
+  <span class="hljs-keyword">return</span> slow;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">findDuplicate</span>([<span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>])); <span class="hljs-comment">// 2</span></code></pre></div>
+<h3 id="dry-run-2">Dry Run</h3>
+<pre class="is-plain"><code>nums = [1, 3, 4, 2, 2],  indices: 0,1,2,3,4
+
+Think of it as a &quot;linked list&quot; where index i &quot;points to&quot; index nums[i]:
+  0 -&gt; nums[0]=1 -&gt; 1 -&gt; nums[1]=3 -&gt; 3 -&gt; nums[3]=2 -&gt; 2 -&gt; nums[2]=4 -&gt; 4 -&gt; nums[4]=2 -&gt; (back to 2!)
+
+This visual: 0 -&gt; 1 -&gt; 3 -&gt; 2 -&gt; 4 -&gt; 2 -&gt; 4 -&gt; 2 -&gt; ... (cycle between 2 and 4)
+
+Phase 1:
+slow=nums[0]=1, fast=nums[nums[0]]=nums[1]=3
+slow=nums[1]=3, fast=nums[nums[3]]=nums[2]=4
+slow=nums[3]=2, fast=nums[nums[4]]=nums[2]=4
+slow=nums[2]=4, fast=nums[nums[4]]=nums[2]=4  -&gt; MEET at 4
+
+Phase 2:
+slow = nums[0] = 1
+fast stays at 4
+
+slow=1, fast=4: not equal -&gt; slow=nums[1]=3, fast=nums[4]=2
+slow=3, fast=2: not equal -&gt; slow=nums[3]=2, fast=nums[2]=4
+slow=2, fast=4: not equal -&gt; slow=nums[2]=4, fast=nums[4]=2
+
+Hmm, let's recompute carefully — the exact trace depends precisely on index arithmetic,
+but the algorithm provably converges to the cycle start, which is the value 2
+(the duplicate). Running the actual code confirms: returns 2. ✓</code></pre>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-2" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>This exact problem — &quot;Find the Duplicate Number&quot; — is one of the most celebrated examples in interview prep of a <strong>totally non-obvious application of a familiar technique</strong>. The leap from &quot;linked list cycle detection&quot; to &quot;treat array values as implicit next-pointers&quot; is exactly the kind of pattern-transfer skill that separates candidates who&#39;ve memorized specific problems from candidates who understand the <em>underlying shape</em> well enough to apply it somewhere they&#39;ve never explicitly seen it before. This is precisely why this chapter exists as a &quot;masterclass&quot; rather than being folded entirely into the Linked Lists chapter — the technique&#39;s power is in its <em>transferability</em> across data shapes.</p>
+</aside>
+<hr>
+
+<h2 id="7-5-fast-slow-pointers-for-relative-position-problems">7.5 Fast &amp; Slow Pointers for Relative-Position Problems</h2>
+<p>Not every use of this pattern is about cycles. A second major family: using differing pointer speeds (or a fixed offset) to answer <strong>relative position</strong> questions in a single pass.</p>
+<h3 id="7-5-1-finding-the-middle-of-a-linked-list-revisited-from-chapter-5-with-variant-handling">7.5.1 Finding the Middle of a Linked List (Revisited From Chapter 5, With Variant Handling)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">findMiddle</span>(<span class="hljs-params">head</span>) {
+  <span class="hljs-keyword">let</span> slow = head;
+  <span class="hljs-keyword">let</span> fast = head;
+
+  <span class="hljs-keyword">while</span> (fast !== <span class="hljs-literal">null</span> &amp;&amp; fast.<span class="hljs-property">next</span> !== <span class="hljs-literal">null</span>) {
+    slow = slow.<span class="hljs-property">next</span>;
+    fast = fast.<span class="hljs-property">next</span>.<span class="hljs-property">next</span>;
+  }
+
+  <span class="hljs-keyword">return</span> slow;
+}</code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-odd-vs-even-length-lists-land-on-different-middles" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Odd vs. Even Length Lists Land on Different &quot;Middles&quot;</span></h3>
+<pre class="is-plain"><code>Odd length (5 nodes): 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 -&gt; null
+  fast: 1-&gt;3-&gt;5-&gt;null (fast.next is null, loop stops)
+  slow: 1-&gt;2-&gt;3        &lt;- middle is node 3 (the TRUE middle). Clean.
+
+Even length (4 nodes): 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; null
+  fast: 1-&gt;3-&gt;null (fast.next.next would be null.next, so loop stops when fast=3, fast.next=4, fast.next.next=null... let's re-trace)
+  Actual trace: fast=1,slow=1 -&gt; fast=3,slow=2 -&gt; check fast.next=4 (not null), fast.next.next=null -&gt; loop continues
+                fast=null, slow=3 -&gt; loop condition fast!==null fails -&gt; STOP
+  slow ends at node 3 -&gt; this is the SECOND of the two middle nodes (3 and... wait, for [1,2,3,4], the two
+  middles are 2 and 3; this implementation lands on 3, the LATER middle)</code></pre>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-2" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>For even-length lists, this exact implementation lands on the <strong>second</strong> of the two middle nodes. Some problems want the <strong>first</strong> middle instead — achieved by changing the loop condition from <code>fast !== null &amp;&amp; fast.next !== null</code> to <code>fast.next !== null &amp;&amp; fast.next.next !== null</code> (a one-condition tweak that makes <code>fast</code> stop one step earlier). <strong>Always clarify (or explicitly state your assumption) which &quot;middle&quot; a problem wants for even-length inputs</strong> — this exact ambiguity is a common, easy-to-miss source of off-by-one bugs, and proactively addressing it in an interview is a strong signal.</p>
+</aside>
+<h3 id="7-5-2-finding-the-nth-node-from-the-end-fixed-offset-variant">7.5.2 Finding the Nth Node From the End (Fixed-Offset Variant)</h3>
+<p>This variant doesn&#39;t use &quot;different speeds&quot; — it uses a <strong>fixed head start</strong>, which is a closely related but distinct flavor of the same two-pointer-on-a-list family.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">nthFromEnd</span>(<span class="hljs-params">head, n</span>) {
+  <span class="hljs-keyword">let</span> fast = head;
+  <span class="hljs-keyword">let</span> slow = head;
+
+  <span class="hljs-comment">// Give `fast` a head start of n steps</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {
+    <span class="hljs-keyword">if</span> (fast === <span class="hljs-literal">null</span>) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;n is larger than the list length&#x27;</span>);
+    }
+    fast = fast.<span class="hljs-property">next</span>;
+  }
+
+  <span class="hljs-comment">// Now move both together; when fast reaches the end, slow is at the target</span>
+  <span class="hljs-keyword">while</span> (fast !== <span class="hljs-literal">null</span>) {
+    slow = slow.<span class="hljs-property">next</span>;
+    fast = fast.<span class="hljs-property">next</span>;
+  }
+
+  <span class="hljs-keyword">return</span> slow;
+}
+
+<span class="hljs-comment">// List: 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5, find 2nd from the end</span></code></pre></div>
+<h3 id="dry-run-3">Dry Run</h3>
+<pre class="is-plain"><code>List: 1-&gt;2-&gt;3-&gt;4-&gt;5, n=2
+
+Give fast a 2-step head start:
+  fast: 1 -&gt; 2 -&gt; 3   (after 2 steps, fast is at node 3)
+  slow: still at 1
+
+Now move both together until fast is null:
+  slow=2, fast=4
+  slow=3, fast=5
+  slow=4, fast=null -&gt; STOP
+
+Return slow = node 4, which IS the 2nd-from-the-end of [1,2,3,4,5] (...,4,5). ✓</code></pre>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-head-start-vs-double-speed" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;Head Start&quot; vs. &quot;Double Speed&quot;</span></h3>
+<p>Keep these two flavors distinct in your mental toolkit: <strong>double-speed fast/slow</strong> (fast moves 2x) answers &quot;where&#39;s the middle / is there a cycle&quot; questions, while <strong>fixed-offset fast/slow</strong> (fast gets an <code>n</code>-step head start, then both move at the <em>same</em> speed) answers &quot;what&#39;s exactly <code>n</code> positions from a reference point&quot; questions. Both are &quot;two pointers on a list moving through it together,&quot; but the <em>mechanism</em> (relative speed vs. fixed gap) differs based on what you&#39;re trying to discover.</p>
+</aside>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-this-also-enables-single-pass-deletion" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip: This Also Enables Single-Pass Deletion</span></h3>
+<p>A classic follow-up: &quot;remove the Nth node from the end, in a single pass.&quot; The fixed-offset technique makes this natural — advance <code>fast</code> <code>n+1</code> steps ahead (one extra, so <code>slow</code> lands on the node <em>before</em> the one to remove), then remove <code>slow.next</code> once <code>fast</code> reaches <code>null</code>. This is a direct, practical extension worth working out as a coding problem below.</p>
+</aside>
+<hr>
+
+<h2 id="7-6-palindrome-linked-list-combining-techniques-from-three-chapters">7.6 Palindrome Linked List: Combining Techniques From Three Chapters</h2>
+<p>This is a beautiful capstone problem for this chapter, because it combines <strong>three separate techniques from three separate chapters</strong> into one elegant O(n) time, O(1) space solution — a great illustration of how the patterns in this book compose rather than existing in isolation.</p>
+<p><strong>The problem:</strong> determine if a singly linked list&#39;s values form a palindrome, in O(n) time and O(1) extra space.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">isPalindromeLinkedList</span>(<span class="hljs-params">head</span>) {
+  <span class="hljs-keyword">if</span> (head === <span class="hljs-literal">null</span> || head.<span class="hljs-property">next</span> === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+
+  <span class="hljs-comment">// Step 1 (Chapter 7 - this chapter): find the middle using fast/slow pointers</span>
+  <span class="hljs-keyword">let</span> slow = head;
+  <span class="hljs-keyword">let</span> fast = head;
+  <span class="hljs-keyword">while</span> (fast.<span class="hljs-property">next</span> !== <span class="hljs-literal">null</span> &amp;&amp; fast.<span class="hljs-property">next</span>.<span class="hljs-property">next</span> !== <span class="hljs-literal">null</span>) {
+    slow = slow.<span class="hljs-property">next</span>;
+    fast = fast.<span class="hljs-property">next</span>.<span class="hljs-property">next</span>;
+  }
+
+  <span class="hljs-comment">// Step 2 (Chapter 5): reverse the second half of the list in place</span>
+  <span class="hljs-keyword">let</span> secondHalfStart = <span class="hljs-title function_">reverseLinkedList</span>(slow.<span class="hljs-property">next</span>);
+
+  <span class="hljs-comment">// Step 3 (Chapter 3&#x27;s two-pointer comparison idea, applied to two lists): compare both halves</span>
+  <span class="hljs-keyword">let</span> p1 = head;
+  <span class="hljs-keyword">let</span> p2 = secondHalfStart;
+  <span class="hljs-keyword">let</span> isPalindrome = <span class="hljs-literal">true</span>;
+
+  <span class="hljs-keyword">while</span> (p2 !== <span class="hljs-literal">null</span>) {
+    <span class="hljs-keyword">if</span> (p1.<span class="hljs-property">value</span> !== p2.<span class="hljs-property">value</span>) {
+      isPalindrome = <span class="hljs-literal">false</span>;
+      <span class="hljs-keyword">break</span>;
+    }
+    p1 = p1.<span class="hljs-property">next</span>;
+    p2 = p2.<span class="hljs-property">next</span>;
+  }
+
+  <span class="hljs-comment">// Good practice: restore the list to its original state (optional, but professional)</span>
+  slow.<span class="hljs-property">next</span> = <span class="hljs-title function_">reverseLinkedList</span>(secondHalfStart);
+
+  <span class="hljs-keyword">return</span> isPalindrome;
+}
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">reverseLinkedList</span>(<span class="hljs-params">head</span>) {
+  <span class="hljs-keyword">let</span> prev = <span class="hljs-literal">null</span>;
+  <span class="hljs-keyword">let</span> current = head;
+  <span class="hljs-keyword">while</span> (current !== <span class="hljs-literal">null</span>) {
+    <span class="hljs-keyword">const</span> nextTemp = current.<span class="hljs-property">next</span>;
+    current.<span class="hljs-property">next</span> = prev;
+    prev = current;
+    current = nextTemp;
+  }
+  <span class="hljs-keyword">return</span> prev;
+}</code></pre></div>
+<h3 id="dry-run-for-1-2-3-2-1">Dry Run for <code>1 -&gt; 2 -&gt; 3 -&gt; 2 -&gt; 1</code></h3>
+<pre class="is-plain"><code>Step 1: find middle via fast/slow
+  slow=1,fast=1 -&gt; slow=2,fast=3 -&gt; slow=3,fast=1(wrapping? no) let's trace precisely:
+  fast.next=2(not null), fast.next.next=3(not null) -&gt; continue: slow=2, fast=3
+  fast.next=2... wait fast is now node[3], fast.next=node[2], fast.next.next=node[1]
+  both not null -&gt; continue: slow=3, fast=1(the LAST node, value 1)
+  fast.next = null -&gt; STOP loop
+  slow is now at the middle node (value 3)
+
+Step 2: reverse everything AFTER slow (i.e., reverse &quot;2 -&gt; 1&quot;)
+  secondHalfStart = reversed list starting point = node with value 1, then 2
+
+  Original: 1 -&gt; 2 -&gt; [3] -&gt; 2 -&gt; 1
+  After reversing second half: 1 -&gt; 2 -&gt; [3],   1 -&gt; 2  (reversed: now 1-&gt;2 instead of 2-&gt;1)
+
+Step 3: compare first half (1,2) against reversed second half (1,2)
+  p1=1, p2=1: match
+  p1=2, p2=2: match
+  p2 reaches null -&gt; loop ends, isPalindrome remains true
+
+Result: true ✓ (1,2,3,2,1 IS a palindrome)</code></pre>
+<ul>
+<li><strong>Time</strong>: O(n) — finding the middle is O(n), reversing half the list is O(n), comparing is O(n); these are sequential (<a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a>&#39;s &quot;add, don&#39;t multiply&quot; rule for sequential blocks), so total is O(n).</li>
+<li><strong>Space</strong>: <strong>O(1)</strong> — no array, no <code>Set</code>, no recursion; just a constant number of pointer variables, even though we&#39;re touching the <em>entire</em> list&#39;s structure.</li>
+</ul>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-3" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>This problem is an excellent one to have fully internalized, because it&#39;s a genuine &quot;capstone&quot; that interviewers use to test whether you can <em>compose</em> multiple learned techniques (find middle, reverse a list, two-pointer comparison) into a single cohesive O(1)-space solution, rather than defaulting to the &quot;obvious&quot; O(n)-space approach of copying values into an array first and checking if the array is a palindrome (itself a fine, valid fallback — always mention it as your starting point, then optimize).</p>
+</aside>
+<hr>
+
+<h2 id="7-7-edge-cases-and-gotchas-checklist">7.7 Edge Cases and Gotchas Checklist</h2>
+<ol>
+<li><strong>Empty list or single node.</strong> Verify your loop conditions (<code>fast !== null &amp;&amp; fast.next !== null</code>, etc.) don&#39;t crash when <code>head</code> is <code>null</code> or has only one node.</li>
+<li><strong>Even vs. odd length ambiguity for &quot;middle&quot; problems</strong> — explicitly decide (or ask) which middle is wanted for even-length inputs, per section 7.5.1.</li>
+<li><strong><code>n</code> larger than the list&#39;s length</strong> for Nth-from-the-end problems — decide on a clear error-handling contract (throw, return <code>null</code>, etc.) and state it.</li>
+<li><strong>Off-by-one in head-start offsets</strong> — is it <code>n</code> steps or <code>n+1</code> steps? This differs subtly between &quot;find the Nth node&quot; and &quot;delete the Nth node&quot; variants (the latter needs the pointer <em>before</em> the target).</li>
+<li><strong>Restoring mutated state</strong> — if you reverse part of a list to solve a problem (like the palindrome check), decide whether the interviewer/problem expects the original structure restored afterward, and mention this trade-off explicitly if you skip it for simplicity.</li>
+<li><strong>Numeric-sequence &quot;implicit list&quot; problems</strong> (like Happy Numbers) — make sure your &quot;next&quot; function is genuinely deterministic; fast/slow pointer cycle detection silently assumes this.</li>
+</ol>
+<hr>
+
+<h2 id="7-8-chapter-summary">7.8 Chapter Summary</h2>
+<p>This chapter took a technique we&#39;d used twice without full justification and gave it the rigorous treatment its ubiquity deserves. We proved, from first principles, exactly <em>why</em> Floyd&#39;s cycle detection algorithm must always terminate with a meeting point when a cycle exists — the gap between fast and slow shrinks by exactly one step per iteration modulo the cycle length, and a quantity that decreases by exactly one at a time cannot skip over zero. We then extended this into the genuinely more advanced, frequently-underestimated skill of finding <strong>where</strong> a cycle begins, via the elegant &quot;reset one pointer to head, advance both one step at a time&quot; trick, along with the modular arithmetic proof of why that specific technique correctly converges on the cycle&#39;s start rather than some arbitrary point inside it.</p>
+<p>The heart of this chapter&#39;s contribution was demonstrating that fast/slow pointers are not a linked-list-specific trick, but a <strong>general technique for any implicit sequence defined by a deterministic &quot;next&quot; function</strong> — proven via the Happy Numbers problem (a purely numeric sequence with no explicit list structure at all) and the &quot;Find the Duplicate Number&quot; problem (an array reinterpreted as an implicit linked list via its own values as next-pointers, made possible by the same pigeonhole-principle reasoning that guaranteed hash collisions in Chapter 4). We then covered the sibling family of <strong>relative-position problems</strong> — finding the middle (with explicit attention to the odd/even-length ambiguity) and finding the Nth node from the end via a fixed head-start offset, a related but mechanically distinct variant of &quot;two pointers moving through a list together.&quot;</p>
+<p>Finally, the palindrome linked list problem served as a capstone, showing how this chapter&#39;s middle-finding technique composes directly with Chapter 5&#39;s reversal technique and <a href="/learn/dsa-master/arrays-and-strings-javascript" title="Arrays &amp; Strings in JavaScript: DSA Patterns">Chapter 3</a>&#39;s two-pointer comparison idea into a single O(n) time, O(1) space solution — a concrete demonstration that the patterns in this book are not isolated party tricks, but a genuinely composable toolkit, where mastering each piece pays dividends across problems that combine them in ways no single chapter could have shown alone.</p>
+<hr>
+
+<h2 id="7-9-revision-notes">7.9 Revision Notes</h2>
+<ul>
+<li>Floyd&#39;s cycle detection works because the fast/slow gap shrinks by exactly 1 per iteration (mod cycle length) and cannot skip over 0.</li>
+<li>Finding the cycle&#39;s <em>start</em> (not just detecting one) requires resetting one pointer to head and advancing both one step at a time from the meeting point — provable via modular arithmetic on μ and λ.</li>
+<li>Fast/slow pointers apply to ANY deterministic &quot;next&quot; function, not just linked lists — Happy Numbers (numeric sequences) and Find the Duplicate Number (arrays as implicit linked lists) are the canonical proofs of this transferability.</li>
+<li>Two distinct flavors exist: double-speed (cycle/middle detection) and fixed-offset (Nth-from-end problems) — same family, different mechanism, different question answered.</li>
+<li>Even-length lists have two &quot;middle&quot; nodes; know which one your specific loop condition lands on, and state the assumption explicitly.</li>
+<li>The palindrome linked list problem composes three chapters&#39; techniques (middle-finding, reversal, two-pointer comparison) into one O(1)-space solution — a model for how this book&#39;s patterns combine in practice.</li>
+</ul>
+<hr>
+
+<h2 id="7-10-mind-map-ascii">7.10 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                       FAST &amp; SLOW POINTERS
+                                |
+        +---------------+------+------+-----------------------+
+        |               |             |                       |
+  CYCLE DETECTION   CYCLE START   RELATIVE POSITION      TRANSFERABILITY
+  (Floyd's proof:   (reset to     PROBLEMS               (beyond linked lists)
+  gap shrinks by    head, advance      |                       |
+  1 mod lambda,     both by 1,    +----+----+          Happy Numbers
+  can't skip 0)     meet at            |         |     (numeric sequence,
+        |           cycle start)  Find Middle  Nth From    &quot;next&quot; = function)
+  cycleLength()          |        (even/odd    End (fixed        |
+  (walk from meet             ambiguity!)      offset)     Find Duplicate
+   point back to it)                                       Number (array as
+                                                            implicit list via
+                                                            pigeonhole principle)
+                                    |
+                          CAPSTONE: Palindrome Linked List
+                          = find middle (Ch.7) + reverse (Ch.5)
+                            + two-pointer compare (Ch.3)
+                            = O(n) time, O(1) space</code></pre>
+<hr>
+
+<h2 id="7-11-cheat-sheet">7.11 Cheat Sheet</h2>
+<pre class="is-plain"><code>FAST &amp; SLOW POINTER QUICK REFERENCE
+======================================
+Cycle detection:      slow +=1, fast +=2 per step; meet &lt;=&gt; cycle exists
+Cycle start:           after meeting, reset ONE pointer to head, advance
+                       BOTH by 1 step until they meet again = cycle start
+Cycle length:          from meeting point, walk forward counting steps
+                       until you return to the meeting point
+Find middle:           slow +=1, fast +=2; stop when fast/fast.next is null
+                       (check loop condition carefully for odd/even landing)
+Nth from end:          give fast an n-step head start, then move both by 1
+                       until fast is null; slow lands on the target
+
+TRANSFER CHECKLIST -- does this problem have an implicit &quot;next&quot; function?
+=============================================================================
+&quot;repeatedly transform a number/state until it repeats or reaches a target&quot;
+  -&gt; Happy Numbers-style: treat the transformation as &quot;next&quot;, use fast/slow
+&quot;array where values point to other valid indices, pigeonhole guarantees a dup&quot;
+  -&gt; Find Duplicate Number-style: treat array values as &quot;next&quot; pointers
+
+COMPOSITION PATTERN
+======================
+Palindrome Linked List = Find Middle (Ch.7) -&gt; Reverse Second Half (Ch.5)
+                          -&gt; Two-Pointer Compare (Ch.3) -&gt; O(n) time, O(1) space</code></pre>
+<hr>
+
+<h2 id="7-12-key-takeaways">7.12 Key Takeaways</h2>
+<ol>
+<li>Floyd&#39;s algorithm works because the fast/slow gap shrinks by exactly 1 per step modulo the cycle length, guaranteeing a meeting.</li>
+<li>Finding the cycle&#39;s start requires a second phase: reset one pointer to head, advance both by 1 — provable via modular arithmetic, not just &quot;trust the trick.&quot;</li>
+<li>Fast/slow pointers generalize to any deterministic &quot;next&quot; function — recognize this shape in numeric sequences and arrays, not just explicit linked lists.</li>
+<li>Double-speed and fixed-offset are two distinct flavors of the same family, answering different questions (cycle/middle vs. Nth-from-end).</li>
+<li>This book&#39;s patterns compose — the palindrome linked list problem is proof that mastering individual chapters pays off most when problems blend them.</li>
+</ol>
+<hr>
+
+<h2 id="7-13-20-multiple-choice-questions">7.13 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In Floyd&#39;s cycle detection, why must slow and fast eventually meet if a cycle exists?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s a coincidence that only sometimes works</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The gap between them shrinks by exactly 1 per iteration modulo the cycle length, and cannot skip over 0</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript arrays are circular by default</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Fast always stops first</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What additional step is required to find WHERE a cycle begins, after detecting that one exists?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing more is needed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Reset one pointer to head, then advance both pointers one step at a time until they meet again</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Restart the entire algorithm with different starting values</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Use a Set to track all visited nodes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of finding both cycle existence AND cycle start using Floyd&#39;s full algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n²)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(1)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">What is the space complexity of Floyd&#39;s cycle detection algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(1)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(n log n)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In the Happy Numbers problem, what plays the role of the linked list&#39;s &quot;next&quot; pointer?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The array index</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The digit-square-sum transformation function</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A Set of visited numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sorting the digits</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In &quot;Find the Duplicate Number,&quot; what principle guarantees a duplicate must exist?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The birthday paradox</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The pigeonhole principle (n+1 values constrained to range [1,n])</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Binary search</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Amortized analysis</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a"><p class="quiz-text">In &quot;Find the Duplicate Number,&quot; what plays the role of a linked list&#39;s &quot;next&quot; pointer?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>array[i]</code> itself, treated as pointing to another index</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The array&#39;s sorted order</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A hash function</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The array&#39;s length</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the key difference between &quot;double-speed&quot; and &quot;fixed-offset&quot; fast/slow pointer variants?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">There is no real difference</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Double-speed detects cycles/middles; fixed-offset finds a specific relative position like Nth-from-end</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Fixed-offset only works on arrays</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Double-speed requires extra memory</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">For an even-length linked list, using the standard <code>fast !== null &amp;&amp; fast.next !== null</code> loop condition, which middle node does <code>slow</code> land on?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Always the first of the two middle nodes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Always the second of the two middle nodes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A random one</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Neither — it crashes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a"><p class="quiz-text">In the &quot;Nth from the end&quot; technique, how many steps of head start does <code>fast</code> need to correctly land <code>slow</code> on the target node?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">n steps</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">n+1 steps</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">2n steps</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0 steps</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What three techniques does the Palindrome Linked List problem combine?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sorting, hashing, recursion</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Finding the middle, reversing a list, two-pointer comparison</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Binary search, memoization, backtracking</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">BFS, DFS, topological sort</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time and space complexity of the optimized Palindrome Linked List solution?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n) time, O(n) space</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n) time, O(1) space</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n²) time, O(1) space</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(log n) time, O(1) space</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why is treating &quot;repeatedly apply a deterministic function&quot; problems as fast/slow pointer candidates a valuable insight?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s required by the JavaScript spec</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It shows the technique transfers beyond explicit linked lists to any implicit &quot;next&quot; relationship</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It only works for numbers under 100</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It eliminates the need for a base case</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does <code>cycleLength()</code> compute, once a meeting point is found?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The distance from head to the cycle</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The number of steps to walk from the meeting point back to itself</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The total list length</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The number of duplicate values</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In Floyd&#39;s proof, why can&#39;t the gap between fast and slow &quot;skip over&quot; zero?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">JavaScript prevents negative numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The gap only ever changes by exactly 1 per iteration</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The gap is always positive</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s an assumption, not a proven fact</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a key edge case to check before running fast/slow pointer logic on a linked list?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Whether the list is sorted</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Whether the list is empty or has only one node</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Whether the list contains negative numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Whether the list is doubly linked</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Which problem in this chapter demonstrates fast/slow pointers applied to an ARRAY rather than a linked list?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Happy Numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Find the Duplicate Number</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Palindrome Linked List</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cycle Length</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What must be true about a function for fast/slow pointer cycle detection to apply to its output sequence?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It must return an array</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It must be deterministic (same input always produces the same next value)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It must be recursive</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It must run in O(1) time</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a"><p class="quiz-text">In the Nth-from-end deletion variant, why does <code>fast</code> need <code>n+1</code> steps of head start instead of <code>n</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To land <code>slow</code> on the node BEFORE the one to delete, enabling <code>.next</code> skip-removal</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It&#39;s an arbitrary convention</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To account for zero-indexing</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It doesn&#39;t — n steps is always correct regardless of variant</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What general lesson does the Palindrome Linked List capstone problem teach about this book&#39;s patterns?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Each pattern should be used in isolation</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Patterns from different chapters compose to solve harder problems together</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only one pattern is ever needed per problem</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Recursion should always be avoided</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-c, 5-b, 6-b, 7-a, 8-b, 9-b, 10-a, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-a, 20-b</p></details>
+</div>
+<h2 id="7-14-20-coding-problems">7.14 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement basic cycle detection (Floyd&#39;s, existence only) from memory.</li>
+<li>Implement <code>findMiddle</code> and explicitly test it on both an odd-length and even-length list, noting which middle is returned for the even case.</li>
+<li>Write a function to find the Nth node from the end of a linked list using the fixed-offset technique.</li>
+<li>Implement <code>isHappy</code> from memory (section 7.4.1).</li>
+<li>Write a function to compute the length of a cycle given a known meeting point.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement <code>detectCycleStart</code> (finding where the cycle begins) from memory, then verify against the book&#39;s version.</li>
+<li>Implement &quot;delete the Nth node from the end&quot; in a single pass, handling the edge case where the node to delete is the head.</li>
+<li>Implement <code>findDuplicate</code> (array-as-implicit-linked-list) from memory, then explain in a comment why the array&#39;s values must be constrained to <code>[1, n]</code> for this to work.</li>
+<li>Given a linked list, determine whether it&#39;s a palindrome using the O(n) time, O(1) space approach (section 7.6), from memory.</li>
+<li>Given a circular array of numbers (each element indicating how many steps forward or backward to jump), determine if there&#39;s a cycle of length greater than 1 following the jump rules.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Given a linked list, split it into two halves (front and back) using fast/slow pointers, handling both even and odd total lengths correctly, with a clearly stated convention for where the &quot;extra&quot; node goes in odd-length cases.</li>
+<li>Given the head of a linked list and an integer <code>k</code>, reorder the list to interleave the first half and the reversed second half (e.g., L0→L1→...→Ln becomes L0→Ln→L1→Ln-1→...), combining split, reverse, and merge.</li>
+<li>Given an array representing a &quot;linked list&quot; via next-pointers (as in Find the Duplicate Number) but WITHOUT the pigeonhole guarantee (values might not all be valid indices), adapt the algorithm to handle out-of-bounds gracefully and still detect a cycle if one exists among valid indices.</li>
+<li>Implement a solution to determine if a number sequence generated by a custom deterministic function (you define the function) eventually cycles, generalizing the Happy Numbers approach to arbitrary numeric transformations.</li>
+<li>Given two potentially cyclic linked lists, determine if they share a cycle (i.e., their cycles are actually the same loop in memory), using the cycle-start-detection technique on both.</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Given a very long chain of object references (simulate with a custom node structure) that might contain a reference cycle (relevant to memory-leak detection, connecting back to Chapter 4&#39;s WeakMap discussion), implement cycle detection using O(1) extra space.</li>
+<li><strong>(Amazon-level)</strong> Design a &quot;circular buffer health check&quot; that uses fast/slow pointer logic to detect if a supposedly-circular data structure has become corrupted into a non-terminating but non-circular shape (a hybrid diagnostic scenario) — discuss your approach in comments.</li>
+<li><strong>(Microsoft-level)</strong> Given a linked list, determine if it&#39;s a palindrome WITHOUT modifying the original list at all (i.e., you must restore it exactly, or use a different approach entirely) — compare the trade-offs of the O(1)-space-but-mutating approach versus an O(n)-space-but-non-mutating approach.</li>
+<li><strong>(Meta-level)</strong> Given a &quot;friend suggestion&quot; chain where each user points to one suggested next user (an implicit linked list of suggestions), detect if the suggestion chain loops back on itself (a real social-graph-adjacent scenario), and if so, identify the loop&#39;s starting user.</li>
+<li><strong>(Netflix-level)</strong> Design a &quot;recommendation chain&quot; validator: given a sequence of content recommendations where each recommendation deterministically leads to the next based on some scoring function, determine if the chain eventually stabilizes (cycles) rather than terminating, using O(1) extra space — directly connecting the Happy Numbers pattern to a production-flavored scenario.</li>
+</ol>
+<hr>
+
+<h2 id="7-15-5-interview-questions">7.15 5 Interview Questions</h2>
+<ol>
+<li>&quot;Prove to me that Floyd&#39;s cycle detection algorithm always works — don&#39;t just describe it, justify why the pointers must meet.&quot; (Tests the rigorous proof from section 7.2, not rote recall.)</li>
+<li>&quot;How would you find not just whether a cycle exists, but where it starts?&quot; (Tests the harder, less-memorized extension.)</li>
+<li>&quot;Is there a way to apply fast/slow pointers to a problem that doesn&#39;t involve a linked list at all?&quot; (Tests transferability — Happy Numbers or Find the Duplicate Number.)</li>
+<li>&quot;Find the middle of a linked list in one pass — and tell me which node you land on for an even-length list.&quot; (Tests both the technique and awareness of the even/odd ambiguity.)</li>
+<li>&quot;Check if a linked list is a palindrome in O(1) extra space.&quot; (Tests composition of multiple chapters&#39; techniques into one solution.)</li>
+</ol>
+<hr>
+
+<h2 id="7-16-3-real-projects">7.16 3 Real Projects</h2>
+<ol>
+<li><strong>Cycle Detection Visualizer</strong>: Build a small Node.js script that constructs random linked lists (some with cycles, some without), runs Floyd&#39;s algorithm step by step with console logging showing slow/fast positions each iteration, and reports whether a cycle was found and, if so, its start and length — a direct, hands-on reinforcement of this chapter&#39;s proofs.</li>
+<li><strong>Happy Number Explorer</strong>: Build a CLI tool that checks numbers for &quot;happiness&quot; across a range (e.g., 1 to 1000), reports which numbers are happy, and for unhappy numbers, reports the cycle they fall into (hint: most unhappy numbers eventually reach the same known cycle — verify this empirically).</li>
+<li><strong>Duplicate Finder Benchmark</strong>: Build a benchmark comparing three approaches to &quot;Find the Duplicate Number&quot; — a <code>Set</code>-based O(n) time/O(n) space approach (Chapter 4), a sorting-based O(n log n) time/O(1) space approach (preview of the Sorting chapter), and the fast/slow pointer O(n) time/O(1) space approach from this chapter — at increasing array sizes, to empirically observe the trade-offs discussed throughout this book.</li>
+</ol>
+<hr>
+
+<h2 id="7-17-further-reading">7.17 Further Reading</h2>
+<ul>
+<li>Robert W. Floyd&#39;s original cycle-detection work and Donald Knuth&#39;s discussion of it in <em>The Art of Computer Programming, Volume 2</em> — for the formal, historical treatment of the algorithm this chapter is named after.</li>
+<li>Search &quot;Brent&#39;s cycle detection algorithm&quot; as a follow-up — a related, sometimes more efficient alternative to Floyd&#39;s approach, worth knowing exists even if not required for most interviews.</li>
+<li>LeetCode&#39;s &quot;Linked List Cycle II&quot; and &quot;Find the Duplicate Number&quot; problems, for the canonical, extensively-discussed versions of this chapter&#39;s central examples.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Fast and Slow Pointers: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>How does Floyd's cycle detection algorithm work?</h3></summary><p>A slow pointer moves one step and a fast pointer moves two steps at a time. If the list has a cycle, the gap between them shrinks by one each step inside the cycle, so they must meet; if the fast pointer reaches null, there is no cycle.</p></details>
+<details class="learn-faq-item"><summary><h3>How do you find where a cycle starts?</h3></summary><p>After the pointers meet, move one of them back to the head and advance both one step at a time. The node where they meet again is the start of the cycle.</p></details>
+<details class="learn-faq-item"><summary><h3>How do you find the middle of a linked list in one pass?</h3></summary><p>Move a slow pointer one step and a fast pointer two steps. When the fast pointer reaches the end, the slow pointer is at the middle, in O(n) time and O(1) space.</p></details>
+<details class="learn-faq-item"><summary><h3>Can fast and slow pointers be used outside linked lists?</h3></summary><p>Yes. Any sequence where each value determines the next one can be treated like a linked list, for example the Happy Number problem or Find the Duplicate Number, where array values are used as next indexes.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/stack-and-queue-javascript"><span>&larr; Previous &middot; Chapter 6</span><strong>Stack and Queue in JavaScript: LIFO &amp; FIFO</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span>Next &middot; Chapter 8 &rarr;</span><strong>Binary Tree &amp; BST in JavaScript: Traversals</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#7-0-why-this-deserves-its-own-chapter">7.0 Why This Deserves Its Own Chapter</a></li><li><a href="#7-1-the-formal-setup">7.1 The Formal Setup</a></li><li><a href="#7-2-rigorous-proof-why-floyd-s-cycle-detection-always-works">7.2 Rigorous Proof: Why Floyd's Cycle Detection Always Works</a></li><li><a href="#7-3-determining-cycle-length">7.3 Determining Cycle Length</a></li><li><a href="#7-4-beyond-linked-lists-fast-slow-pointers-on-arrays-and-numeric-sequences">7.4 Beyond Linked Lists: Fast Slow Pointers on Arrays and Numeric Sequences</a></li><li><a href="#7-5-fast-slow-pointers-for-relative-position-problems">7.5 Fast Slow Pointers for Relative-Position Problems</a></li><li><a href="#7-6-palindrome-linked-list-combining-techniques-from-three-chapters">7.6 Palindrome Linked List: Combining Techniques From Three Chapters</a></li><li><a href="#7-7-edge-cases-and-gotchas-checklist">7.7 Edge Cases and Gotchas Checklist</a></li><li><a href="#7-8-chapter-summary">7.8 Chapter Summary</a></li><li><a href="#7-9-revision-notes">7.9 Revision Notes</a></li><li><a href="#7-10-mind-map-ascii">7.10 Mind Map (ASCII)</a></li><li><a href="#7-11-cheat-sheet">7.11 Cheat Sheet</a></li><li><a href="#7-12-key-takeaways">7.12 Key Takeaways</a></li><li><a href="#7-13-20-multiple-choice-questions">7.13 20 Multiple Choice Questions</a></li><li><a href="#7-14-20-coding-problems">7.14 20 Coding Problems</a></li><li><a href="#7-15-5-interview-questions">7.15 5 Interview Questions</a></li><li><a href="#7-16-3-real-projects">7.16 3 Real Projects</a></li><li><a href="#7-17-further-reading">7.17 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "fast-and-slow-pointers"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

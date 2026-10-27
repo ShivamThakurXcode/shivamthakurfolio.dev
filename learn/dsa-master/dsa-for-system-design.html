@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>DSA in System Design: LRU, Rate Limiting &amp; B-Trees</title>
+    <meta name="description" content="See how data structures power real systems: LRU and LFU caches, sliding-window and token-bucket rate limiters, B-trees, consistent hashing and Bloom filters.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/dsa-for-system-design">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/dsa-for-system-design">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/dsa-for-system-design">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="dsa in system design, lru cache, lfu cache, rate limiter algorithm, token bucket, sliding window rate limit, b tree index, consistent hashing, bloom filter, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/dsa-interview-preparation-roadmap">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="dsa in system design">
+    <meta property="article:tag" content="lru cache">
+    <meta property="article:tag" content="lfu cache">
+    <meta property="article:tag" content="rate limiter algorithm">
+    <meta property="article:tag" content="token bucket">
+    <meta property="article:tag" content="sliding window rate limit">
+    <meta property="article:tag" content="b tree index">
+    <meta property="article:tag" content="consistent hashing">
+    <meta property="article:tag" content="bloom filter">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="DSA in System Design: LRU, Rate Limiting &amp; B-Trees">
+    <meta property="og:description" content="See how data structures power real systems: LRU and LFU caches, sliding-window and token-bucket rate limiters, B-trees, consistent hashing and Bloom filters.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/dsa-for-system-design">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/dsa-for-system-design.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="DSA for System Design: LRU Cache, Rate Limiting, B-Trees and Consistent Hashing: DSA Master chapter 27">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="DSA in System Design: LRU, Rate Limiting &amp; B-Trees">
+    <meta name="twitter:description" content="See how data structures power real systems: LRU and LFU caches, sliding-window and token-bucket rate limiters, B-trees, consistent hashing and Bloom filters.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/dsa-for-system-design.png">
+    <meta name="twitter:image:alt" content="DSA for System Design: LRU Cache, Rate Limiting, B-Trees and Consistent Hashing: DSA Master chapter 27">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design",
+          "name": "DSA in System Design: LRU, Rate Limiting & B-Trees",
+          "description": "See how data structures power real systems: LRU and LFU caches, sliding-window and token-bucket rate limiters, B-trees, consistent hashing and Bloom filters.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/dsa-for-system-design.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "DSA for System Design: LRU Cache, Rate Limiting, B-Trees and Consistent Hashing"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#webpage"
+          },
+          "headline": "DSA for System Design: LRU Cache, Rate Limiting, B-Trees and Consistent Hashing",
+          "alternativeHeadline": "System Design Connections for DSA",
+          "description": "See how data structures power real systems: LRU and LFU caches, sliding-window and token-bucket rate limiters, B-trees, consistent hashing and Bloom filters.",
+          "abstract": "The data structures used in coding interviews are the same ones inside real production systems. This chapter connects them: an LRU cache built from a hash map and a doubly linked list, sliding-window and token-bucket rate limiters, B-trees behind database indexes, consistent hashing for load balancing, and distributed concepts such as Bloom filters.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/dsa-for-system-design.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 6041,
+          "timeRequired": "PT27M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "dsa in system design, lru cache, lfu cache, rate limiter algorithm, token bucket, sliding window rate limit, b tree index, consistent hashing, bloom filter",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "LRU and LFU caches",
+            "Sliding-window and token-bucket rate limiting",
+            "B-trees and database indexes",
+            "Consistent hashing",
+            "Translating interview patterns into system design"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "dsa in system design"
+          },
+          "isAccessibleForFree": true,
+          "position": 27,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#article",
+            "name": "Advanced Graph Theory: Bipartite Matching, Maximum Flow and Min-Cut",
+            "url": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "DSA in System Design: LRU, Rate Limiting & B-Trees",
+              "item": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do you implement an LRU cache?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Combine a hash map with a doubly linked list. The map finds any node in O(1), and the list keeps entries in recency order, so moving an accessed node to the front and evicting the least recently used node from the back are both O(1)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does a token bucket rate limiter work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A bucket holds up to a fixed number of tokens and refills at a steady rate. Each request takes one token, and a request that finds the bucket empty is rejected or delayed. It allows short bursts while enforcing an average rate."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do databases use B-trees instead of binary search trees?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "B-tree nodes hold many keys and children, so the tree is very shallow and each node fits one disk page. That minimizes the number of slow disk reads, which matters far more than the number of comparisons."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is consistent hashing?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Consistent hashing places servers and keys on a hash ring and assigns each key to the next server clockwise. When a server is added or removed, only about 1/n of the keys move, instead of almost all of them as with hash % n."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#quiz",
+          "name": "DSA in System Design: LRU, Rate Limiting & B-Trees: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "dsa in system design"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/dsa-for-system-design#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What two data structures combine to implement an O(1) LRU cache?",
+              "text": "What two data structures combine to implement an O(1) LRU cache?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A hash map and a doubly linked list"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A trie and a heap"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A binary search tree and a stack"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A segment tree and a queue"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why does an LRU cache need BOTH structures, rather than either alone?",
+              "text": "Why does an LRU cache need BOTH structures, rather than either alone?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The hash map gives O(1) key lookup, while the doubly linked list gives O(1) reordering and eviction given a direct node reference — neither alone provides both"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It doesn't; either would work equally well"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only the hash map is actually needed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only the linked list is actually needed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What earlier chapter's forward reference does the LRU cache implementation deliver on?",
+              "text": "What earlier chapter's forward reference does the LRU cache implementation deliver on?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Chapter 5's doubly linked list preview"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 9's heap"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 15's sorting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 11's graph traversal"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What data structure does a simple LFU cache implementation typically use?",
+              "text": "What data structure does a simple LFU cache implementation typically use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A min-heap tracking access frequencies"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A trie"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A stack"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A segment tree"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What earlier chapter's pattern is the sliding window rate limiter structurally identical to?",
+              "text": "What earlier chapter's pattern is the sliding window rate limiter structurally identical to?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Chapter 21's monotonic queue (counting items in a window instead of tracking a maximum)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 15's sorting algorithms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 8's tree traversal"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 14's Union-Find"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What genuine trade-off does the Token Bucket rate limiter offer compared to a sliding window?",
+              "text": "What genuine trade-off does the Token Bucket rate limiter offer compared to a sliding window?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It allows controlled bursts of traffic while still enforcing a long-term average rate, versus the sliding window's strict \"never exceed N in any window\" guarantee"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's always strictly worse"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's always strictly better"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "There is no difference between the two"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why do production databases use B-Trees instead of plain binary search trees?",
+              "text": "Why do production databases use B-Trees instead of plain binary search trees?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "B-Trees minimize disk I/O operations by sizing nodes to match disk blocks, which matters more than minimizing comparisons at this scale"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "B-Trees are always faster in every context"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary search trees cannot store more than 100 items"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "B-Trees don't require balancing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What earlier chapter's lesson does the B-Tree design extend?",
+              "text": "What earlier chapter's lesson does the B-Tree design extend?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Chapter 5's cache-locality lesson (arrays beating linked lists in practice despite matching Big-O)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 15's sorting stability"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 9's heap building"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 6's stack operations"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What problem does plain hash(key) % N create when the number of servers N changes?",
+              "text": "What problem does plain hash(key) % N create when the number of servers N changes?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It causes almost every key's assigned server to change, forcing a massive, disruptive redistribution"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "No problem; it adapts automatically"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only affects keys added after the change"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It causes a syntax error"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does consistent hashing solve?",
+              "text": "What does consistent hashing solve?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It ensures a server topology change only affects keys in that server's immediate neighborhood on a hash ring, not a global redistribution"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It makes hashing unnecessary"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It eliminates the need for a hash function entirely"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only works for numeric keys"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What earlier chapter's technique does a consistent hash ring's key-to-server lookup resemble?",
+              "text": "What earlier chapter's technique does a consistent hash ring's key-to-server lookup resemble?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Chapter 16's lower-bound binary search technique"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 9's heap extraction"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 6's stack operations"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 11's BFS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What real-world system is conceptually \"Chapter 6's Queue, at massive scale\"?",
+              "text": "What real-world system is conceptually \"Chapter 6's Queue, at massive scale\"?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A message queue system (Kafka, RabbitMQ, SQS)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A database index"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A load balancer"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A consistent hash ring"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What honest scope boundary does this chapter draw regarding distributed systems?",
+              "text": "What honest scope boundary does this chapter draw regarding distributed systems?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Distributed consensus, replication, and CAP theorem trade-offs are new territory this book's single-machine foundations inform but don't themselves teach"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "This book fully teaches distributed consensus and CAP theorem trade-offs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Distributed systems are identical to single-machine data structures with no new concerns"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "This chapter claims to be a complete system design course"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the central mindset shift this chapter aims to establish?",
+              "text": "What is the central mindset shift this chapter aims to establish?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The \"which structure fits this access pattern\" reasoning from coding problems is the same reasoning used in real system design decisions, just at a different scale"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "System design and DSA are entirely unrelated fields"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "System design requires memorizing a completely separate set of facts"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DSA knowledge is irrelevant to system design"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What system design concern maps to \"I need fast prefix-based lookup\" (Chapter 10)?",
+              "text": "What system design concern maps to \"I need fast prefix-based lookup\" (Chapter 10)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Autocomplete, URL routing tables, IP routing (longest-prefix match)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Database transaction logs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Load balancer health checks"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Message queue ordering"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What system design concern maps to \"I need range queries AND updates together\" (Chapter 23)?",
+              "text": "What system design concern maps to \"I need range queries AND updates together\" (Chapter 23)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Real-time analytics dashboards, time-series aggregation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Static website hosting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "User authentication"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Image compression"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is disk I/O latency specifically relevant to why databases favor B-Trees?",
+              "text": "Why is disk I/O latency specifically relevant to why databases favor B-Trees?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Disk I/O is roughly 100,000x slower than RAM access, making minimizing disk reads a completely different optimization target than minimizing comparisons"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Disk I/O and RAM access have identical latency"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "B-Trees don't actually reduce disk I/O"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "This factor is irrelevant to database design"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What genuine engineering judgment does the LFU cache section model?",
+              "text": "What genuine engineering judgment does the LFU cache section model?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The trade-off between a simpler, correct heap-based approach (O(log n)) versus a more complex but asymptotically better O(1) alternative"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "There is only ever one correct implementation choice"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Heaps should never be used for caching"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(1) solutions are always preferable regardless of complexity"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What concept from Chapter 14 is conceptually similar to distributed cluster membership tracking?",
+              "text": "What concept from Chapter 14 is conceptually similar to distributed cluster membership tracking?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Chapter 14's Union-Find \"which group does this belong to\" question, though real systems use dedicated consensus protocols instead"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 14's rank-based tree balancing directly implements cluster membership"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "There is no conceptual relationship"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Union-Find is used literally, unmodified, in production consensus systems"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the overarching principle this entire chapter is built around?",
+              "text": "What is the overarching principle this entire chapter is built around?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Every system design decision covered is a direct, recognizable extension of a structure or pattern from earlier chapters, not new knowledge learned from scratch"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "System design is a completely separate field requiring no DSA knowledge"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Production systems never use the data structures taught in DSA courses"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Big-O analysis is irrelevant to real system design"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:96.4%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item active" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design" aria-current="page"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 27 of 28 &middot; Advanced</p>
+                        <h1>DSA for System Design: LRU Cache, Rate Limiting, B-Trees and Consistent Hashing</h1>
+                        <p class="learn-book-title">System Design Connections for DSA</p>
+                        <ul class="learn-meta text-caption">
+                            <li>27 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/dsa-for-system-design.webp"><img src="../../assets/images/learn/dsa-master/dsa-for-system-design.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="DSA for System Design: LRU Cache, Rate Limiting, B-Trees and Consistent Hashing: DSA Master chapter 27 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>The data structures used in coding interviews are the same ones inside real production systems. This chapter connects them: an LRU cache built from a hash map and a doubly linked list, sliding-window and token-bucket rate limiters, B-trees behind database indexes, consistent hashing for load balancing, and distributed concepts such as Bloom filters.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>LRU and LFU caches</li><li>Sliding-window and token-bucket rate limiting</li><li>B-trees and database indexes</li><li>Consistent hashing</li><li>Translating interview patterns into system design</li></ul>
+                        </section>
+<hr>
+
+<h2 id="27-0-why-this-chapter-exists">27.0 Why This Chapter Exists</h2>
+<p>Every structure and algorithm in this book has been presented as a solution to a specific access-pattern problem. This chapter&#39;s purpose is to make explicit what&#39;s been implicit throughout: <strong>the exact same reasoning you&#39;ve built for choosing a data structure in a coding problem is the reasoning senior engineers use to make real production system design decisions.</strong> A cache eviction policy, a database index, a rate limiter, a load balancer&#39;s routing algorithm — these are not new concepts. They are this book&#39;s structures, deployed at a different scale, for a business reason instead of an interview question.</p>
+<hr>
+
+<h2 id="27-1-caching-lru-lfu-as-direct-applications-of-chapters-4-5-and-9">27.1 Caching: LRU/LFU as Direct Applications of Chapters 4, 5, and 9</h2>
+<h3 id="27-1-1-lru-cache-the-direct-payoff-of-chapter-5-s-doubly-linked-list-preview">27.1.1 LRU Cache: The Direct Payoff of Chapter 5&#39;s Doubly Linked List Preview</h3>
+<p>Recall <a href="/learn/dsa-master/linked-list-javascript" title="Linked List in JavaScript: Singly &amp; Doubly">Chapter 5</a>, section 5.3.2&#39;s forward reference: &quot;LRU caches&quot; as a canonical real-world use case for a doubly linked list. This chapter delivers on that promise in full production context.</p>
+<p><strong>The business problem:</strong> a cache has limited capacity; when full, it must evict something to make room for a new entry. <strong>Least Recently Used (LRU)</strong> evicts whichever entry hasn&#39;t been accessed in the longest time — the intuition being that recently-accessed data is statistically more likely to be accessed again soon (a real, empirically-supported principle called &quot;temporal locality&quot;).</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LRUCache</span> {
+  #capacity;
+  #map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(); <span class="hljs-comment">// key -&gt; DoublyListNode  (Chapter 4&#x27;s Map + Chapter 5&#x27;s doubly linked list!)</span>
+  #head; <span class="hljs-comment">// most recently used (MRU) sentinel</span>
+  #tail; <span class="hljs-comment">// least recently used (LRU) sentinel</span>
+
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">capacity</span>) {
+    <span class="hljs-variable language_">this</span>.#capacity = capacity;
+    <span class="hljs-variable language_">this</span>.#head = { <span class="hljs-attr">key</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">value</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">prev</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">next</span>: <span class="hljs-literal">null</span> };
+    <span class="hljs-variable language_">this</span>.#tail = { <span class="hljs-attr">key</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">value</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">prev</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">next</span>: <span class="hljs-literal">null</span> };
+    <span class="hljs-variable language_">this</span>.#head.<span class="hljs-property">next</span> = <span class="hljs-variable language_">this</span>.#tail;
+    <span class="hljs-variable language_">this</span>.#tail.<span class="hljs-property">prev</span> = <span class="hljs-variable language_">this</span>.#head;
+  }
+
+  #<span class="hljs-title function_">remove</span>(<span class="hljs-params">node</span>) {
+    node.<span class="hljs-property">prev</span>.<span class="hljs-property">next</span> = node.<span class="hljs-property">next</span>;
+    node.<span class="hljs-property">next</span>.<span class="hljs-property">prev</span> = node.<span class="hljs-property">prev</span>;
+  }
+
+  #<span class="hljs-title function_">insertAtFront</span>(<span class="hljs-params">node</span>) {
+    node.<span class="hljs-property">next</span> = <span class="hljs-variable language_">this</span>.#head.<span class="hljs-property">next</span>;
+    node.<span class="hljs-property">prev</span> = <span class="hljs-variable language_">this</span>.#head;
+    <span class="hljs-variable language_">this</span>.#head.<span class="hljs-property">next</span>.<span class="hljs-property">prev</span> = node;
+    <span class="hljs-variable language_">this</span>.#head.<span class="hljs-property">next</span> = node;
+  }
+
+  <span class="hljs-title function_">get</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.#map.<span class="hljs-title function_">has</span>(key)) <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+
+    <span class="hljs-keyword">const</span> node = <span class="hljs-variable language_">this</span>.#map.<span class="hljs-title function_">get</span>(key);
+    <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">remove</span>(node);
+    <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">insertAtFront</span>(node); <span class="hljs-comment">// move to MRU position — accessing counts as &quot;using&quot;</span>
+    <span class="hljs-keyword">return</span> node.<span class="hljs-property">value</span>;
+  }
+  <span class="hljs-comment">// Time: O(1) — Chapter 5&#x27;s key lesson: doubly linked list deletion given a node reference</span>
+
+  <span class="hljs-title function_">put</span>(<span class="hljs-params">key, value</span>) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.#map.<span class="hljs-title function_">has</span>(key)) {
+      <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">remove</span>(<span class="hljs-variable language_">this</span>.#map.<span class="hljs-title function_">get</span>(key));
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.#map.<span class="hljs-property">size</span> &gt;= <span class="hljs-variable language_">this</span>.#capacity) {
+      <span class="hljs-keyword">const</span> lru = <span class="hljs-variable language_">this</span>.#tail.<span class="hljs-property">prev</span>;
+      <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">remove</span>(lru);
+      <span class="hljs-variable language_">this</span>.#map.<span class="hljs-title function_">delete</span>(lru.<span class="hljs-property">key</span>); <span class="hljs-comment">// evict the LEAST recently used entry</span>
+    }
+
+    <span class="hljs-keyword">const</span> newNode = { key, value, <span class="hljs-attr">prev</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">next</span>: <span class="hljs-literal">null</span> };
+    <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">insertAtFront</span>(newNode);
+    <span class="hljs-variable language_">this</span>.#map.<span class="hljs-title function_">set</span>(key, newNode);
+  }
+  <span class="hljs-comment">// Time: O(1)</span>
+}</code></pre></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-why-this-exact-combination-of-structures-not-any-other" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: Why This Exact Combination of Structures, Not Any Other</span></h3>
+<p>This is worth stating explicitly, since &quot;why THIS combination&quot; is exactly the reasoning system design interviews probe for: <strong>we need O(1) lookup by key (<a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>&#39;s <code>Map</code>) AND O(1) reordering to the front on access, AND O(1) eviction from the back (both requiring <a href="/learn/dsa-master/linked-list-javascript" title="Linked List in JavaScript: Singly &amp; Doubly">Chapter 5</a>&#39;s doubly linked list, specifically because it gives O(1) deletion given a direct node reference — a plain array or singly linked list cannot do this).</strong> Neither structure alone solves the problem; <strong>the combination is the solution</strong>, a direct, concrete instance of this book&#39;s repeated theme that real problems often require composing multiple structures, not picking a single &quot;correct&quot; one from a list.</p>
+</aside>
+<h3 id="27-1-2-lfu-cache-a-direct-payoff-of-chapter-9-s-heap-or-a-cleverer-alternative">27.1.2 LFU Cache: A Direct Payoff of Chapter 9&#39;s Heap (or a Cleverer Alternative)</h3>
+<p><strong>Least Frequently Used (LFU)</strong> evicts whichever entry has been accessed the <em>fewest</em> times (not longest ago). The &quot;obvious&quot; implementation reaches for <a href="/learn/dsa-master/heap-priority-queue-javascript" title="Heap &amp; Priority Queue in JavaScript">Chapter 9</a>&#39;s heap (tracking access counts, evicting the minimum) — but a genuinely clever alternative achieves <strong>O(1)</strong> using a combination of hash maps and Chapter 5&#39;s doubly linked lists, one list per frequency count, worth knowing exists as an example of &quot;the heap-based solution is correct but not always optimal — sometimes a cleverer structural combination beats the obvious choice.&quot;</p>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>The clean, quotable comparison: <strong>&quot;A heap-based LFU gives O(log n) operations — correct, and often sufficient. An O(1) LFU exists using a hash map from key to frequency, combined with a hash map from frequency to a doubly linked list of keys at that frequency — genuinely more complex to implement, and the trade-off (extra complexity for a better asymptotic bound) is exactly the kind of judgment call system design interviews want you to articulate, not just execute silently.&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="27-2-rate-limiting-sliding-windows-and-token-buckets">27.2 Rate Limiting: Sliding Windows and Token Buckets</h2>
+<h3 id="direct-callback-to-chapter-3-s-sliding-window">Direct Callback to Chapter 3&#39;s Sliding Window</h3>
+<p><strong>The business problem:</strong> prevent a single client from making more than <code>N</code> requests per time window (protecting a service from abuse or overload). This is <strong>precisely</strong> <a href="/learn/dsa-master/arrays-and-strings-javascript" title="Arrays &amp; Strings in JavaScript: DSA Patterns">Chapter 3</a>&#39;s sliding window pattern, applied to a stream of timestamps instead of an array.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SlidingWindowRateLimiter</span> {
+  #requestLog = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(); <span class="hljs-comment">// clientId -&gt; array of request timestamps</span>
+  #maxRequests;
+  #windowMs;
+
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">maxRequests, windowMs</span>) {
+    <span class="hljs-variable language_">this</span>.#maxRequests = maxRequests;
+    <span class="hljs-variable language_">this</span>.#windowMs = windowMs;
+  }
+
+  <span class="hljs-title function_">allowRequest</span>(<span class="hljs-params">clientId, now = <span class="hljs-built_in">Date</span>.now()</span>) {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.#requestLog.<span class="hljs-title function_">has</span>(clientId)) {
+      <span class="hljs-variable language_">this</span>.#requestLog.<span class="hljs-title function_">set</span>(clientId, []);
+    }
+
+    <span class="hljs-keyword">const</span> timestamps = <span class="hljs-variable language_">this</span>.#requestLog.<span class="hljs-title function_">get</span>(clientId);
+    <span class="hljs-keyword">const</span> windowStart = now - <span class="hljs-variable language_">this</span>.#windowMs;
+
+    <span class="hljs-comment">// SLIDE the window: remove timestamps that have aged out (Chapter 3/21&#x27;s technique!)</span>
+    <span class="hljs-keyword">while</span> (timestamps.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span> &amp;&amp; timestamps[<span class="hljs-number">0</span>] &lt;= windowStart) {
+      timestamps.<span class="hljs-title function_">shift</span>(); <span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> O(n) with a plain array — a real Deque (Chapter 6) is better in production!</span>
+    }
+
+    <span class="hljs-keyword">if</span> (timestamps.<span class="hljs-property">length</span> &lt; <span class="hljs-variable language_">this</span>.#maxRequests) {
+      timestamps.<span class="hljs-title function_">push</span>(now);
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>; <span class="hljs-comment">// request ALLOWED</span>
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>; <span class="hljs-comment">// rate limit EXCEEDED</span>
+  }
+}</code></pre></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-this-is-chapter-21-s-monotonic-queue-problem-wearing-a-business-costume" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: This IS Chapter 21&#39;s Monotonic Queue Problem, Wearing a Business Costume</span></h3>
+<p>Recognize the structural identity: <strong>&quot;remove timestamps that have aged out of the window&quot; is exactly the front-removal step of <a href="/learn/dsa-master/monotonic-stack-and-queue" title="Monotonic Stack &amp; Queue in JavaScript">Chapter 21</a>&#39;s Sliding Window Maximum deque</strong> — the only difference is that a rate limiter doesn&#39;t need to track a <em>maximum</em>, just a <em>count</em> of items currently in the window. This is a genuinely valuable, concrete demonstration that the pattern-recognition skill this book has trained since <a href="/learn/dsa-master/fast-and-slow-pointers" title="Fast and Slow Pointers: Floyd's Cycle Detection">Chapter 7</a> (&quot;same shape, different words&quot;) extends directly into recognizing production system requirements as disguised versions of interview algorithm patterns.</p>
+</aside>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-the-token-bucket-algorithm-a-genuinely-different-also-valid-strategy" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip: The Token Bucket Algorithm — A Genuinely Different, Also-Valid Strategy</span></h3>
+<p>An alternative, widely-used real-world rate-limiting strategy: <strong>maintain a &quot;bucket&quot; that holds tokens, refilling at a fixed rate; each request consumes one token, and requests are rejected when the bucket is empty.</strong> This allows <strong>short bursts</strong> of traffic (using up saved tokens) while still enforcing a long-term average rate — a genuinely different trade-off than the sliding window&#39;s strict &quot;at most N in any window&quot; guarantee.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">TokenBucketRateLimiter</span> {
+  #capacity;
+  #tokens;
+  #refillRatePerMs;
+  #lastRefillTime;
+
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">capacity, refillRatePerSecond</span>) {
+    <span class="hljs-variable language_">this</span>.#capacity = capacity;
+    <span class="hljs-variable language_">this</span>.#tokens = capacity;
+    <span class="hljs-variable language_">this</span>.#refillRatePerMs = refillRatePerSecond / <span class="hljs-number">1000</span>;
+    <span class="hljs-variable language_">this</span>.#lastRefillTime = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();
+  }
+
+  <span class="hljs-title function_">allowRequest</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">const</span> now = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();
+    <span class="hljs-keyword">const</span> elapsed = now - <span class="hljs-variable language_">this</span>.#lastRefillTime;
+
+    <span class="hljs-variable language_">this</span>.#tokens = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(<span class="hljs-variable language_">this</span>.#capacity, <span class="hljs-variable language_">this</span>.#tokens + elapsed * <span class="hljs-variable language_">this</span>.#refillRatePerMs);
+    <span class="hljs-variable language_">this</span>.#lastRefillTime = now;
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.#tokens &gt;= <span class="hljs-number">1</span>) {
+      <span class="hljs-variable language_">this</span>.#tokens -= <span class="hljs-number">1</span>;
+      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  }
+}</code></pre></div>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-2" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>The decisive comparison worth stating: <strong>&quot;Sliding window rate limiting gives a strict, precise guarantee (&#39;never more than N requests in any rolling window&#39;), at the cost of tracking every individual timestamp. Token bucket allows controlled bursts (spending saved-up tokens), which better matches real user behavior (bursty, not perfectly smooth), at the cost of a less strict guarantee. The choice depends on whether the business requirement is &#39;hard limit, no exceptions&#39; or &#39;smooth out average load while tolerating reasonable bursts.&#39;&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="27-3-database-indexing-b-trees-as-production-cousins-of-chapter-8-s-bst">27.3 Database Indexing: B-Trees as Production Cousins of Chapter 8&#39;s BST</h2>
+<h3 id="why-databases-don-t-use-plain-bsts">Why Databases Don&#39;t Use Plain BSTs</h3>
+<p>Recall <a href="/learn/dsa-master/binary-tree-and-bst-javascript" title="Binary Tree &amp; BST in JavaScript: Traversals">Chapter 8</a>&#39;s honest treatment of BST degeneration and the conceptual introduction to AVL/Red-Black trees as the self-balancing fix. <strong>Production databases use a related but distinct structure: the B-Tree</strong> (and its common variant, the B+ Tree), specifically because of a factor Chapter 5 introduced but databases take to an extreme: <strong>disk I/O cost, not just comparison count, dominates real-world performance.</strong></p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-why-b-trees-have-many-children-per-node-not-just-two" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: Why B-Trees Have Many Children Per Node, Not Just Two</span></h3>
+<p><strong>A binary tree&#39;s O(log₂ n) height assumes every &quot;step&quot; (comparison) costs the same. But reading data from disk (as opposed to RAM) is dramatically slower and typically happens in large, fixed-size &quot;blocks&quot; — reading one byte from disk costs almost the same as reading an entire block.</strong> A B-Tree exploits this by making each node <strong>enormous</strong> (holding hundreds or thousands of keys, sized to fill exactly one disk block), so that traversing from root to leaf requires only a handful of disk reads (O(log_b n), where <code>b</code> is the branching factor — often several hundred), rather than the many more disk reads a binary tree&#39;s O(log₂ n) height would require, even though both are technically &quot;logarithmic.&quot;</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-the-general-lesson-big-o-ignores-constant-factors-and-sometimes-those-factors-are-everything" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: The General Lesson — Big-O Ignores Constant Factors, and Sometimes Those Factors Are Everything</span></h3>
+<p>This is a direct, concrete extension of Chapter 5&#39;s cache-locality lesson (arrays beating linked lists in practice despite matching Big-O) to an even larger scale: <strong>disk I/O latency is roughly 100,000x slower than RAM access, making &quot;minimize the number of disk reads&quot; a completely different optimization target than &quot;minimize the number of comparisons.&quot;</strong> A B-Tree&#39;s higher branching factor directly minimizes disk reads, even though a binary search tree would technically have a smaller Big-O <em>height</em> in the abstract comparison-counting sense — a genuinely important, real-world-informed nuance to bring up when discussing database internals.</p>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-3" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>The quotable summary: <strong>&quot;Databases use B-Trees instead of binary search trees because B-Trees are optimized to minimize disk I/O operations, not just comparisons — each B-Tree node is sized to match a disk block, so traversing the tree touches far fewer physical disk blocks than a binary tree&#39;s height would require, even at the same asymptotic O(log n) complexity class.&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="27-4-load-balancing-consistent-hashing-as-an-evolution-of-chapter-4">27.4 Load Balancing: Consistent Hashing as an Evolution of Chapter 4</h2>
+<h3 id="the-problem-plain-hashing-creates-at-scale">The Problem Plain Hashing Creates at Scale</h3>
+<p><strong>The business problem:</strong> distribute requests (or data) across <code>N</code> servers, using something like <code>hash(key) % N</code> to decide which server handles a given key — <a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>&#39;s hashing, applied to routing instead of storage. <strong>The catastrophic failure mode</strong>: if a server is added or removed (changing <code>N</code>), <code>hash(key) % N</code> changes for <strong>almost every single key</strong>, forcing a massive, disruptive redistribution of nearly all cached data or connections simultaneously — a direct, painful real-world consequence of the exact hash-bucket-assignment mechanism covered in Chapter 4.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-consistent-hashing-s-ring" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: Consistent Hashing&#39;s Ring</span></h3>
+<p><strong>Definition:</strong> Consistent hashing maps both servers and keys onto a conceptual &quot;ring&quot; (a circular hash space), assigning each key to the nearest server clockwise from its position. <strong>Adding or removing one server only affects the keys between that server and its neighbors on the ring</strong> — not a redistribution of everything, dramatically reducing the disruption of scaling the server pool up or down.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ConsistentHashRing</span> {
+  #ring = []; <span class="hljs-comment">// sorted array of [hashValue, serverId] pairs</span>
+  #<span class="hljs-title function_">hash</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-comment">// A simplified hash function for illustration (production systems use a</span>
+    <span class="hljs-comment">// well-distributed cryptographic-adjacent hash, e.g., MD5 or a variant)</span>
+    <span class="hljs-keyword">let</span> h = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> char <span class="hljs-keyword">of</span> <span class="hljs-title class_">String</span>(key)) {
+      h = (h * <span class="hljs-number">31</span> + char.<span class="hljs-title function_">charCodeAt</span>(<span class="hljs-number">0</span>)) % <span class="hljs-number">1_000_000</span>; <span class="hljs-comment">// Chapter 4&#x27;s hash function, again!</span>
+    }
+    <span class="hljs-keyword">return</span> h;
+  }
+
+  <span class="hljs-title function_">addServer</span>(<span class="hljs-params">serverId</span>) {
+    <span class="hljs-keyword">const</span> hashValue = <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">hash</span>(serverId);
+    <span class="hljs-comment">// Insert in sorted position (Chapter 16&#x27;s binary search could find the insertion point in O(log n)!)</span>
+    <span class="hljs-variable language_">this</span>.#ring.<span class="hljs-title function_">push</span>([hashValue, serverId]);
+    <span class="hljs-variable language_">this</span>.#ring.<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a[<span class="hljs-number">0</span>] - b[<span class="hljs-number">0</span>]);
+  }
+
+  <span class="hljs-title function_">removeServer</span>(<span class="hljs-params">serverId</span>) {
+    <span class="hljs-variable language_">this</span>.#ring = <span class="hljs-variable language_">this</span>.#ring.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">[, id]</span>) =&gt;</span> id !== serverId);
+  }
+
+  <span class="hljs-title function_">getServerForKey</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-keyword">const</span> hashValue = <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">hash</span>(key);
+
+    <span class="hljs-comment">// Find the first server hash &gt;= this key&#x27;s hash (WRAPPING around the ring if needed) —</span>
+    <span class="hljs-comment">// exactly Chapter 16&#x27;s &quot;lower bound&quot; binary search boundary-finding technique!</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [serverHash, serverId] <span class="hljs-keyword">of</span> <span class="hljs-variable language_">this</span>.#ring) {
+      <span class="hljs-keyword">if</span> (serverHash &gt;= hashValue) <span class="hljs-keyword">return</span> serverId;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#ring[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]; <span class="hljs-comment">// wrap around to the FIRST server on the ring</span>
+  }
+}</code></pre></div>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-the-direct-callback-to-chapter-16" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: The Direct Callback to Chapter 16</span></h3>
+<p>Notice <code>getServerForKey</code>&#39;s &quot;find the first server hash <code>&gt;=</code> this key&#39;s hash&quot; is precisely <strong><a href="/learn/dsa-master/binary-search-patterns" title="Binary Search Patterns: Answer, Rotated, Bounds">Chapter 16</a>&#39;s lower-bound boundary-finding binary search technique</strong>, conceptually — in a production system with thousands of servers on the ring, this lookup would genuinely use binary search (O(log n)) rather than the linear scan shown here for illustration. This is another concrete instance of a chapter&#39;s core pattern reappearing, recognizably, inside a completely different real-world system.</p>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-4" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>The quotable insight: <strong>&quot;Consistent hashing solves the &#39;adding a server reshuffles everything&#39; problem inherent in plain <code>hash(key) % N</code> by mapping servers and keys onto a shared ring, so a topology change only affects the keys in that one server&#39;s immediate neighborhood — not a global redistribution. It&#39;s Chapter 4&#39;s hashing lesson, evolved specifically to handle a dynamically changing number of buckets gracefully.&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="27-5-distributed-systems-concepts-built-on-this-book-s-foundations">27.5 Distributed Systems Concepts Built on This Book&#39;s Foundations</h2>
+<h3 id="27-5-1-distributed-rate-limiting-union-find-s-conceptual-cousin">27.5.1 Distributed Rate Limiting: Union-Find&#39;s Conceptual Cousin</h3>
+<p>A genuinely interesting connection: <strong>tracking &quot;which servers are part of the same currently-healthy cluster&quot; during a network partition</strong> (a distributed systems scenario) is conceptually similar to <a href="/learn/dsa-master/union-find-disjoint-set" title="Union-Find (Disjoint Set Union) in JavaScript">Chapter 14</a>&#39;s Union-Find &quot;which group does this belong to&quot; question — though real distributed systems solve this with dedicated consensus protocols (Raft, Paxos) rather than literal Union-Find, the underlying <em>question being asked</em> (&quot;are these nodes currently in the same connected/agreeing group?&quot;) is recognizably the same shape.</p>
+<h3 id="27-5-2-message-queues-chapter-6-s-queue-at-massive-scale">27.5.2 Message Queues: Chapter 6&#39;s Queue, at Massive Scale</h3>
+<p>Production message queue systems (Kafka, RabbitMQ, SQS) are, at their conceptual core, <strong>exactly <a href="/learn/dsa-master/stack-and-queue-javascript" title="Stack and Queue in JavaScript: LIFO &amp; FIFO">Chapter 6</a>&#39;s Queue</strong> — FIFO processing of work items — scaled to distributed, persistent, fault-tolerant infrastructure. The core guarantee they provide (process work in the order it arrived, or in a well-defined priority order via <a href="/learn/dsa-master/heap-priority-queue-javascript" title="Heap &amp; Priority Queue in JavaScript">Chapter 9</a>&#39;s heap-like priority queue concepts) is identical to this book&#39;s foundational structures; the <em>engineering</em> added on top (durability, replication, exactly-once delivery semantics) is what production systems contribute beyond the core DSA concept.</p>
+<h3 id="27-5-3-distributed-caching-and-consensus-where-this-book-s-techniques-end-and-new-territory-begins">27.5.3 Distributed Caching and Consensus: Where This Book&#39;s Techniques End and New Territory Begins</h3>
+<h3 id="an-honest-boundary-statement">An Honest Boundary Statement</h3>
+<p>It&#39;s worth being explicit about where this chapter&#39;s connections stop being direct extensions and start requiring genuinely new knowledge: <strong>distributed consensus (how multiple servers agree on a single value despite network failures and delays), replication strategies, and CAP theorem trade-offs are NOT direct extensions of this book&#39;s single-machine data structures</strong> — they involve fundamentally new concerns (network partitions, message ordering across machines, Byzantine fault tolerance) that this book&#39;s DSA foundation prepares you to <em>understand the vocabulary and mechanisms of</em> (queues, trees, hashing all reappear as building blocks), but does not itself teach. <strong>This is the honest, appropriate scope boundary for this chapter</strong>: showing where DSA foundations connect to system design, not attempting to teach system design or distributed systems as complete subjects in their own right.</p>
+<hr>
+
+<h2 id="27-6-a-decision-framework-translating-interview-problem-instincts-into-system-design-instincts">27.6 A Decision Framework: Translating &quot;Interview Problem&quot; Instincts Into &quot;System Design&quot; Instincts</h2>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-the-master-translation-table" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip: The Master Translation Table</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Interview-Problem Instinct</th>
+<th>System-Design Translation</th>
+</tr>
+</thead><tbody><tr>
+<td>&quot;I need O(1) lookup&quot; (Chapter 4)</td>
+<td>Database indexing, cache key lookup, session storage</td>
+</tr>
+<tr>
+<td>&quot;I need O(1) insertion/deletion at both ends&quot; (Chapters 5, 6)</td>
+<td>Message queues, LRU cache ordering, undo/redo history</td>
+</tr>
+<tr>
+<td>&quot;I need to always know the current min/max cheaply&quot; (Chapter 9)</td>
+<td>Priority-based task scheduling, LFU eviction, top-K trending content</td>
+</tr>
+<tr>
+<td>&quot;I need to answer &#39;are these connected&#39; cheaply, repeatedly&quot; (<a href="/learn/dsa-master/union-find-disjoint-set" title="Union-Find (Disjoint Set Union) in JavaScript">Chapter 14</a>)</td>
+<td>Distributed cluster membership, dependency resolution, feature-flag grouping</td>
+</tr>
+<tr>
+<td>&quot;I need fast prefix-based lookup&quot; (<a href="/learn/dsa-master/trie-data-structure" title="Trie Data Structure in JavaScript: Prefix Tree">Chapter 10</a>)</td>
+<td>Autocomplete, URL routing tables, IP routing (longest-prefix match)</td>
+</tr>
+<tr>
+<td>&quot;I need range queries AND updates together&quot; (<a href="/learn/dsa-master/segment-tree-fenwick-tree" title="Segment Tree &amp; Fenwick Tree (BIT) in JavaScript">Chapter 23</a>)</td>
+<td>Real-time analytics dashboards, time-series aggregation</td>
+</tr>
+<tr>
+<td>&quot;This problem has a monotonic checkable property&quot; (<a href="/learn/dsa-master/binary-search-patterns" title="Binary Search Patterns: Answer, Rotated, Bounds">Chapter 16</a>)</td>
+<td>Capacity planning (&quot;what&#39;s the minimum server count to handle this load&quot;), binary-search-based auto-scaling thresholds</td>
+</tr>
+<tr>
+<td>&quot;I need to prevent redundant recomputation&quot; (Chapters <a href="/learn/dsa-master/recursion-in-javascript" title="Recursion in JavaScript: Call Stack &amp; Memoization">2</a>, 18-19)</td>
+<td>Memoized/cached expensive computations, materialized views in databases</td>
+</tr>
+</tbody></table></div>
+</aside>
+<h3 id="the-single-most-important-mindset-shift">The Single Most Important Mindset Shift</h3>
+<p><strong>Every &quot;which data structure should I use&quot; decision you&#39;ve practiced throughout this book is fundamentally the same decision a system architect makes when choosing a caching strategy, a database index type, or a message queue configuration</strong> — just at a different scale, with different concrete constraints (network latency instead of CPU cycles, disk I/O instead of RAM access, distributed failure modes instead of single-process correctness). <strong>The access-pattern-first thinking this book has trained since <a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a> — &quot;what operations does this system need to do most often, and what structure makes those operations cheap?&quot; — is the exact same question, asked at a different altitude.</strong></p>
+<hr>
+
+<h2 id="27-7-chapter-summary">27.7 Chapter Summary</h2>
+<p>This chapter made explicit the connection between this book&#39;s algorithmic foundations and real production system design, organized around the principle that <strong>every system design decision covered here is a direct, recognizable extension of a structure or pattern already built in earlier chapters, not a new body of knowledge to learn from scratch.</strong> LRU caching delivered on Chapter 5&#39;s forward reference to doubly linked lists, demonstrating that neither Chapter 4&#39;s <code>Map</code> nor Chapter 5&#39;s linked list alone solves the problem — <strong>the specific combination</strong>, chosen because each piece provides exactly the O(1) capability the other lacks, is itself the solution, a concrete instance of this book&#39;s recurring composition theme. LFU caching&#39;s heap-based (Chapter 9) baseline, contrasted against a cleverer O(1) hash-map-plus-linked-list alternative, modeled the genuine engineering judgment call between &quot;correct and simple&quot; versus &quot;more complex but asymptotically better,&quot; rather than presenting a single &quot;right&quot; answer.</p>
+<p>Rate limiting demonstrated one of this chapter&#39;s clearest pattern-transfer moments: the sliding window rate limiter is <strong>structurally identical</strong> to <a href="/learn/dsa-master/monotonic-stack-and-queue" title="Monotonic Stack &amp; Queue in JavaScript">Chapter 21</a>&#39;s monotonic queue technique, simply counting items in a time window instead of tracking a maximum value — direct, recognizable proof that the &quot;same shape, different words&quot; skill this book has cultivated since <a href="/learn/dsa-master/fast-and-slow-pointers" title="Fast and Slow Pointers: Floyd's Cycle Detection">Chapter 7</a> extends into recognizing production requirements as disguised algorithm patterns, not just recognizing other algorithm problems. The token bucket alternative demonstrated that system design, like algorithm selection, involves genuine trade-off judgment (strict guarantees versus burst tolerance), not a single universally correct choice.</p>
+<p>Database indexing extended Chapter 5 and <a href="/learn/dsa-master/binary-tree-and-bst-javascript" title="Binary Tree &amp; BST in JavaScript: Traversals">Chapter 8</a>&#39;s lessons about cache locality and tree balancing to their logical, real-world conclusion: B-Trees exist specifically because disk I/O cost (not comparison count) dominates real database performance, making a wide-branching-factor tree genuinely superior to a binary tree at the same Big-O height class — a direct, concrete lesson that <strong>Big-O&#39;s deliberate blindness to constant factors sometimes hides the single most important real-world consideration</strong>, extending Chapter 5&#39;s array-versus-linked-list cache-locality point to an even more extreme, production-relevant scale. Consistent hashing extended Chapter 4&#39;s hashing lesson to solve a failure mode plain modulo-hashing creates at scale (catastrophic full redistribution on any topology change), using a ring structure whose key-to-server lookup is recognizably Chapter 16&#39;s lower-bound binary search technique in a new context.</p>
+<p>We closed with an honest scope boundary — genuinely distributed concerns like consensus protocols and CAP theorem trade-offs are new territory this book&#39;s single-machine foundations inform but don&#39;t themselves teach — and a master translation table mapping this book&#39;s core &quot;which structure fits this access pattern&quot; instincts directly onto their system-design equivalents, reinforcing this chapter&#39;s central thesis: <strong>the reasoning is identical; only the scale and concrete constraints differ.</strong></p>
+<hr>
+
+<h2 id="27-8-revision-notes">27.8 Revision Notes</h2>
+<ul>
+<li>LRU cache combines Chapter 4&#39;s Map (O(1) key lookup) with Chapter 5&#39;s doubly linked list (O(1) reordering and eviction given a direct node reference) — neither alone solves the problem; the combination is the solution.</li>
+<li>LFU cache&#39;s heap-based (Chapter 9) approach is correct but not asymptotically optimal; an O(1) alternative exists via nested hash maps and linked lists — a genuine &quot;simple vs. more complex but better&quot; engineering trade-off.</li>
+<li>Sliding window rate limiting is structurally identical to Chapter 21&#39;s monotonic queue technique, counting items in a window rather than tracking a maximum.</li>
+<li>Token bucket rate limiting offers a genuinely different trade-off (burst tolerance) versus sliding window&#39;s strict guarantee — not a strictly better or worse choice, a different fit for different requirements.</li>
+<li>B-Trees (used by databases) extend Chapter 5/8&#39;s cache-locality and tree-balancing lessons: wide branching factor minimizes disk I/O operations, a different optimization target than minimizing comparisons, despite matching Big-O height classes.</li>
+<li>Consistent hashing solves plain hash-modulo&#39;s catastrophic full-redistribution failure mode at scale, using a ring structure whose lookup recognizably reuses Chapter 16&#39;s lower-bound binary search technique.</li>
+<li>Genuinely distributed concerns (consensus, CAP theorem) are new territory beyond this book&#39;s single-machine foundations — an honest scope boundary, not a gap to paper over.</li>
+</ul>
+<hr>
+
+<h2 id="27-9-mind-map-ascii">27.9 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                    SYSTEM DESIGN CONNECTIONS
+                                  |
+      +------------------+-------+-------+------------------------+
+      |                  |               |                        |
+  CACHING             RATE LIMITING   DATABASE               LOAD BALANCING
+      |                    |          INDEXING                     |
+  LRU = Ch.4 Map      Sliding window       |                Consistent Hashing
+  (O(1) lookup) +     = Ch.21's        B-Trees extend       = Ch.4 hashing,
+  Ch.5 doubly         MONOTONIC QUEUE  Ch.5/Ch.8's cache     evolved to avoid
+  linked list          (count instead   locality/balancing   catastrophic full
+  (O(1) reorder/       of max!)         lessons: wide         redistribution on
+  evict) --                 |           branching = fewer    topology change
+  NEITHER ALONE       Token Bucket:     DISK I/O ops, not         |
+  suffices, the       DIFFERENT         fewer comparisons    Ring lookup =
+  COMBINATION is      trade-off             |                Ch.16's LOWER
+  the solution        (burst tolerance  Big-O ignores        BOUND binary
+      |               vs strict limit) constant factors --   search, reused
+  LFU = Ch.9 heap                       disk I/O dominates   in a new context
+  (correct, O(log n))                   at THIS scale
+  vs O(1) alt (more                     (Ch.5 cache
+  complex, hash+                        locality, taken
+  linked-list combo)                    further)
+      |
+  Engineering judgment:
+  simple+correct vs
+  complex+optimal
+                                                          DISTRIBUTED SYSTEMS
+                                                          (HONEST BOUNDARY):
+                                                          Message queues = Ch.6
+                                                          Queue at scale.
+                                                          Consensus/CAP theorem =
+                                                          NEW territory beyond
+                                                          this book's single-
+                                                          machine foundations
+                                                                |
+                                                    MASTER TRANSLATION TABLE:
+                                                    &quot;which structure fits this
+                                                    access pattern&quot; = SAME
+                                                    question at every scale</code></pre>
+<hr>
+
+<h2 id="27-10-cheat-sheet">27.10 Cheat Sheet</h2>
+<pre class="is-plain"><code>SYSTEM DESIGN &lt;- -&gt; DSA TRANSLATION TABLE
+=============================================
+LRU Cache          -&gt; Ch.4 Map + Ch.5 Doubly Linked List (O(1) lookup + reorder/evict)
+LFU Cache          -&gt; Ch.9 Heap (simple) or hash-map+linked-list combo (O(1), complex)
+Rate Limiting       -&gt; Ch.21 Monotonic Queue (sliding window) or Token Bucket (bursts OK)
+Database Indexing   -&gt; Ch.8 BST concept, evolved to B-Trees (minimize DISK I/O, not comparisons)
+Load Balancing      -&gt; Ch.4 Hashing, evolved to Consistent Hashing (avoid full redistribution)
+                        + Ch.16 binary search for ring lookup
+Message Queues      -&gt; Ch.6 Queue, at distributed scale
+Cluster Membership  -&gt; Conceptually similar to Ch.14 Union-Find's &quot;same group?&quot; question
+Autocomplete/Routing -&gt; Ch.10 Tries (prefix-based lookup)
+Analytics Dashboards -&gt; Ch.23 Segment/Fenwick Trees (range query + update together)
+Capacity Planning    -&gt; Ch.16 Binary search on the answer (monotonic checkable constraint)
+Memoized Computations-&gt; Ch.2/18-19 DP (avoid redundant recomputation), DB materialized views
+
+KEY LESSON: BIG-O IGNORES CONSTANT FACTORS -- SOMETIMES THOSE FACTORS ARE EVERYTHING
+========================================================================================
+RAM vs disk I/O (Ch.5 cache locality, taken to B-Tree extreme):
+  disk latency ~100,000x slower than RAM -&gt; minimize DISK READS, not just comparisons
+
+HONEST SCOPE BOUNDARY
+=========================
+Distributed consensus (Raft, Paxos), CAP theorem, Byzantine fault tolerance =
+NEW territory this book's single-machine DSA foundation INFORMS but does NOT teach.</code></pre>
+<hr>
+
+<h2 id="27-11-key-takeaways">27.11 Key Takeaways</h2>
+<ol>
+<li>LRU caching is a genuine composition of two structures (Map + doubly linked list), neither sufficient alone — a model for how real system design often requires combining tools, not picking one.</li>
+<li>Rate limiting&#39;s sliding window is literally Chapter 21&#39;s monotonic queue technique in a business costume — the &quot;same shape, different words&quot; skill extends to recognizing production requirements, not just other algorithm problems.</li>
+<li>Database B-Trees extend Chapter 5&#39;s cache-locality lesson to its logical conclusion: at disk-I/O scale, minimizing block reads (not comparisons) is the real optimization target, even at matching Big-O height classes.</li>
+<li>Consistent hashing evolves Chapter 4&#39;s hashing to solve a real failure mode (catastrophic redistribution) that plain modulo-hashing creates at scale.</li>
+<li>This book&#39;s core question — &quot;what access pattern does this system need, and what structure makes those operations cheap?&quot; — is the same question asked at every scale, from a coding interview to a production system architecture decision.</li>
+</ol>
+<hr>
+
+<h2 id="27-12-20-multiple-choice-questions">27.12 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What two data structures combine to implement an O(1) LRU cache?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A trie and a heap</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A hash map and a doubly linked list</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A binary search tree and a stack</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A segment tree and a queue</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why does an LRU cache need BOTH structures, rather than either alone?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It doesn&#39;t; either would work equally well</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The hash map gives O(1) key lookup, while the doubly linked list gives O(1) reordering and eviction given a direct node reference — neither alone provides both</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only the hash map is actually needed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only the linked list is actually needed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What earlier chapter&#39;s forward reference does the LRU cache implementation deliver on?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Chapter 9&#39;s heap</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Chapter 5&#39;s doubly linked list preview</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Chapter 15&#39;s sorting</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Chapter 11&#39;s graph traversal</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What data structure does a simple LFU cache implementation typically use?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A trie</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A min-heap tracking access frequencies</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A stack</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A segment tree</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What earlier chapter&#39;s pattern is the sliding window rate limiter structurally identical to?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Chapter 15&#39;s sorting algorithms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Chapter 21&#39;s monotonic queue (counting items in a window instead of tracking a maximum)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Chapter 8&#39;s tree traversal</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Chapter 14&#39;s Union-Find</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What genuine trade-off does the Token Bucket rate limiter offer compared to a sliding window?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s always strictly worse</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It allows controlled bursts of traffic while still enforcing a long-term average rate, versus the sliding window&#39;s strict &quot;never exceed N in any window&quot; guarantee</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s always strictly better</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">There is no difference between the two</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why do production databases use B-Trees instead of plain binary search trees?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">B-Trees are always faster in every context</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">B-Trees minimize disk I/O operations by sizing nodes to match disk blocks, which matters more than minimizing comparisons at this scale</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Binary search trees cannot store more than 100 items</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">B-Trees don&#39;t require balancing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What earlier chapter&#39;s lesson does the B-Tree design extend?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Chapter 15&#39;s sorting stability</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Chapter 5&#39;s cache-locality lesson (arrays beating linked lists in practice despite matching Big-O)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Chapter 9&#39;s heap building</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Chapter 6&#39;s stack operations</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What problem does plain <code>hash(key) % N</code> create when the number of servers N changes?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">No problem; it adapts automatically</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It causes almost every key&#39;s assigned server to change, forcing a massive, disruptive redistribution</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It only affects keys added after the change</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It causes a syntax error</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does consistent hashing solve?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It makes hashing unnecessary</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It ensures a server topology change only affects keys in that server&#39;s immediate neighborhood on a hash ring, not a global redistribution</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It eliminates the need for a hash function entirely</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It only works for numeric keys</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What earlier chapter&#39;s technique does a consistent hash ring&#39;s key-to-server lookup resemble?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Chapter 9&#39;s heap extraction</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Chapter 16&#39;s lower-bound binary search technique</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Chapter 6&#39;s stack operations</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Chapter 11&#39;s BFS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What real-world system is conceptually &quot;Chapter 6&#39;s Queue, at massive scale&quot;?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A database index</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A message queue system (Kafka, RabbitMQ, SQS)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A load balancer</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A consistent hash ring</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What honest scope boundary does this chapter draw regarding distributed systems?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">This book fully teaches distributed consensus and CAP theorem trade-offs</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Distributed consensus, replication, and CAP theorem trade-offs are new territory this book&#39;s single-machine foundations inform but don&#39;t themselves teach</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Distributed systems are identical to single-machine data structures with no new concerns</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">This chapter claims to be a complete system design course</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the central mindset shift this chapter aims to establish?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">System design and DSA are entirely unrelated fields</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The &quot;which structure fits this access pattern&quot; reasoning from coding problems is the same reasoning used in real system design decisions, just at a different scale</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">System design requires memorizing a completely separate set of facts</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">DSA knowledge is irrelevant to system design</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What system design concern maps to &quot;I need fast prefix-based lookup&quot; (Chapter 10)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Database transaction logs</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Autocomplete, URL routing tables, IP routing (longest-prefix match)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Load balancer health checks</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Message queue ordering</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What system design concern maps to &quot;I need range queries AND updates together&quot; (Chapter 23)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Static website hosting</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Real-time analytics dashboards, time-series aggregation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">User authentication</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Image compression</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a"><p class="quiz-text">Why is disk I/O latency specifically relevant to why databases favor B-Trees?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Disk I/O is roughly 100,000x slower than RAM access, making minimizing disk reads a completely different optimization target than minimizing comparisons</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Disk I/O and RAM access have identical latency</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">B-Trees don&#39;t actually reduce disk I/O</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">This factor is irrelevant to database design</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What genuine engineering judgment does the LFU cache section model?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">There is only ever one correct implementation choice</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The trade-off between a simpler, correct heap-based approach (O(log n)) versus a more complex but asymptotically better O(1) alternative</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Heaps should never be used for caching</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(1) solutions are always preferable regardless of complexity</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a"><p class="quiz-text">What concept from Chapter 14 is conceptually similar to distributed cluster membership tracking?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Chapter 14&#39;s Union-Find &quot;which group does this belong to&quot; question, though real systems use dedicated consensus protocols instead</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Chapter 14&#39;s rank-based tree balancing directly implements cluster membership</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">There is no conceptual relationship</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Union-Find is used literally, unmodified, in production consensus systems</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the overarching principle this entire chapter is built around?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">System design is a completely separate field requiring no DSA knowledge</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Every system design decision covered is a direct, recognizable extension of a structure or pattern from earlier chapters, not new knowledge learned from scratch</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Production systems never use the data structures taught in DSA courses</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Big-O analysis is irrelevant to real system design</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-a, 18-b, 19-a, 20-b</p></details>
+</div>
+<h2 id="27-13-20-coding-problems">27.13 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement <code>LRUCache</code> from memory (section 27.1.1), and verify its <code>get</code>/<code>put</code> operations behave correctly across a sequence of accesses.</li>
+<li>Implement <code>SlidingWindowRateLimiter</code> from memory (section 27.2), and verify it correctly rejects requests exceeding the limit within a window.</li>
+<li>Implement <code>TokenBucketRateLimiter</code> from memory (section 27.2), and verify it allows a burst of requests up to the bucket&#39;s capacity.</li>
+<li>Write a function to simulate <code>hash(key) % N</code> server assignment, and demonstrate how many keys change their assigned server when N changes by 1.</li>
+<li>Implement a basic <code>ConsistentHashRing</code>&#39;s <code>addServer</code> and <code>getServerForKey</code> from memory (section 27.4).</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Extend <code>LRUCache</code> to support a <code>delete(key)</code> operation, maintaining all O(1) guarantees.</li>
+<li>Implement an LFU cache using Chapter 9&#39;s heap (frequency-tracking), and compare its complexity against the conceptual O(1) hash-map-based alternative described in section 27.1.2.</li>
+<li>Implement <code>ConsistentHashRing</code>&#39;s <code>removeServer</code>, and empirically demonstrate (with a test) that removing one server only reassigns keys that were mapped to it, not a large fraction of all keys.</li>
+<li>Given a simulated &quot;disk block size&quot; constraint, implement a simplified B-Tree node structure (many keys per node) and compare its height against an equivalent binary search tree for the same total key count.</li>
+<li>Implement a simple message queue (FIFO) with a maximum size, rejecting new messages when full (a direct application of <a href="/learn/dsa-master/stack-and-queue-javascript" title="Stack and Queue in JavaScript: LIFO &amp; FIFO">Chapter 6</a>&#39;s Queue with a capacity constraint).</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Implement the full O(1) LFU cache using nested hash maps and linked lists (frequency -&gt; doubly linked list of keys at that frequency), as conceptually described in section 27.1.2.</li>
+<li>Given a simulated distributed cache cluster, implement consistent hashing with &quot;virtual nodes&quot; (each physical server mapped to multiple positions on the ring, improving load distribution evenness) and empirically compare load balance with and without virtual nodes.</li>
+<li>Implement a priority-based message queue (using Chapter 9&#39;s heap) where messages have priority levels, and higher-priority messages are always processed first, regardless of arrival order.</li>
+<li>Given a simulated rate limiter needing to work correctly across multiple server instances (a distributed rate limiter), describe (with a simplified shared-state implementation) how you&#39;d coordinate rate limit counts across instances, discussing the trade-offs versus a per-instance-only rate limiter.</li>
+<li>Implement a basic &quot;materialized view&quot; simulation: given a base dataset and a query pattern that&#39;s run frequently, precompute and cache the query result (directly applying <a href="/learn/dsa-master/recursion-in-javascript" title="Recursion in JavaScript: Call Stack &amp; Memoization">Chapter 2</a>/18-19&#39;s memoization philosophy to a database-adjacent context), invalidating the cache when the base data changes.</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Design and implement a URL shortener&#39;s caching layer, using an LRU cache for frequently-accessed short URLs, discussing cache size trade-offs and eviction policy choices.</li>
+<li><strong>(Amazon-level)</strong> Design and implement a rate limiter for an e-commerce API, choosing between sliding window and token bucket based on the specific business requirement (e.g., &quot;no more than 100 requests per minute, hard limit&quot; vs. &quot;allow bursts during flash sales, but average out over time&quot;), justifying your choice explicitly in comments.</li>
+<li><strong>(Microsoft-level)</strong> Design a document collaboration system&#39;s caching strategy, using LFU (since frequently-edited documents should stay cached, not just recently-edited ones) and discuss why LRU might be a worse fit for this specific access pattern.</li>
+<li><strong>(Meta-level)</strong> Design a social media feed&#39;s load balancing strategy using consistent hashing to distribute user feed generation across multiple servers, ensuring minimal redistribution as servers scale up/down during traffic spikes.</li>
+<li><strong>(Netflix-level)</strong> Design a video content delivery caching strategy across multiple CDN edge servers, using consistent hashing to route content requests, and LRU or LFU (justify your choice) for each edge server&#39;s local cache eviction policy, discussing how content popularity patterns (a small number of videos receiving most views — a &quot;long tail&quot; distribution) should inform this choice.</li>
+</ol>
+<hr>
+
+<h2 id="27-14-5-interview-questions">27.14 5 Interview Questions</h2>
+<ol>
+<li>&quot;Design an LRU cache with O(1) get and put operations.&quot; (Tests the Map + doubly linked list composition directly.)</li>
+<li>&quot;How would you rate-limit an API, and what are the trade-offs between different approaches?&quot; (Tests sliding window vs. token bucket judgment.)</li>
+<li>&quot;Why do databases use B-Trees instead of binary search trees?&quot; (Tests the disk-I/O-versus-comparisons distinction specifically.)</li>
+<li>&quot;How would you design a system to distribute load across a dynamically changing number of servers?&quot; (Tests consistent hashing and the redistribution problem it solves.)</li>
+<li>&quot;How does your DSA knowledge inform real system design decisions?&quot; (Tests the chapter&#39;s central mindset — recognizing the same reasoning at different scales.)</li>
+</ol>
+<hr>
+
+<h2 id="27-15-3-real-projects">27.15 3 Real Projects</h2>
+<ol>
+<li><strong>Complete Caching Strategy Library</strong>: Implement LRU (Map + doubly linked list) and both heap-based and O(1) LFU caches, with a self-check script verifying correctness and comparing empirical performance across access patterns favoring recency versus frequency.</li>
+<li><strong>Rate Limiter Comparison Tool</strong>: Build both sliding window and token bucket rate limiters, simulate various traffic patterns (steady, bursty, gradually increasing), and produce a report comparing how each limiter handles each pattern — a direct, empirical demonstration of section 27.2&#39;s trade-off discussion.</li>
+<li><strong>Consistent Hashing Load Distribution Visualizer</strong>: Build a tool that simulates adding/removing servers from both a plain modulo-hash system and a consistent-hash-ring system, reporting the percentage of keys that get reassigned in each case — a direct, empirical demonstration of the redistribution problem consistent hashing solves.</li>
+</ol>
+<hr>
+
+<h2 id="27-16-further-reading">27.16 Further Reading</h2>
+<ul>
+<li>Martin Kleppmann, <em>Designing Data-Intensive Applications</em> — the definitive, genuinely excellent book bridging exactly the gap this chapter opened: DSA foundations to real production system design, covering B-Trees, consistent hashing, distributed consensus, and much more in full depth.</li>
+<li>Alex Xu, <em>System Design Interview</em> (Volumes 1 and 2) — a widely-used, interview-focused companion covering the practical application of these concepts in technical interview settings.</li>
+<li>Search &quot;Chord distributed hash table&quot; for the original academic paper introducing consistent hashing in the context this chapter&#39;s section 27.4 draws from.</li>
+<li>Search &quot;Raft consensus algorithm&quot; for an accessible, well-regarded introduction to distributed consensus — the genuinely new territory this chapter&#39;s honest scope boundary (section 27.5.3) pointed toward.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">DSA in System Design: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>How do you implement an LRU cache?</h3></summary><p>Combine a hash map with a doubly linked list. The map finds any node in O(1), and the list keeps entries in recency order, so moving an accessed node to the front and evicting the least recently used node from the back are both O(1).</p></details>
+<details class="learn-faq-item"><summary><h3>How does a token bucket rate limiter work?</h3></summary><p>A bucket holds up to a fixed number of tokens and refills at a steady rate. Each request takes one token, and a request that finds the bucket empty is rejected or delayed. It allows short bursts while enforcing an average rate.</p></details>
+<details class="learn-faq-item"><summary><h3>Why do databases use B-trees instead of binary search trees?</h3></summary><p>B-tree nodes hold many keys and children, so the tree is very shallow and each node fits one disk page. That minimizes the number of slow disk reads, which matters far more than the number of comparisons.</p></details>
+<details class="learn-faq-item"><summary><h3>What is consistent hashing?</h3></summary><p>Consistent hashing places servers and keys on a hash ring and assigns each key to the next server clockwise. When a server is added or removed, only about 1/n of the keys move, instead of almost all of them as with hash % n.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span>&larr; Previous &middot; Chapter 26</span><strong>Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span>Next &middot; Chapter 28 &rarr;</span><strong>DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#27-0-why-this-chapter-exists">27.0 Why This Chapter Exists</a></li><li><a href="#27-1-caching-lru-lfu-as-direct-applications-of-chapters-4-5-and-9">27.1 Caching: LRU/LFU as Direct Applications of Chapters 4, 5, and 9</a></li><li><a href="#27-2-rate-limiting-sliding-windows-and-token-buckets">27.2 Rate Limiting: Sliding Windows and Token Buckets</a></li><li><a href="#27-3-database-indexing-b-trees-as-production-cousins-of-chapter-8-s-bst">27.3 Database Indexing: B-Trees as Production Cousins of Chapter 8's BST</a></li><li><a href="#27-4-load-balancing-consistent-hashing-as-an-evolution-of-chapter-4">27.4 Load Balancing: Consistent Hashing as an Evolution of Chapter 4</a></li><li><a href="#27-5-distributed-systems-concepts-built-on-this-book-s-foundations">27.5 Distributed Systems Concepts Built on This Book's Foundations</a></li><li><a href="#27-6-a-decision-framework-translating-interview-problem-instincts-into-system-design-instincts">27.6 A Decision Framework: Translating Interview Problem Instincts Into System Design Instincts</a></li><li><a href="#27-7-chapter-summary">27.7 Chapter Summary</a></li><li><a href="#27-8-revision-notes">27.8 Revision Notes</a></li><li><a href="#27-9-mind-map-ascii">27.9 Mind Map (ASCII)</a></li><li><a href="#27-10-cheat-sheet">27.10 Cheat Sheet</a></li><li><a href="#27-11-key-takeaways">27.11 Key Takeaways</a></li><li><a href="#27-12-20-multiple-choice-questions">27.12 20 Multiple Choice Questions</a></li><li><a href="#27-13-20-coding-problems">27.13 20 Coding Problems</a></li><li><a href="#27-14-5-interview-questions">27.14 5 Interview Questions</a></li><li><a href="#27-15-3-real-projects">27.15 3 Real Projects</a></li><li><a href="#27-16-further-reading">27.16 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "dsa-for-system-design"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

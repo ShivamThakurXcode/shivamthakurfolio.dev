@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Topological Sort &amp; MST: Kahn, Kruskal, Prim | DSA Master</title>
+    <meta name="description" content="Learn topological sort with Kahn's algorithm and DFS, and minimum spanning trees with Kruskal's and Prim's algorithms, implemented and compared in JavaScript.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="topological sort, kahn's algorithm, course schedule, minimum spanning tree, kruskal algorithm, prim algorithm, dag, dependency resolution, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/union-find-disjoint-set">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="topological sort">
+    <meta property="article:tag" content="kahn's algorithm">
+    <meta property="article:tag" content="course schedule">
+    <meta property="article:tag" content="minimum spanning tree">
+    <meta property="article:tag" content="kruskal algorithm">
+    <meta property="article:tag" content="prim algorithm">
+    <meta property="article:tag" content="dag">
+    <meta property="article:tag" content="dependency resolution">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Topological Sort &amp; MST: Kahn, Kruskal, Prim">
+    <meta property="og:description" content="Learn topological sort with Kahn's algorithm and DFS, and minimum spanning trees with Kruskal's and Prim's algorithms, implemented and compared in JavaScript.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/topological-sort-minimum-spanning-tree.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Topological Sort and Minimum Spanning Trees: Kahn's, Kruskal's and Prim's: DSA Master chapter 13">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Topological Sort &amp; MST: Kahn, Kruskal, Prim">
+    <meta name="twitter:description" content="Learn topological sort with Kahn's algorithm and DFS, and minimum spanning trees with Kruskal's and Prim's algorithms, implemented and compared in JavaScript.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/topological-sort-minimum-spanning-tree.png">
+    <meta name="twitter:image:alt" content="Topological Sort and Minimum Spanning Trees: Kahn's, Kruskal's and Prim's: DSA Master chapter 13">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree",
+          "name": "Topological Sort & MST: Kahn, Kruskal, Prim | DSA Master",
+          "description": "Learn topological sort with Kahn's algorithm and DFS, and minimum spanning trees with Kruskal's and Prim's algorithms, implemented and compared in JavaScript.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/topological-sort-minimum-spanning-tree.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Topological Sort and Minimum Spanning Trees: Kahn's, Kruskal's and Prim's"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#webpage"
+          },
+          "headline": "Topological Sort and Minimum Spanning Trees: Kahn's, Kruskal's and Prim's",
+          "alternativeHeadline": "Topological Sort & Minimum Spanning Trees",
+          "description": "Learn topological sort with Kahn's algorithm and DFS, and minimum spanning trees with Kruskal's and Prim's algorithms, implemented and compared in JavaScript.",
+          "abstract": "Topological sort orders the vertices of a directed acyclic graph so that every dependency comes before what depends on it, as in build systems and course schedules. A minimum spanning tree connects all vertices of a weighted graph with the smallest total edge cost. This chapter implements Kahn's algorithm, DFS-based topological sort, Kruskal's algorithm and Prim's algorithm.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/topological-sort-minimum-spanning-tree.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 5974,
+          "timeRequired": "PT27M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "topological sort, kahn's algorithm, course schedule, minimum spanning tree, kruskal algorithm, prim algorithm, dag, dependency resolution",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Topological ordering of DAGs",
+            "Kahn's algorithm (BFS-based)",
+            "DFS-based topological sort",
+            "Kruskal's algorithm with Union-Find",
+            "Prim's algorithm with a heap"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "topological sort"
+          },
+          "isAccessibleForFree": true,
+          "position": 13,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#article",
+            "name": "Shortest Path Algorithms: Dijkstra, Bellman-Ford and Floyd-Warshall",
+            "url": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Topological Sort & MST: Kahn, Kruskal, Prim",
+              "item": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is topological sort used for?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Topological sort orders tasks that have dependencies: package installation, build pipelines, spreadsheet recalculation, course prerequisites and job scheduling. It only works on directed acyclic graphs."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does Kahn's algorithm detect a cycle?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Kahn's algorithm repeatedly removes vertices with in-degree zero. If it finishes having output fewer vertices than the graph contains, the remaining vertices are part of a cycle."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between Kruskal's and Prim's algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Kruskal's sorts all edges and adds the cheapest one that does not form a cycle, using Union-Find; it suits sparse graphs. Prim's grows the tree from one vertex, always adding the cheapest edge leaving it, using a heap; it suits dense graphs."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is a minimum spanning tree the same as the shortest path?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. A minimum spanning tree minimizes the total cost of connecting every vertex, while a shortest path minimizes the cost between two specific vertices. The path between two vertices in an MST is not necessarily their shortest path."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#quiz",
+          "name": "Topological Sort & MST: Kahn, Kruskal, Prim: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "topological sort"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What condition must a graph satisfy for a topological sort to exist?",
+              "text": "What condition must a graph satisfy for a topological sort to exist?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It must be a Directed Acyclic Graph (DAG)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It must be undirected"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It must be weighted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It must have exactly one vertex with in-degree zero"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does Kahn's algorithm repeatedly process?",
+              "text": "What does Kahn's algorithm repeatedly process?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Vertices with in-degree zero (no remaining unprocessed prerequisites)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Vertices with the highest in-degree"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The heaviest edges"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Vertices in alphabetical order"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How does Kahn's algorithm detect a cycle?",
+              "text": "How does Kahn's algorithm detect a cycle?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "If the final result's length doesn't match the total vertex count, a cycle exists"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It cannot detect cycles at all"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It requires a separate DFS pass"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It throws an error immediately upon encountering any edge"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In DFS-based topological sort, when is a vertex added to the result list?",
+              "text": "In DFS-based topological sort, when is a vertex added to the result list?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "After all of its descendants have been fully processed (postorder)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Immediately upon being visited (preorder)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only if it has no neighbors"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "In alphabetical order regardless of DFS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why must the DFS-based topological sort result be reversed at the end?",
+              "text": "Why must the DFS-based topological sort result be reversed at the end?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "DFS naturally finishes the deepest dependency chains first, so raw postorder is backward"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's an arbitrary convention"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript arrays require reversal after DFS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only needs reversal for undirected graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What data structure does DFS-based topological sort reuse from Chapter 11's cycle detection?",
+              "text": "What data structure does DFS-based topological sort reuse from Chapter 11's cycle detection?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A recursionStack"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A min-heap"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A Union-Find structure"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A trie"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What problem does a Minimum Spanning Tree (MST) solve?",
+              "text": "What problem does a Minimum Spanning Tree (MST) solve?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The cheapest way to connect all vertices together"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The shortest path between two specific vertices"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The longest path in a graph"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting vertices topologically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How is MST fundamentally different from Chapter 12's shortest path problem?",
+              "text": "How is MST fundamentally different from Chapter 12's shortest path problem?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MST connects ALL vertices at minimum total cost; shortest path optimizes a route between two specific vertices"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They are actually the same problem"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "MST only works on directed graphs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Shortest path doesn't use weights"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the core strategy of Kruskal's algorithm?",
+              "text": "What is the core strategy of Kruskal's algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sort all edges by weight and greedily add each unless it forms a cycle"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Start from one vertex and expand outward"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use BFS to find the shortest path first"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Randomly select edges until connected"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What data structure does Kruskal's algorithm rely on to detect cycles efficiently?",
+              "text": "What data structure does Kruskal's algorithm rely on to detect cycles efficiently?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Union-Find (Disjoint Set Union)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A min-heap"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A trie"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A doubly linked list"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of Kruskal's algorithm?",
+              "text": "What is the time complexity of Kruskal's algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(E log E), dominated by sorting the edges"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(V + E)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V³)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V  E)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the core strategy of Prim's algorithm?",
+              "text": "What is the core strategy of Prim's algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Start from one vertex and greedily expand the tree via the cheapest edge to a new vertex"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sort all edges globally first"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use topological sort first"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Process vertices in alphabetical order"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What existing algorithm is Prim's algorithm structurally most similar to?",
+              "text": "What existing algorithm is Prim's algorithm structurally most similar to?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Dijkstra's algorithm (Chapter 12)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Kruskal's algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bellman-Ford"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Kahn's algorithm"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the key difference between what Prim's algorithm minimizes versus what Dijkstra minimizes?",
+              "text": "What is the key difference between what Prim's algorithm minimizes versus what Dijkstra minimizes?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Prim's minimizes the cheapest single connecting edge; Dijkstra minimizes total distance from a source"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "There is no difference; they are identical"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Prim's requires negative weights; Dijkstra doesn't"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Prim's only works on directed graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which algorithm is generally preferred for sparse graphs when finding an MST?",
+              "text": "Which algorithm is generally preferred for sparse graphs when finding an MST?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Kruskal's algorithm"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Prim's algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Dijkstra's algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bellman-Ford"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which algorithm is generally preferred for dense graphs when finding an MST?",
+              "text": "Which algorithm is generally preferred for dense graphs when finding an MST?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Prim's algorithm"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Kruskal's algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Kahn's algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DFS-based topological sort"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How many edges does a spanning tree of a graph with V vertices contain?",
+              "text": "How many edges does a spanning tree of a graph with V vertices contain?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "V - 1"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "V"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "V + 1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "V²"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Is the specific edge set of an MST guaranteed to be unique?",
+              "text": "Is the specific edge set of an MST guaranteed to be unique?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No — if edge weights have ties, multiple different MSTs with the same total weight can exist"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Yes, always exactly one MST exists"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "MSTs never have ties"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Uniqueness only applies to directed graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How do MST algorithms handle negative edge weights, compared to Dijkstra's algorithm?",
+              "text": "How do MST algorithms handle negative edge weights, compared to Dijkstra's algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "MST algorithms handle negative weights without any correctness issues, unlike Dijkstra's strict requirement"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They fail in the same way Dijkstra does"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Negative weights are impossible in any graph algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "MST algorithms convert negative weights to zero automatically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Can a disconnected graph have a single spanning tree covering all vertices?",
+              "text": "Can a disconnected graph have a single spanning tree covering all vertices?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No — a spanning tree requires connectivity; a disconnected graph has no single spanning tree"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Yes, always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only if all edge weights are equal"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only for directed graphs"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:46.4%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item active" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree" aria-current="page"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 13 of 28 &middot; Intermediate</p>
+                        <h1>Topological Sort and Minimum Spanning Trees: Kahn's, Kruskal's and Prim's</h1>
+                        <p class="learn-book-title">Topological Sort &amp; Minimum Spanning Trees</p>
+                        <ul class="learn-meta text-caption">
+                            <li>27 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/topological-sort-minimum-spanning-tree.webp"><img src="../../assets/images/learn/dsa-master/topological-sort-minimum-spanning-tree.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Topological Sort and Minimum Spanning Trees: Kahn's, Kruskal's and Prim's: DSA Master chapter 13 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Topological sort orders the vertices of a directed acyclic graph so that every dependency comes before what depends on it, as in build systems and course schedules. A minimum spanning tree connects all vertices of a weighted graph with the smallest total edge cost. This chapter implements Kahn's algorithm, DFS-based topological sort, Kruskal's algorithm and Prim's algorithm.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Topological ordering of DAGs</li><li>Kahn's algorithm (BFS-based)</li><li>DFS-based topological sort</li><li>Kruskal's algorithm with Union-Find</li><li>Prim's algorithm with a heap</li></ul>
+                        </section>
+<hr>
+
+<h2 id="13-0-two-distinct-problems-one-chapter">13.0 Two Distinct Problems, One Chapter</h2>
+<p>This chapter covers two genuinely separate graph problems that happen to share a natural pairing in most DSA curricula: <strong>topological sort</strong> (ordering tasks that have dependencies — directly extending <a href="/learn/dsa-master/graph-bfs-dfs-javascript" title="Graphs in JavaScript: BFS, DFS &amp; Adjacency List">Chapter 11</a>&#39;s directed-cycle-detection machinery) and <strong>minimum spanning trees</strong> (finding the cheapest way to connect every vertex in a weighted graph — a direct sibling of <a href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford" title="Shortest Path: Dijkstra, Bellman-Ford, Floyd">Chapter 12</a>&#39;s shortest-path algorithms, but optimizing a genuinely different quantity). We treat them as two focused halves rather than forcing an artificial connection between them.</p>
+<hr>
+
+<h2 id="part-a-topological-sort">PART A: TOPOLOGICAL SORT</h2>
+
+<h2 id="13-1-the-problem-ordering-things-with-dependencies">13.1 The Problem: Ordering Things With Dependencies</h2>
+<p><strong>Definition:</strong> A topological sort of a Directed Acyclic Graph (DAG) is a linear ordering of its vertices such that for every directed edge <code>u -&gt; v</code>, vertex <code>u</code> comes before vertex <code>v</code> in the ordering.</p>
+<h3 id="real-life-analogy-getting-dressed-in-the-correct-order">Real-Life Analogy: Getting Dressed in the Correct Order</h3>
+<p>You can&#39;t put on shoes before socks. You can&#39;t put on a jacket before a shirt. These are <strong>dependency constraints</strong> — &quot;socks must come before shoes&quot; is exactly a directed edge <code>socks -&gt; shoes</code> in a dependency graph. Topological sort answers: <strong>&quot;given all these pairwise &#39;must come before&#39; rules, what&#39;s a valid overall order that satisfies every single one simultaneously?&quot;</strong> This is precisely the same shape as course prerequisites (&quot;Calculus I before Calculus II&quot;), build systems (compile module A before module B that imports it), and task scheduling (step 3 needs the output of step 1).</p>
+<h3 id="ascii-visualization">ASCII Visualization</h3>
+<pre class="is-plain"><code>Dependency graph (course prerequisites):
+
+    Intro --&gt; DataStructures --&gt; Algorithms
+      |                              ^
+      +--------&gt; Discrete Math ------+
+
+Valid topological orderings (there can be MULTIPLE valid answers!):
+  Intro, DataStructures, Discrete Math, Algorithms
+  Intro, Discrete Math, DataStructures, Algorithms
+
+Both are valid: every edge's &quot;before&quot; vertex genuinely appears earlier
+in the list than its &quot;after&quot; vertex, in both orderings.</code></pre>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-topological-sort-only-exists-for-dags" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Topological Sort Only Exists for DAGs</span></h3>
+<p><strong>A graph with a cycle has NO valid topological ordering — full stop.</strong> If <code>A</code> must come before <code>B</code>, and <code>B</code> must come before <code>A</code> (a cycle), there is no linear order satisfying both simultaneously; it&#39;s a logical contradiction (exactly like a real-world circular dependency: &quot;module A needs module B, but module B also needs module A&quot; is an unbuildable system). This is precisely why <strong>topological sort algorithms must detect cycles as a first-class outcome</strong>, not an afterthought — directly reusing <a href="/learn/dsa-master/graph-bfs-dfs-javascript" title="Graphs in JavaScript: BFS, DFS &amp; Adjacency List">Chapter 11</a>&#39;s directed cycle detection (section 11.6.2).</p>
+</aside>
+<hr>
+
+<h2 id="13-2-kahn-s-algorithm-bfs-based-topological-sort">13.2 Kahn&#39;s Algorithm (BFS-Based Topological Sort)</h2>
+<p><strong>Definition:</strong> Kahn&#39;s algorithm repeatedly removes vertices with <strong>in-degree zero</strong> (no remaining unprocessed prerequisites) from the graph, appending them to the result, until either every vertex is processed (success) or no zero-in-degree vertex remains while vertices are still unprocessed (a cycle exists).</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-eat-the-easiest-task-first" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;Eat the Easiest Task First&quot;</span></h3>
+<p>Think of in-degree as &quot;number of unfinished prerequisites.&quot; Kahn&#39;s algorithm is exactly the natural human strategy for tackling a to-do list with dependencies: <strong>repeatedly do whatever task currently has zero remaining blockers</strong>, and doing it might unblock other tasks (decrementing their remaining-blocker count), which you then become eligible to do next.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">topologicalSortKahn</span>(<span class="hljs-params">graph</span>) {
+  <span class="hljs-comment">// graph: Map&lt;vertex, Array&lt;neighbor&gt;&gt;  (directed edges: vertex -&gt; neighbor)</span>
+  <span class="hljs-keyword">const</span> inDegree = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> vertex <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">keys</span>()) {
+    inDegree.<span class="hljs-title function_">set</span>(vertex, <span class="hljs-number">0</span>);
+  }
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [vertex, neighbors] <span class="hljs-keyword">of</span> graph) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> neighbor <span class="hljs-keyword">of</span> neighbors) {
+      inDegree.<span class="hljs-title function_">set</span>(neighbor, (inDegree.<span class="hljs-title function_">get</span>(neighbor) || <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>);
+    }
+  }
+
+  <span class="hljs-comment">// Start with every vertex that has ZERO remaining prerequisites</span>
+  <span class="hljs-keyword">const</span> queue = []; <span class="hljs-comment">// Chapter 6&#x27;s Queue, illustrated with a plain array here</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [vertex, degree] <span class="hljs-keyword">of</span> inDegree) {
+    <span class="hljs-keyword">if</span> (degree === <span class="hljs-number">0</span>) queue.<span class="hljs-title function_">push</span>(vertex);
+  }
+
+  <span class="hljs-keyword">const</span> result = [];
+
+  <span class="hljs-keyword">while</span> (queue.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">const</span> current = queue.<span class="hljs-title function_">shift</span>(); <span class="hljs-comment">// O(n) with a plain array — use Ch.6&#x27;s real Queue in production!</span>
+    result.<span class="hljs-title function_">push</span>(current);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> neighbor <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">get</span>(current) || []) {
+      inDegree.<span class="hljs-title function_">set</span>(neighbor, inDegree.<span class="hljs-title function_">get</span>(neighbor) - <span class="hljs-number">1</span>);
+
+      <span class="hljs-keyword">if</span> (inDegree.<span class="hljs-title function_">get</span>(neighbor) === <span class="hljs-number">0</span>) {
+        queue.<span class="hljs-title function_">push</span>(neighbor); <span class="hljs-comment">// this neighbor&#x27;s LAST blocker was just resolved!</span>
+      }
+    }
+  }
+
+  <span class="hljs-keyword">if</span> (result.<span class="hljs-property">length</span> !== graph.<span class="hljs-property">size</span>) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;Graph contains a cycle — no valid topological ordering exists&#x27;</span>);
+  }
+
+  <span class="hljs-keyword">return</span> result;
+}</code></pre></div>
+</aside>
+<h3 id="dry-run">Dry Run</h3>
+<pre class="is-plain"><code>Graph: Intro -&gt; [DataStructures, DiscreteMath]
+       DataStructures -&gt; [Algorithms]
+       DiscreteMath -&gt; [Algorithms]
+       Algorithms -&gt; []
+
+In-degree calculation:
+  Intro: 0 (nothing points TO it)
+  DataStructures: 1 (from Intro)
+  DiscreteMath: 1 (from Intro)
+  Algorithms: 2 (from DataStructures AND DiscreteMath)
+
+Initial queue (in-degree 0): [Intro]
+
+Dequeue Intro. result=[Intro]
+  neighbor DataStructures: inDegree 1-&gt;0. ZERO! queue=[DataStructures]
+  neighbor DiscreteMath: inDegree 1-&gt;0. ZERO! queue=[DataStructures, DiscreteMath]
+
+Dequeue DataStructures. result=[Intro, DataStructures]
+  neighbor Algorithms: inDegree 2-&gt;1. NOT zero yet -&gt; don't enqueue
+
+Dequeue DiscreteMath. result=[Intro, DataStructures, DiscreteMath]
+  neighbor Algorithms: inDegree 1-&gt;0. ZERO! queue=[Algorithms]
+
+Dequeue Algorithms. result=[Intro, DataStructures, DiscreteMath, Algorithms]
+  no neighbors
+
+result.length (4) === graph.size (4) -&gt; SUCCESS, no cycle.
+Final order: [Intro, DataStructures, DiscreteMath, Algorithms]</code></pre>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-kahn-s-algorithm-doubles-as-cycle-detection-for-free" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: Kahn&#39;s Algorithm Doubles as Cycle Detection, for Free</span></h3>
+<p>Notice the final check: <strong><code>if (result.length !== graph.size)</code>.</strong> This is a genuinely elegant, important detail: <strong>if a cycle exists somewhere in the graph, the vertices involved in (or downstream of) that cycle will never reach in-degree zero</strong> (since their prerequisite chain never fully resolves — a cycle means each vertex is <em>always</em> waiting on another vertex that&#39;s <em>also</em> still waiting), so they never get added to <code>result</code>. <strong>Kahn&#39;s algorithm doesn&#39;t need a separate cycle-detection pass (unlike Chapter 11&#39;s DFS-based approach, which needed an explicit <code>recursionStack</code>) — the length mismatch at the end IS the cycle detector, completely free of charge.</strong> This is a strong, specific thing to mention if asked to compare topological sort approaches.</p>
+</aside>
+<hr>
+
+<h2 id="13-3-dfs-based-topological-sort-the-alternative-approach">13.3 DFS-Based Topological Sort (The Alternative Approach)</h2>
+<p><strong>Definition:</strong> DFS-based topological sort performs a standard DFS, and appends each vertex to the result <strong>only after all of its descendants have been fully processed</strong> (i.e., on the way back up, in postorder — directly reusing <a href="/learn/dsa-master/binary-tree-and-bst-javascript" title="Binary Tree &amp; BST in JavaScript: Traversals">Chapter 8</a>&#39;s postorder traversal concept), then reverses the final result.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">topologicalSortDFS</span>(<span class="hljs-params">graph</span>) {
+  <span class="hljs-keyword">const</span> visited = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>();
+  <span class="hljs-keyword">const</span> recursionStack = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(); <span class="hljs-comment">// reused directly from Chapter 11&#x27;s cycle detection!</span>
+  <span class="hljs-keyword">const</span> result = [];
+
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">dfs</span>(<span class="hljs-params">vertex</span>) {
+    visited.<span class="hljs-title function_">add</span>(vertex);
+    recursionStack.<span class="hljs-title function_">add</span>(vertex);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> neighbor <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">get</span>(vertex) || []) {
+      <span class="hljs-keyword">if</span> (recursionStack.<span class="hljs-title function_">has</span>(neighbor)) {
+        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;Graph contains a cycle — no valid topological ordering exists&#x27;</span>);
+      }
+      <span class="hljs-keyword">if</span> (!visited.<span class="hljs-title function_">has</span>(neighbor)) {
+        <span class="hljs-title function_">dfs</span>(neighbor);
+      }
+    }
+
+    recursionStack.<span class="hljs-title function_">delete</span>(vertex);
+    result.<span class="hljs-title function_">push</span>(vertex); <span class="hljs-comment">// POSTORDER: add AFTER all descendants are fully processed</span>
+  }
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> vertex <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">keys</span>()) {
+    <span class="hljs-keyword">if</span> (!visited.<span class="hljs-title function_">has</span>(vertex)) {
+      <span class="hljs-title function_">dfs</span>(vertex);
+    }
+  }
+
+  <span class="hljs-keyword">return</span> result.<span class="hljs-title function_">reverse</span>(); <span class="hljs-comment">// reverse the postorder result to get the topological order!</span>
+}</code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-why-postorder-then-reverse" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: Why Postorder, Then Reverse?</span></h3>
+<p>This is the single trickiest conceptual leap in DFS-based topological sort, worth building real intuition for: <strong>a vertex is only &quot;finished&quot; (pushed to <code>result</code>) after every single thing it depends on (its descendants in the DFS tree) has <em>already</em> been finished.</strong> This means the very <em>last</em> vertex to finish overall must be a vertex with no remaining dependents relying on it further up the chain — i.e., it belongs at the very <em>end</em> of a valid topological order. Since DFS naturally finishes &quot;deepest dependency chains&quot; first (postorder means children finish before parents), the raw postorder result is the topological order <strong>backward</strong> — reversing it puts things right-side up: prerequisites first, dependents last.</p>
+</aside>
+<h3 id="dry-run-same-graph-as-section-13-2">Dry Run (Same Graph as Section 13.2)</h3>
+<pre class="is-plain"><code>Graph: Intro -&gt; [DataStructures, DiscreteMath]
+       DataStructures -&gt; [Algorithms]
+       DiscreteMath -&gt; [Algorithms]
+       Algorithms -&gt; []
+
+dfs(Intro):
+  visited={Intro}, recursionStack={Intro}
+  neighbor DataStructures: not visited -&gt; dfs(DataStructures)
+    visited={Intro,DataStructures}, recursionStack={Intro,DataStructures}
+    neighbor Algorithms: not visited -&gt; dfs(Algorithms)
+      visited={...,Algorithms}, recursionStack={...,Algorithms}
+      no neighbors
+      recursionStack removes Algorithms. result.push(Algorithms) -&gt; result=[Algorithms]
+    recursionStack removes DataStructures. result.push(DataStructures) -&gt; result=[Algorithms, DataStructures]
+  neighbor DiscreteMath: not visited -&gt; dfs(DiscreteMath)
+    visited={...,DiscreteMath}, recursionStack={Intro,DiscreteMath}
+    neighbor Algorithms: ALREADY VISITED, and NOT in recursionStack (it was removed!) -&gt; fine, skip
+    recursionStack removes DiscreteMath. result.push(DiscreteMath) -&gt; result=[Algorithms, DataStructures, DiscreteMath]
+  recursionStack removes Intro. result.push(Intro) -&gt; result=[Algorithms, DataStructures, DiscreteMath, Intro]
+
+Reverse: [Intro, DiscreteMath, DataStructures, Algorithms]
+
+This is a DIFFERENT valid ordering than Kahn's algorithm produced (Intro, DataStructures,
+DiscreteMath, Algorithms) — and BOTH are correct! Remember: topological sort results
+are not unique in general; multiple valid orderings can exist for the same DAG.</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-kahn-s-vs-dfs-based-topological-sort" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Kahn&#39;s vs. DFS-Based Topological Sort</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Kahn&#39;s Algorithm (BFS-based)</th>
+<th>DFS-Based</th>
+</tr>
+</thead><tbody><tr>
+<td>Underlying structure</td>
+<td>Queue (in-degree zero vertices)</td>
+<td>Stack/recursion (postorder, then reverse)</td>
+</tr>
+<tr>
+<td>Cycle detection</td>
+<td>Free — check if <code>result.length !== graph.size</code></td>
+<td>Needs explicit <code>recursionStack</code> tracking</td>
+</tr>
+<tr>
+<td>Intuition</td>
+<td>&quot;Process whatever has no remaining blockers&quot;</td>
+<td>&quot;Finish all dependents before yourself, then reverse&quot;</td>
+</tr>
+<tr>
+<td>Common use</td>
+<td>Preferred when cycle detection is also needed</td>
+<td>Preferred when already doing DFS for other reasons in the same pass</td>
+</tr>
+</tbody></table></div>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>Both algorithms are equally valid and equally likely to be asked. <strong>Kahn&#39;s algorithm is generally considered slightly more intuitive to explain out loud</strong> (&quot;process the currently-unblocked tasks, repeat&quot;), and its free cycle detection is a genuine practical advantage worth mentioning. The DFS-based approach is worth knowing specifically because it reuses the exact <code>recursionStack</code> technique from Chapter 11 verbatim, reinforcing that pattern&#39;s reusability across problems.</p>
+</aside>
+<hr>
+
+<h2 id="part-b-minimum-spanning-trees">PART B: MINIMUM SPANNING TREES</h2>
+
+<h2 id="13-4-the-problem-connecting-everything-as-cheaply-as-possible">13.4 The Problem: Connecting Everything as Cheaply as Possible</h2>
+<p><strong>Definition:</strong> A spanning tree of a connected, undirected graph is a subgraph that includes every vertex, connected, with no cycles (exactly <code>V-1</code> edges for <code>V</code> vertices — the minimum possible to keep everything connected). A <strong>Minimum Spanning Tree (MST)</strong> is the spanning tree whose total edge weight is smallest among all possible spanning trees.</p>
+<h3 id="real-life-analogy-wiring-a-neighborhood-for-internet-access">Real-Life Analogy: Wiring a Neighborhood for Internet Access</h3>
+<p>Imagine an internet company needs to connect every house in a neighborhood with fiber cable, where the cost of laying cable between any two specific houses is known (and varies — some pairs are close together, cheap to connect; others are far apart, expensive). The company wants every house connected to the network <strong>somehow</strong> (not necessarily directly to every other house — indirect connections through other houses are fine), at the <strong>lowest total cable cost.</strong> This is exactly the MST problem: find the cheapest set of connections that links everything together, using no more connections than strictly necessary (any &quot;extra&quot; connection beyond a tree&#39;s <code>V-1</code> edges would only add cost without adding any new connectivity, since a spanning tree is already fully connected by definition).</p>
+<h3 id="why-this-is-genuinely-different-from-shortest-path-chapter-12">Why This Is Genuinely Different From Shortest Path (Chapter 12)</h3>
+<p>This is worth being crisp about, since the two problems are frequently confused: <strong>shortest path (<a href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford" title="Shortest Path: Dijkstra, Bellman-Ford, Floyd">Chapter 12</a>) minimizes the total weight of a path between two SPECIFIC vertices. MST minimizes the total weight of connecting ALL vertices together, with no specific &quot;start&quot; or &quot;end&quot; in mind.</strong> An MST doesn&#39;t promise the shortest route between any particular pair of vertices — it only promises the cheapest way to make sure everything is reachable from everything else, given the freedom to route however is globally cheapest.</p>
+<hr>
+
+<h2 id="13-5-kruskal-s-algorithm-greedy-edge-selection">13.5 Kruskal&#39;s Algorithm: Greedy Edge Selection</h2>
+<p><strong>Definition:</strong> Kruskal&#39;s algorithm builds an MST by sorting all edges by weight (ascending), then greedily adding each edge to the growing MST <strong>unless it would create a cycle</strong>, until <code>V-1</code> edges have been added.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-cheapest-first-skip-what-would-loop" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;Cheapest First, Skip What Would Loop&quot;</span></h3>
+<p>Kruskal&#39;s strategy in one sentence: <strong>sort every possible connection from cheapest to most expensive, and greedily take each one, unless it would connect two things that are already connected (which would just waste money on a redundant, cycle-forming connection).</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">kruskalMST</span>(<span class="hljs-params">vertices, edges</span>) {
+  <span class="hljs-comment">// edges: Array&lt;[u, v, weight]&gt;</span>
+  <span class="hljs-keyword">const</span> sortedEdges = [...edges].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a[<span class="hljs-number">2</span>] - b[<span class="hljs-number">2</span>]); <span class="hljs-comment">// ascending by weight</span>
+
+  <span class="hljs-keyword">const</span> parent = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(vertices.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">v</span> =&gt;</span> [v, v])); <span class="hljs-comment">// Union-Find setup — full detail in Chapter 14!</span>
+
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">find</span>(<span class="hljs-params">v</span>) {
+    <span class="hljs-keyword">if</span> (parent.<span class="hljs-title function_">get</span>(v) !== v) {
+      parent.<span class="hljs-title function_">set</span>(v, <span class="hljs-title function_">find</span>(parent.<span class="hljs-title function_">get</span>(v))); <span class="hljs-comment">// path compression (previewed here, formalized next chapter)</span>
+    }
+    <span class="hljs-keyword">return</span> parent.<span class="hljs-title function_">get</span>(v);
+  }
+
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">union</span>(<span class="hljs-params">u, v</span>) {
+    <span class="hljs-keyword">const</span> rootU = <span class="hljs-title function_">find</span>(u);
+    <span class="hljs-keyword">const</span> rootV = <span class="hljs-title function_">find</span>(v);
+    <span class="hljs-keyword">if</span> (rootU === rootV) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>; <span class="hljs-comment">// already connected — adding this edge would create a CYCLE</span>
+    parent.<span class="hljs-title function_">set</span>(rootU, rootV);
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+  }
+
+  <span class="hljs-keyword">const</span> mstEdges = [];
+  <span class="hljs-keyword">let</span> totalWeight = <span class="hljs-number">0</span>;
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [u, v, weight] <span class="hljs-keyword">of</span> sortedEdges) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">union</span>(u, v)) {          <span class="hljs-comment">// union() returns false if u and v are ALREADY connected</span>
+      mstEdges.<span class="hljs-title function_">push</span>([u, v, weight]);
+      totalWeight += weight;
+    }
+
+    <span class="hljs-keyword">if</span> (mstEdges.<span class="hljs-property">length</span> === vertices.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>) <span class="hljs-keyword">break</span>; <span class="hljs-comment">// MST is complete!</span>
+  }
+
+  <span class="hljs-keyword">return</span> { mstEdges, totalWeight };
+}</code></pre></div>
+</aside>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-this-chapter-previews-chapter-14" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip: This Chapter Previews Chapter 14</span></h3>
+<p>Notice the <code>find</code>/<code>union</code> functions above — this is the <strong>Union-Find (Disjoint Set Union)</strong> data structure, which gets a full, dedicated chapter immediately after this one. We use a simplified version here specifically because <strong>Kruskal&#39;s algorithm is the single most common, most natural motivating use case for Union-Find</strong> — efficiently answering &quot;are these two vertices already connected?&quot; is precisely the question Union-Find is purpose-built to answer in near-constant time. Understanding <em>why</em> Kruskal&#39;s needs this capability now will make <a href="/learn/dsa-master/union-find-disjoint-set" title="Union-Find (Disjoint Set Union) in JavaScript">Chapter 14</a>&#39;s deep dive feel like a natural continuation rather than an abrupt new topic.</p>
+</aside>
+<h3 id="dry-run-2">Dry Run</h3>
+<pre class="is-plain"><code>Vertices: A, B, C, D
+Edges: [A,B,1], [B,C,4], [A,C,3], [C,D,2], [B,D,5]
+
+Sorted by weight: [A,B,1], [C,D,2], [A,C,3], [B,C,4], [B,D,5]
+
+parent = {A:A, B:B, C:C, D:D}  (each vertex is its own separate group initially)
+
+Edge [A,B,1]: find(A)=A, find(B)=B. Different! union(A,B) -&gt; parent={A:B,B:B,C:C,D:D}
+  mstEdges=[[A,B,1]], totalWeight=1
+
+Edge [C,D,2]: find(C)=C, find(D)=D. Different! union(C,D) -&gt; parent={A:B,B:B,C:D,D:D}
+  mstEdges=[[A,B,1],[C,D,2]], totalWeight=3
+
+Edge [A,C,3]: find(A)=B (via A-&gt;B), find(C)=D (via C-&gt;D). Different! union(A,C) -&gt; connects the two groups!
+  parent={A:B,B:D,C:D,D:D}  (B's group now merged under D)
+  mstEdges=[[A,B,1],[C,D,2],[A,C,3]], totalWeight=6
+  mstEdges.length (3) === vertices.length-1 (3) -&gt; DONE!
+
+(Remaining edges [B,C,4] and [B,D,5] are never even checked — we already have
+our V-1=3 edges, and adding more would only create cycles anyway.)
+
+Final MST: A-B(1), C-D(2), A-C(3), total weight = 6</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-kruskal-s-complexity" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Kruskal&#39;s Complexity</span></h3>
+<ul>
+<li><strong>Time</strong>: <strong>O(E log E)</strong> — dominated by sorting the edges; the Union-Find operations themselves are nearly O(1) each (a &quot;nearly constant&quot; bound formalized precisely in <a href="/learn/dsa-master/union-find-disjoint-set" title="Union-Find (Disjoint Set Union) in JavaScript">Chapter 14</a> as the inverse Ackermann function).</li>
+<li><strong>Space</strong>: O(V + E) for the Union-Find structure and edge list.</li>
+</ul>
+</aside>
+<hr>
+
+<h2 id="13-6-prim-s-algorithm-greedy-vertex-expansion-a-direct-sibling-of-dijkstra">13.6 Prim&#39;s Algorithm: Greedy Vertex Expansion (A Direct Sibling of Dijkstra)</h2>
+<p><strong>Definition:</strong> Prim&#39;s algorithm builds an MST by starting from an arbitrary vertex and repeatedly adding the <strong>cheapest edge that connects the growing tree to a new, not-yet-included vertex</strong>, until every vertex is included.</p>
+<h3 id="why-this-should-feel-extremely-familiar">Why This Should Feel Extremely Familiar</h3>
+<p>Compare this description to Chapter 12&#39;s Dijkstra&#39;s algorithm: both use a min-heap (<a href="/learn/dsa-master/heap-priority-queue-javascript" title="Heap &amp; Priority Queue in JavaScript">Chapter 9</a>) to repeatedly select &quot;the cheapest next thing&quot; and expand a frontier outward. <strong>The crucial difference:</strong> Dijkstra tracks the cheapest <strong>total distance from the source</strong> to each vertex; Prim&#39;s tracks the cheapest <strong>single edge connecting the current tree to each outside vertex</strong>, with no notion of &quot;total distance from a source&quot; at all — a genuinely different quantity being greedily minimized, despite the nearly identical-looking code structure.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">primMST</span>(<span class="hljs-params">graph, startVertex</span>) {
+  <span class="hljs-comment">// graph: Map&lt;vertex, Array&lt;[neighbor, weight]&gt;&gt;</span>
+  <span class="hljs-keyword">const</span> visited = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([startVertex]);
+  <span class="hljs-keyword">const</span> minHeap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Heap</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a.<span class="hljs-property">weight</span> - b.<span class="hljs-property">weight</span>); <span class="hljs-comment">// Chapter 9&#x27;s Heap, again!</span>
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [neighbor, weight] <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">get</span>(startVertex) || []) {
+    minHeap.<span class="hljs-title function_">insert</span>({ <span class="hljs-attr">from</span>: startVertex, <span class="hljs-attr">to</span>: neighbor, weight });
+  }
+
+  <span class="hljs-keyword">const</span> mstEdges = [];
+  <span class="hljs-keyword">let</span> totalWeight = <span class="hljs-number">0</span>;
+
+  <span class="hljs-keyword">while</span> (minHeap.<span class="hljs-property">size</span> &gt; <span class="hljs-number">0</span> &amp;&amp; visited.<span class="hljs-property">size</span> &lt; graph.<span class="hljs-property">size</span>) {
+    <span class="hljs-keyword">const</span> { <span class="hljs-keyword">from</span>, to, weight } = minHeap.<span class="hljs-title function_">extract</span>();
+
+    <span class="hljs-keyword">if</span> (visited.<span class="hljs-title function_">has</span>(to)) <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// this edge would connect to an ALREADY-included vertex — skip (cycle)</span>
+
+    visited.<span class="hljs-title function_">add</span>(to);
+    mstEdges.<span class="hljs-title function_">push</span>([<span class="hljs-keyword">from</span>, to, weight]);
+    totalWeight += weight;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [neighbor, edgeWeight] <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">get</span>(to) || []) {
+      <span class="hljs-keyword">if</span> (!visited.<span class="hljs-title function_">has</span>(neighbor)) {
+        minHeap.<span class="hljs-title function_">insert</span>({ <span class="hljs-attr">from</span>: to, <span class="hljs-attr">to</span>: neighbor, <span class="hljs-attr">weight</span>: edgeWeight });
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> { mstEdges, totalWeight };
+}</code></pre></div>
+<h3 id="dry-run-3">Dry Run</h3>
+<pre class="is-plain"><code>Graph (same edges as Kruskal's example, undirected):
+A -&gt; [[B,1],[C,3]]
+B -&gt; [[A,1],[C,4]]
+C -&gt; [[A,3],[B,4],[D,2]]
+D -&gt; [[C,2]]
+
+primMST(graph, 'A'):
+
+visited={A}, heap gets A's edges: [{A,B,1}, {A,C,3}]
+
+Extract {A,B,1}. B not visited. visited={A,B}. mstEdges=[[A,B,1]], weight=1
+  B's edges: [A,1](A visited, skip adding—wait, we DO add it, filter happens on extraction)
+  Actually we only push if neighbor not YET visited at push time: A IS visited, skip.
+             C not visited -&gt; push {B,C,4}
+  heap now: [{A,C,3}, {B,C,4}]
+
+Extract {A,C,3}. C not visited. visited={A,B,C}. mstEdges=[[A,B,1],[A,C,3]], weight=4
+  C's edges: A visited-skip, B visited-skip, D not visited -&gt; push {C,D,2}
+  heap now: [{C,D,2}, {B,C,4}(now stale-ish, but harmless, will be skipped if C already visited on extraction)]
+
+Extract {C,D,2}. D not visited. visited={A,B,C,D}. mstEdges=[[A,B,1],[A,C,3],[C,D,2]], weight=6
+  visited.size(4) === graph.size(4) -&gt; loop ends
+
+Final MST: A-B(1), A-C(3), C-D(2), total weight = 6
+
+SAME total weight as Kruskal's (6)! Different specific edge set in general is possible
+(multiple valid MSTs can exist when weights tie), but the TOTAL weight of any valid
+MST for a given graph is always the same, provably.</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-prim-s-complexity" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Prim&#39;s Complexity</span></h3>
+<ul>
+<li><strong>Time</strong>: <strong>O(E log V)</strong> with a binary heap — very similar to Dijkstra&#39;s O((V+E) log V), for the same underlying heap-based-frontier-expansion reason.</li>
+<li><strong>Space</strong>: O(V + E).</li>
+</ul>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-kruskal-s-vs-prim-s-when-to-choose-which" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: Kruskal&#39;s vs. Prim&#39;s — When to Choose Which</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Kruskal&#39;s</th>
+<th>Prim&#39;s</th>
+</tr>
+</thead><tbody><tr>
+<td>Strategy</td>
+<td>Sort ALL edges globally, greedily add if no cycle</td>
+<td>Grow ONE connected tree outward, always taking the cheapest connecting edge</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td><strong>Sparse graphs</strong> (fewer edges — sorting cost dominates, and E is small)</td>
+<td><strong>Dense graphs</strong> (many edges — heap-based frontier expansion handles this well, closely tracking Dijkstra&#39;s structure)</td>
+</tr>
+<tr>
+<td>Needs</td>
+<td>Union-Find (Chapter 14)</td>
+<td>Min-heap (<a href="/learn/dsa-master/heap-priority-queue-javascript" title="Heap &amp; Priority Queue in JavaScript">Chapter 9</a>)</td>
+</tr>
+<tr>
+<td>Feels like</td>
+<td>A generalization of &quot;greedily pick cheapest, skip cycles&quot;</td>
+<td>A direct sibling of Dijkstra&#39;s algorithm (Chapter 12)</td>
+</tr>
+</tbody></table></div>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-2" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>State this comparison explicitly and unprompted if asked to implement an MST algorithm without further specification: <strong>&quot;I&#39;ll use Kruskal&#39;s if the graph is sparse, since sorting E edges dominates and Union-Find keeps cycle-checking nearly constant-time; I&#39;ll use Prim&#39;s if the graph is dense, since it behaves like Dijkstra with a min-heap, more naturally scaling with vertex-degree rather than requiring a full edge sort upfront.&quot;</strong> This is a genuine, meaningful engineering trade-off, not an arbitrary stylistic choice, and demonstrating awareness of it is a strong signal.</p>
+</aside>
+<hr>
+
+<h2 id="13-7-edge-cases-and-gotchas-checklist">13.7 Edge Cases and Gotchas Checklist</h2>
+<ol>
+<li><strong>Disconnected graphs have no spanning tree at all</strong> (and no valid single topological order spanning all components in a meaningful combined sense, though each component can independently be topologically sorted if it&#39;s itself a DAG) — always verify/state your algorithm&#39;s behavior on disconnected input.</li>
+<li><strong>Multiple valid topological orders can exist</strong> — never assume there&#39;s a single &quot;correct&quot; answer; verify correctness by checking the <em>ordering property</em> holds (every edge&#39;s source precedes its destination), not by comparing to one specific expected sequence.</li>
+<li><strong>Cycles make topological sort undefined</strong> — always check for and handle this explicitly (Kahn&#39;s free length-check, or DFS&#39;s <code>recursionStack</code>).</li>
+<li><strong>MST weight is unique; the specific edge set may not be</strong> — if edge weights contain ties, multiple different MSTs with the <em>same total weight</em> can exist; don&#39;t assume a single canonical MST when comparing outputs.</li>
+<li><strong>MST algorithms assume undirected graphs</strong> — Kruskal&#39;s and Prim&#39;s, as covered here, are defined for undirected graphs; &quot;minimum spanning arborescence&quot; is the (more complex, out of scope here) directed-graph analogue, worth knowing exists if a directed MST-shaped question arises.</li>
+<li><strong>Negative weights are actually FINE for MST</strong> (unlike Dijkstra&#39;s requirement in Chapter 12!) — since MST algorithms only compare edge weights relative to each other for greedy selection, never accumulate a &quot;distance from source&quot; the way Dijkstra does, negative weights cause no correctness issues at all. This is a genuinely interesting, easy-to-miss contrast worth mentioning explicitly.</li>
+</ol>
+<hr>
+
+<h2 id="13-8-chapter-summary">13.8 Chapter Summary</h2>
+<p>This chapter covered two related-but-distinct graph problems building directly on Chapters 9, 11, and previewing Chapter 14. <strong>Topological sort</strong> answers &quot;what linear ordering satisfies every &#39;must come before&#39; dependency constraint in a DAG,&quot; and only exists at all for acyclic graphs — a direct consequence of Chapter 11&#39;s cycle-detection lesson, since a cycle represents a logical contradiction in dependency terms. We covered both <strong>Kahn&#39;s algorithm</strong> (BFS-based, repeatedly processing zero-in-degree vertices, with an elegant, free cycle-detection side effect via a simple length check) and the <strong>DFS-based approach</strong> (postorder traversal, directly reusing <a href="/learn/dsa-master/binary-tree-and-bst-javascript" title="Binary Tree &amp; BST in JavaScript: Traversals">Chapter 8</a>&#39;s postorder concept and Chapter 11&#39;s <code>recursionStack</code> cycle-detection technique verbatim, followed by a final reversal whose necessity we built real intuition for: DFS naturally finishes the deepest dependency chains first, so the raw postorder result is the topological order turned backward).</p>
+<p>We then turned to <strong>Minimum Spanning Trees</strong>, carefully distinguishing this problem from Chapter 12&#39;s shortest path: MST minimizes the total cost of connecting <em>all</em> vertices together with no specific source or destination in mind, a genuinely different optimization target from &quot;cheapest route between two specific points.&quot; We covered <strong>Kruskal&#39;s algorithm</strong> (globally sort all edges, greedily add each unless it would form a cycle), which directly previewed the next chapter by requiring an efficient &quot;are these two vertices already connected?&quot; check — precisely the question <strong>Union-Find (Disjoint Set Union)</strong> exists to answer efficiently, making Chapter 14 a natural, motivated continuation rather than an arbitrary new topic. We covered <strong>Prim&#39;s algorithm</strong> as a direct structural sibling of Chapter 12&#39;s Dijkstra — both use a min-heap to greedily expand a frontier — while being precise about the genuinely different quantity each minimizes (total distance-from-source for Dijkstra, versus cheapest single connecting edge for Prim&#39;s, with no source-distance concept at all).</p>
+<p>We closed with the practical decision framework between Kruskal&#39;s (better for sparse graphs, since edge-sorting cost dominates and stays manageable) and Prim&#39;s (better for dense graphs, since its heap-based frontier expansion scales more naturally with vertex degree), and flagged a genuinely interesting, easy-to-miss contrast with Chapter 12: <strong>MST algorithms have no issue with negative edge weights whatsoever</strong>, unlike Dijkstra&#39;s strict non-negative-weights requirement, precisely because MST&#39;s greedy comparisons never accumulate a &quot;distance from source&quot; the way shortest-path algorithms do.</p>
+<hr>
+
+<h2 id="13-9-revision-notes">13.9 Revision Notes</h2>
+<ul>
+<li>Topological sort produces a linear ordering respecting all &quot;must come before&quot; dependency edges — it exists only for DAGs; cycles make it logically undefined.</li>
+<li>Kahn&#39;s algorithm (BFS-based, zero-in-degree processing) gets cycle detection for free via a final length check; DFS-based topological sort needs an explicit <code>recursionStack</code> and requires reversing the postorder result.</li>
+<li>MST minimizes the cost of connecting ALL vertices together — a genuinely different optimization target from shortest path&#39;s &quot;cheapest route between two specific vertices.&quot;</li>
+<li>Kruskal&#39;s algorithm globally sorts edges and greedily adds them unless they&#39;d form a cycle, directly motivating the need for efficient connectivity checks (Union-Find, Chapter 14).</li>
+<li>Prim&#39;s algorithm is a direct structural sibling of Dijkstra (heap-based frontier expansion), but minimizes &quot;cheapest single connecting edge&quot; rather than &quot;total distance from source.&quot;</li>
+<li>Kruskal&#39;s suits sparse graphs (sorting dominates); Prim&#39;s suits dense graphs (heap-based expansion scales with vertex degree).</li>
+<li>MST algorithms tolerate negative edge weights with no correctness issues, unlike Dijkstra&#39;s strict non-negative requirement — a notable, easy-to-miss contrast between the two chapters.</li>
+</ul>
+<hr>
+
+<h2 id="13-10-mind-map-ascii">13.10 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                      TOPOLOGICAL SORT &amp; MST
+                              |
+        +---------------------+----------------------+
+        |                                             |
+  TOPOLOGICAL SORT                          MINIMUM SPANNING TREE
+  (DAGs only!)                              (connect ALL vertices cheaply --
+        |                                    DIFFERENT from shortest path!)
+   +----+----+                                        |
+   |         |                              +----------+----------+
+ KAHN'S    DFS-BASED                        |                     |
+ (BFS,     (postorder,                  KRUSKAL'S              PRIM'S
+ in-degree  THEN REVERSE --              (sort ALL edges,      (heap-based,
+ zero       &quot;finish deepest              greedily add if       DIRECT SIBLING
+ processing) chains first&quot;)              no cycle forms)       of DIJKSTRA --
+   |             |                            |                but minimizes
+ FREE cycle   needs explicit            NEEDS UNION-FIND       &quot;cheapest edge,&quot;
+ detection    recursionStack            (Ch.14 preview!)       not &quot;distance
+ (length      (Ch.11 reused                  |                 from source&quot;)
+ mismatch)    verbatim)                 O(E log E)                  |
+                                         (sort dominates)       O(E log V)
+                                              |                      |
+                                        Best: SPARSE graphs   Best: DENSE graphs
+                                              |                      |
+                                        MST tolerates NEGATIVE weights fine
+                                        (unlike Dijkstra's strict requirement!)</code></pre>
+<hr>
+
+<h2 id="13-11-cheat-sheet">13.11 Cheat Sheet</h2>
+<pre class="is-plain"><code>TOPOLOGICAL SORT
+====================
+Exists ONLY for DAGs (Directed Acyclic Graphs) -- cycles make it undefined.
+
+Kahn's (BFS):  compute in-degree for all vertices -&gt; queue up zero-in-degree ones -&gt;
+               repeatedly dequeue, decrement neighbors' in-degree, enqueue new zeros -&gt;
+               if result.length != V, a CYCLE exists (free detection!)
+
+DFS-based:     standard DFS, push vertex to result in POSTORDER (after all descendants) -&gt;
+               REVERSE the final result -&gt; use recursionStack (Ch.11) to detect cycles
+
+MINIMUM SPANNING TREE (undirected graphs)
+=============================================
+Goal: connect ALL vertices at minimum TOTAL cost (NOT shortest path between 2 points!)
+
+Kruskal's:  sort ALL edges by weight -&gt; greedily add each UNLESS it forms a cycle
+            (check via Union-Find, Ch.14) -&gt; stop at V-1 edges
+            Time: O(E log E). Best for SPARSE graphs.
+
+Prim's:     start at any vertex -&gt; min-heap (Ch.9) of edges leaving the current tree -&gt;
+            repeatedly extract cheapest edge to a NOT-YET-INCLUDED vertex -&gt; add it, expand frontier
+            Time: O(E log V). Best for DENSE graphs. Structurally = Dijkstra (Ch.12), different goal.
+
+KEY CONTRAST WITH CHAPTER 12
+================================
+MST tolerates NEGATIVE edge weights fine (greedy comparisons never accumulate
+&quot;distance from source&quot;). Dijkstra REQUIRES non-negative weights. Don't confuse the two!</code></pre>
+<hr>
+
+<h2 id="13-12-key-takeaways">13.12 Key Takeaways</h2>
+<ol>
+<li>Topological sort only exists for DAGs — cycles make a valid dependency ordering logically impossible.</li>
+<li>Kahn&#39;s algorithm gets cycle detection for free (a length mismatch); DFS-based sort needs an explicit recursionStack and a final reversal.</li>
+<li>MST minimizes total connection cost across all vertices — a fundamentally different goal from shortest path&#39;s point-to-point optimization.</li>
+<li>Kruskal&#39;s (sort + Union-Find) suits sparse graphs; Prim&#39;s (heap-based, Dijkstra&#39;s sibling) suits dense graphs.</li>
+<li>MST algorithms handle negative weights without issue, unlike Dijkstra&#39;s strict non-negative requirement — know this contrast cold.</li>
+</ol>
+<hr>
+
+<h2 id="13-13-20-multiple-choice-questions">13.13 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What condition must a graph satisfy for a topological sort to exist?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It must be undirected</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It must be a Directed Acyclic Graph (DAG)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It must be weighted</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It must have exactly one vertex with in-degree zero</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does Kahn&#39;s algorithm repeatedly process?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Vertices with the highest in-degree</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Vertices with in-degree zero (no remaining unprocessed prerequisites)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The heaviest edges</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Vertices in alphabetical order</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How does Kahn&#39;s algorithm detect a cycle?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It cannot detect cycles at all</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">If the final result&#39;s length doesn&#39;t match the total vertex count, a cycle exists</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It requires a separate DFS pass</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It throws an error immediately upon encountering any edge</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In DFS-based topological sort, when is a vertex added to the result list?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Immediately upon being visited (preorder)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">After all of its descendants have been fully processed (postorder)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only if it has no neighbors</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">In alphabetical order regardless of DFS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why must the DFS-based topological sort result be reversed at the end?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s an arbitrary convention</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">DFS naturally finishes the deepest dependency chains first, so raw postorder is backward</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript arrays require reversal after DFS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It only needs reversal for undirected graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What data structure does DFS-based topological sort reuse from Chapter 11&#39;s cycle detection?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A min-heap</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A recursionStack</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A Union-Find structure</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A trie</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What problem does a Minimum Spanning Tree (MST) solve?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The shortest path between two specific vertices</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The cheapest way to connect all vertices together</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The longest path in a graph</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sorting vertices topologically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How is MST fundamentally different from Chapter 12&#39;s shortest path problem?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They are actually the same problem</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">MST connects ALL vertices at minimum total cost; shortest path optimizes a route between two specific vertices</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">MST only works on directed graphs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Shortest path doesn&#39;t use weights</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the core strategy of Kruskal&#39;s algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Start from one vertex and expand outward</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Sort all edges by weight and greedily add each unless it forms a cycle</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Use BFS to find the shortest path first</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Randomly select edges until connected</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What data structure does Kruskal&#39;s algorithm rely on to detect cycles efficiently?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A min-heap</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Union-Find (Disjoint Set Union)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A trie</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A doubly linked list</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of Kruskal&#39;s algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(V + E)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(E log E), dominated by sorting the edges</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(V³)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(V * E)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the core strategy of Prim&#39;s algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sort all edges globally first</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Start from one vertex and greedily expand the tree via the cheapest edge to a new vertex</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Use topological sort first</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Process vertices in alphabetical order</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What existing algorithm is Prim&#39;s algorithm structurally most similar to?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Kruskal&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Dijkstra&#39;s algorithm (Chapter 12)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Bellman-Ford</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Kahn&#39;s algorithm</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the key difference between what Prim&#39;s algorithm minimizes versus what Dijkstra minimizes?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">There is no difference; they are identical</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Prim&#39;s minimizes the cheapest single connecting edge; Dijkstra minimizes total distance from a source</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Prim&#39;s requires negative weights; Dijkstra doesn&#39;t</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Prim&#39;s only works on directed graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Which algorithm is generally preferred for sparse graphs when finding an MST?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Prim&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Kruskal&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Dijkstra&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Bellman-Ford</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Which algorithm is generally preferred for dense graphs when finding an MST?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Kruskal&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Prim&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Kahn&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">DFS-based topological sort</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How many edges does a spanning tree of a graph with V vertices contain?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">V</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">V - 1</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">V + 1</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">V²</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Is the specific edge set of an MST guaranteed to be unique?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Yes, always exactly one MST exists</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">No — if edge weights have ties, multiple different MSTs with the same total weight can exist</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">MSTs never have ties</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Uniqueness only applies to directed graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How do MST algorithms handle negative edge weights, compared to Dijkstra&#39;s algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They fail in the same way Dijkstra does</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">MST algorithms handle negative weights without any correctness issues, unlike Dijkstra&#39;s strict requirement</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Negative weights are impossible in any graph algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">MST algorithms convert negative weights to zero automatically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Can a disconnected graph have a single spanning tree covering all vertices?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Yes, always</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">No — a spanning tree requires connectivity; a disconnected graph has no single spanning tree</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only if all edge weights are equal</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only for directed graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="13-14-20-coding-problems">13.14 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement in-degree calculation for a directed graph.</li>
+<li>Implement Kahn&#39;s algorithm from memory (section 13.2), testing it on the course-prerequisite example.</li>
+<li>Implement DFS-based topological sort from memory (section 13.3), and verify it produces a DIFFERENT but equally valid ordering compared to Kahn&#39;s on the same graph.</li>
+<li>Write a function to verify whether a given ordering is a VALID topological sort of a given graph (check every edge&#39;s source precedes its destination).</li>
+<li>Write a function to count the total weight of a given set of edges (a helper for MST verification).</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement Kruskal&#39;s algorithm from memory (section 13.5), including the simplified Union-Find helper functions.</li>
+<li>Implement Prim&#39;s algorithm from memory (section 13.6), using Chapter 9&#39;s generic Heap class.</li>
+<li>Given a graph, determine if it has a UNIQUE topological ordering (hint: at every step, exactly one vertex should have in-degree zero — otherwise multiple valid orderings exist).</li>
+<li>Given a course prerequisite list, determine if it&#39;s possible to finish all courses (reuses Chapter 11&#39;s directed cycle detection AND this chapter&#39;s topological sort — connect the two).</li>
+<li>Given a list of edges with weights, verify that a claimed MST (given as a specific edge set) actually has the minimum possible total weight by comparing against Kruskal&#39;s computed result.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Given a list of tasks with dependencies and individual task durations, compute the minimum total time to complete all tasks (accounting for parallelizable independent tasks), using topological sort plus a DP-style longest-path-in-DAG calculation (a preview of Dynamic Programming techniques).</li>
+<li>Implement &quot;Alien Dictionary&quot;: given a list of words sorted according to an unknown alien language&#39;s alphabet ordering, determine the actual character ordering using topological sort on inferred character precedence constraints.</li>
+<li>Given a network of computers with connection costs, determine the minimum cost to connect all computers into a single network, and separately, determine the SECOND-cheapest possible total cost (a genuinely harder MST variant).</li>
+<li>Given a graph, find the minimum spanning FOREST (for a disconnected graph, find the MST of each connected component separately) using a modified Kruskal&#39;s or Prim&#39;s approach.</li>
+<li>Given a set of cities and their pairwise flight costs, determine the minimum cost to connect all cities via flights, but with the added constraint that a specific &quot;hub&quot; city must have at least 2 direct connections in the final network — discuss the modification needed to standard MST algorithms.</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Given a build system&#39;s module dependency graph, implement topological sort to determine a valid build order, and detect and clearly report any circular dependency found, naming the specific cycle.</li>
+<li><strong>(Amazon-level)</strong> Given a warehouse network where connecting any two warehouses has a known infrastructure cost, use Kruskal&#39;s or Prim&#39;s algorithm to design the minimum-cost network connecting all warehouses, and report the total infrastructure investment required.</li>
+<li><strong>(Microsoft-level)</strong> Given a course scheduling system, implement Kahn&#39;s algorithm to produce a valid semester-by-semester course schedule, where each &quot;layer&quot; processed together (all currently zero-in-degree courses at once) represents one semester&#39;s worth of parallel-eligible courses.</li>
+<li><strong>(Meta-level)</strong> Given a social network&#39;s &quot;influence propagation&quot; model represented as a DAG (influence flows in one direction), use topological sort to determine the correct order to compute each user&#39;s total influence score, where a user&#39;s score depends on the scores of everyone who influences them.</li>
+<li><strong>(Netflix-level)</strong> Design a content encoding pipeline where video processing steps have dependencies (e.g., &quot;transcode&quot; must happen before &quot;generate thumbnails,&quot; which must happen before &quot;publish&quot;), using topological sort to determine a valid, parallelizable processing order, and discuss in comments how Kahn&#39;s algorithm&#39;s &quot;process all zero-in-degree items simultaneously&quot; property naturally maps to identifying steps that can run in parallel.</li>
+</ol>
+<hr>
+
+<h2 id="13-15-5-interview-questions">13.15 5 Interview Questions</h2>
+<ol>
+<li>&quot;What is a topological sort, and under what condition does it fail to exist?&quot; (Tests the DAG requirement and understanding of why cycles break it.)</li>
+<li>&quot;Walk me through Kahn&#39;s algorithm, and tell me how it detects cycles without a separate pass.&quot; (Tests the elegant free cycle-detection mechanism.)</li>
+<li>&quot;How is a Minimum Spanning Tree different from a shortest path?&quot; (Tests the crucial distinction between the two optimization targets.)</li>
+<li>&quot;Compare Kruskal&#39;s and Prim&#39;s algorithms — when would you choose one over the other?&quot; (Tests the sparse-vs-dense decision framework.)</li>
+<li>&quot;Do MST algorithms work correctly with negative edge weights? What about Dijkstra?&quot; (Tests the notable, easy-to-miss contrast between MST and shortest-path algorithms.)</li>
+</ol>
+<hr>
+
+<h2 id="13-16-3-real-projects">13.16 3 Real Projects</h2>
+<ol>
+<li><strong>Complete Topological Sort Library</strong>: Implement both Kahn&#39;s and DFS-based topological sort, with a self-check script verifying both produce valid orderings (per coding problem #4&#39;s verifier) on a variety of hand-constructed DAGs, and correctly detect cycles on intentionally cyclic test graphs.</li>
+<li><strong>Course Scheduler</strong>: Build a Node.js CLI tool that takes a list of courses and prerequisites, uses Kahn&#39;s algorithm to group courses into &quot;semesters&quot; (each semester being one batch of simultaneously-zero-in-degree courses), and reports a complete, valid, parallelized schedule — directly implementing coding problem #18.</li>
+<li><strong>Network Cost Optimizer</strong>: Build a tool implementing both Kruskal&#39;s and Prim&#39;s algorithms against the same weighted graph input, verifying they produce the same total MST weight (even if the specific edges differ), and benchmark both at increasing graph sizes/densities to empirically observe the sparse-vs-dense performance trade-off discussed in this chapter.</li>
+</ol>
+<hr>
+
+<h2 id="13-17-further-reading">13.17 Further Reading</h2>
+<ul>
+<li>A. B. Kahn&#39;s original 1962 paper introducing the topological sorting algorithm bearing his name.</li>
+<li>Joseph Kruskal&#39;s and Robert Prim&#39;s original papers on minimum spanning trees, for the historical origins of both algorithms.</li>
+<li>Search &quot;minimum spanning arborescence&quot; (also known as the Edmonds&#39; algorithm / Chu-Liu/Edmonds algorithm) for the directed-graph analogue of MST, mentioned briefly in this chapter&#39;s edge cases.</li>
+<li>LeetCode&#39;s &quot;Topological Sort,&quot; &quot;Union Find,&quot; and &quot;Minimum Spanning Tree&quot; problem tags, for extensive additional practice directly extending this chapter&#39;s algorithms.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Topological Sort &amp; MST: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is topological sort used for?</h3></summary><p>Topological sort orders tasks that have dependencies: package installation, build pipelines, spreadsheet recalculation, course prerequisites and job scheduling. It only works on directed acyclic graphs.</p></details>
+<details class="learn-faq-item"><summary><h3>How does Kahn's algorithm detect a cycle?</h3></summary><p>Kahn's algorithm repeatedly removes vertices with in-degree zero. If it finishes having output fewer vertices than the graph contains, the remaining vertices are part of a cycle.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the difference between Kruskal's and Prim's algorithm?</h3></summary><p>Kruskal's sorts all edges and adds the cheapest one that does not form a cycle, using Union-Find; it suits sparse graphs. Prim's grows the tree from one vertex, always adding the cheapest edge leaving it, using a heap; it suits dense graphs.</p></details>
+<details class="learn-faq-item"><summary><h3>Is a minimum spanning tree the same as the shortest path?</h3></summary><p>No. A minimum spanning tree minimizes the total cost of connecting every vertex, while a shortest path minimizes the cost between two specific vertices. The path between two vertices in an MST is not necessarily their shortest path.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span>&larr; Previous &middot; Chapter 12</span><strong>Shortest Path: Dijkstra, Bellman-Ford, Floyd</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/union-find-disjoint-set"><span>Next &middot; Chapter 14 &rarr;</span><strong>Union-Find (Disjoint Set Union) in JavaScript</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#13-0-two-distinct-problems-one-chapter">13.0 Two Distinct Problems, One Chapter</a></li><li><a href="#part-a-topological-sort">PART A: TOPOLOGICAL SORT</a></li><li><a href="#13-1-the-problem-ordering-things-with-dependencies">13.1 The Problem: Ordering Things With Dependencies</a></li><li><a href="#13-2-kahn-s-algorithm-bfs-based-topological-sort">13.2 Kahn's Algorithm (BFS-Based Topological Sort)</a></li><li><a href="#13-3-dfs-based-topological-sort-the-alternative-approach">13.3 DFS-Based Topological Sort (The Alternative Approach)</a></li><li><a href="#part-b-minimum-spanning-trees">PART B: MINIMUM SPANNING TREES</a></li><li><a href="#13-4-the-problem-connecting-everything-as-cheaply-as-possible">13.4 The Problem: Connecting Everything as Cheaply as Possible</a></li><li><a href="#13-5-kruskal-s-algorithm-greedy-edge-selection">13.5 Kruskal's Algorithm: Greedy Edge Selection</a></li><li><a href="#13-6-prim-s-algorithm-greedy-vertex-expansion-a-direct-sibling-of-dijkstra">13.6 Prim's Algorithm: Greedy Vertex Expansion (A Direct Sibling of Dijkstra)</a></li><li><a href="#13-7-edge-cases-and-gotchas-checklist">13.7 Edge Cases and Gotchas Checklist</a></li><li><a href="#13-8-chapter-summary">13.8 Chapter Summary</a></li><li><a href="#13-9-revision-notes">13.9 Revision Notes</a></li><li><a href="#13-10-mind-map-ascii">13.10 Mind Map (ASCII)</a></li><li><a href="#13-11-cheat-sheet">13.11 Cheat Sheet</a></li><li><a href="#13-12-key-takeaways">13.12 Key Takeaways</a></li><li><a href="#13-13-20-multiple-choice-questions">13.13 20 Multiple Choice Questions</a></li><li><a href="#13-14-20-coding-problems">13.14 20 Coding Problems</a></li><li><a href="#13-15-5-interview-questions">13.15 5 Interview Questions</a></li><li><a href="#13-16-3-real-projects">13.16 3 Real Projects</a></li><li><a href="#13-17-further-reading">13.17 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "topological-sort-minimum-spanning-tree"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

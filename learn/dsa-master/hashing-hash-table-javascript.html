@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Hash Tables in JavaScript: Map, Set &amp; Hashing | DSA Master</title>
+    <meta name="description" content="Learn how hash tables work in JavaScript: hash functions, collisions, load factor, Map vs Object, WeakMap and the 5 hashing patterns behind interview questions.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="hash table javascript, hashing, hash map, map vs object javascript, set javascript, weakmap, hash collision, load factor, two sum, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/arrays-and-strings-javascript">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/linked-list-javascript">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="hash table javascript">
+    <meta property="article:tag" content="hashing">
+    <meta property="article:tag" content="hash map">
+    <meta property="article:tag" content="map vs object javascript">
+    <meta property="article:tag" content="set javascript">
+    <meta property="article:tag" content="weakmap">
+    <meta property="article:tag" content="hash collision">
+    <meta property="article:tag" content="load factor">
+    <meta property="article:tag" content="two sum">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Hash Tables in JavaScript: Map, Set &amp; Hashing">
+    <meta property="og:description" content="Learn how hash tables work in JavaScript: hash functions, collisions, load factor, Map vs Object, WeakMap and the 5 hashing patterns behind interview questions.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/hashing-hash-table-javascript.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Hashing in JavaScript: Hash Tables, Map, Set and Collisions: DSA Master chapter 4">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hash Tables in JavaScript: Map, Set &amp; Hashing">
+    <meta name="twitter:description" content="Learn how hash tables work in JavaScript: hash functions, collisions, load factor, Map vs Object, WeakMap and the 5 hashing patterns behind interview questions.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/hashing-hash-table-javascript.png">
+    <meta name="twitter:image:alt" content="Hashing in JavaScript: Hash Tables, Map, Set and Collisions: DSA Master chapter 4">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript",
+          "name": "Hash Tables in JavaScript: Map, Set & Hashing | DSA Master",
+          "description": "Learn how hash tables work in JavaScript: hash functions, collisions, load factor, Map vs Object, WeakMap and the 5 hashing patterns behind interview questions.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/hashing-hash-table-javascript.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Hashing in JavaScript: Hash Tables, Map, Set and Collisions"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#webpage"
+          },
+          "headline": "Hashing in JavaScript: Hash Tables, Map, Set and Collisions",
+          "alternativeHeadline": "Hashing — The Highest-Leverage Tool in Interview Prep",
+          "description": "Learn how hash tables work in JavaScript: hash functions, collisions, load factor, Map vs Object, WeakMap and the 5 hashing patterns behind interview questions.",
+          "abstract": "A hash table stores key-value pairs by running each key through a hash function that computes where it belongs, which gives O(1) average lookup, insertion and deletion. This chapter builds a hash table from scratch, explains collisions, chaining, open addressing and resizing, compares Object, Map, Set and WeakMap, and teaches the five hashing patterns used in interviews.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/hashing-hash-table-javascript.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 8193,
+          "timeRequired": "PT37M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "hash table javascript, hashing, hash map, map vs object javascript, set javascript, weakmap, hash collision, load factor, two sum",
+          "proficiencyLevel": "Beginner",
+          "educationalLevel": "Beginner",
+          "teaches": [
+            "How hash functions work",
+            "Collision handling: chaining and open addressing",
+            "Load factor and resizing",
+            "Map, Set, WeakMap and WeakSet",
+            "Frequency, complement and grouping patterns"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "hash table javascript"
+          },
+          "isAccessibleForFree": true,
+          "position": 4,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/arrays-and-strings-javascript#article",
+            "name": "Arrays and Strings in JavaScript: Two Pointers, Sliding Window and Prefix Sums",
+            "url": "https://shivamthakur.me/learn/dsa-master/arrays-and-strings-javascript"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Hash Tables in JavaScript: Map, Set & Hashing",
+              "item": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why is hash table lookup O(1)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The hash function converts a key directly into an array index, so the table jumps straight to the right bucket instead of searching. It is O(1) on average; with many collisions a lookup can degrade to O(n), which is why tables resize when they get too full."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I use Map or a plain object in JavaScript?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use Map for dictionaries. It accepts any key type, keeps insertion order, has a size property, performs better under frequent additions and deletions, and has no prototype keys that can collide with your data."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a hash collision?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A collision happens when two different keys hash to the same bucket. They are unavoidable by the pigeonhole principle, and tables handle them with chaining (a list per bucket) or open addressing (probing for the next free slot)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When should I use a WeakMap instead of a Map?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use a WeakMap when keys are objects and you do not want the map to keep them alive. Entries disappear once nothing else references the key, which prevents memory leaks in caches and metadata stores."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#quiz",
+          "name": "Hash Tables in JavaScript: Map, Set & Hashing: 20 multiple choice questions",
+          "educationalLevel": "Beginner",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "hash table javascript"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/hashing-hash-table-javascript#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the primary advantage of a hash table over a sorted array for lookups?",
+              "text": "What is the primary advantage of a hash table over a sorted array for lookups?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(1) average-case lookup without requiring sorted order"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It uses less memory"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It automatically sorts data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It never has collisions"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What are the three core requirements of a good hash function?",
+              "text": "What are the three core requirements of a good hash function?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Deterministic, fast to compute, uniform distribution"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Slow, unpredictable, sparse"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Random, reversible, recursive"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorted, indexed, cached"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What causes a hash collision?",
+              "text": "What causes a hash collision?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Two different keys hashing to the same bucket index"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Using let instead of const"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The array being too large"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using Map instead of Object"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What principle guarantees collisions are inevitable given enough keys?",
+              "text": "What principle guarantees collisions are inevitable given enough keys?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The pigeonhole principle"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The birthday paradox"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Amdahl's law"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The halting problem"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is \"separate chaining\"?",
+              "text": "What is \"separate chaining\"?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each bucket holds a small collection of all entries that hashed to it"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Encrypting hash values"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Splitting the hash table across multiple servers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting entries within each bucket"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is \"open addressing\" (linear probing)?",
+              "text": "What is \"open addressing\" (linear probing)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Probing for the next available slot when a bucket is already occupied"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Making all buckets public"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using open-source hash functions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Allowing duplicate keys"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the \"load factor\" of a hash table?",
+              "text": "What is the \"load factor\" of a hash table?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The ratio of stored entries to total bucket count"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The maximum key length allowed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The time it takes to hash a single key"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The number of collisions per second"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the fully accurate complexity claim for hash table operations?",
+              "text": "What is the fully accurate complexity claim for hash table operations?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(1) average case, amortized, assuming a good hash function"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(1) always, no exceptions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n) always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n) always"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which of these can be used as a Map key but NOT as a plain object key (without coercion)?",
+              "text": "Which of these can be used as a Map key but NOT as a plain object key (without coercion)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A number like 42 used directly as a distinct key from '42'"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A string"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A Symbol"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "None — objects and Maps support identical key types"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the surprising default iteration order quirk of plain objects with integer-like keys?",
+              "text": "What is the surprising default iteration order quirk of plain objects with integer-like keys?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "They are sorted numerically first, before string keys in insertion order"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They iterate in reverse insertion order"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They are randomized every time"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They are removed automatically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why does Map generally outperform plain objects for frequent add/remove operations?",
+              "text": "Why does Map generally outperform plain objects for frequent add/remove operations?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Objects are optimized by engines for stable \"shapes,\" which frequent add/remove disrupts"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Map uses less RAM per entry always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Map is written in a faster language"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Objects cannot be modified after creation"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does WeakMap hold that a regular Map does not?",
+              "text": "What does WeakMap hold that a regular Map does not?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Weak references, allowing garbage collection of unreferenced keys"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Stronger references, preventing garbage collection"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No references at all"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "References only to primitive values"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why can't WeakMap keys be primitives like strings or numbers?",
+              "text": "Why can't WeakMap keys be primitives like strings or numbers?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Weak references only make sense for garbage-collectible objects, not primitives"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's an arbitrary restriction with no reason"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Strings are too large to hash"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Numbers cause hash collisions"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is WeakMap deliberately not iterable?",
+              "text": "Why is WeakMap deliberately not iterable?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Iterating would make garbage collection timing observable, which JS design prevents"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Performance reasons only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript doesn't support iteration on weak references at all"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It would require too much memory"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the Two Sum \"complement lookup\" pattern, why does checking for the complement BEFORE adding the current element avoid a bug?",
+              "text": "In the Two Sum \"complement lookup\" pattern, why does checking for the complement BEFORE adding the current element avoid a bug?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It structurally prevents matching an element with itself, without needing an extra guard"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It doesn't matter which order you do it in"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It makes the algorithm run faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript requires this order syntactically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of grouping anagrams using sorted-string signatures, for n words of max length k?",
+              "text": "What is the time complexity of grouping anagrams using sorted-string signatures, for n words of max length k?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n · k log k)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n · k)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n²)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How does Map/Set treat NaN as a key, compared to === comparison?",
+              "text": "How does Map/Set treat NaN as a key, compared to === comparison?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Map/Set treat NaN as equal to itself (SameValueZero), unlike ==="
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The same as ===: NaN never equals NaN"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "NaN cannot be used as a key at all"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "NaN is converted to 0 automatically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why do two separately-created object literals with identical contents fail to match as the same Map key?",
+              "text": "Why do two separately-created object literals with identical contents fail to match as the same Map key?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Objects are compared by reference, not structural equality"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Map only supports primitive keys"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's a bug in the JavaScript spec"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Object literals cannot be hashed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What real-world security concern relates to poorly-designed or predictable hash functions?",
+              "text": "What real-world security concern relates to poorly-designed or predictable hash functions?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Hash-flooding / algorithmic complexity attacks degrading O(1) operations to O(n)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "SQL injection"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cross-site scripting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Buffer overflows"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which of the five hashing patterns best fits the signal phrase \"have I seen this value before in my current sliding window\"?",
+              "text": "Which of the five hashing patterns best fits the signal phrase \"have I seen this value before in my current sliding window\"?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Existence tracking (Set)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Frequency counting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Grouping by computed key"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Memoization"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:14.3%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item active" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript" aria-current="page"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 4 of 28 &middot; Beginner</p>
+                        <h1>Hashing in JavaScript: Hash Tables, Map, Set and Collisions</h1>
+                        <p class="learn-book-title">Hashing — The Highest-Leverage Tool in Interview Prep</p>
+                        <ul class="learn-meta text-caption">
+                            <li>37 min read</li>
+                            <li>Beginner</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/hashing-hash-table-javascript.webp"><img src="../../assets/images/learn/dsa-master/hashing-hash-table-javascript.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Hashing in JavaScript: Hash Tables, Map, Set and Collisions: DSA Master chapter 4 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>A hash table stores key-value pairs by running each key through a hash function that computes where it belongs, which gives O(1) average lookup, insertion and deletion. This chapter builds a hash table from scratch, explains collisions, chaining, open addressing and resizing, compares Object, Map, Set and WeakMap, and teaches the five hashing patterns used in interviews.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>How hash functions work</li><li>Collision handling: chaining and open addressing</li><li>Load factor and resizing</li><li>Map, Set, WeakMap and WeakSet</li><li>Frequency, complement and grouping patterns</li></ul>
+                        </section>
+<hr>
+
+<h2 id="4-0-why-this-chapter-might-be-the-most-important-one-in-the-book">4.0 Why This Chapter Might Be the Most Important One in the Book</h2>
+<p>If you could only learn one data structure before walking into a coding interview, it should be the hash table. An enormous fraction of &quot;medium&quot; difficulty interview problems have a brute-force O(n²) solution and a hash-table-based O(n) solution, and the entire skill of recognizing which is which comes down to one question: <strong>&quot;can I trade some memory to remember something I&#39;ve already seen, so I don&#39;t have to search for it again?&quot;</strong></p>
+<p>We already previewed this exact idea twice: the <code>usernameExists</code> example in <a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a> (Array scan vs. <code>Set.has</code>), and the memoization <code>Map</code> in <a href="/learn/dsa-master/recursion-in-javascript" title="Recursion in JavaScript: Call Stack &amp; Memoization">Chapter 2</a> (remembering computed Fibonacci values). This chapter makes that idea rigorous — we&#39;ll open the hood on <em>how</em> a hash table achieves O(1) average-case lookup, not just <em>that</em> it does.</p>
+<hr>
+
+<h2 id="4-1-the-problem-hashing-solves">4.1 The Problem Hashing Solves</h2>
+<p>Recall from <a href="/learn/dsa-master/arrays-and-strings-javascript" title="Arrays &amp; Strings in JavaScript: DSA Patterns">Chapter 3</a>: checking whether a value exists in an array is O(n) — you must scan. Recall from <a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a>: binary search gets this down to O(log n), but <em>only</em> if the data is sorted, and even then, insertion into a sorted array is O(n) (shifting elements).</p>
+<p><strong>The question hashing answers:</strong> can we get O(1) — genuinely constant time, not even O(log n) — for lookup, insertion, and deletion, without requiring sorted order?</p>
+<h3 id="real-life-analogy-the-coat-check">Real-Life Analogy: The Coat Check</h3>
+<p>Imagine walking into a theater and handing your coat to a coat-check attendant. They don&#39;t search through every coat on the rack to figure out where to put yours. Instead, they compute a number (say, based on your ticket number) and hang your coat at that <strong>exact, predetermined position</strong> on the rack. When you come back, you hand over your ticket, they compute the same number, and walk <strong>directly</strong> to that position — no searching required, regardless of how many hundreds of coats are on the rack.</p>
+<p>This is the entire idea of a hash table: <strong>use a function to compute exactly where something belongs, so you never have to search for it.</strong></p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>&quot;Hashing&quot; the everyday word means &quot;chopping something into smaller, mixed-up pieces&quot; (like hash browns — chopped and mixed potatoes). A <strong>hash function</strong> takes your data (a string, a number, an object) and &quot;chops it up&quot; mathematically into a single number — deterministically scrambled, but always the <em>same</em> scramble for the <em>same</em> input.</p>
+</aside>
+<hr>
+
+<h2 id="4-2-how-a-hash-function-works-from-first-principles">4.2 How a Hash Function Works (From First Principles)</h2>
+<p><strong>Definition:</strong> A hash function is a function that takes an input of arbitrary size (a string, a number, any data) and deterministically produces an output of fixed size (usually an integer), called a <strong>hash code</strong>.</p>
+<h3 id="4-2-1-the-core-requirements-of-a-good-hash-function">4.2.1 The Core Requirements of a Good Hash Function</h3>
+<ol>
+<li><strong>Deterministic</strong> — the same input must <em>always</em> produce the same hash code. If <code>hash(&quot;cat&quot;)</code> returns <code>42</code> today, it must return <code>42</code> every single time, forever, in this run of the program.</li>
+<li><strong>Fast to compute</strong> — O(1) or close to it relative to the size of typical inputs (technically O(k) for a string of length k, but k is usually small and bounded, so we treat it as effectively constant).</li>
+<li><strong>Uniform distribution</strong> — good hash codes should spread out across the available range as evenly as possible, minimizing the chance that two different inputs land on the same value.</li>
+</ol>
+<h3 id="4-2-2-a-simple-hash-function-built-from-scratch">4.2.2 A Simple Hash Function, Built From Scratch</h3>
+<p>Let&#39;s build a genuinely simple (not production-grade, but illustrative) hash function for strings, so the mechanism stops being a black box.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">simpleHash</span>(<span class="hljs-params">str, bucketCount</span>) {
+  <span class="hljs-keyword">let</span> hashCode = <span class="hljs-number">0</span>;
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; str.<span class="hljs-property">length</span>; i++) {
+    <span class="hljs-keyword">const</span> charCode = str.<span class="hljs-title function_">charCodeAt</span>(i);          <span class="hljs-comment">// e.g., &#x27;a&#x27; -&gt; 97</span>
+    hashCode = (hashCode * <span class="hljs-number">31</span> + charCode) % bucketCount;
+    <span class="hljs-comment">// multiply-and-add: a classic, simple, surprisingly effective hashing strategy</span>
+  }
+
+  <span class="hljs-keyword">return</span> hashCode;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">simpleHash</span>(<span class="hljs-string">&#x27;cat&#x27;</span>, <span class="hljs-number">10</span>));  <span class="hljs-comment">// some number between 0-9, deterministic every run</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">simpleHash</span>(<span class="hljs-string">&#x27;dog&#x27;</span>, <span class="hljs-number">10</span>));  <span class="hljs-comment">// a different (usually) number between 0-9</span></code></pre></div>
+<aside class="callout callout-math">
+<h3 id="mathematical-explanation-why-multiply-by-31" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Mathematical Explanation: Why Multiply by 31?</span></h3>
+<p>You&#39;ll see the constant <code>31</code> in hash functions across many real languages and libraries (Java&#39;s <code>String.hashCode()</code> uses it too). Why 31 specifically? Two practical reasons: it&#39;s an <strong>odd prime number</strong> (primes reduce the chance of predictable patterns/collisions when combined with modulo operations), and historically, <code>31 * i</code> can be optimized by compilers into <code>(i &lt;&lt; 5) - i</code> (a bit-shift and subtraction), which used to matter more for raw performance on older hardware. In modern JavaScript engines this specific optimization is less relevant, but the &quot;odd prime multiplier&quot; convention persists because it still produces good distribution properties.</p>
+</aside>
+<h3 id="dry-run-hashing-cat-with-bucketcount-10">Dry Run: Hashing <code>&#39;cat&#39;</code> with <code>bucketCount = 10</code></h3>
+<pre class="is-plain"><code>str = 'cat', bucketCount = 10
+
+charCodeAt: 'c'=99, 'a'=97, 't'=116
+
+i=0: hashCode = (0 * 31 + 99) % 10 = 99 % 10 = 9
+i=1: hashCode = (9 * 31 + 97) % 10 = (279 + 97) % 10 = 376 % 10 = 6
+i=2: hashCode = (6 * 31 + 116) % 10 = (186 + 116) % 10 = 302 % 10 = 2
+
+Final hash: 2</code></pre>
+<p>So <code>&#39;cat&#39;</code> would be stored at <strong>bucket index 2</strong> in an array-backed hash table with 10 buckets.</p>
+<hr>
+
+<h2 id="4-3-from-hash-function-to-hash-table-the-bucket-array">4.3 From Hash Function to Hash Table: The Bucket Array</h2>
+<p><strong>Definition:</strong> A hash table is a data structure that stores key-value pairs by using a hash function to compute an array index (a &quot;bucket&quot;) for each key, enabling average-case O(1) insertion, lookup, and deletion.</p>
+<h3 id="ascii-visualization-the-bucket-array">ASCII Visualization: The Bucket Array</h3>
+<pre class="is-plain"><code>Buckets (an array of size 10):
+
+Index:  0    1    2         3    4    5    6    7    8    9
+       [ ]  [ ]  [cat:5]   [ ]  [ ]  [ ]  [ ]  [ ]  [ ]  [ ]
+                  ^
+                  'cat' hashed to index 2, so we store the
+                  key-value pair {cat: 5} there directly.
+
+To look up 'cat':
+  1. Compute hash('cat') = 2       &lt;- O(1) (string length is bounded)
+  2. Go DIRECTLY to buckets[2]     &lt;- O(1) direct array access (Chapter 3!)
+  3. Found it. No searching required.</code></pre>
+<p>This is exactly why hash table operations are O(1) on average: <strong>we never search.</strong> We compute an address and go directly there, exactly like array index access from <a href="/learn/dsa-master/arrays-and-strings-javascript" title="Arrays &amp; Strings in JavaScript: DSA Patterns">Chapter 3</a> — because that&#39;s literally the mechanism underneath: a hash table <em>is</em> an array, with a hash function acting as the address-calculator.</p>
+<h3 id="4-3-1-building-a-minimal-hash-table-from-scratch">4.3.1 Building a Minimal Hash Table From Scratch</h3>
+<p>Let&#39;s implement one ourselves, to fully demystify what <code>Map</code> is doing for you under the hood.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleHashTable</span> {
+  #buckets;
+  #bucketCount;
+
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">bucketCount = <span class="hljs-number">16</span></span>) {
+    <span class="hljs-variable language_">this</span>.#bucketCount = bucketCount;
+    <span class="hljs-variable language_">this</span>.#buckets = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(bucketCount).<span class="hljs-title function_">fill</span>(<span class="hljs-literal">null</span>).<span class="hljs-title function_">map</span>(<span class="hljs-function">() =&gt;</span> []);
+    <span class="hljs-comment">// each bucket is its own array, to handle collisions (explained in 4.4)</span>
+  }
+
+  #<span class="hljs-title function_">hash</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-keyword">const</span> str = <span class="hljs-title class_">String</span>(key);
+    <span class="hljs-keyword">let</span> hashCode = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; str.<span class="hljs-property">length</span>; i++) {
+      hashCode = (hashCode * <span class="hljs-number">31</span> + str.<span class="hljs-title function_">charCodeAt</span>(i)) % <span class="hljs-variable language_">this</span>.#bucketCount;
+    }
+    <span class="hljs-keyword">return</span> hashCode;
+  }
+
+  <span class="hljs-title function_">set</span>(<span class="hljs-params">key, value</span>) {
+    <span class="hljs-keyword">const</span> index = <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">hash</span>(key);
+    <span class="hljs-keyword">const</span> bucket = <span class="hljs-variable language_">this</span>.#buckets[index];
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> pair <span class="hljs-keyword">of</span> bucket) {
+      <span class="hljs-keyword">if</span> (pair[<span class="hljs-number">0</span>] === key) {
+        pair[<span class="hljs-number">1</span>] = value;          <span class="hljs-comment">// key already exists, update it</span>
+        <span class="hljs-keyword">return</span>;
+      }
+    }
+
+    bucket.<span class="hljs-title function_">push</span>([key, value]);    <span class="hljs-comment">// new key, add it</span>
+  }
+
+  <span class="hljs-title function_">get</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-keyword">const</span> index = <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">hash</span>(key);
+    <span class="hljs-keyword">const</span> bucket = <span class="hljs-variable language_">this</span>.#buckets[index];
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> pair <span class="hljs-keyword">of</span> bucket) {
+      <span class="hljs-keyword">if</span> (pair[<span class="hljs-number">0</span>] === key) {
+        <span class="hljs-keyword">return</span> pair[<span class="hljs-number">1</span>];
+      }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">undefined</span>;             <span class="hljs-comment">// not found</span>
+  }
+
+  <span class="hljs-title function_">has</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">get</span>(key) !== <span class="hljs-literal">undefined</span>;
+  }
+
+  <span class="hljs-title function_">delete</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-keyword">const</span> index = <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">hash</span>(key);
+    <span class="hljs-keyword">const</span> bucket = <span class="hljs-variable language_">this</span>.#buckets[index];
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; bucket.<span class="hljs-property">length</span>; i++) {
+      <span class="hljs-keyword">if</span> (bucket[i][<span class="hljs-number">0</span>] === key) {
+        bucket.<span class="hljs-title function_">splice</span>(i, <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+      }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  }
+}
+
+<span class="hljs-keyword">const</span> table = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleHashTable</span>();
+table.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;Alice&#x27;</span>);
+table.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;age&#x27;</span>, <span class="hljs-number">30</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(table.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;name&#x27;</span>)); <span class="hljs-comment">// &#x27;Alice&#x27;</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(table.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;age&#x27;</span>));  <span class="hljs-comment">// 30</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(table.<span class="hljs-title function_">has</span>(<span class="hljs-string">&#x27;job&#x27;</span>));  <span class="hljs-comment">// false</span></code></pre></div>
+<p>We use private class fields (<code>#buckets</code>, <code>#bucketCount</code>, <code>#hash</code>) — modern ES2022+ JavaScript syntax for genuine encapsulation, not just a naming convention like the old <code>_buckets</code> underscore trick. This means <code>table.#buckets</code> from <em>outside</em> the class throws a syntax error, providing real access control.</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-why-each-bucket-is-an-array-not-a-single-slot" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Why Each Bucket Is an Array, Not a Single Slot</span></h3>
+<p>You might notice each bucket in our implementation is itself an array (<code>[[key1, value1], [key2, value2], ...]</code>), not a single value. This isn&#39;t incidental — it&#39;s the direct solution to the single most important problem in hash table design, which we address next: <strong>collisions.</strong></p>
+</aside>
+<hr>
+
+<h2 id="4-4-collisions-the-central-problem-of-hash-table-design">4.4 Collisions: The Central Problem of Hash Table Design</h2>
+<p><strong>Definition:</strong> A collision occurs when two different keys hash to the same bucket index.</p>
+<aside class="callout callout-math">
+<h3 id="mathematical-explanation-why-collisions-are-mathematically-guaranteed" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Mathematical Explanation: Why Collisions Are Mathematically Guaranteed</span></h3>
+<p>By the <strong>pigeonhole principle</strong>, if you have more possible keys than buckets (which is virtually always true — think of all possible strings versus, say, 16 buckets), collisions are not just possible, they are <strong>inevitable</strong> given enough keys. This isn&#39;t a design flaw to be eliminated; it&#39;s a mathematical certainty to be <em>managed</em>.</p>
+</aside>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-the-birthday-paradox" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: The Birthday Paradox</span></h3>
+<p>You may have heard the surprising fact that in a room of just 23 people, there&#39;s roughly a 50% chance two people share a birthday — despite there being 365 possible birthdays and only 23 people. This is the <strong>birthday paradox</strong>, and it&#39;s a direct, intuitive preview of why collisions happen far more often than beginners expect: <strong>the chance of at least one collision grows much faster than the ratio of items to buckets would naively suggest.</strong> Keep this in your back pocket — it&#39;s a favorite &quot;gotcha&quot; trivia question about hash table behavior.</p>
+</aside>
+<h3 id="4-4-1-collision-resolution-strategy-1-separate-chaining">4.4.1 Collision Resolution Strategy #1: Separate Chaining</h3>
+<p>This is what our <code>SimpleHashTable</code> above already implements: <strong>each bucket holds a small collection (a list) of all key-value pairs that hashed to that index</strong>, and lookups within a bucket fall back to a linear scan of just that bucket&#39;s (hopefully small) contents.</p>
+<pre class="is-plain"><code>Buckets:
+
+Index:  0    1              2                3
+       [ ]  [ ]  [['cat',5], ['ate',9]]      [ ]
+                       ^          ^
+                  Both 'cat' and 'ate' happened to hash to index 1.
+                  They're stored together in a small list (a &quot;chain&quot;).
+
+Looking up 'ate': hash('ate') = 1 -&gt; go to bucket 1 -&gt; scan the
+small list [['cat',5], ['ate',9]] -&gt; find 'ate' -&gt; return 9.</code></pre>
+<p>This is called &quot;chaining&quot; because colliding entries form a chain (traditionally implemented as a linked list — see <a href="/learn/dsa-master/linked-list-javascript" title="Linked List in JavaScript: Singly &amp; Doubly">Chapter 5</a> — though we used a plain array above for simplicity).</p>
+<h3 id="4-4-2-collision-resolution-strategy-2-open-addressing-linear-probing">4.4.2 Collision Resolution Strategy #2: Open Addressing (Linear Probing)</h3>
+<p>The alternative approach: instead of storing multiple entries per bucket, <strong>if a bucket is already occupied, probe (check) the next available slot</strong> according to some fixed sequence, until an empty slot is found.</p>
+<pre class="is-plain"><code>Buckets (each slot holds AT MOST one entry):
+
+Index:   0        1         2         3         4
+        [ ]   ['cat',5]     [ ]       [ ]       [ ]
+
+Insert 'ate', which also hashes to index 1:
+  Index 1 is occupied -&gt; probe index 2 (linear probing: just check next slot)
+  Index 2 is empty -&gt; place 'ate' there
+
+Index:   0        1         2         3         4
+        [ ]   ['cat',5] ['ate',9]     [ ]       [ ]
+
+Looking up 'ate': hash('ate')=1 -&gt; occupied by 'cat', not a match -&gt;
+  probe index 2 -&gt; found 'ate' -&gt; return 9.</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-chaining-vs-open-addressing" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Chaining vs. Open Addressing</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Separate Chaining</th>
+<th>Open Addressing</th>
+</tr>
+</thead><tbody><tr>
+<td>Storage</td>
+<td>Each bucket holds a list</td>
+<td>Each bucket holds at most one entry</td>
+</tr>
+<tr>
+<td>Behavior under high load</td>
+<td>Degrades gracefully (longer chains)</td>
+<td>Can degrade sharply (long probe sequences)</td>
+</tr>
+<tr>
+<td>Memory overhead</td>
+<td>Extra pointers/list overhead per bucket</td>
+<td>More memory-compact (no extra list structure)</td>
+</tr>
+<tr>
+<td>Deletion complexity</td>
+<td>Simple (remove from the chain)</td>
+<td>Trickier (must handle &quot;tombstones&quot; so probing sequences aren&#39;t broken)</td>
+</tr>
+<tr>
+<td>Real-world use</td>
+<td>More common in general-purpose implementations</td>
+<td>Common in performance-critical/cache-friendly implementations</td>
+</tr>
+</tbody></table></div>
+</aside>
+<aside class="callout callout-pro">
+<h3 id="pro-tip" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip</span></h3>
+<p>You do not need to memorize which exact strategy V8 uses internally for <code>Map</code>/<code>Set</code>/plain objects to use them well (and it&#39;s an implementation detail that could change between engine versions). What you <em>do</em> need is the conceptual fluency to explain, if asked, why collisions are inevitable and how they&#39;re generally handled — this demonstrates you understand hash tables as a real mechanism, not a magic black box.</p>
+</aside>
+<hr>
+
+<h2 id="4-5-load-factor-and-resizing">4.5 Load Factor and Resizing</h2>
+<p><strong>Definition:</strong> The load factor of a hash table is the ratio of stored elements to total bucket count: <code>loadFactor = numberOfEntries / numberOfBuckets</code>.</p>
+<p>As load factor increases, chains get longer (in chaining) or probe sequences get longer (in open addressing) — both degrade average lookup time away from the ideal O(1). Well-implemented hash tables monitor their load factor and <strong>resize</strong> (allocate more buckets and redistribute all existing entries) once it crosses a threshold (commonly around 0.7–0.75).</p>
+<aside class="callout callout-math">
+<h3 id="mathematical-explanation-amortized-resizing-again" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Mathematical Explanation: Amortized Resizing, Again</span></h3>
+<p>This should feel familiar — it&#39;s the <em>exact same amortized analysis</em> from Chapter 3&#39;s dynamic array doubling! Resizing a hash table (rehashing every existing entry into a larger bucket array) is an O(n) operation, but because it happens exponentially less often as the table doubles in size each time, the <strong>amortized</strong> cost per insertion remains O(1). This is a beautiful example of the same mathematical idea (geometric/doubling growth → amortized constant cost) appearing in two completely different data structures.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake</span></h3>
+<p>Beginners sometimes assume hash table operations are a <em>hard, guaranteed</em> O(1) with no caveats. The fully accurate statement is: <strong>O(1) average case, amortized, assuming a reasonably well-distributed hash function.</strong> Worst case (extremely poor hash function causing all keys to collide into one bucket, or an adversarial input designed to cause maximum collisions) degrades to <strong>O(n)</strong>. This distinction is worth stating explicitly in interviews — it shows you understand hashing isn&#39;t magic, it&#39;s probability working in your favor under normal conditions.</p>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-hash-flooding-attacks-a-security-adjacent-trivia-point" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip: Hash-Flooding Attacks (A Security-Adjacent Trivia Point)</span></h3>
+<p>Real production systems have been attacked by sending deliberately crafted inputs designed to all hash to the same bucket (an &quot;algorithmic complexity attack&quot; or &quot;hash flooding&quot;), degrading a server&#39;s hash-table-based request parsing from O(1) to O(n) per operation and causing denial-of-service-style slowdowns. This is precisely why many languages (including V8&#39;s internal object/Map hashing) incorporate a randomized seed into their hash function at startup — so an attacker can&#39;t predict which inputs will collide. Mentioning this unprompted is an excellent signal of real-world engineering awareness, well beyond textbook knowledge.</p>
+</aside>
+<hr>
+
+<h2 id="4-6-javascript-s-built-in-hashing-tools-object-map-set-weakmap-weakset">4.6 JavaScript&#39;s Built-In Hashing Tools: <code>Object</code>, <code>Map</code>, <code>Set</code>, <code>WeakMap</code>, <code>WeakSet</code></h2>
+<p>Now that we&#39;ve built a hash table from scratch and understand exactly what&#39;s happening inside, let&#39;s cover JavaScript&#39;s actual built-in tools in depth — what each is <em>for</em>, and the specific trade-offs between them.</p>
+<h3 id="4-6-1-plain-objects-as-hash-tables-the-historical-default">4.6.1 Plain Objects as Hash Tables (The Historical Default)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> ages = {};
+ages[<span class="hljs-string">&#x27;Alice&#x27;</span>] = <span class="hljs-number">30</span>;
+ages[<span class="hljs-string">&#x27;Bob&#x27;</span>] = <span class="hljs-number">25</span>;
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ages[<span class="hljs-string">&#x27;Alice&#x27;</span>]);          <span class="hljs-comment">// 30</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Alice&#x27;</span> <span class="hljs-keyword">in</span> ages);        <span class="hljs-comment">// true</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(ages));      <span class="hljs-comment">// [&#x27;Alice&#x27;, &#x27;Bob&#x27;]</span></code></pre></div>
+<p>Plain objects have historically been JavaScript&#39;s default &quot;dictionary&quot; structure, and they do use hashing internally for property lookup. But they carry real limitations that <code>Map</code> was specifically introduced (in ES6/2015) to fix:</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistakes-with-plain-objects-as-hash-maps" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistakes With Plain Objects as Hash Maps</span></h3>
+<ol>
+<li><strong>Keys are always coerced to strings</strong> (or Symbols). <code>ages[42]</code> and <code>ages[&#39;42&#39;]</code> are the <em>same</em> property — you cannot use a genuine number, object, or other reference as a distinct key.</li>
+<li><strong>Prototype chain pollution risk.</strong> Every plain object inherits from <code>Object.prototype</code> by default, meaning <code>&#39;toString&#39; in ages</code> is <code>true</code> even though you never explicitly added it — a classic source of subtle bugs when checking key existence with <code>in</code> or iterating with <code>for...in</code> without a <code>hasOwnProperty</code> guard.</li>
+<li><strong>No built-in <code>.size</code> property.</strong> You must do <code>Object.keys(ages).length</code>, an O(n) operation just to count entries, whereas <code>Map</code> tracks size in O(1).</li>
+<li><strong>No guaranteed insertion-order iteration for all key types</strong> (in practice, modern JS engines <em>do</em> preserve insertion order for string keys, but integer-like keys get reordered numerically first — a genuinely confusing, spec-mandated quirk).</li>
+</ol>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> weird = {};
+weird[<span class="hljs-string">&#x27;b&#x27;</span>] = <span class="hljs-number">1</span>;
+weird[<span class="hljs-string">&#x27;2&#x27;</span>] = <span class="hljs-number">2</span>;
+weird[<span class="hljs-string">&#x27;a&#x27;</span>] = <span class="hljs-number">3</span>;
+weird[<span class="hljs-string">&#x27;1&#x27;</span>] = <span class="hljs-number">4</span>;
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(weird)); <span class="hljs-comment">// [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;b&#x27;, &#x27;a&#x27;]</span>
+<span class="hljs-comment">// Integer-like keys (&#x27;1&#x27;, &#x27;2&#x27;) are sorted numerically FIRST,</span>
+<span class="hljs-comment">// then string keys appear in insertion order. This surprises almost everyone.</span></code></pre></div>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>This exact &quot;integer keys get reordered&quot; quirk is real, spec-mandated behavior (defined in the <code>[[OwnPropertyKeys]]</code> internal method ordering rules of the ECMAScript spec), not an engine bug. It&#39;s obscure enough that bringing it up unprompted signals genuine spec-level JavaScript knowledge.</p>
+</aside>
+<h3 id="4-6-2-map-the-correct-modern-choice-for-general-purpose-hashing">4.6.2 <code>Map</code> — The Correct Modern Choice for General-Purpose Hashing</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> ages = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+ages.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;Alice&#x27;</span>, <span class="hljs-number">30</span>);
+ages.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;Bob&#x27;</span>, <span class="hljs-number">25</span>);
+ages.<span class="hljs-title function_">set</span>(<span class="hljs-number">42</span>, <span class="hljs-string">&#x27;a number key&#x27;</span>);           <span class="hljs-comment">// any type can be a key!</span>
+ages.<span class="hljs-title function_">set</span>({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span> }, <span class="hljs-string">&#x27;an object key&#x27;</span>);   <span class="hljs-comment">// even objects!</span>
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ages.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;Alice&#x27;</span>));  <span class="hljs-comment">// 30</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ages.<span class="hljs-title function_">has</span>(<span class="hljs-string">&#x27;Bob&#x27;</span>));    <span class="hljs-comment">// true</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ages.<span class="hljs-property">size</span>);          <span class="hljs-comment">// 4 — O(1), built in</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ages.<span class="hljs-title function_">delete</span>(<span class="hljs-string">&#x27;Bob&#x27;</span>)); <span class="hljs-comment">// true, and removes it</span>
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [key, value] <span class="hljs-keyword">of</span> ages) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(key, value);       <span class="hljs-comment">// guaranteed insertion order, ALWAYS, no numeric-key quirk</span>
+}</code></pre></div>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-map-vs-plain-object" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: <code>Map</code> vs. Plain Object</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Plain Object</th>
+<th><code>Map</code></th>
+</tr>
+</thead><tbody><tr>
+<td>Key types</td>
+<td>Strings and Symbols only</td>
+<td><strong>Any</strong> value, including objects, functions, <code>NaN</code></td>
+</tr>
+<tr>
+<td>Iteration order</td>
+<td>Insertion order, EXCEPT integer-like keys sort numerically first</td>
+<td>Always guaranteed insertion order</td>
+</tr>
+<tr>
+<td>Size</td>
+<td><code>Object.keys(obj).length</code> — O(n)</td>
+<td><code>.size</code> — O(1)</td>
+</tr>
+<tr>
+<td>Prototype pollution risk</td>
+<td>Yes (inherits <code>Object.prototype</code>)</td>
+<td>No — <code>Map</code> has no such inherited enumerable keys</td>
+</tr>
+<tr>
+<td>Performance for frequent add/remove</td>
+<td>Generally worse (engines optimize objects for stable &quot;shapes&quot;)</td>
+<td>Generally better — optimized specifically for this use case</td>
+</tr>
+<tr>
+<td>JSON serialization</td>
+<td>Native (<code>JSON.stringify</code>)</td>
+<td>Not directly (<code>JSON.stringify(new Map())</code> gives <code>&#39;{}&#39;</code>— needs manual conversion)</td>
+</tr>
+</tbody></table></div>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p><strong>Default to <code>Map</code> over plain objects whenever you&#39;re building a dictionary/lookup structure in modern JavaScript</strong>, especially in interview code — it signals current best practice, sidesteps the prototype pollution and key-coercion footguns entirely, and gives honest O(1) <code>.size</code>. Use plain objects when you specifically want a fixed, known set of named properties (i.e., when you&#39;re modeling a &quot;thing with attributes,&quot; not &quot;an arbitrary lookup table&quot;) — that&#39;s a different, legitimate use case for objects, distinct from using them as hash maps.</p>
+</aside>
+<h3 id="4-6-3-set-hashing-for-uniqueness-not-key-value-pairs">4.6.3 <code>Set</code> — Hashing for Uniqueness, Not Key-Value Pairs</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> uniqueNumbers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>]);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(uniqueNumbers);        <span class="hljs-comment">// Set(3) {1, 2, 3}</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(uniqueNumbers.<span class="hljs-title function_">has</span>(<span class="hljs-number">2</span>)); <span class="hljs-comment">// true — O(1) average case</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(uniqueNumbers.<span class="hljs-property">size</span>);   <span class="hljs-comment">// 3</span>
+
+uniqueNumbers.<span class="hljs-title function_">add</span>(<span class="hljs-number">4</span>);
+uniqueNumbers.<span class="hljs-title function_">delete</span>(<span class="hljs-number">1</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>([...uniqueNumbers]);   <span class="hljs-comment">// [2, 3, 4] — convert to array when needed</span></code></pre></div>
+<p>A <code>Set</code> is, conceptually, a <code>Map</code> where you only care about the keys, not associated values — same underlying hashing mechanism, same O(1) average-case <code>has</code>/<code>add</code>/<code>delete</code>. This is precisely the structure behind the Chapter 1 <code>usernameExists</code> example and the Chapter 3 sliding-window <code>seen</code> tracker.</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-deduplicating-an-array-in-one-line" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip: Deduplicating an Array in One Line</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> deduped = [...<span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>])]; <span class="hljs-comment">// [1, 2, 3]</span></code></pre></div>
+<p>This is a genuinely idiomatic, production-quality one-liner — not a toy trick. It&#39;s O(n) time (building the Set) and O(n) space, versus a naive nested-loop dedup at O(n²).</p>
+</aside>
+<h3 id="4-6-4-weakmap-and-weakset-hashing-that-respects-garbage-collection">4.6.4 <code>WeakMap</code> and <code>WeakSet</code> — Hashing That Respects Garbage Collection</h3>
+<p>This is the pair most tutorials skip, and it&#39;s genuinely important, JavaScript-specific, memory-management-adjacent knowledge.</p>
+<p><strong>The problem <code>WeakMap</code>/<code>WeakSet</code> solve:</strong> a regular <code>Map</code> holds a <strong>strong reference</strong> to every key it stores. This means if you use an object as a <code>Map</code> key, that object can <strong>never be garbage collected</strong> — even if every other part of your program has completely stopped using it — because the <code>Map</code> itself is still &quot;holding on&quot; to it.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">let</span> user = { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Alice&#x27;</span> };
+<span class="hljs-keyword">const</span> metadata = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+metadata.<span class="hljs-title function_">set</span>(user, { <span class="hljs-attr">loginCount</span>: <span class="hljs-number">5</span> });
+
+user = <span class="hljs-literal">null</span>; <span class="hljs-comment">// we&#x27;re done with `user`... or are we?</span>
+
+<span class="hljs-comment">// The object { name: &#x27;Alice&#x27; } CANNOT be garbage collected, because</span>
+<span class="hljs-comment">// `metadata` (the Map) still holds a strong reference to it internally,</span>
+<span class="hljs-comment">// even though our own `user` variable no longer points to it.</span>
+<span class="hljs-comment">// This is a memory leak if `metadata` lives for the app&#x27;s entire lifetime.</span></code></pre></div>
+<p><code>WeakMap</code> solves this by holding <strong>weak references</strong> to its keys — references that do <em>not</em> prevent garbage collection:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">let</span> user = { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Alice&#x27;</span> };
+<span class="hljs-keyword">const</span> metadata = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();
+metadata.<span class="hljs-title function_">set</span>(user, { <span class="hljs-attr">loginCount</span>: <span class="hljs-number">5</span> });
+
+user = <span class="hljs-literal">null</span>; <span class="hljs-comment">// now the object CAN be garbage collected, because WeakMap&#x27;s</span>
+             <span class="hljs-comment">// reference to it doesn&#x27;t count as a reason to keep it alive.</span>
+             <span class="hljs-comment">// The entry in metadata simply vanishes once the key is collected.</span></code></pre></div>
+<h3 id="key-restrictions-of-weakmap-weakset-these-are-not-arbitrary-they-re-a-direct-consequence-of-weak-references">Key Restrictions of <code>WeakMap</code>/<code>WeakSet</code> (These Are Not Arbitrary — They&#39;re a Direct Consequence of Weak References)</h3>
+<ol>
+<li><strong>Keys must be objects</strong> (or, as of newer JS versions, registered Symbols) — never primitives like strings or numbers. This makes sense once you understand <em>why</em>: primitives aren&#39;t garbage collected in the same reference-counted/reachability sense objects are, so &quot;weak reference to a primitive&quot; is a meaningless concept.</li>
+<li><strong>Not iterable.</strong> No <code>.forEach</code>, no <code>for...of</code>, no <code>.size</code>, no way to list all keys. This is also a direct, unavoidable consequence: if you could iterate a <code>WeakMap</code>, you could observe <em>whether</em> a given object had been garbage collected yet by seeing if it&#39;s still in the list — which would make garbage collection timing observable and non-deterministic behavior would leak into your program&#39;s visible logic. JavaScript&#39;s designers deliberately closed this off.</li>
+</ol>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-when-to-actually-reach-for-weakmap" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: When to Actually Reach for <code>WeakMap</code></span></h3>
+<p>The canonical real-world use case: <strong>attaching metadata/cached-computation-results to objects you don&#39;t own the lifecycle of</strong>, without preventing them from being cleaned up. Common concrete examples:</p>
+<ul>
+<li>Caching expensive computed results keyed by DOM nodes in a browser (if the DOM node is removed from the page and has no other references, you don&#39;t want your cache to be the <em>only</em> thing keeping it alive in memory).</li>
+<li>Storing private, &quot;hidden&quot; data associated with class instances (a pattern used before private class fields — <code>#field</code> syntax, covered in this chapter&#39;s <code>SimpleHashTable</code> — became standard; <code>WeakMap</code>-backed privacy is still seen in some codebases and libraries).</li>
+<li>Any &quot;extra info about this specific object, for as long as the object exists, and not a moment longer&quot; scenario.</li>
+</ul>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-2" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>If asked &quot;why would you ever use <code>WeakMap</code> instead of <code>Map</code>?&quot;, the single sharpest answer is: <strong>&quot;to avoid memory leaks when using objects as keys, by allowing garbage collection to still reclaim those objects once nothing else references them — a regular <code>Map</code> would keep them alive forever.&quot;</strong> Following up with &quot;that&#39;s also why <code>WeakMap</code> isn&#39;t iterable — allowing iteration would make garbage collection timing observable, which JavaScript&#39;s design deliberately prevents&quot; demonstrates unusually deep, specific understanding.</p>
+</aside>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-the-full-hashing-toolkit" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: The Full Hashing Toolkit</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Tool</th>
+<th>Keys</th>
+<th>Values</th>
+<th>Iterable</th>
+<th>Use Case</th>
+</tr>
+</thead><tbody><tr>
+<td><code>Object</code></td>
+<td>Strings/Symbols only</td>
+<td>Anything</td>
+<td>Yes (with quirks)</td>
+<td>Fixed-shape data (&quot;a thing with attributes&quot;)</td>
+</tr>
+<tr>
+<td><code>Map</code></td>
+<td>Anything</td>
+<td>Anything</td>
+<td>Yes, insertion order</td>
+<td>General-purpose dictionary/lookup</td>
+</tr>
+<tr>
+<td><code>Set</code></td>
+<td>N/A (keys ARE the values)</td>
+<td>Anything (unique)</td>
+<td>Yes, insertion order</td>
+<td>Uniqueness tracking, membership testing</td>
+</tr>
+<tr>
+<td><code>WeakMap</code></td>
+<td>Objects only</td>
+<td>Anything</td>
+<td><strong>No</strong></td>
+<td>Metadata on objects, without leaking memory</td>
+</tr>
+<tr>
+<td><code>WeakSet</code></td>
+<td>Objects only</td>
+<td>N/A</td>
+<td><strong>No</strong></td>
+<td>Tracking object membership without leaking memory</td>
+</tr>
+</tbody></table></div>
+</aside>
+<hr>
+
+<h2 id="4-7-the-hashing-pattern-playbook">4.7 The Hashing Pattern Playbook</h2>
+<p>Now let&#39;s build real muscle memory with the specific <em>patterns</em> that hashing enables, presented as a playbook you should recognize instantly.</p>
+<h3 id="4-7-1-pattern-frequency-counting">4.7.1 Pattern: Frequency Counting</h3>
+<p><strong>The signal:</strong> &quot;count occurrences,&quot; &quot;find the most/least frequent,&quot; &quot;check if characters/elements repeat.&quot;</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">characterFrequency</span>(<span class="hljs-params">str</span>) {
+  <span class="hljs-keyword">const</span> freq = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> char <span class="hljs-keyword">of</span> str) {
+    freq.<span class="hljs-title function_">set</span>(char, (freq.<span class="hljs-title function_">get</span>(char) || <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>);
+  }
+
+  <span class="hljs-keyword">return</span> freq;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">characterFrequency</span>(<span class="hljs-string">&#x27;banana&#x27;</span>));
+<span class="hljs-comment">// Map(3) { &#x27;b&#x27; =&gt; 1, &#x27;a&#x27; =&gt; 3, &#x27;n&#x27; =&gt; 2 }</span></code></pre></div>
+<p><strong>Dry run:</strong></p>
+<pre class="is-plain"><code>str = 'banana'
+
+char='b': freq.get('b') is undefined -&gt; (undefined || 0)+1 = 1  -&gt; freq={b:1}
+char='a': freq.get('a') is undefined -&gt; 0+1 = 1                -&gt; freq={b:1,a:1}
+char='n': freq.get('n') is undefined -&gt; 0+1 = 1                -&gt; freq={b:1,a:1,n:1}
+char='a': freq.get('a') is 1 -&gt; 1+1 = 2                        -&gt; freq={b:1,a:2,n:1}
+char='n': freq.get('n') is 1 -&gt; 1+1 = 2                        -&gt; freq={b:1,a:2,n:2}
+char='a': freq.get('a') is 2 -&gt; 2+1 = 3                        -&gt; freq={b:1,a:3,n:2}
+
+Final: {b:1, a:3, n:2}</code></pre>
+<ul>
+<li><strong>Naive</strong> (nested loop counting each character against every other): O(n²).</li>
+<li><strong>Hash-based frequency counting</strong>: <strong>O(n)</strong> — one pass, O(1) average-case map operations per character.</li>
+</ul>
+<h3 id="4-7-2-pattern-the-complement-two-sum-pattern">4.7.2 Pattern: The Complement/Two-Sum Pattern</h3>
+<p>We solved Two Sum with sorted-array two-pointers in Chapter 3 — but that required sorting (O(n log n)) and lost original indices. Hashing solves the <em>unsorted, indices-matter</em> version in a single O(n) pass.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">twoSumUnsorted</span>(<span class="hljs-params">nums, target</span>) {
+  <span class="hljs-keyword">const</span> seen = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(); <span class="hljs-comment">// value -&gt; index</span>
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-property">length</span>; i++) {
+    <span class="hljs-keyword">const</span> complement = target - nums[i];
+
+    <span class="hljs-keyword">if</span> (seen.<span class="hljs-title function_">has</span>(complement)) {
+      <span class="hljs-keyword">return</span> [seen.<span class="hljs-title function_">get</span>(complement), i];
+    }
+
+    seen.<span class="hljs-title function_">set</span>(nums[i], i);
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">twoSumUnsorted</span>([<span class="hljs-number">2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">11</span>, <span class="hljs-number">15</span>], <span class="hljs-number">9</span>)); <span class="hljs-comment">// [0, 1]  (2 + 7 = 9)</span></code></pre></div>
+<p><strong>Dry run:</strong></p>
+<pre class="is-plain"><code>nums = [2, 7, 11, 15], target = 9
+seen = {}
+
+i=0, nums[0]=2: complement = 9-2 = 7. seen.has(7)? No.  seen.set(2, 0) -&gt; seen={2:0}
+i=1, nums[1]=7: complement = 9-7 = 2. seen.has(2)? YES! seen.get(2) = 0.
+    return [0, 1]</code></pre>
+<ul>
+<li><strong>Naive</strong> (nested loop checking every pair): O(n²).</li>
+<li><strong>Hash-based complement lookup</strong>: <strong>O(n) time, O(n) space.</strong></li>
+</ul>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-2" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>This &quot;for each element, check if its <em>complement/partner</em> has already been seen&quot; shape is arguably <strong>the single most reused idea in all of hash-table interview problems.</strong> It generalizes far beyond sums: &quot;have I seen this value&#39;s negation,&quot; &quot;have I seen this string&#39;s reverse,&quot; &quot;have I seen this word&#39;s anagram signature&quot; — all the same shape, just swapping what &quot;complement&quot; means.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-building-the-whole-map-first-then-searching" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Building the Whole Map First, Then Searching</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// WORKS, but subtly worse and can be WRONG for &quot;can&#x27;t use the same element twice&quot; variants</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">twoSumWrongOrder</span>(<span class="hljs-params">nums, target</span>) {
+  <span class="hljs-keyword">const</span> seen = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-property">length</span>; i++) {
+    seen.<span class="hljs-title function_">set</span>(nums[i], i);          <span class="hljs-comment">// populate the ENTIRE map first</span>
+  }
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-property">length</span>; i++) {
+    <span class="hljs-keyword">const</span> complement = target - nums[i];
+    <span class="hljs-keyword">if</span> (seen.<span class="hljs-title function_">has</span>(complement) &amp;&amp; seen.<span class="hljs-title function_">get</span>(complement) !== i) {
+      <span class="hljs-keyword">return</span> [i, seen.<span class="hljs-title function_">get</span>(complement)];
+    }
+  }
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+}</code></pre></div>
+<p>This two-pass version works for simple cases but requires an extra <code>!== i</code> guard to avoid matching an element with itself (e.g., <code>target = 4</code>, <code>nums = [2]</code> shouldn&#39;t match <code>2</code> with itself unless there are two separate <code>2</code>s). The <strong>single-pass version above is both simpler and automatically correct</strong>, because you check for the complement <em>before</em> adding the current element — the current element genuinely isn&#39;t in the map yet when you check, so self-matching is structurally impossible rather than needing a manual guard. This is a subtle but real code-quality signal in interviews: prefer the single-pass version, and be ready to explain <em>why</em> it avoids the self-matching bug for free.</p>
+</aside>
+<h3 id="4-7-3-pattern-grouping-by-a-computed-key">4.7.3 Pattern: Grouping by a Computed Key</h3>
+<p><strong>The signal:</strong> &quot;group anagrams,&quot; &quot;group by category,&quot; &quot;cluster items sharing some derived property.&quot;</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">groupAnagrams</span>(<span class="hljs-params">words</span>) {
+  <span class="hljs-keyword">const</span> groups = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> word <span class="hljs-keyword">of</span> words) {
+    <span class="hljs-keyword">const</span> signature = word.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;&#x27;</span>).<span class="hljs-title function_">sort</span>().<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27;&#x27;</span>); <span class="hljs-comment">// canonical form: sorted letters</span>
+    <span class="hljs-keyword">if</span> (!groups.<span class="hljs-title function_">has</span>(signature)) {
+      groups.<span class="hljs-title function_">set</span>(signature, []);
+    }
+    groups.<span class="hljs-title function_">get</span>(signature).<span class="hljs-title function_">push</span>(word);
+  }
+
+  <span class="hljs-keyword">return</span> [...groups.<span class="hljs-title function_">values</span>()];
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">groupAnagrams</span>([<span class="hljs-string">&#x27;eat&#x27;</span>, <span class="hljs-string">&#x27;tea&#x27;</span>, <span class="hljs-string">&#x27;tan&#x27;</span>, <span class="hljs-string">&#x27;ate&#x27;</span>, <span class="hljs-string">&#x27;nat&#x27;</span>, <span class="hljs-string">&#x27;bat&#x27;</span>]));
+<span class="hljs-comment">// [[&#x27;eat&#x27;,&#x27;tea&#x27;,&#x27;ate&#x27;], [&#x27;tan&#x27;,&#x27;nat&#x27;], [&#x27;bat&#x27;]]</span></code></pre></div>
+<p><strong>Dry run (abbreviated):</strong></p>
+<pre class="is-plain"><code>'eat' -&gt; sorted -&gt; 'aet'  -&gt; groups: {aet: ['eat']}
+'tea' -&gt; sorted -&gt; 'aet'  -&gt; groups: {aet: ['eat','tea']}     (same key as 'eat'!)
+'tan' -&gt; sorted -&gt; 'ant'  -&gt; groups: {aet: [...], ant: ['tan']}
+'ate' -&gt; sorted -&gt; 'aet'  -&gt; groups: {aet: ['eat','tea','ate'], ant: ['tan']}
+'nat' -&gt; sorted -&gt; 'ant'  -&gt; groups: {aet: [...], ant: ['tan','nat']}
+'bat' -&gt; sorted -&gt; 'abt'  -&gt; groups: {aet: [...], ant: [...], abt: ['bat']}</code></pre>
+<ul>
+<li><strong>Time</strong>: O(n · k log k), where <code>n</code> = number of words, <code>k</code> = max word length (dominated by sorting each word to build its signature).</li>
+<li><strong>Space</strong>: O(n · k) to store all the grouped words.</li>
+</ul>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-a-faster-signature-for-anagram-grouping" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip: A Faster Signature for Anagram Grouping</span></h3>
+<p>Sorting each word costs O(k log k). If you know the alphabet is small and fixed (e.g., lowercase English letters), you can build a signature via <strong>character frequency counting</strong> instead — O(k) per word, no sorting required:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">groupAnagramsFast</span>(<span class="hljs-params">words</span>) {
+  <span class="hljs-keyword">const</span> groups = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> word <span class="hljs-keyword">of</span> words) {
+    <span class="hljs-keyword">const</span> counts = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(<span class="hljs-number">26</span>).<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> char <span class="hljs-keyword">of</span> word) {
+      counts[char.<span class="hljs-title function_">charCodeAt</span>(<span class="hljs-number">0</span>) - <span class="hljs-number">97</span>]++; <span class="hljs-comment">// &#x27;a&#x27;.charCodeAt(0) === 97</span>
+    }
+    <span class="hljs-keyword">const</span> signature = counts.<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27;,&#x27;</span>);  <span class="hljs-comment">// e.g., &quot;1,0,0,...,1,...&quot;: a fixed-length fingerprint</span>
+
+    <span class="hljs-keyword">if</span> (!groups.<span class="hljs-title function_">has</span>(signature)) groups.<span class="hljs-title function_">set</span>(signature, []);
+    groups.<span class="hljs-title function_">get</span>(signature).<span class="hljs-title function_">push</span>(word);
+  }
+
+  <span class="hljs-keyword">return</span> [...groups.<span class="hljs-title function_">values</span>()];
+}</code></pre></div>
+<p>This drops the per-word cost from O(k log k) to O(k), for a total of <strong>O(n · k)</strong> — a genuine asymptotic improvement, not just a constant-factor tweak, and a great example of &quot;know your alphabet size&quot; thinking that impresses interviewers.</p>
+</aside>
+<h3 id="4-7-4-pattern-existence-membership-tracking-the-sliding-window-callback">4.7.4 Pattern: Existence/Membership Tracking (The Sliding Window Callback)</h3>
+<p>We already used this pattern in Chapter 3&#39;s <code>longestUniqueSubstring</code> (the <code>seen</code> Set). It&#39;s worth naming explicitly here as its own reusable playbook entry: <strong>whenever a sliding window or two-pointer algorithm needs to know &quot;have I already included this value in my current window/range?&quot;, reach for a <code>Set</code> (or a <code>Map</code> if you need counts, not just booleans).</strong></p>
+<h3 id="4-7-5-pattern-caching-memoization-full-circle-to-chapter-2">4.7.5 Pattern: Caching/Memoization (Full Circle to Chapter 2)</h3>
+<p>We built this in depth in <a href="/learn/dsa-master/recursion-in-javascript" title="Recursion in JavaScript: Call Stack &amp; Memoization">Chapter 2</a> — the <code>Map</code>-based memoization cache is, quite literally, a hash table application. It&#39;s worth explicitly closing this loop: <strong>memoization is hashing applied to recursive function calls</strong>, using the function&#39;s arguments as the key and its (expensive-to-compute) return value as the value.</p>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-the-five-pattern-playbook" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: The Five-Pattern Playbook</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Pattern</th>
+<th>Signal Phrase</th>
+<th>Structure</th>
+</tr>
+</thead><tbody><tr>
+<td>Frequency Counting</td>
+<td>&quot;count occurrences,&quot; &quot;most/least frequent&quot;</td>
+<td><code>Map&lt;value, count&gt;</code></td>
+</tr>
+<tr>
+<td>Complement Lookup</td>
+<td>&quot;pair that sums to X,&quot; &quot;have I seen the opposite of this&quot;</td>
+<td><code>Map&lt;value, index&gt;</code> or <code>Set&lt;value&gt;</code></td>
+</tr>
+<tr>
+<td>Grouping by Key</td>
+<td>&quot;group anagrams,&quot; &quot;cluster by category&quot;</td>
+<td><code>Map&lt;computedKey, array&gt;</code></td>
+</tr>
+<tr>
+<td>Existence Tracking</td>
+<td>&quot;have I seen this before in my current window&quot;</td>
+<td><code>Set&lt;value&gt;</code></td>
+</tr>
+<tr>
+<td>Memoization</td>
+<td>&quot;expensive recursive/repeated computation&quot;</td>
+<td><code>Map&lt;argsKey, result&gt;</code></td>
+</tr>
+</tbody></table></div>
+</aside>
+<hr>
+
+<h2 id="4-8-edge-cases-and-gotchas-checklist-for-hashing-problems">4.8 Edge Cases and Gotchas Checklist for Hashing Problems</h2>
+<ol>
+<li><strong><code>NaN</code> as a key or value.</strong> Unlike <code>===</code>, <code>Map</code> and <code>Set</code> correctly treat <code>NaN</code> as equal to itself (using the &quot;SameValueZero&quot; algorithm internally), so <code>new Set([NaN, NaN]).size === 1</code>. This is actually <em>more</em> intuitive than raw <code>===</code> comparison (<code>NaN === NaN</code> is <code>false</code>!) — know this distinction; it&#39;s a common trivia question.</li>
+<li><strong><code>+0</code> and <code>-0</code>.</strong> <code>Map</code>/<code>Set</code> treat <code>+0</code> and <code>-0</code> as the same key (again, via SameValueZero), even though <code>Object.is(+0, -0)</code> is <code>false</code>. Another subtle but real distinction worth knowing.</li>
+<li><strong>Object keys and reference equality.</strong> <code>new Map().set({}, &#39;a&#39;)</code> — a <em>new</em> <code>{}</code> object literal used as a key will never match another <code>{}</code> literal via <code>.get()</code>, because objects are compared by reference, not structural equality. Two separately-created objects with identical contents are different keys.</li>
+<li><strong>Case sensitivity in string keys.</strong> <code>&#39;Cat&#39;</code> and <code>&#39;cat&#39;</code> are different keys by default — normalize with <code>.toLowerCase()</code> explicitly if the problem calls for case-insensitive matching.</li>
+<li><strong>Empty input.</strong> Does your frequency-counting/grouping code handle an empty array or string gracefully (returning an empty <code>Map</code>/array, not throwing)?</li>
+<li><strong>Very large inputs and hash-flooding awareness</strong> (from section 4.5) — while not usually testable directly in an interview, it&#39;s worth being aware that a security-conscious system should never let untrusted external input directly determine hash bucket placement without safeguards.</li>
+</ol>
+<hr>
+
+<h2 id="4-9-chapter-summary">4.9 Chapter Summary</h2>
+<p>This chapter opened the black box of the single highest-leverage data structure in interview preparation. We learned that hashing solves a very specific problem — getting O(1) average-case lookup, insertion, and deletion without requiring sorted order — by using a <strong>hash function</strong> to compute a direct storage address (a bucket index) for any key, so that lookups become direct array access (Chapter 3&#39;s O(1) again) rather than a search. We built a hash table completely from scratch, including a real (if simplified) hash function using the classic &quot;multiply by an odd prime, take modulo&quot; strategy, and saw exactly how collisions are handled via <strong>separate chaining</strong> (each bucket holds a small list) or <strong>open addressing</strong> (probe for the next free slot), and why collisions are mathematically inevitable by the pigeonhole principle, made intuitive by the birthday paradox.</p>
+<p>We covered <strong>load factor and resizing</strong>, connecting it directly back to Chapter 3&#39;s amortized dynamic array analysis — the exact same &quot;double when full, so the average cost per operation stays O(1)&quot; idea applies here too. We established the fully accurate, nuanced complexity claim professionals actually make: <strong>hash table operations are O(1) average case, amortized, assuming a reasonably distributed hash function</strong> — not an unconditional guarantee, and worth stating with that precision in interviews, including awareness of hash-flooding attacks as a real-world consequence of poor/predictable hashing.</p>
+<p>We then did a deep, practical tour of JavaScript&#39;s actual hashing toolkit: <strong>plain objects</strong> (string/Symbol keys only, prototype pollution risk, the surprising integer-key reordering quirk), <strong><code>Map</code></strong> (the correct modern default for general-purpose dictionaries — any key type, guaranteed insertion order, O(1) <code>.size</code>), <strong><code>Set</code></strong> (uniqueness/membership tracking, same underlying mechanism as <code>Map</code> with keys-only), and <strong><code>WeakMap</code>/<code>WeakSet</code></strong> (weak references that don&#39;t prevent garbage collection, deliberately non-iterable to avoid making GC timing observable — the right tool for attaching metadata to objects you don&#39;t own the lifecycle of).</p>
+<p>Finally, we built a five-entry <strong>pattern playbook</strong> that will recur constantly throughout the rest of this book and in real interviews: frequency counting, complement/pair lookup, grouping by a computed key, existence tracking (closing the loop with Chapter 3&#39;s sliding window), and memoization (closing the loop with Chapter 2&#39;s recursion). If Chapter 1 taught you to <em>measure</em> algorithms and Chapter 2 taught you to <em>think recursively</em>, this chapter taught you the single most commonly reached-for <em>tool</em> for turning an O(n²) brute force into an O(n) solution.</p>
+<hr>
+
+<h2 id="4-10-revision-notes">4.10 Revision Notes</h2>
+<ul>
+<li>Hash tables achieve O(1) average lookup by computing a direct address (bucket index) via a hash function, avoiding search entirely.</li>
+<li>A good hash function is deterministic, fast, and produces a uniform distribution across buckets.</li>
+<li>Collisions are mathematically inevitable (pigeonhole principle); handled via separate chaining (list per bucket) or open addressing (probe for next free slot).</li>
+<li>Load factor triggers resizing; resizing is O(n) but amortizes to O(1) per operation, identical reasoning to Chapter 3&#39;s dynamic array growth.</li>
+<li>Accurate complexity claim: O(1) <strong>average case, amortized</strong>, not an unconditional guarantee — worst case is O(n) with a poor hash function or adversarial input.</li>
+<li>Prefer <code>Map</code> over plain objects for general-purpose dictionaries in modern JS: any key type, guaranteed insertion order, O(1) <code>.size</code>, no prototype pollution risk.</li>
+<li><code>WeakMap</code>/<code>WeakSet</code> hold weak references (object keys only, not iterable) — use for metadata on objects you don&#39;t control the lifecycle of, to avoid memory leaks.</li>
+<li>The five-pattern playbook: frequency counting, complement lookup, grouping by computed key, existence tracking, memoization — recognize the signal phrase, reach for the matching <code>Map</code>/<code>Set</code> shape.</li>
+</ul>
+<hr>
+
+<h2 id="4-11-mind-map-ascii">4.11 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                                   HASHING
+                                      |
+      +----------------+-------------+-------------+------------------+
+      |                |                            |                  |
+  HASH FUNCTION    COLLISIONS                  JS BUILT-INS       PATTERN PLAYBOOK
+      |                |                            |                  |
+  Deterministic    Inevitable              +--------+--------+    Frequency count
+  Fast              (pigeonhole)           |        |        |    Complement lookup
+  Uniform           |                    Object   Map/Set  WeakMap/  Grouping by key
+  distribution   Birthday paradox        (quirks) (default) WeakSet  Existence tracking
+      |          intuition                                  (weak    Memoization
+  multiply by        |                                       refs,
+  odd prime,     Chaining vs.                                 no
+  mod bucket     Open Addressing                            iteration)
+  count               |
+                 LOAD FACTOR
+                 &amp; RESIZING
+                 (same amortized
+                  logic as Ch.3
+                  dynamic arrays)</code></pre>
+<hr>
+
+<h2 id="4-12-cheat-sheet">4.12 Cheat Sheet</h2>
+<pre class="is-plain"><code>HASHING QUICK REFERENCE
+==========================
+Average case: O(1) insert / lookup / delete (amortized, assuming good hash function)
+Worst case:   O(n) (poor hash function, adversarial collisions, or hash-flooding)
+
+JS TOOLKIT DECISION TABLE
+============================
+Need: fixed-shape &quot;thing with attributes&quot;       -&gt; Object
+Need: general-purpose dictionary                -&gt; Map (default choice)
+Need: uniqueness / membership testing           -&gt; Set
+Need: metadata on objects, avoid memory leaks   -&gt; WeakMap
+Need: object membership, avoid memory leaks     -&gt; WeakSet
+
+PATTERN SIGNAL PHRASES
+=========================
+&quot;count occurrences / most frequent&quot;        -&gt; Map&lt;value, count&gt;
+&quot;pair summing to X, unsorted, need index&quot;  -&gt; Map&lt;value, index&gt; (complement lookup)
+&quot;group anagrams / cluster by category&quot;     -&gt; Map&lt;computedKey, array&gt;
+&quot;seen this before in my current window&quot;    -&gt; Set&lt;value&gt;
+&quot;expensive repeated computation&quot;           -&gt; Map&lt;argsKey, result&gt; (memoization)
+
+GOTCHAS
+=========
+NaN === NaN is false, but Map/Set treat NaN as equal to itself (SameValueZero)
++0 and -0 are treated as the same key in Map/Set
+Object keys compare by REFERENCE, not structural equality
+Plain object integer-like keys get reordered numerically in iteration</code></pre>
+<hr>
+
+<h2 id="4-13-key-takeaways">4.13 Key Takeaways</h2>
+<ol>
+<li>Hashing trades memory for speed: compute a direct address instead of searching.</li>
+<li>Collisions are inevitable by the pigeonhole principle — chaining and open addressing are the two standard ways to manage them.</li>
+<li>Hash table operations are O(1) average case, amortized — not an unconditional guarantee; know why, and know the worst case.</li>
+<li><code>Map</code>/<code>Set</code> are the modern, correct defaults for dictionaries/uniqueness in JavaScript; <code>WeakMap</code>/<code>WeakSet</code> exist specifically to avoid memory leaks on object keys.</li>
+<li>The five-pattern playbook (frequency, complement, grouping, existence, memoization) covers a staggering fraction of real interview problems — drilling these patterns is higher-leverage than memorizing individual problems.</li>
+</ol>
+<hr>
+
+<h2 id="4-14-20-multiple-choice-questions">4.14 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the primary advantage of a hash table over a sorted array for lookups?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It uses less memory</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(1) average-case lookup without requiring sorted order</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It automatically sorts data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It never has collisions</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What are the three core requirements of a good hash function?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Slow, unpredictable, sparse</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Deterministic, fast to compute, uniform distribution</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Random, reversible, recursive</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sorted, indexed, cached</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What causes a hash collision?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Using <code>let</code> instead of <code>const</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Two different keys hashing to the same bucket index</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The array being too large</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using <code>Map</code> instead of <code>Object</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What principle guarantees collisions are inevitable given enough keys?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The birthday paradox</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The pigeonhole principle</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Amdahl&#39;s law</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The halting problem</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is &quot;separate chaining&quot;?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Encrypting hash values</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Each bucket holds a small collection of all entries that hashed to it</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Splitting the hash table across multiple servers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sorting entries within each bucket</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is &quot;open addressing&quot; (linear probing)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Making all buckets public</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Probing for the next available slot when a bucket is already occupied</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Using open-source hash functions</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Allowing duplicate keys</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the &quot;load factor&quot; of a hash table?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The maximum key length allowed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The ratio of stored entries to total bucket count</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The time it takes to hash a single key</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The number of collisions per second</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the fully accurate complexity claim for hash table operations?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(1) always, no exceptions</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(1) average case, amortized, assuming a good hash function</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(log n) always</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(n) always</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Which of these can be used as a <code>Map</code> key but NOT as a plain object key (without coercion)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A string</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A number like <code>42</code> used directly as a distinct key from <code>&#39;42&#39;</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A Symbol</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">None — objects and Maps support identical key types</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the surprising default iteration order quirk of plain objects with integer-like keys?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They iterate in reverse insertion order</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">They are sorted numerically first, before string keys in insertion order</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They are randomized every time</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They are removed automatically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why does <code>Map</code> generally outperform plain objects for frequent add/remove operations?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Map uses less RAM per entry always</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Objects are optimized by engines for stable &quot;shapes,&quot; which frequent add/remove disrupts</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Map is written in a faster language</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Objects cannot be modified after creation</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does <code>WeakMap</code> hold that a regular <code>Map</code> does not?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Stronger references, preventing garbage collection</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Weak references, allowing garbage collection of unreferenced keys</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No references at all</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">References only to primitive values</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why can&#39;t <code>WeakMap</code> keys be primitives like strings or numbers?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s an arbitrary restriction with no reason</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Weak references only make sense for garbage-collectible objects, not primitives</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Strings are too large to hash</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Numbers cause hash collisions</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why is <code>WeakMap</code> deliberately not iterable?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Performance reasons only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Iterating would make garbage collection timing observable, which JS design prevents</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript doesn&#39;t support iteration on weak references at all</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It would require too much memory</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In the Two Sum &quot;complement lookup&quot; pattern, why does checking for the complement BEFORE adding the current element avoid a bug?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It doesn&#39;t matter which order you do it in</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It structurally prevents matching an element with itself, without needing an extra guard</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It makes the algorithm run faster</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">JavaScript requires this order syntactically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">What is the time complexity of grouping anagrams using sorted-string signatures, for <code>n</code> words of max length <code>k</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n · k)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n · k log k)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(n²)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How does <code>Map</code>/<code>Set</code> treat <code>NaN</code> as a key, compared to <code>===</code> comparison?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The same as <code>===</code>: <code>NaN</code> never equals <code>NaN</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>Map</code>/<code>Set</code> treat <code>NaN</code> as equal to itself (SameValueZero), unlike <code>===</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>NaN</code> cannot be used as a key at all</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>NaN</code> is converted to <code>0</code> automatically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why do two separately-created object literals with identical contents fail to match as the same <code>Map</code> key?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Map only supports primitive keys</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Objects are compared by reference, not structural equality</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s a bug in the JavaScript spec</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Object literals cannot be hashed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What real-world security concern relates to poorly-designed or predictable hash functions?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">SQL injection</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Hash-flooding / algorithmic complexity attacks degrading O(1) operations to O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Cross-site scripting</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Buffer overflows</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">Which of the five hashing patterns best fits the signal phrase &quot;have I seen this value before in my current sliding window&quot;?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Frequency counting</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Grouping by computed key</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Existence tracking (Set)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Memoization</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-c, 17-b, 18-b, 19-b, 20-c</p></details>
+</div>
+<h2 id="4-15-20-coding-problems">4.15 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Given an array, return <code>true</code> if it contains any duplicate values, using a <code>Set</code>.</li>
+<li>Write a function that returns the first non-repeating character in a string, using frequency counting.</li>
+<li>Given two strings, determine if one is an anagram of the other using frequency counting.</li>
+<li>Write a function that intersects two arrays (returns common elements) using a <code>Set</code>.</li>
+<li>Implement your own simplified <code>Map</code>-like class using a plain object internally, and note in a comment one limitation this has versus a real <code>Map</code>.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement the Two Sum (unsorted, return indices) problem from section 4.7.2 from memory, then verify against the book&#39;s version.</li>
+<li>Implement <code>groupAnagrams</code> from section 4.7.3, then implement the faster frequency-signature version, and compare their complexities in a comment.</li>
+<li>Given a list of log entries <code>[userId, timestamp]</code>, use a <code>Map</code> to compute the number of unique users who logged in more than once.</li>
+<li>Write a function that finds the longest consecutive sequence of integers in an unsorted array in O(n) time using a <code>Set</code> (hint: only start counting a sequence from a number that has no predecessor in the set).</li>
+<li>Implement a simple LRU-cache-flavored function using <code>Map</code> (leveraging that <code>Map</code> preserves insertion order) that evicts the least-recently-used entry once a size limit is reached.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Given an array of strings, group them by whether they are anagrams of each other, but do it using the frequency-count signature approach (section 4.7.3&#39;s optimized version) and prove in a comment why it beats the sorted-signature approach for long words.</li>
+<li>Implement a hash table from scratch (extend <code>SimpleHashTable</code> from section 4.3.1) that automatically resizes (doubles bucket count) once load factor exceeds 0.75, rehashing all existing entries.</li>
+<li>Given a very large stream of numbers, design a <code>Map</code>-based solution to track the top-3 most frequent numbers seen so far, updated efficiently as new numbers arrive.</li>
+<li>Implement a <code>WeakMap</code>-based cache for an expensive computation keyed by object references, and write a small demonstration (with comments explaining what you&#39;d observe, since GC timing isn&#39;t directly observable) of why this avoids leaking memory compared to a <code>Map</code>-based cache.</li>
+<li>Given two large arrays representing sets, implement union, intersection, and difference operations, all in O(n+m) time using <code>Set</code>.</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Design a URL shortener&#39;s core lookup mechanism: given a short code, return the original URL in O(1) average time. Discuss (in comments) collision handling if two different original URLs somehow hash to the same short code.</li>
+<li><strong>(Amazon-level)</strong> Given millions of customer orders as <code>[customerId, amount]</code>, compute the total spend per customer in O(n) time using a <code>Map</code>, and discuss why this beats a naive nested-loop grouping approach.</li>
+<li><strong>(Microsoft-level)</strong> Implement a function that checks if a string can be rearranged into a palindrome, using frequency counting (hint: at most one character can have an odd count).</li>
+<li><strong>(Meta-level)</strong> Given a social graph represented as adjacency lists, use a <code>Set</code> per user to efficiently compute &quot;mutual friends&quot; between any two users, and discuss the time complexity in terms of friend-list sizes.</li>
+<li><strong>(Netflix-level)</strong> Design a &quot;content deduplication&quot; system: given a stream of video fingerprint hashes, use a <code>Set</code> to detect duplicate uploads in O(1) average time per check, and discuss (in comments) what happens to correctness if the hash function has a non-trivial collision rate — connect this back to the &quot;false positive&quot; risk inherent in any hash-based existence check (a preview of the &quot;Bloom Filter&quot; concept, mentioned in Further Reading).</li>
+</ol>
+<hr>
+
+<h2 id="4-16-5-interview-questions">4.16 5 Interview Questions</h2>
+<ol>
+<li>&quot;Explain, from first principles, why a hash table achieves O(1) average lookup time.&quot; (Tests whether the candidate understands the mechanism, not just the claim.)</li>
+<li>&quot;What happens when two keys collide, and how would you handle it?&quot; (Tests knowledge of chaining vs. open addressing.)</li>
+<li>&quot;Why would you choose <code>Map</code> over a plain object for a dictionary in modern JavaScript?&quot; (Tests awareness of key-type flexibility, insertion order guarantees, and prototype pollution risk.)</li>
+<li>&quot;When would you use a <code>WeakMap</code> instead of a <code>Map</code>?&quot; (Tests understanding of garbage collection and memory leak avoidance — a strong, specific JS-depth question.)</li>
+<li>&quot;Walk me through how you&#39;d recognize that a brute-force O(n²) solution can be improved to O(n) using a hash table.&quot; (Tests pattern recognition — the complement/frequency/grouping playbook.)</li>
+</ol>
+<hr>
+
+<h2 id="4-17-3-real-projects">4.17 3 Real Projects</h2>
+<ol>
+<li><strong>Hash Table From Scratch, With Resizing</strong>: Extend <code>SimpleHashTable</code> from section 4.3.1 into a complete implementation with automatic load-factor-triggered resizing (coding problem #12), then benchmark it against native <code>Map</code> at increasing sizes to see how close a hand-rolled implementation gets to native performance.</li>
+<li><strong>Log Analyzer</strong>: Build a Node.js CLI tool that reads a log file (simulate one with random data if needed) and uses the frequency-counting and grouping patterns from this chapter to report: most frequent error codes, unique user counts, and requests grouped by endpoint — a direct, practical application of the pattern playbook.</li>
+<li><strong>Memory-Safe Object Metadata Cache</strong>: Build a small module using <code>WeakMap</code> that attaches computed &quot;tags&quot; or &quot;scores&quot; to a set of objects representing, e.g., in-memory user session objects, and write a demonstration script showing objects being created, tagged, dereferenced, and (conceptually, since GC timing can&#39;t be forced deterministically in JS) explain in comments why a <code>WeakMap</code>-based design is the correct choice here versus a regular <code>Map</code>.</li>
+</ol>
+<hr>
+
+<h2 id="4-18-further-reading">4.18 Further Reading</h2>
+<ul>
+<li>MDN Web Docs: &quot;Map,&quot; &quot;Set,&quot; &quot;WeakMap,&quot; &quot;WeakSet,&quot; and &quot;Keyed collections&quot; — for exact spec-level behavior guarantees.</li>
+<li>Search &quot;V8 blog fast properties&quot; and &quot;V8 blog hash tables&quot; for real engineering detail on how V8 actually implements object property lookup and <code>Map</code>/<code>Set</code> internals.</li>
+<li>Look up <strong>Bloom Filters</strong> as a natural next step beyond this chapter — a probabilistic hashing structure that trades a small false-positive rate for dramatically reduced memory usage versus a full <code>Set</code>, used heavily in large-scale systems (mentioned in coding problem #20 above).</li>
+<li>Steven Skiena, <em>The Algorithm Design Manual</em>, chapter on hashing, for additional real-world hash function design discussion.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Hash Tables in JavaScript: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Why is hash table lookup O(1)?</h3></summary><p>The hash function converts a key directly into an array index, so the table jumps straight to the right bucket instead of searching. It is O(1) on average; with many collisions a lookup can degrade to O(n), which is why tables resize when they get too full.</p></details>
+<details class="learn-faq-item"><summary><h3>Should I use Map or a plain object in JavaScript?</h3></summary><p>Use Map for dictionaries. It accepts any key type, keeps insertion order, has a size property, performs better under frequent additions and deletions, and has no prototype keys that can collide with your data.</p></details>
+<details class="learn-faq-item"><summary><h3>What is a hash collision?</h3></summary><p>A collision happens when two different keys hash to the same bucket. They are unavoidable by the pigeonhole principle, and tables handle them with chaining (a list per bucket) or open addressing (probing for the next free slot).</p></details>
+<details class="learn-faq-item"><summary><h3>When should I use a WeakMap instead of a Map?</h3></summary><p>Use a WeakMap when keys are objects and you do not want the map to keep them alive. Entries disappear once nothing else references the key, which prevents memory leaks in caches and metadata stores.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/arrays-and-strings-javascript"><span>&larr; Previous &middot; Chapter 3</span><strong>Arrays &amp; Strings in JavaScript: DSA Patterns</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/linked-list-javascript"><span>Next &middot; Chapter 5 &rarr;</span><strong>Linked List in JavaScript: Singly &amp; Doubly</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#4-0-why-this-chapter-might-be-the-most-important-one-in-the-book">4.0 Why This Chapter Might Be the Most Important One in the Book</a></li><li><a href="#4-1-the-problem-hashing-solves">4.1 The Problem Hashing Solves</a></li><li><a href="#4-2-how-a-hash-function-works-from-first-principles">4.2 How a Hash Function Works (From First Principles)</a></li><li><a href="#4-3-from-hash-function-to-hash-table-the-bucket-array">4.3 From Hash Function to Hash Table: The Bucket Array</a></li><li><a href="#4-4-collisions-the-central-problem-of-hash-table-design">4.4 Collisions: The Central Problem of Hash Table Design</a></li><li><a href="#4-5-load-factor-and-resizing">4.5 Load Factor and Resizing</a></li><li><a href="#4-6-javascript-s-built-in-hashing-tools-object-map-set-weakmap-weakset">4.6 JavaScript's Built-In Hashing Tools: Object, Map, Set, WeakMap, WeakSet</a></li><li><a href="#4-7-the-hashing-pattern-playbook">4.7 The Hashing Pattern Playbook</a></li><li><a href="#4-8-edge-cases-and-gotchas-checklist-for-hashing-problems">4.8 Edge Cases and Gotchas Checklist for Hashing Problems</a></li><li><a href="#4-9-chapter-summary">4.9 Chapter Summary</a></li><li><a href="#4-10-revision-notes">4.10 Revision Notes</a></li><li><a href="#4-11-mind-map-ascii">4.11 Mind Map (ASCII)</a></li><li><a href="#4-12-cheat-sheet">4.12 Cheat Sheet</a></li><li><a href="#4-13-key-takeaways">4.13 Key Takeaways</a></li><li><a href="#4-14-20-multiple-choice-questions">4.14 20 Multiple Choice Questions</a></li><li><a href="#4-15-20-coding-problems">4.15 20 Coding Problems</a></li><li><a href="#4-16-5-interview-questions">4.16 5 Interview Questions</a></li><li><a href="#4-17-3-real-projects">4.17 3 Real Projects</a></li><li><a href="#4-18-further-reading">4.18 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "hashing-hash-table-javascript"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

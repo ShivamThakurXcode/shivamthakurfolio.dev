@@ -9,7 +9,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const MODIFIED = "2026-10-26";
 const RENAMED = { "custom-software-development": "ai-integration", "api-backend-development": "api-integrations" };
 const SKIP = new Set(["node_modules", ".git", ".claude", "tools", "docs"]);
-const footName = (s) => (s.slug === "ai-integration" ? "AI Integration" : s.name.replace(/ \(.*\)/, ""));
+const footName = (s) => (s.slug === "ai-integration" ? "AI Integration" : s.name.replace(/ \(.*\)/, "")).replace(/&/g, "&amp;");
 
 const files = [];
 (function walk(d) {

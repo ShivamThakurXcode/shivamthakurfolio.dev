@@ -14,6 +14,9 @@ RewriteRule ^(.+/)?index(\.html)?$ /%1 [R=301,L]
 RewriteCond %{THE_REQUEST} \s/+([^?\s]+)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L]
 
+# Raw markdown sources are not pages
+RewriteRule ^docs/ - [E=NOINDEX:1]
+
 # ---- Renamed case studies: preserve link equity from the old slugs ----
 # Old URLs were /case-studies/mydigisence (and the capitalised /Mydigisence
 # variant that used to be canonical) and /case-studies/prodigichat.
@@ -32,6 +35,9 @@ RewriteRule ^services/website-maintenance-support(\.html)?/?$ /services/cloud-de
 # ---- Renamed service pages ----
 RewriteRule ^services/custom-software-development(\.html)?/?$ /services/ai-integration [R=301,L,NC]
 RewriteRule ^services/api-backend-development(\.html)?/?$ /services/api-integrations [R=301,L,NC]
+
+# ---- DSA handbook moved to the DSA Master series ----
+RewriteRule ^learn/js-dsa-handbook(\.html)?/?$ /learn/dsa-master [R=301,L,NC]
 
 # Internally rewrite extensionless URL to the real .html file.
 # Checking the .html file FIRST means /case-studies serves case-studies.html
@@ -72,6 +78,7 @@ DirectoryIndex index.html
     Header set Cache-Control "public, max-age=0, must-revalidate"
   </FilesMatch>
   Header always set X-Content-Type-Options "nosniff"
+  Header set X-Robots-Tag "noindex" env=NOINDEX
 </IfModule>
 
 # ---- Correct MIME types ----

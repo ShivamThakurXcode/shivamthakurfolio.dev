@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Shortest Path: Dijkstra, Bellman-Ford, Floyd | DSA Master</title>
+    <meta name="description" content="Learn shortest path algorithms in JavaScript: Dijkstra with a heap, Bellman-Ford and negative cycles, Floyd-Warshall all-pairs, and when to use each one.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="dijkstra algorithm javascript, shortest path algorithm, bellman ford, floyd warshall, negative weight cycle, weighted graph shortest path, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/graph-bfs-dfs-javascript">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/topological-sort-minimum-spanning-tree">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="dijkstra algorithm javascript">
+    <meta property="article:tag" content="shortest path algorithm">
+    <meta property="article:tag" content="bellman ford">
+    <meta property="article:tag" content="floyd warshall">
+    <meta property="article:tag" content="negative weight cycle">
+    <meta property="article:tag" content="weighted graph shortest path">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Shortest Path: Dijkstra, Bellman-Ford, Floyd">
+    <meta property="og:description" content="Learn shortest path algorithms in JavaScript: Dijkstra with a heap, Bellman-Ford and negative cycles, Floyd-Warshall all-pairs, and when to use each one.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/shortest-path-dijkstra-bellman-ford.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Shortest Path Algorithms: Dijkstra, Bellman-Ford and Floyd-Warshall: DSA Master chapter 12">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shortest Path: Dijkstra, Bellman-Ford, Floyd">
+    <meta name="twitter:description" content="Learn shortest path algorithms in JavaScript: Dijkstra with a heap, Bellman-Ford and negative cycles, Floyd-Warshall all-pairs, and when to use each one.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/shortest-path-dijkstra-bellman-ford.png">
+    <meta name="twitter:image:alt" content="Shortest Path Algorithms: Dijkstra, Bellman-Ford and Floyd-Warshall: DSA Master chapter 12">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford",
+          "name": "Shortest Path: Dijkstra, Bellman-Ford, Floyd | DSA Master",
+          "description": "Learn shortest path algorithms in JavaScript: Dijkstra with a heap, Bellman-Ford and negative cycles, Floyd-Warshall all-pairs, and when to use each one.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/shortest-path-dijkstra-bellman-ford.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Shortest Path Algorithms: Dijkstra, Bellman-Ford and Floyd-Warshall"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#webpage"
+          },
+          "headline": "Shortest Path Algorithms: Dijkstra, Bellman-Ford and Floyd-Warshall",
+          "alternativeHeadline": "Shortest Path Algorithms — When Edges Have Weight",
+          "description": "Learn shortest path algorithms in JavaScript: Dijkstra with a heap, Bellman-Ford and negative cycles, Floyd-Warshall all-pairs, and when to use each one.",
+          "abstract": "Shortest path algorithms find the cheapest route between vertices in a weighted graph. Dijkstra's algorithm is fastest for non-negative weights, Bellman-Ford handles negative weights and detects negative cycles, and Floyd-Warshall computes the distance between every pair of vertices. This chapter implements all three in JavaScript and gives a decision framework for choosing between them.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/shortest-path-dijkstra-bellman-ford.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 6371,
+          "timeRequired": "PT29M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "dijkstra algorithm javascript, shortest path algorithm, bellman ford, floyd warshall, negative weight cycle, weighted graph shortest path",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Why BFS fails on weighted graphs",
+            "Dijkstra's algorithm with a min-heap",
+            "Bellman-Ford and negative cycle detection",
+            "Floyd-Warshall all-pairs shortest paths",
+            "Choosing the right shortest path algorithm"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "dijkstra algorithm javascript"
+          },
+          "isAccessibleForFree": true,
+          "position": 12,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/graph-bfs-dfs-javascript#article",
+            "name": "Graphs in JavaScript: Adjacency Lists, BFS and DFS",
+            "url": "https://shivamthakur.me/learn/dsa-master/graph-bfs-dfs-javascript"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Shortest Path: Dijkstra, Bellman-Ford, Floyd",
+              "item": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why doesn't Dijkstra's algorithm work with negative weights?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Dijkstra finalizes a vertex as soon as it is taken from the heap, assuming no later path can be cheaper. A negative edge can break that assumption, so Dijkstra may silently return wrong distances. Use Bellman-Ford instead."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the time complexity of Dijkstra's algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "With a binary heap, Dijkstra runs in O((V + E) log V) time, where V is the number of vertices and E the number of edges."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When should I use Floyd-Warshall?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use Floyd-Warshall when you need shortest distances between all pairs of vertices on a small graph. It runs in O(V³) time and is simple to implement with three nested loops."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Which shortest path algorithm should I choose?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Unweighted graph: BFS. Non-negative weights: Dijkstra. Negative weights or a need to detect negative cycles: Bellman-Ford. All pairs on a small graph: Floyd-Warshall."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#quiz",
+          "name": "Shortest Path: Dijkstra, Bellman-Ford, Floyd: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "dijkstra algorithm javascript"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/shortest-path-dijkstra-bellman-ford#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why does BFS fail to guarantee shortest paths in a weighted graph?",
+              "text": "Why does BFS fail to guarantee shortest paths in a weighted graph?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "BFS optimizes for fewest edges, not smallest total weight — a different quantity once weights differ"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "BFS doesn't work on graphs at all"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "BFS only works on trees"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "BFS requires a heap, which weighted graphs don't have"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What data structure from Chapter 9 does Dijkstra's algorithm rely on for efficiency?",
+              "text": "What data structure from Chapter 9 does Dijkstra's algorithm rely on for efficiency?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A min-heap"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A trie"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A hash table"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A binary search tree"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What critical assumption does Dijkstra's greedy strategy depend on?",
+              "text": "What critical assumption does Dijkstra's greedy strategy depend on?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Edge weights are non-negative"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The graph must be a tree"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The graph must be undirected"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "There must be no cycles"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What happens when Dijkstra's algorithm is run on a graph with negative edge weights?",
+              "text": "What happens when Dijkstra's algorithm is run on a graph with negative edge weights?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It may silently produce an incorrect shortest-path result"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It throws a clear error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It runs forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It automatically switches to Bellman-Ford"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of Dijkstra's algorithm using a binary heap?",
+              "text": "What is the time complexity of Dijkstra's algorithm using a binary heap?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O((V+E) log V)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(V²)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V  E)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V³)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What operation is shared by Dijkstra, Bellman-Ford, and Floyd-Warshall as their fundamental building block?",
+              "text": "What operation is shared by Dijkstra, Bellman-Ford, and Floyd-Warshall as their fundamental building block?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Relaxation (checking if a shorter path has been found and updating accordingly)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sorting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Hashing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary search"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How many times does Bellman-Ford relax every edge in the graph?",
+              "text": "How many times does Bellman-Ford relax every edge in the graph?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "V-1 times"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "V times"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "E times"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "log V times"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is V-1 the correct number of relaxation passes in Bellman-Ford?",
+              "text": "Why is V-1 the correct number of relaxation passes in Bellman-Ford?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No shortest path in a graph with V vertices needs more than V-1 edges"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's an arbitrary convention"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It matches the number of edges exactly"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's related to the heap's height"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does an extra (V-th) relaxation pass in Bellman-Ford detect if it still finds improvements?",
+              "text": "What does an extra (V-th) relaxation pass in Bellman-Ford detect if it still finds improvements?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A negative-weight cycle"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A disconnected graph"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A duplicate edge"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An unweighted graph"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of Bellman-Ford?",
+              "text": "What is the time complexity of Bellman-Ford?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(V  E)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O((V+E) log V)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V³)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V + E)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the primary advantage of Bellman-Ford over Dijkstra?",
+              "text": "What is the primary advantage of Bellman-Ford over Dijkstra?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It correctly handles negative edge weights and can detect negative cycles"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's always faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It doesn't require a graph representation"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It works only on trees"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What problem does Floyd-Warshall solve that Dijkstra and Bellman-Ford do not directly address?",
+              "text": "What problem does Floyd-Warshall solve that Dijkstra and Bellman-Ford do not directly address?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "All-pairs shortest paths (every vertex to every other vertex simultaneously)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Negative weight handling"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cycle detection"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unweighted graph traversal"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In Floyd-Warshall's triple nested loop, which loop variable must be outermost?",
+              "text": "In Floyd-Warshall's triple nested loop, which loop variable must be outermost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "k (the intermediate vertex being considered)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "i (the source vertex being considered)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "j (the destination vertex being considered)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Order doesn't matter"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why must the intermediate vertex k be the outermost loop in Floyd-Warshall?",
+              "text": "Why must the intermediate vertex k be the outermost loop in Floyd-Warshall?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "dist[i][k] and dist[k][j] must already reflect improvements from all earlier intermediate vertices (0 to k-1)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's a stylistic preference only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript requires this loop order for correctness"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only matters for very large graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of Floyd-Warshall?",
+              "text": "What is the time complexity of Floyd-Warshall?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(V³)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(V + E)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O((V+E) log V)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V  E)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the space complexity of Floyd-Warshall?",
+              "text": "What is the space complexity of Floyd-Warshall?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(V²)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(V)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(E)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(1)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "According to this chapter's decision framework, which algorithm should you use for a weighted graph where negative weights are impossible?",
+              "text": "According to this chapter's decision framework, which algorithm should you use for a weighted graph where negative weights are impossible?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Dijkstra"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "BFS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bellman-Ford only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Floyd-Warshall only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "According to this chapter's decision framework, which algorithm(s) should you use if you need shortest paths between EVERY pair of vertices in a large, sparse graph?",
+              "text": "According to this chapter's decision framework, which algorithm(s) should you use if you need shortest paths between EVERY pair of vertices in a large, sparse graph?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Floyd-Warshall or repeated Dijkstra from every vertex, depending on graph size/density"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A single Dijkstra run only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Floyd-Warshall exclusively, always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "BFS repeated for every vertex"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why does the Dijkstra implementation in this chapter check if (visited.has(current)) continue; after extracting from the heap?",
+              "text": "Why does the Dijkstra implementation in this chapter check if (visited.has(current)) continue; after extracting from the heap?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To handle stale/duplicate heap entries left over from earlier relaxations"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "To detect negative cycles"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's unnecessary and can be removed safely"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To handle disconnected graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What must be tracked to reconstruct the actual shortest PATH (not just its total distance) after running any of these algorithms?",
+              "text": "What must be tracked to reconstruct the actual shortest PATH (not just its total distance) after running any of these algorithms?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A previous/parent map, updated during relaxation, walked backward once the algorithm completes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing extra is needed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The total number of vertices only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A separate BFS run afterward"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:42.9%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item active" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford" aria-current="page"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 12 of 28 &middot; Intermediate</p>
+                        <h1>Shortest Path Algorithms: Dijkstra, Bellman-Ford and Floyd-Warshall</h1>
+                        <p class="learn-book-title">Shortest Path Algorithms — When Edges Have Weight</p>
+                        <ul class="learn-meta text-caption">
+                            <li>29 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/shortest-path-dijkstra-bellman-ford.webp"><img src="../../assets/images/learn/dsa-master/shortest-path-dijkstra-bellman-ford.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Shortest Path Algorithms: Dijkstra, Bellman-Ford and Floyd-Warshall: DSA Master chapter 12 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Shortest path algorithms find the cheapest route between vertices in a weighted graph. Dijkstra's algorithm is fastest for non-negative weights, Bellman-Ford handles negative weights and detects negative cycles, and Floyd-Warshall computes the distance between every pair of vertices. This chapter implements all three in JavaScript and gives a decision framework for choosing between them.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Why BFS fails on weighted graphs</li><li>Dijkstra's algorithm with a min-heap</li><li>Bellman-Ford and negative cycle detection</li><li>Floyd-Warshall all-pairs shortest paths</li><li>Choosing the right shortest path algorithm</li></ul>
+                        </section>
+<hr>
+
+<h2 id="12-0-why-plain-bfs-isn-t-enough-anymore">12.0 Why Plain BFS Isn&#39;t Enough Anymore</h2>
+<p><a href="/learn/dsa-master/graph-bfs-dfs-javascript" title="Graphs in JavaScript: BFS, DFS &amp; Adjacency List">Chapter 11</a> closed with the single most important fact in graph traversal: <strong>BFS guarantees shortest path, but only in an unweighted graph.</strong> The moment edges carry different costs — travel time between cities, latency between servers, price of a flight — BFS&#39;s core guarantee collapses, because BFS&#39;s correctness relies entirely on &quot;fewer edges visited so far = closer,&quot; which is meaningless once one edge might cost 1 and another might cost 1,000.</p>
+<h3 id="why-bfs-breaks-on-weighted-graphs-a-concrete-counter-example">Why BFS Breaks on Weighted Graphs: A Concrete Counter-Example</h3>
+<pre class="is-plain"><code>        A --1--&gt; B --1--&gt; D          Path A-&gt;B-&gt;D: 2 edges, but weight 1+1 = 2
+        |                             
+        +--------10-------&gt; D        Path A-&gt;D directly: 1 edge, but weight 10!
+
+BFS would explore the DIRECT A-&gt;D edge first (fewer edges = &quot;closer&quot; in BFS's
+edge-counting sense), incorrectly reporting a &quot;shortest path&quot; of weight 10,
+when a path through B, using MORE edges, actually has a smaller TOTAL weight (2).
+
+BFS optimizes for FEWEST EDGES. Weighted shortest path needs to optimize for
+SMALLEST TOTAL WEIGHT — a genuinely different quantity requiring new machinery.</code></pre>
+<p>This chapter builds that new machinery: <strong>Dijkstra&#39;s algorithm</strong> (the workhorse for non-negative weights), <strong>Bellman-Ford</strong> (which correctly handles negative weights and detects negative cycles), and <strong>Floyd-Warshall</strong> (which finds shortest paths between <em>every</em> pair of vertices at once).</p>
+<hr>
+
+<h2 id="12-1-dijkstra-s-algorithm-greedy-shortest-path-with-a-heap">12.1 Dijkstra&#39;s Algorithm: Greedy Shortest Path With a Heap</h2>
+<h3 id="12-1-1-the-core-intuition">12.1.1 The Core Intuition</h3>
+<p><strong>Definition:</strong> Dijkstra&#39;s algorithm finds the shortest path from a single source vertex to all other vertices in a weighted graph with <strong>non-negative</strong> edge weights, by repeatedly selecting the unvisited vertex with the smallest known distance and &quot;relaxing&quot; (potentially improving) its neighbors&#39; distances.</p>
+<h3 id="real-life-analogy-filling-a-reservoir-from-the-source-outward">Real-Life Analogy: Filling a Reservoir From the Source Outward</h3>
+<p>Imagine water flowing outward from a source point, always expanding to whichever adjacent, not-yet-flooded point is currently <em>closest</em> to the source (measured by total distance traveled, not number of hops). Once a point gets flooded, its flood-arrival time is locked in as final — because water always expands from the currently-closest unflooded frontier next, there&#39;s no way a <em>later</em>, farther expansion could somehow represent a shorter route to an already-flooded point. This &quot;always expand from the globally closest remaining frontier&quot; behavior is exactly Dijkstra&#39;s greedy strategy, and it&#39;s <em>why</em> it works: <strong>once a vertex is finalized (popped as the current minimum), no future discovery can possibly offer it a shorter path</strong>, because every other path would have to go through a vertex that&#39;s currently <em>farther away</em> than the one just finalized — and traveling through something farther away can only add more distance, never less (this relies on non-negative weights — more on why that matters in section 12.2).</p>
+<h3 id="why-this-directly-needs-chapter-9-s-heap">Why This Directly Needs Chapter 9&#39;s Heap</h3>
+<p>&quot;Repeatedly select the unvisited vertex with the smallest known distance&quot; is <em>exactly</em> <a href="/learn/dsa-master/heap-priority-queue-javascript" title="Heap &amp; Priority Queue in JavaScript">Chapter 9</a>&#39;s <code>extractMin()</code> operation. Using a plain array and scanning for the minimum every time would cost O(V) per selection, O(V²) total across all vertices — using a min-heap (<a href="/learn/dsa-master/heap-priority-queue-javascript" title="Heap &amp; Priority Queue in JavaScript">Chapter 9</a>) drops this to O(log V) per selection, the entire reason Dijkstra&#39;s algorithm is efficient in practice.</p>
+<h3 id="12-1-2-full-implementation">12.1.2 Full Implementation</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">dijkstra</span>(<span class="hljs-params">graph, startVertex</span>) {
+  <span class="hljs-comment">// graph: Map&lt;vertex, Array&lt;[neighbor, weight]&gt;&gt;</span>
+  <span class="hljs-keyword">const</span> distances = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+  <span class="hljs-keyword">const</span> previous = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(); <span class="hljs-comment">// for path reconstruction, exactly like Chapter 11&#x27;s parent map</span>
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> vertex <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">keys</span>()) {
+    distances.<span class="hljs-title function_">set</span>(vertex, <span class="hljs-title class_">Infinity</span>);
+  }
+  distances.<span class="hljs-title function_">set</span>(startVertex, <span class="hljs-number">0</span>);
+
+  <span class="hljs-keyword">const</span> minHeap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Heap</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a.<span class="hljs-property">distance</span> - b.<span class="hljs-property">distance</span>); <span class="hljs-comment">// Chapter 9&#x27;s generic Heap!</span>
+  minHeap.<span class="hljs-title function_">insert</span>({ <span class="hljs-attr">vertex</span>: startVertex, <span class="hljs-attr">distance</span>: <span class="hljs-number">0</span> });
+
+  <span class="hljs-keyword">const</span> visited = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>();
+
+  <span class="hljs-keyword">while</span> (minHeap.<span class="hljs-property">size</span> &gt; <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">const</span> { <span class="hljs-attr">vertex</span>: current, <span class="hljs-attr">distance</span>: currentDistance } = minHeap.<span class="hljs-title function_">extract</span>();
+
+    <span class="hljs-keyword">if</span> (visited.<span class="hljs-title function_">has</span>(current)) <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// may have stale/duplicate entries — see note below</span>
+    visited.<span class="hljs-title function_">add</span>(current);
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [neighbor, weight] <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">get</span>(current) || []) {
+      <span class="hljs-keyword">if</span> (visited.<span class="hljs-title function_">has</span>(neighbor)) <span class="hljs-keyword">continue</span>;
+
+      <span class="hljs-keyword">const</span> newDistance = currentDistance + weight;
+
+      <span class="hljs-keyword">if</span> (newDistance &lt; distances.<span class="hljs-title function_">get</span>(neighbor)) {
+        distances.<span class="hljs-title function_">set</span>(neighbor, newDistance);       <span class="hljs-comment">// RELAXATION: found a better path!</span>
+        previous.<span class="hljs-title function_">set</span>(neighbor, current);
+        minHeap.<span class="hljs-title function_">insert</span>({ <span class="hljs-attr">vertex</span>: neighbor, <span class="hljs-attr">distance</span>: newDistance });
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> { distances, previous };
+}</code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-relaxation" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;Relaxation&quot;</span></h3>
+<p>The term &quot;relaxation&quot; (updating <code>distances.get(neighbor)</code> to a smaller value) comes from a physical analogy: imagine a taut rope stretched along the <em>current best-known</em> (possibly too-long) path. When you discover a shorter route, you &quot;relax&quot; the rope&#39;s tension by shortening it to the new, better length. Every shortest-path algorithm in this chapter (Dijkstra, Bellman-Ford, Floyd-Warshall) is fundamentally built from this same one operation, repeated according to different strategies for <em>which edges to check, and in what order</em>.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-not-handling-stale-heap-entries" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Not Handling Stale Heap Entries</span></h3>
+<p>Notice the <code>if (visited.has(current)) continue;</code> check immediately after extracting from the heap. This is necessary because our heap-based implementation doesn&#39;t support an efficient &quot;decrease-key&quot; operation (updating an existing heap entry&#39;s priority in place) — instead, we simply <strong>insert a new entry every time we find a better distance</strong>, leaving old, now-stale entries sitting in the heap. When a stale entry is eventually extracted, we must recognize and skip it (since <code>current</code> would already be in <code>visited</code> from processing its <em>better</em> entry earlier). This is a standard, accepted trade-off in practical heap-based Dijkstra implementations — a &quot;true&quot; decrease-key-supporting heap (a Fibonacci heap, mentioned in Further Reading) can avoid this, but is rarely implemented from scratch outside of specialized contexts, and this &quot;allow duplicates, skip stale ones on extraction&quot; approach remains correct and is what&#39;s expected in virtually all interview settings.</p>
+</aside>
+<h3 id="dry-run">Dry Run</h3>
+<pre class="is-plain"><code>Graph (weighted, directed for this example):
+A -&gt; [[B,4], [C,1]]
+B -&gt; [[D,1]]
+C -&gt; [[B,2], [D,5]]
+D -&gt; []
+
+dijkstra(graph, 'A'):
+
+Init: distances={A:0, B:Inf, C:Inf, D:Inf}, heap=[{A,0}]
+
+Extract {A,0}. Not visited -&gt; visited={A}.
+  neighbor B, weight 4: newDist = 0+4=4 &lt; Inf -&gt; distances={A:0,B:4,...}, heap gets {B,4}
+  neighbor C, weight 1: newDist = 0+1=1 &lt; Inf -&gt; distances={A:0,B:4,C:1,D:Inf}, heap gets {C,1}
+  heap now: [{C,1}, {B,4}] (min-heap keeps C on top)
+
+Extract {C,1}. Not visited -&gt; visited={A,C}.
+  neighbor B, weight 2: newDist = 1+2=3 &lt; 4(current B distance!) -&gt; IMPROVEMENT!
+    distances={A:0,B:3,C:1,D:Inf}, heap gets {B,3}
+  neighbor D, weight 5: newDist = 1+5=6 &lt; Inf -&gt; distances={...,D:6}, heap gets {D,6}
+  heap now: [{B,3}, {B,4}(STALE!), {D,6}]
+
+Extract {B,3}. Not visited -&gt; visited={A,C,B}.
+  neighbor D, weight 1: newDist = 3+1=4 &lt; 6(current D distance!) -&gt; IMPROVEMENT!
+    distances={A:0,B:3,C:1,D:4}, heap gets {D,4}
+  heap now: [{D,4}, {B,4}(STALE), {D,6}(STALE)]
+
+Extract {D,4}. Not visited -&gt; visited={A,C,B,D}.
+  D has no outgoing edges -&gt; nothing to relax
+
+Extract {B,4}(STALE). visited.has('B') is TRUE -&gt; skip immediately.
+Extract {D,6}(STALE). visited.has('D') is TRUE -&gt; skip immediately.
+
+Heap empty. FINAL distances: {A:0, B:3, C:1, D:4}
+
+Verify: shortest A-&gt;D is A-&gt;C-&gt;B-&gt;D = 1+2+1 = 4 ✓ (NOT the direct-ish A-&gt;B-&gt;D = 4+1=5,
+and NOT A-&gt;C-&gt;D = 1+5=6 — the algorithm correctly found the truly shortest route!)</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-dijkstra-s-complexity" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Dijkstra&#39;s Complexity</span></h3>
+<ul>
+<li><strong>Time</strong>: O((V + E) log V) with a binary heap (Chapter 9) — each vertex is extracted once (O(log V) each), and each edge triggers at most one heap insertion (O(log V) each).</li>
+<li><strong>Space</strong>: O(V) for distances, previous, and visited; O(E) worst case for heap entries (due to the stale-entry duplication discussed above).</li>
+</ul>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-dijkstra-s-algorithm-fails-with-negative-weights" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Dijkstra&#39;s Algorithm FAILS With Negative Weights</span></h3>
+<p>This is one of the most important, most frequently tested limitations in this entire chapter. <strong>Dijkstra&#39;s greedy strategy assumes that once a vertex is finalized (extracted from the heap as the current minimum), no future path could possibly improve it.</strong> This assumption <strong>breaks entirely</strong> if negative weights exist, because a path through a &quot;farther away&quot; vertex could loop through a large negative-weight edge and end up <em>shorter</em> overall than the &quot;closest&quot; vertex Dijkstra already committed to.</p>
+<pre class="is-plain"><code>Example where Dijkstra gives the WRONG answer with a negative edge:
+
+A --1--&gt; B --(-5)--&gt; C           A --4--&gt; C  (direct edge)
+
+Dijkstra from A: extracts A (dist 0). Relaxes B (dist 1) and C (dist 4, via direct edge).
+Extracts B next (dist 1, smaller than C's 4). Relaxes C via B: 1 + (-5) = -4.
+This IS actually correctly found here because B was processed before C in this
+specific example — but in general, Dijkstra's greedy &quot;finalize the minimum and
+never revisit&quot; strategy can permanently lock in a WRONG, too-large distance for
+a vertex if a negative edge reachable only through a &quot;farther&quot; vertex would have
+produced a smaller total. The algorithm has no mechanism to REVISIT and improve
+an already-finalized (visited) vertex, which negative weights can require.</code></pre>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>If a problem&#39;s graph might contain negative weights, <strong>immediately state that Dijkstra&#39;s algorithm is unsafe to use, and pivot to Bellman-Ford</strong> (section 12.2). This is one of the highest-value, most specific pieces of knowledge in this entire chapter — many candidates know &quot;Dijkstra finds shortest paths&quot; but don&#39;t know or forget to check the non-negative-weights precondition, and interviewers specifically probe this with a &quot;what if some edges are negative?&quot; follow-up.</p>
+</aside>
+<hr>
+
+<h2 id="12-2-bellman-ford-algorithm-slower-but-handles-negative-weights">12.2 Bellman-Ford Algorithm: Slower, But Handles Negative Weights</h2>
+<p><strong>Definition:</strong> The Bellman-Ford algorithm finds shortest paths from a single source to all vertices, correctly handling negative edge weights, by relaxing <strong>every edge in the graph, V-1 times</strong>, guaranteed to converge on correct shortest-path distances (or detect a negative cycle) by that point.</p>
+<aside class="callout callout-math">
+<h3 id="mathematical-explanation-why-exactly-v-1-iterations" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Mathematical Explanation: Why Exactly V-1 Iterations?</span></h3>
+<p><strong>Claim:</strong> any shortest path between two vertices in a graph with <code>V</code> vertices contains <strong>at most V-1 edges</strong> (since a path can visit at most <code>V</code> distinct vertices before it would have to repeat one, at which point it contains a cycle — and a cycle can never make a shortest path shorter, assuming no negative cycles exist, since you could always just skip the cycle and arrive at the same place having traveled less total distance... unless the cycle itself has negative total weight, a case we specifically detect separately below).</p>
+<p>Since each full pass of relaxing every edge can extend the &quot;confirmed correct&quot; shortest path by <strong>at least one more edge</strong> in the worst case (imagine the shortest path is a single straight chain — the first pass correctly computes the distance for vertices one edge away, the second pass for vertices two edges away, and so on), <strong>V-1 full passes are guaranteed sufficient</strong> to correctly compute the shortest path to every vertex, since no shortest path needs more than V-1 edges.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">bellmanFord</span>(<span class="hljs-params">edges, vertices, startVertex</span>) {
+  <span class="hljs-comment">// edges: Array&lt;[u, v, weight]&gt;</span>
+  <span class="hljs-keyword">const</span> distances = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+  vertices.<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">v</span> =&gt;</span> distances.<span class="hljs-title function_">set</span>(v, <span class="hljs-title class_">Infinity</span>));
+  distances.<span class="hljs-title function_">set</span>(startVertex, <span class="hljs-number">0</span>);
+
+  <span class="hljs-comment">// Relax ALL edges, V-1 times</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; vertices.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>; i++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [u, v, weight] <span class="hljs-keyword">of</span> edges) {
+      <span class="hljs-keyword">if</span> (distances.<span class="hljs-title function_">get</span>(u) !== <span class="hljs-title class_">Infinity</span> &amp;&amp; distances.<span class="hljs-title function_">get</span>(u) + weight &lt; distances.<span class="hljs-title function_">get</span>(v)) {
+        distances.<span class="hljs-title function_">set</span>(v, distances.<span class="hljs-title function_">get</span>(u) + weight);  <span class="hljs-comment">// relaxation, same operation as Dijkstra!</span>
+      }
+    }
+  }
+
+  <span class="hljs-comment">// ONE MORE pass: if anything STILL improves, there&#x27;s a negative cycle</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [u, v, weight] <span class="hljs-keyword">of</span> edges) {
+    <span class="hljs-keyword">if</span> (distances.<span class="hljs-title function_">get</span>(u) !== <span class="hljs-title class_">Infinity</span> &amp;&amp; distances.<span class="hljs-title function_">get</span>(u) + weight &lt; distances.<span class="hljs-title function_">get</span>(v)) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;Graph contains a negative-weight cycle — shortest path is undefined!&#x27;</span>);
+    }
+  }
+
+  <span class="hljs-keyword">return</span> distances;
+}</code></pre></div>
+</aside>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-the-one-extra-pass-negative-cycle-detector" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: The &quot;One Extra Pass&quot; Negative Cycle Detector</span></h3>
+<p>This is an elegant, genuinely important trick worth memorizing on its own: <strong>if a shortest path can never need more than V-1 edges (assuming no negative cycles), then after V-1 relaxation passes, nothing should be able to improve any further.</strong> If a <strong>V-th</strong> pass <em>still</em> finds an improvement, that&#39;s mathematically impossible unless a negative cycle exists somewhere, letting you &quot;cheat&quot; by looping around it indefinitely to make some path&#39;s cost arbitrarily small (approaching negative infinity). <strong>This single extra pass is Bellman-Ford&#39;s built-in negative-cycle detector</strong> — a capability Dijkstra&#39;s algorithm has no equivalent for at all (it simply produces silently wrong answers, as shown in section 12.1.2&#39;s warning, or in the worst case, loops forever if it doesn&#39;t have a <code>visited</code> guard against reprocessing).</p>
+</aside>
+<h3 id="dry-run-abbreviated-focusing-on-the-key-insight">Dry Run (Abbreviated, Focusing on the Key Insight)</h3>
+<pre class="is-plain"><code>Graph edges: [A,B,4], [A,C,1], [C,B,2], [B,D,1], [C,D,5]
+vertices = [A,B,C,D], start = A
+
+distances = {A:0, B:Inf, C:Inf, D:Inf}
+
+Pass 1 (relax all edges once, in listed order):
+  [A,B,4]: 0+4=4 &lt; Inf -&gt; B=4
+  [A,C,1]: 0+1=1 &lt; Inf -&gt; C=1
+  [C,B,2]: 1+2=3 &lt; 4    -&gt; B=3  (already improved this same pass!)
+  [B,D,1]: 3+1=4 &lt; Inf  -&gt; D=4
+  [C,D,5]: 1+5=6, not &lt; 4 -&gt; no change
+  After pass 1: {A:0, B:3, C:1, D:4}
+
+Pass 2 (V-1=3, so 2 more passes total needed; let's check pass 2):
+  [A,B,4]: 0+4=4, not &lt; 3 -&gt; no change
+  [A,C,1]: 0+1=1, not &lt; 1 -&gt; no change
+  [C,B,2]: 1+2=3, not &lt; 3 -&gt; no change
+  [B,D,1]: 3+1=4, not &lt; 4 -&gt; no change
+  [C,D,5]: 1+5=6, not &lt; 4 -&gt; no change
+  NOTHING improved -- we could stop early here (a common practical optimization),
+  but Bellman-Ford's guarantee holds regardless of running the full V-1 passes.
+
+Final distances: {A:0, B:3, C:1, D:4}  -- MATCHES Dijkstra's result from section 12.1.2!
+(As expected: with no negative edges present, both algorithms agree — Bellman-Ford
+is simply the safe, if slower, ALTERNATIVE that also works when negatives ARE present.)</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-dijkstra-vs-bellman-ford" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Dijkstra vs. Bellman-Ford</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Dijkstra</th>
+<th>Bellman-Ford</th>
+</tr>
+</thead><tbody><tr>
+<td>Time complexity</td>
+<td>O((V+E) log V) with a heap</td>
+<td><strong>O(V · E)</strong></td>
+</tr>
+<tr>
+<td>Handles negative weights</td>
+<td><strong>No — produces silently wrong answers</strong></td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Detects negative cycles</td>
+<td>No mechanism at all</td>
+<td><strong>Yes — via the extra V-th pass</strong></td>
+</tr>
+<tr>
+<td>Strategy</td>
+<td>Greedy (always expand the current minimum)</td>
+<td>Brute-force-ish (relax every edge, repeatedly, a fixed number of times)</td>
+</tr>
+<tr>
+<td>When to use</td>
+<td>Non-negative weights, want the fastest correct answer</td>
+<td>Negative weights present, or need negative-cycle detection</td>
+</tr>
+</tbody></table></div>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>The clean decision rule: <strong>&quot;Are negative edge weights possible? If no, use Dijkstra (faster). If yes, or if you need to detect negative cycles specifically, use Bellman-Ford (handles both correctly, at the cost of being slower).&quot;</strong> State this trade-off explicitly and unprompted whenever a shortest-path problem doesn&#39;t clearly specify non-negative weights.</p>
+</aside>
+<hr>
+
+<h2 id="12-3-floyd-warshall-all-pairs-shortest-paths">12.3 Floyd-Warshall: All-Pairs Shortest Paths</h2>
+<p>Both Dijkstra and Bellman-Ford solve <strong>single-source</strong> shortest paths — &quot;shortest path from ONE specific starting vertex to everywhere else.&quot; Sometimes you need <strong>every</strong> pair&#39;s shortest path simultaneously — Floyd-Warshall answers exactly this.</p>
+<h3 id="12-3-1-the-core-intuition-dynamic-programming-over-intermediate-vertices">12.3.1 The Core Intuition: Dynamic Programming Over Intermediate Vertices</h3>
+<p><strong>Definition:</strong> The Floyd-Warshall algorithm computes shortest paths between all pairs of vertices by progressively considering each vertex as a potential <strong>intermediate stop</strong> on a path between every other pair, updating the shortest known distance whenever routing through that intermediate vertex helps.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-can-i-get-there-faster-through-here" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;Can I Get There Faster Through Here?&quot;</span></h3>
+<p>Imagine asking, for every single pair of cities <code>(i, j)</code>, one at a time: &quot;is my current best-known route from <code>i</code> to <code>j</code> improved by detouring through city <code>k</code>?&quot; Floyd-Warshall&#39;s core loop asks exactly this question, systematically, for <strong>every</strong> possible intermediate city <code>k</code>, for <strong>every</strong> pair <code>(i, j)</code> — a beautifully simple, if computationally heavier, brute-force-with-structure approach.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">floydWarshall</span>(<span class="hljs-params">vertices, edges</span>) {
+  <span class="hljs-keyword">const</span> n = vertices.<span class="hljs-property">length</span>;
+  <span class="hljs-keyword">const</span> indexOf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(vertices.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">v, i</span>) =&gt;</span> [v, i]));
+
+  <span class="hljs-comment">// Initialize distance matrix: Infinity everywhere except self (0) and direct edges</span>
+  <span class="hljs-keyword">const</span> dist = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>({ <span class="hljs-attr">length</span>: n }, <span class="hljs-function">() =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(n).<span class="hljs-title function_">fill</span>(<span class="hljs-title class_">Infinity</span>));
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) dist[i][i] = <span class="hljs-number">0</span>;
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [u, v, weight] <span class="hljs-keyword">of</span> edges) {
+    <span class="hljs-keyword">const</span> i = indexOf.<span class="hljs-title function_">get</span>(u);
+    <span class="hljs-keyword">const</span> j = indexOf.<span class="hljs-title function_">get</span>(v);
+    dist[i][j] = weight;
+  }
+
+  <span class="hljs-comment">// THE CORE TRIPLE LOOP: try routing through every possible intermediate vertex k</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> k = <span class="hljs-number">0</span>; k &lt; n; k++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">0</span>; j &lt; n; j++) {
+        <span class="hljs-keyword">if</span> (dist[i][k] + dist[k][j] &lt; dist[i][j]) {
+          dist[i][j] = dist[i][k] + dist[k][j]; <span class="hljs-comment">// found a shorter route THROUGH k!</span>
+        }
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> dist;
+}</code></pre></div>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-loop-order-matters-k-must-be-the-outermost-loop" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Loop Order Matters — <code>k</code> Must Be the OUTERMOST Loop</span></h3>
+<p>This is a genuinely subtle, easy-to-get-backward detail: <strong>the intermediate vertex <code>k</code> must be the outermost loop</strong>, not <code>i</code> or <code>j</code>. Why? Because <code>dist[i][k]</code> and <code>dist[k][j]</code> used in the innermost check must already reflect the best-known distances <strong>considering all intermediate vertices processed so far</strong> (<code>0</code> through <code>k-1</code>) — this is a genuine dynamic programming recurrence (a full formal treatment of DP awaits the dedicated DP Masterclass chapters, but this is a direct, concrete preview): <strong><code>dist[i][j]</code> after processing intermediate vertex <code>k</code> represents &quot;the shortest path from i to j using only vertices <code>0..k</code> as allowed intermediate stops.&quot;</strong> If <code>i</code> or <code>j</code> were the outer loop instead, you&#39;d sometimes use a &quot;not yet updated for this k&quot; value of <code>dist[i][k]</code> or <code>dist[k][j]</code>, silently producing incorrect results for certain graphs. Getting this loop order backward is one of the most common Floyd-Warshall implementation bugs.</p>
+</aside>
+<h3 id="dry-run-small-example">Dry Run (Small Example)</h3>
+<pre class="is-plain"><code>Vertices: A(0), B(1), C(2)
+Edges: A-&gt;B (3), B-&gt;C (1), A-&gt;C (10)
+
+Initial dist matrix (rows/cols = A,B,C):
+        A    B    C
+    A [ 0,   3,  10 ]
+    B [Inf,  0,   1 ]
+    C [Inf, Inf,  0 ]
+
+k=0 (A as intermediate): check if routing through A helps any (i,j)
+  dist[B][A] is Inf -&gt; routing B-&gt;A-&gt;anything is useless (Inf + anything = Inf). No changes possible via A as intermediate for reaching FROM B or C, since nothing reaches A.
+
+k=1 (B as intermediate): check if routing through B helps
+  dist[A][B]=3, dist[B][C]=1 -&gt; dist[A][C] currently 10. Is 3+1=4 &lt; 10? YES!
+  dist[A][C] = 4   &lt;- IMPROVEMENT FOUND: A-&gt;B-&gt;C (cost 4) beats direct A-&gt;C (cost 10)!
+
+  Updated matrix:
+        A    B    C
+    A [ 0,   3,   4 ]
+    B [Inf,  0,   1 ]
+    C [Inf, Inf,  0 ]
+
+k=2 (C as intermediate): check if routing through C helps
+  C has no outgoing edges (dist[C][anything] is Inf or 0) -&gt; no further improvements possible
+
+FINAL: dist[A][C] = 4 (correctly found the A-&gt;B-&gt;C shortcut, beating the direct edge!)</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-floyd-warshall-complexity" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Floyd-Warshall Complexity</span></h3>
+<ul>
+<li><strong>Time</strong>: <strong>O(V³)</strong> — the triple nested loop, unconditionally, regardless of edge sparsity.</li>
+<li><strong>Space</strong>: O(V²) — the full distance matrix.</li>
+</ul>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-when-floyd-warshall-is-the-right-choice" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: When Floyd-Warshall Is the Right Choice</span></h3>
+<p>Despite its O(V³) cost being worse than running Dijkstra from every single vertex (which would be O(V · (V+E) log V) — often better for sparse graphs), <strong>Floyd-Warshall&#39;s simplicity, ability to handle negative weights (though still not negative cycles — it can detect them too, via a negative value appearing on the diagonal <code>dist[i][i]</code> after running), and directness for all-pairs queries make it the preferred choice specifically when the graph is small-to-medium sized and you genuinely need every pair&#39;s shortest distance, not just paths from one source.</strong> State this trade-off explicitly: <strong>&quot;For all-pairs shortest paths, Floyd-Warshall is O(V³) and simple to implement; running Dijkstra from every vertex is O(V·(V+E)log V), which can be better for large, sparse graphs — the right choice depends on graph size and density.&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="12-4-comprehensive-comparison-and-decision-framework">12.4 Comprehensive Comparison and Decision Framework</h2>
+<h3 id="the-complete-shortest-path-decision-table">The Complete Shortest-Path Decision Table</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Scenario</th>
+<th>Algorithm</th>
+<th>Complexity</th>
+</tr>
+</thead><tbody><tr>
+<td>Unweighted graph, single source</td>
+<td><strong>BFS</strong> (<a href="/learn/dsa-master/graph-bfs-dfs-javascript" title="Graphs in JavaScript: BFS, DFS &amp; Adjacency List">Chapter 11</a>)</td>
+<td>O(V + E)</td>
+</tr>
+<tr>
+<td>Weighted graph, non-negative weights, single source</td>
+<td><strong>Dijkstra</strong></td>
+<td>O((V+E) log V)</td>
+</tr>
+<tr>
+<td>Weighted graph, negative weights possible, single source</td>
+<td><strong>Bellman-Ford</strong></td>
+<td>O(V · E)</td>
+</tr>
+<tr>
+<td>Need to detect negative cycles specifically</td>
+<td><strong>Bellman-Ford</strong></td>
+<td>O(V · E)</td>
+</tr>
+<tr>
+<td>Weighted graph, need ALL pairs&#39; shortest paths</td>
+<td><strong>Floyd-Warshall</strong> (or Dijkstra from every vertex, for large sparse graphs)</td>
+<td>O(V³) (or O(V·(V+E)log V))</td>
+</tr>
+</tbody></table></div>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-the-single-question-that-determines-everything" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip: The Single Question That Determines Everything</span></h3>
+<p>When facing any shortest-path problem, ask, in this exact order: <strong>(1) Are edges weighted at all? If no, BFS. (2) Can weights be negative? If no, Dijkstra. (3) If yes (negative weights possible), Bellman-Ford. (4) Do I need EVERY pair&#39;s shortest path, not just one source? If yes, Floyd-Warshall (or repeated Dijkstra, if the graph is large and sparse).</strong> This decision tree, stated explicitly and confidently, is one of the highest-value things you can demonstrate in a graph-algorithms interview — it shows you&#39;re navigating a genuine decision framework, not pattern-matching to a single memorized algorithm regardless of fit.</p>
+</aside>
+<hr>
+
+<h2 id="12-5-edge-cases-and-gotchas-checklist">12.5 Edge Cases and Gotchas Checklist</h2>
+<ol>
+<li><strong>Unreachable vertices.</strong> Does your implementation correctly leave/report <code>Infinity</code> (or a clear &quot;unreachable&quot; sentinel) for vertices with no path from the source, rather than crashing or returning a misleading value like <code>0</code> or <code>undefined</code>?</li>
+<li><strong>Negative weights with Dijkstra.</strong> Always verify the problem guarantees non-negative weights before reaching for Dijkstra; if unstated, ask or explicitly flag the assumption.</li>
+<li><strong>Negative cycles with Bellman-Ford.</strong> Always run (or at least mention) the extra V-th verification pass — silently skipping it means your algorithm could return an incorrect &quot;shortest path&quot; for graphs with a negative cycle, when the correct answer is &quot;undefined/unbounded.&quot;</li>
+<li><strong>Self-loops and parallel edges</strong> (multiple edges between the same pair of vertices with different weights) — verify your relaxation logic naturally handles picking the smaller of duplicate edges (it does, automatically, since relaxation only ever accepts strict improvements).</li>
+<li><strong>Floyd-Warshall loop order</strong> — <code>k</code> must be outermost; this is the single most common implementation bug in this chapter&#39;s final algorithm.</li>
+<li><strong>Directed vs. undirected weighted graphs</strong> — for undirected graphs, remember each edge must be added/relaxed in <em>both</em> directions (exactly as in Chapter 11&#39;s <code>addEdge</code> with <code>directed = false</code>).</li>
+<li><strong>Path reconstruction</strong> — if a problem asks for the actual path (not just the distance), remember to track and use a <code>previous</code>/parent map (section 12.1.2), reconstructing by walking backward once the algorithm completes, exactly mirroring Chapter 11&#39;s BFS path-reconstruction technique.</li>
+</ol>
+<hr>
+
+<h2 id="12-6-chapter-summary">12.6 Chapter Summary</h2>
+<p>This chapter directly extended Chapter 11&#39;s graph traversal foundation into the weighted-edge world, opening with a concrete proof of exactly <em>why</em> BFS&#39;s shortest-path guarantee collapses the moment edges carry different costs — BFS optimizes for fewest edges, while weighted shortest path requires optimizing for smallest total weight, a genuinely different quantity. We built <strong>Dijkstra&#39;s algorithm</strong> as a direct, practical payoff of Chapter 9&#39;s heap: its greedy strategy of always finalizing the currently-closest unvisited vertex works specifically <em>because</em> non-negative weights guarantee that no future, farther-starting path could ever retroactively improve an already-finalized vertex&#39;s distance — and we were explicit and rigorous about the critical failure mode this creates: <strong>Dijkstra produces silently wrong answers on graphs with negative weights</strong>, since that exact non-retroactive-improvement assumption breaks down.</p>
+<p>We introduced <strong>Bellman-Ford</strong> as the correct, if slower (O(V·E) versus Dijkstra&#39;s O((V+E) log V)), alternative for graphs where negative weights are possible, built on the elegant mathematical fact that no shortest path needs more than V-1 edges, making V-1 full edge-relaxation passes provably sufficient — and we highlighted its genuinely valuable bonus capability that Dijkstra has no equivalent for at all: <strong>a single extra relaxation pass serves as a complete negative-cycle detector</strong>, since any further improvement after the guaranteed-sufficient V-1 passes is only possible if a negative cycle allows a path&#39;s cost to be driven arbitrarily low. We closed the core algorithmic content with <strong>Floyd-Warshall</strong>, an all-pairs shortest-path algorithm built on a genuine dynamic-programming recurrence (a direct, concrete preview of the DP Masterclass chapters ahead) — &quot;the shortest path from i to j using only vertices 0..k as intermediates&quot; — and were careful to flag its single most common implementation bug: the intermediate vertex <code>k</code> must be the <em>outermost</em> loop, or the recurrence&#39;s &quot;already improved using earlier intermediates&quot; invariant silently breaks.</p>
+<p>Finally, we assembled everything into a single, complete decision framework spanning both this chapter and Chapter 11: unweighted → BFS; weighted, non-negative → Dijkstra; weighted, negative weights possible → Bellman-Ford; all-pairs needed → Floyd-Warshall (or repeated Dijkstra for large sparse graphs) — a decision tree worth having ready to state, in order, the moment any shortest-path problem appears, since correctly identifying <em>which</em> algorithm the problem&#39;s constraints actually demand is a bigger interview differentiator than knowing any single algorithm&#39;s implementation in isolation.</p>
+<hr>
+
+<h2 id="12-7-revision-notes">12.7 Revision Notes</h2>
+<ul>
+<li>BFS&#39;s shortest-path guarantee relies on &quot;fewest edges = closest,&quot; which breaks entirely once edges carry different weights — a genuinely different optimization target.</li>
+<li>Dijkstra&#39;s greedy strategy (always finalize the current minimum, via Chapter 9&#39;s heap) is correct only because non-negative weights guarantee no future path can retroactively improve a finalized vertex — this assumption breaks with negative weights, producing silently wrong answers.</li>
+<li>Bellman-Ford relaxes every edge V-1 times (provably sufficient, since no shortest path needs more than V-1 edges), correctly handling negative weights, at O(V·E) cost.</li>
+<li>A single extra (V-th) Bellman-Ford relaxation pass detects negative cycles — any further improvement at that point is only possible via a negative cycle.</li>
+<li>Floyd-Warshall computes all-pairs shortest paths via a DP recurrence over intermediate vertices; the intermediate vertex <code>k</code> must be the outermost loop, or the &quot;already improved via earlier intermediates&quot; invariant breaks.</li>
+<li>Decision framework: unweighted → BFS; weighted non-negative → Dijkstra; weighted with possible negatives → Bellman-Ford; all-pairs needed → Floyd-Warshall (or repeated Dijkstra for large sparse graphs).</li>
+</ul>
+<hr>
+
+<h2 id="12-8-mind-map-ascii">12.8 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                          SHORTEST PATH ALGORITHMS
+                                    |
+      +------------------+---------+---------+------------------------+
+      |                  |                   |                        |
+  WHY BFS FAILS      DIJKSTRA            BELLMAN-FORD            FLOYD-WARSHALL
+  ON WEIGHTED             |                   |                        |
+  GRAPHS            Greedy: always      Relax ALL edges          DP over
+  (fewest edges      finalize current   V-1 times (proof:        intermediate
+  != smallest        minimum via        no shortest path        vertices k
+  total weight)       Ch.9 HEAP          needs &gt; V-1 edges)      (k MUST be
+      |               (extractMin)            |                 OUTERMOST loop
+  Different            |                Handles NEGATIVE         -- common bug!)
+  optimization      FAILS on negative   weights correctly             |
+  target entirely   weights (silently  (&quot;relaxation&quot; = the       O(V^3) time,
+                     wrong, no error!)  ONE operation shared     O(V^2) space
+                     O((V+E)logV)       by ALL 3 algorithms)          |
+                          |                   |                 Best for: need
+                     Non-negative        Extra V-th pass =      EVERY pair's
+                     weights ONLY        NEGATIVE CYCLE          shortest path,
+                                         DETECTOR (Dijkstra      small-medium
+                                         has NO equivalent!)     graphs
+                                         O(V*E) time
+                                              |
+                        DECISION FRAMEWORK: unweighted-&gt;BFS,
+                        weighted+nonneg-&gt;Dijkstra,
+                        weighted+maybe-negative-&gt;Bellman-Ford,
+                        all-pairs-&gt;Floyd-Warshall</code></pre>
+<hr>
+
+<h2 id="12-9-cheat-sheet">12.9 Cheat Sheet</h2>
+<pre class="is-plain"><code>SHORTEST PATH DECISION TREE
+==============================
+1. Unweighted?                              -&gt; BFS (Chapter 11), O(V+E)
+2. Weighted, non-negative only?              -&gt; Dijkstra, O((V+E) log V)
+3. Weighted, negative weights POSSIBLE?      -&gt; Bellman-Ford, O(V*E)
+4. Need negative CYCLE detection?            -&gt; Bellman-Ford (extra V-th pass)
+5. Need ALL-PAIRS shortest paths?            -&gt; Floyd-Warshall, O(V^3)
+                                                 (or Dijkstra from every vertex
+                                                  if graph is large &amp; sparse)
+
+DIJKSTRA
+===========
+Greedy: extractMin from a heap (Ch.9), relax neighbors, repeat.
+FAILS SILENTLY on negative weights -- always check for this precondition!
+Time: O((V+E) log V) with a binary heap.
+
+BELLMAN-FORD
+===============
+Relax EVERY edge, V-1 times (provably sufficient — no shortest path &gt; V-1 edges).
+Run ONE more pass: if anything still improves -&gt; NEGATIVE CYCLE exists.
+Time: O(V*E). Handles negative weights correctly.
+
+FLOYD-WARSHALL
+=================
+for k in vertices:         &lt;- MUST be outermost loop!
+  for i in vertices:
+    for j in vertices:
+      dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+Time: O(V^3). Space: O(V^2). All-pairs shortest paths in one run.
+
+RELAXATION (the ONE operation underlying all three algorithms)
+===================================================================
+if dist[u] + weight(u,v) &lt; dist[v]:
+  dist[v] = dist[u] + weight(u,v)   &lt;- found a shorter path, update it</code></pre>
+<hr>
+
+<h2 id="12-10-key-takeaways">12.10 Key Takeaways</h2>
+<ol>
+<li>BFS&#39;s shortest-path guarantee is specifically about fewest edges — it collapses entirely once weights differ, requiring genuinely new algorithms.</li>
+<li>Dijkstra (heap-powered, O((V+E) log V)) is correct only for non-negative weights — it fails silently, not loudly, on negative weights, making this precondition check essential.</li>
+<li>Bellman-Ford (O(V·E)) correctly handles negative weights via V-1 relaxation passes, and its extra V-th pass is a complete, elegant negative-cycle detector Dijkstra has no equivalent for.</li>
+<li>Floyd-Warshall (O(V³)) computes all-pairs shortest paths via a DP recurrence over intermediate vertices — the intermediate vertex must be the outermost loop.</li>
+<li>A complete decision framework (unweighted→BFS, non-negative→Dijkstra, possibly-negative→Bellman-Ford, all-pairs→Floyd-Warshall) is worth having ready to state explicitly for any shortest-path problem.</li>
+</ol>
+<hr>
+
+<h2 id="12-11-20-multiple-choice-questions">12.11 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why does BFS fail to guarantee shortest paths in a weighted graph?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">BFS doesn&#39;t work on graphs at all</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">BFS optimizes for fewest edges, not smallest total weight — a different quantity once weights differ</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">BFS only works on trees</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">BFS requires a heap, which weighted graphs don&#39;t have</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What data structure from Chapter 9 does Dijkstra&#39;s algorithm rely on for efficiency?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A trie</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A min-heap</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A hash table</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A binary search tree</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What critical assumption does Dijkstra&#39;s greedy strategy depend on?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The graph must be a tree</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Edge weights are non-negative</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The graph must be undirected</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">There must be no cycles</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What happens when Dijkstra&#39;s algorithm is run on a graph with negative edge weights?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It throws a clear error</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It may silently produce an incorrect shortest-path result</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It runs forever</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It automatically switches to Bellman-Ford</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of Dijkstra&#39;s algorithm using a binary heap?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(V²)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O((V+E) log V)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(V * E)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(V³)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What operation is shared by Dijkstra, Bellman-Ford, and Floyd-Warshall as their fundamental building block?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sorting</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Relaxation (checking if a shorter path has been found and updating accordingly)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Hashing</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Binary search</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How many times does Bellman-Ford relax every edge in the graph?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">V times</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">V-1 times</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">E times</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">log V times</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why is V-1 the correct number of relaxation passes in Bellman-Ford?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s an arbitrary convention</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">No shortest path in a graph with V vertices needs more than V-1 edges</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It matches the number of edges exactly</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s related to the heap&#39;s height</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does an extra (V-th) relaxation pass in Bellman-Ford detect if it still finds improvements?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A disconnected graph</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A negative-weight cycle</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A duplicate edge</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">An unweighted graph</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of Bellman-Ford?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O((V+E) log V)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(V * E)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(V³)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(V + E)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the primary advantage of Bellman-Ford over Dijkstra?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s always faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It correctly handles negative edge weights and can detect negative cycles</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It doesn&#39;t require a graph representation</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It works only on trees</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What problem does Floyd-Warshall solve that Dijkstra and Bellman-Ford do not directly address?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Negative weight handling</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">All-pairs shortest paths (every vertex to every other vertex simultaneously)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Cycle detection</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Unweighted graph traversal</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">In Floyd-Warshall&#39;s triple nested loop, which loop variable must be outermost?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">i (the source vertex being considered)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">j (the destination vertex being considered)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">k (the intermediate vertex being considered)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Order doesn&#39;t matter</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why must the intermediate vertex <code>k</code> be the outermost loop in Floyd-Warshall?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s a stylistic preference only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">dist[i][k] and dist[k][j] must already reflect improvements from all earlier intermediate vertices (0 to k-1)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript requires this loop order for correctness</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It only matters for very large graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">What is the time complexity of Floyd-Warshall?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(V + E)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O((V+E) log V)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(V³)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(V * E)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the space complexity of Floyd-Warshall?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(V)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(V²)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(E)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(1)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">According to this chapter&#39;s decision framework, which algorithm should you use for a weighted graph where negative weights are impossible?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">BFS</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Dijkstra</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Bellman-Ford only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Floyd-Warshall only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">According to this chapter&#39;s decision framework, which algorithm(s) should you use if you need shortest paths between EVERY pair of vertices in a large, sparse graph?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A single Dijkstra run only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Floyd-Warshall exclusively, always</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Floyd-Warshall or repeated Dijkstra from every vertex, depending on graph size/density</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">BFS repeated for every vertex</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a"><p class="quiz-text">Why does the Dijkstra implementation in this chapter check <code>if (visited.has(current)) continue;</code> after extracting from the heap?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To handle stale/duplicate heap entries left over from earlier relaxations</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">To detect negative cycles</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s unnecessary and can be removed safely</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To handle disconnected graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What must be tracked to reconstruct the actual shortest PATH (not just its total distance) after running any of these algorithms?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing extra is needed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A <code>previous</code>/parent map, updated during relaxation, walked backward once the algorithm completes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The total number of vertices only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A separate BFS run afterward</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-c, 14-b, 15-c, 16-b, 17-b, 18-c, 19-a, 20-b</p></details>
+</div>
+<h2 id="12-12-20-coding-problems">12.12 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement Dijkstra&#39;s algorithm from memory (section 12.1.2), testing it on a small hand-constructed weighted graph.</li>
+<li>Write a function to reconstruct the shortest path (not just distance) from Dijkstra&#39;s <code>previous</code> map.</li>
+<li>Given a weighted graph, write a function to find the shortest distance between two SPECIFIC vertices (early-exit Dijkstra once the target is extracted from the heap).</li>
+<li>Implement Bellman-Ford from memory (section 12.2), and verify it produces the same distances as Dijkstra on a graph with no negative weights.</li>
+<li>Write a function to detect if a given graph contains a negative-weight cycle, using Bellman-Ford&#39;s extra pass.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement Floyd-Warshall from memory (section 12.3.1), being careful about the loop order, and verify against a hand-computed small example.</li>
+<li>Given a weighted graph representing flight routes with prices, find the cheapest route from a source to a destination with at most K stops (a variant requiring a modified Bellman-Ford-style relaxation limited to K passes).</li>
+<li>Given a graph, implement a function that returns the shortest path distances from a source to ALL other vertices, explicitly reporting <code>Infinity</code>/unreachable for disconnected vertices.</li>
+<li>Given a road network with tolls (weights), find the path from A to B that minimizes total toll cost, and separately, the path that minimizes the NUMBER of toll roads used (contrasting Dijkstra with plain BFS on the same graph).</li>
+<li>Implement a function that uses Floyd-Warshall&#39;s result matrix to determine the &quot;diameter&quot; of a weighted graph (the largest shortest-path distance between any pair of vertices).</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Given a graph where some edges may be negative but the graph as a whole has no negative cycles, implement Bellman-Ford to find shortest paths, and write a function that also returns the actual path for a specified destination.</li>
+<li>Given a currency exchange graph (currencies as vertices, exchange rates as edges, where the &quot;weight&quot; is the negative log of the rate for arbitrage-detection purposes), use Bellman-Ford&#39;s negative-cycle detection to determine if a profitable arbitrage opportunity exists.</li>
+<li>Given a grid where each cell has a &quot;cost&quot; to enter, find the minimum-cost path from the top-left to the bottom-right corner using Dijkstra treating the grid as an implicit weighted graph (a direct combination of Chapter 11&#39;s implicit-graph technique with this chapter&#39;s weighted algorithms).</li>
+<li>Implement a network delay time calculator: given a list of weighted directed edges representing signal travel times between network nodes, determine the minimum time for a signal starting at a given node to reach all other nodes, using Dijkstra.</li>
+<li>Given a graph with both positive and negative edges (but no negative cycles), and a requirement to answer MANY shortest-path queries between different pairs efficiently, discuss (in comments) why running Floyd-Warshall ONCE upfront is more efficient than running Bellman-Ford separately for each query, then implement the Floyd-Warshall version.</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Given a graph representing a computer network with latencies as weights, design a system to find the K shortest paths (not just the single shortest) between two nodes, extending Dijkstra&#39;s approach conceptually (full K-shortest-paths algorithms are advanced, but discuss the approach in comments).</li>
+<li><strong>(Amazon-level)</strong> Given a delivery network with travel times (weighted, non-negative) between warehouses, implement Dijkstra to find the fastest delivery route from a central warehouse to all destination warehouses, and report which destinations are unreachable.</li>
+<li><strong>(Microsoft-level)</strong> Given a graph representing task dependencies where edges have &quot;cost&quot; representing time delays, and possibly negative weights representing time savings from parallelization, use Bellman-Ford to compute the fastest possible completion time for each task, detecting if the dependency structure creates an impossible (negative cycle) scenario.</li>
+<li><strong>(Meta-level)</strong> Given a social network graph with weighted edges representing &quot;interaction strength&quot; (used as a cost to minimize, e.g., for finding the path of least resistance for information spread), implement Dijkstra to find the most efficient path between two users, and Floyd-Warshall to precompute all pairwise efficient paths for a smaller, frequently-queried subset of &quot;VIP&quot; users.</li>
+<li><strong>(Netflix-level)</strong> Design a CDN (content delivery network) routing system: given server nodes with weighted latency edges, use Dijkstra to route each user request to the server offering the lowest end-to-end latency, and discuss (in comments) how you&#39;d efficiently recompute routes as network conditions (edge weights) change dynamically in production.</li>
+</ol>
+<hr>
+
+<h2 id="12-13-5-interview-questions">12.13 5 Interview Questions</h2>
+<ol>
+<li>&quot;Why doesn&#39;t BFS work for finding the shortest path in a weighted graph?&quot; (Tests understanding of the fundamental optimization-target mismatch.)</li>
+<li>&quot;Walk me through Dijkstra&#39;s algorithm, and tell me what assumption it depends on that could break it.&quot; (Tests both implementation knowledge and the critical non-negative-weights precondition.)</li>
+<li>&quot;How would you find the shortest path in a graph that might have negative edge weights?&quot; (Tests knowledge of Bellman-Ford as the correct pivot.)</li>
+<li>&quot;How would you detect a negative-weight cycle in a graph?&quot; (Tests the elegant extra-pass technique specific to Bellman-Ford.)</li>
+<li>&quot;How would you find the shortest path between every pair of vertices in a graph?&quot; (Tests Floyd-Warshall knowledge and the trade-off against repeated Dijkstra.)</li>
+</ol>
+<hr>
+
+<h2 id="12-14-3-real-projects">12.14 3 Real Projects</h2>
+<ol>
+<li><strong>Complete Shortest-Path Library</strong>: Build a module implementing Dijkstra, Bellman-Ford, and Floyd-Warshall against a shared weighted-graph representation, with a self-check script verifying all three agree on graphs with non-negative weights, and that Bellman-Ford correctly detects an intentionally-inserted negative cycle.</li>
+<li><strong>Road Trip Planner</strong>: Build a Node.js CLI tool that models a small set of cities and travel times/costs as a weighted graph, then uses Dijkstra to find the cheapest/fastest route between any two cities the user specifies, printing the full path via the <code>previous</code>-map reconstruction technique.</li>
+<li><strong>Currency Arbitrage Detector</strong>: Build the currency-exchange arbitrage detector from coding problem #12 as a standalone tool, using real or simulated exchange rate data, applying the negative-log-weight transformation and Bellman-Ford&#39;s negative-cycle detection to report any arbitrage opportunities found.</li>
+</ol>
+<hr>
+
+<h2 id="12-15-further-reading">12.15 Further Reading</h2>
+<ul>
+<li>Edsger Dijkstra&#39;s original 1959 paper, for the historical origin of the algorithm bearing his name.</li>
+<li>Search &quot;Fibonacci heap Dijkstra&quot; for the theoretically optimal (though rarely implemented in practice) O(E + V log V) variant using a more sophisticated heap supporting true decrease-key operations.</li>
+<li>Search &quot;Bellman-Ford SPFA optimization&quot; (Shortest Path Faster Algorithm) for a common practical optimization reducing Bellman-Ford&#39;s average-case runtime using a queue-based relaxation order.</li>
+<li>Robert Floyd and Stephen Warshall&#39;s original papers, for the historical, independently-discovered origins of the all-pairs algorithm bearing both their names.</li>
+<li>LeetCode&#39;s &quot;Dijkstra&quot; and &quot;Shortest Path&quot; adjacent problems (e.g., &quot;Network Delay Time,&quot; &quot;Cheapest Flights Within K Stops&quot;), for extensive additional practice directly extending this chapter&#39;s core algorithms.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Shortest Path: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Why doesn't Dijkstra's algorithm work with negative weights?</h3></summary><p>Dijkstra finalizes a vertex as soon as it is taken from the heap, assuming no later path can be cheaper. A negative edge can break that assumption, so Dijkstra may silently return wrong distances. Use Bellman-Ford instead.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the time complexity of Dijkstra's algorithm?</h3></summary><p>With a binary heap, Dijkstra runs in O((V + E) log V) time, where V is the number of vertices and E the number of edges.</p></details>
+<details class="learn-faq-item"><summary><h3>When should I use Floyd-Warshall?</h3></summary><p>Use Floyd-Warshall when you need shortest distances between all pairs of vertices on a small graph. It runs in O(V³) time and is simple to implement with three nested loops.</p></details>
+<details class="learn-faq-item"><summary><h3>Which shortest path algorithm should I choose?</h3></summary><p>Unweighted graph: BFS. Non-negative weights: Dijkstra. Negative weights or a need to detect negative cycles: Bellman-Ford. All pairs on a small graph: Floyd-Warshall.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span>&larr; Previous &middot; Chapter 11</span><strong>Graphs in JavaScript: BFS, DFS &amp; Adjacency List</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span>Next &middot; Chapter 13 &rarr;</span><strong>Topological Sort &amp; MST: Kahn, Kruskal, Prim</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#12-0-why-plain-bfs-isn-t-enough-anymore">12.0 Why Plain BFS Isn't Enough Anymore</a></li><li><a href="#12-1-dijkstra-s-algorithm-greedy-shortest-path-with-a-heap">12.1 Dijkstra's Algorithm: Greedy Shortest Path With a Heap</a></li><li><a href="#12-2-bellman-ford-algorithm-slower-but-handles-negative-weights">12.2 Bellman-Ford Algorithm: Slower, But Handles Negative Weights</a></li><li><a href="#12-3-floyd-warshall-all-pairs-shortest-paths">12.3 Floyd-Warshall: All-Pairs Shortest Paths</a></li><li><a href="#12-4-comprehensive-comparison-and-decision-framework">12.4 Comprehensive Comparison and Decision Framework</a></li><li><a href="#12-5-edge-cases-and-gotchas-checklist">12.5 Edge Cases and Gotchas Checklist</a></li><li><a href="#12-6-chapter-summary">12.6 Chapter Summary</a></li><li><a href="#12-7-revision-notes">12.7 Revision Notes</a></li><li><a href="#12-8-mind-map-ascii">12.8 Mind Map (ASCII)</a></li><li><a href="#12-9-cheat-sheet">12.9 Cheat Sheet</a></li><li><a href="#12-10-key-takeaways">12.10 Key Takeaways</a></li><li><a href="#12-11-20-multiple-choice-questions">12.11 20 Multiple Choice Questions</a></li><li><a href="#12-12-20-coding-problems">12.12 20 Coding Problems</a></li><li><a href="#12-13-5-interview-questions">12.13 5 Interview Questions</a></li><li><a href="#12-14-3-real-projects">12.14 3 Real Projects</a></li><li><a href="#12-15-further-reading">12.15 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "shortest-path-dijkstra-bellman-ford"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Bit Manipulation &amp; Bitmask DP in JavaScript | DSA Master</title>
+    <meta name="description" content="Learn bit manipulation in JavaScript: bitwise operators, 32-bit gotchas, XOR tricks, power-of-two checks, counting set bits, subsets as bitmasks and bitmask DP.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="bit manipulation javascript, bitwise operators, xor trick, single number, count set bits, power of two, bitmask, bitmask dp, travelling salesman dp, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/segment-tree-fenwick-tree">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/math-for-programmers-number-theory">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="bit manipulation javascript">
+    <meta property="article:tag" content="bitwise operators">
+    <meta property="article:tag" content="xor trick">
+    <meta property="article:tag" content="single number">
+    <meta property="article:tag" content="count set bits">
+    <meta property="article:tag" content="power of two">
+    <meta property="article:tag" content="bitmask">
+    <meta property="article:tag" content="bitmask dp">
+    <meta property="article:tag" content="travelling salesman dp">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Bit Manipulation &amp; Bitmask DP in JavaScript">
+    <meta property="og:description" content="Learn bit manipulation in JavaScript: bitwise operators, 32-bit gotchas, XOR tricks, power-of-two checks, counting set bits, subsets as bitmasks and bitmask DP.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/bit-manipulation-bitmask-dp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Bit Manipulation and Bitmask Dynamic Programming in JavaScript: DSA Master chapter 24">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bit Manipulation &amp; Bitmask DP in JavaScript">
+    <meta name="twitter:description" content="Learn bit manipulation in JavaScript: bitwise operators, 32-bit gotchas, XOR tricks, power-of-two checks, counting set bits, subsets as bitmasks and bitmask DP.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/bit-manipulation-bitmask-dp.png">
+    <meta name="twitter:image:alt" content="Bit Manipulation and Bitmask Dynamic Programming in JavaScript: DSA Master chapter 24">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp",
+          "name": "Bit Manipulation & Bitmask DP in JavaScript | DSA Master",
+          "description": "Learn bit manipulation in JavaScript: bitwise operators, 32-bit gotchas, XOR tricks, power-of-two checks, counting set bits, subsets as bitmasks and bitmask DP.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/bit-manipulation-bitmask-dp.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Bit Manipulation and Bitmask Dynamic Programming in JavaScript"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#webpage"
+          },
+          "headline": "Bit Manipulation and Bitmask Dynamic Programming in JavaScript",
+          "alternativeHeadline": "Bit Manipulation and Bitmask Dynamic Programming",
+          "description": "Learn bit manipulation in JavaScript: bitwise operators, 32-bit gotchas, XOR tricks, power-of-two checks, counting set bits, subsets as bitmasks and bitmask DP.",
+          "abstract": "Bit manipulation works directly on the binary digits of integers, which makes some operations far faster and smaller in memory. This chapter is a complete reference to JavaScript's bitwise operators and their 32-bit behaviour, a toolkit of bit tricks such as XOR cancellation and clearing the lowest set bit, how to represent sets as bitmasks, and bitmask dynamic programming.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/bit-manipulation-bitmask-dp.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 5628,
+          "timeRequired": "PT26M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "bit manipulation javascript, bitwise operators, xor trick, single number, count set bits, power of two, bitmask, bitmask dp, travelling salesman dp",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "JavaScript bitwise operators and 32-bit conversion",
+            "XOR tricks and the single number problem",
+            "Power-of-two and set-bit counting",
+            "Representing subsets as bitmasks",
+            "Bitmask dynamic programming"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "bit manipulation javascript"
+          },
+          "isAccessibleForFree": true,
+          "position": 24,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/segment-tree-fenwick-tree#article",
+            "name": "Segment Trees and Fenwick Trees in JavaScript: Range Queries and Updates",
+            "url": "https://shivamthakur.me/learn/dsa-master/segment-tree-fenwick-tree"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Bit Manipulation & Bitmask DP in JavaScript",
+              "item": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do bitwise operators work in JavaScript?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "JavaScript converts both operands to 32-bit signed integers, applies the operation bit by bit, and converts the result back to a number. That means bitwise operations on numbers larger than 2³¹ − 1 give unexpected results unless you use BigInt."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between >> and >>> in JavaScript?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Both shift bits to the right. >> is a signed shift that copies the sign bit, so negative numbers stay negative; >>> is an unsigned shift that fills with zeros and always returns a non-negative number."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do you check if a number is a power of two?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "n > 0 && (n & (n - 1)) === 0. A power of two has exactly one set bit, and n & (n - 1) clears the lowest set bit, leaving zero only in that case."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is bitmask dynamic programming?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Bitmask DP uses an integer as part of the DP state to record which items of a small set have been used, for example which cities are visited in the travelling salesman problem. It turns an O(n!) search into roughly O(n² × 2ⁿ), which is practical for n up to about 20."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#quiz",
+          "name": "Bit Manipulation & Bitmask DP in JavaScript: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "bit manipulation javascript"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/bit-manipulation-bitmask-dp#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What do JavaScript's bitwise operators do to their operands before performing the operation?",
+              "text": "What do JavaScript's bitwise operators do to their operands before performing the operation?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Convert them to 32-bit signed integers"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Convert them to strings"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Convert them to floating-point doubles"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing; they operate on the native number type directly"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the difference between >> and >>> in JavaScript?",
+              "text": "What is the difference between >> and >>> in JavaScript?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": ">> preserves the sign bit when shifting; >>> always fills with zeros, treating the value as unsigned"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "There is no difference"
+                },
+                {
+                  "@type": "Answer",
+                  "text": ">> only works on positive numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": ">>> is faster but otherwise identical"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does ~x equal, mathematically?",
+              "text": "What does ~x equal, mathematically?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "-(x + 1)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "x + 1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "-x"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "x  -1"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does the expression num & (num - 1) do?",
+              "text": "What does the expression num & (num - 1) do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Clears the lowest set bit"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sets the lowest bit"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Reverses all bits"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Doubles the number"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What algorithm uses num & (num-1) repeatedly to count set bits?",
+              "text": "What algorithm uses num & (num-1) repeatedly to count set bits?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Brian Kernighan's algorithm"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Dijkstra's algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Kruskal's algorithm"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "KMP algorithm"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of Brian Kernighan's bit-counting algorithm?",
+              "text": "What is the time complexity of Brian Kernighan's bit-counting algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(number of set bits), which can be less than the total bit width"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(32), always, regardless of the number"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n²)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What core XOR property enables the \"find the single non-duplicate number\" solution?",
+              "text": "What core XOR property enables the \"find the single non-duplicate number\" solution?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "x ^ x = 0 (anything XORed with itself cancels to zero)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "x ^ 1 = x"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "x ^ 0 = 1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "XOR is not commutative"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time and space complexity of the XOR-based \"find the single number\" solution?",
+              "text": "What is the time and space complexity of the XOR-based \"find the single number\" solution?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n) time, O(1) space"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n) time, O(n) space"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n²) time, O(1) space"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n) time, O(log n) space"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How can an integer represent an entire set of small items?",
+              "text": "How can an integer represent an entire set of small items?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each bit position acts as a yes/no flag for one item's membership"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It cannot; sets require a Set object"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By storing the count of items only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By converting the integer to a string"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What bitwise operation represents the UNION of two sets represented as bitmasks?",
+              "text": "What bitwise operation represents the UNION of two sets represented as bitmasks?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "maskA | maskB"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "maskA & maskB"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "maskA ^ maskB"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "~maskA"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What bitwise operation represents the INTERSECTION of two sets represented as bitmasks?",
+              "text": "What bitwise operation represents the INTERSECTION of two sets represented as bitmasks?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "maskA & maskB"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "maskA | maskB"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "~maskA"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "maskA ^ maskB"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does bitmask Dynamic Programming add to the standard five-step DP framework from Chapter 18?",
+              "text": "What does bitmask Dynamic Programming add to the standard five-step DP framework from Chapter 18?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The sub-problem's state now includes a bitmask tracking which items have been used/visited"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A completely different framework with no relation to Chapter 18"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It removes the need for a recurrence relation"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only works with sorted arrays"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of the bitmask DP solution to the Traveling Salesman Problem, for n cities?",
+              "text": "What is the time complexity of the bitmask DP solution to the Traveling Salesman Problem, for n cities?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n²  2^n)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n!)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(2^n) only, without the n² factor"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How does bitmask DP's complexity for TSP compare to brute-force permutation checking?",
+              "text": "How does bitmask DP's complexity for TSP compare to brute-force permutation checking?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n²  2^n) is dramatically faster than O(n!) for practical n values like 15-20"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's always slower"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They are the same complexity"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bitmask DP cannot solve TSP at all"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the practical limit on n for bitmask DP to remain feasible?",
+              "text": "What is the practical limit on n for bitmask DP to remain feasible?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Roughly n <= 20-25, since 2^n growth remains exponential"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "No limit; it works for any n"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "n must be exactly 10"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "n must be a power of 2"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What earlier chapter's specific bit trick reappears in the bitmask-DP subset-sum example (section 24.4.2)?",
+              "text": "What earlier chapter's specific bit trick reappears in the bitmask-DP subset-sum example (section 24.4.2)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Chapter 23's Fenwick Tree lowest-set-bit trick (mask & (-mask))"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 15's sorting algorithms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 9's heap building"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 6's stack operations"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What should you verify before committing to a bitmask DP approach for a new problem?",
+              "text": "What should you verify before committing to a bitmask DP approach for a new problem?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "That the number of items (n) is small enough (typically <=20-25) for 2^n to remain feasible"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "That the array is sorted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "That all values are positive"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "That the problem involves strings"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does mask & (-mask) compute?",
+              "text": "What does mask & (-mask) compute?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The lowest set bit of mask, isolated"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The total number of set bits"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The highest set bit of mask"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Whether mask is zero"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is bit manipulation's O(1) set-operation performance an advantage over a Set object (Chapter 4) for small, fixed-size collections?",
+              "text": "Why is bit manipulation's O(1) set-operation performance an advantage over a Set object (Chapter 4) for small, fixed-size collections?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Bitwise operations on integers are single machine-level operations, versus a Set's hash-based overhead per operation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Set objects cannot store numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sets are always incorrect for this use case"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "There is no actual advantage"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a genuine risk of misapplying bitmask DP to a problem with too many items?",
+              "text": "What is a genuine risk of misapplying bitmask DP to a problem with too many items?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "2^n can become impractically large (e.g., n=30 gives over 1 billion masks), making the approach infeasible"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The code will not compile"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript cannot represent bitmasks at all"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The recurrence relation becomes undefined"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">Bit Manipulation &amp; Bitmask DP in JavaScript</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:85.7%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item active" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp" aria-current="page"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 24 of 28 &middot; Advanced</p>
+                        <h1>Bit Manipulation and Bitmask Dynamic Programming in JavaScript</h1>
+                        <p class="learn-book-title">Bit Manipulation and Bitmask Dynamic Programming</p>
+                        <ul class="learn-meta text-caption">
+                            <li>26 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/bit-manipulation-bitmask-dp.webp"><img src="../../assets/images/learn/dsa-master/bit-manipulation-bitmask-dp.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Bit Manipulation and Bitmask Dynamic Programming in JavaScript: DSA Master chapter 24 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Bit manipulation works directly on the binary digits of integers, which makes some operations far faster and smaller in memory. This chapter is a complete reference to JavaScript's bitwise operators and their 32-bit behaviour, a toolkit of bit tricks such as XOR cancellation and clearing the lowest set bit, how to represent sets as bitmasks, and bitmask dynamic programming.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>JavaScript bitwise operators and 32-bit conversion</li><li>XOR tricks and the single number problem</li><li>Power-of-two and set-bit counting</li><li>Representing subsets as bitmasks</li><li>Bitmask dynamic programming</li></ul>
+                        </section>
+<hr>
+
+<h2 id="24-0-numbers-as-compact-sets-the-idea-that-unlocks-this-chapter">24.0 Numbers as Compact Sets: The Idea That Unlocks This Chapter</h2>
+<p><a href="/learn/dsa-master/segment-tree-fenwick-tree" title="Segment Tree &amp; Fenwick Tree (BIT) in JavaScript">Chapter 23</a> previewed the <code>i &amp; (-i)</code> bit trick powering Fenwick Trees. This chapter builds full, genuine fluency with bitwise operations — and introduces the single idea that makes them so powerful for algorithms: <strong>a single integer can represent an entire set of small items, with each bit acting as a &quot;yes/no&quot; flag for one item&#39;s membership.</strong> A 32-bit integer can represent the presence/absence of up to 32 distinct items simultaneously, and — this is the genuinely important part — <strong>operations on that entire set (union, intersection, toggling membership) become single, O(1) machine-level operations</strong>, instead of O(n) loops over an actual <code>Set</code> (<a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>) or array.</p>
+<hr>
+
+<h2 id="24-1-bitwise-operators-the-complete-precise-reference">24.1 Bitwise Operators: The Complete, Precise Reference</h2>
+<h3 id="24-1-1-the-six-operators">24.1.1 The Six Operators</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> &amp; <span class="hljs-number">3</span>);   <span class="hljs-comment">// AND: 0101 &amp; 0011 = 0001 = 1</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> | <span class="hljs-number">3</span>);   <span class="hljs-comment">// OR:  0101 | 0011 = 0111 = 7</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> ^ <span class="hljs-number">3</span>);   <span class="hljs-comment">// XOR: 0101 ^ 0011 = 0110 = 6</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(~<span class="hljs-number">5</span>);      <span class="hljs-comment">// NOT: flips every bit -&gt; -6 (two&#x27;s complement, explained below)</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> &lt;&lt; <span class="hljs-number">1</span>);  <span class="hljs-comment">// LEFT SHIFT: 0101 -&gt; 1010 = 10 (multiply by 2)</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> &gt;&gt; <span class="hljs-number">1</span>);  <span class="hljs-comment">// RIGHT SHIFT: 0101 -&gt; 0010 = 2 (divide by 2, rounding toward -Infinity)</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(-<span class="hljs-number">5</span> &gt;&gt;&gt; <span class="hljs-number">1</span>); <span class="hljs-comment">// UNSIGNED RIGHT SHIFT: treats -5 as unsigned, shifts in ZEROS from the left</span></code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-interview-tip-javascript-s-bitwise-operators-convert-to-32-bit-integers-first" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake / Interview Tip: JavaScript&#39;s Bitwise Operators Convert to 32-Bit Integers First</span></h3>
+<p>This is a genuinely important, JavaScript-specific fact worth knowing cold: <strong>JavaScript numbers are IEEE 754 doubles internally (recall <a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a>&#39;s discussion of <code>Number.MAX_SAFE_INTEGER</code>), but every bitwise operator (<code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code>) first converts its operands to 32-bit signed integers, performs the operation, then converts the result back to a regular JavaScript number.</strong> This has two real consequences: <strong>(1) bitwise operations silently misbehave for numbers outside the 32-bit signed integer range</strong> (<code>-2,147,483,648</code> to <code>2,147,483,647</code>) — a number larger than this gets truncated in ways that can surprise you; <strong>(2) <code>~5</code> doesn&#39;t produce a huge number, because the &quot;flip all bits&quot; operation happens within that fixed 32-bit frame, using two&#39;s complement representation, where <code>~x</code> is mathematically equivalent to <code>-x - 1</code>.</strong></p>
+</aside>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-x-x-1-always" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: <code>~x === -(x+1)</code>, Always</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(~<span class="hljs-number">5</span>);  <span class="hljs-comment">// -6  (== -(5+1))</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(~<span class="hljs-number">0</span>);  <span class="hljs-comment">// -1  (== -(0+1))</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(~-<span class="hljs-number">1</span>); <span class="hljs-comment">// 0   (== -(-1+1))</span></code></pre></div>
+<p>This identity is worth memorizing directly, since it explains every <code>~</code> result instantly without needing to manually flip bits in your head.</p>
+</aside>
+<h3 id="24-1-2-vs-the-crucial-frequently-tested-distinction">24.1.2 <code>&gt;&gt;</code> vs. <code>&gt;&gt;&gt;</code>: The Crucial, Frequently-Tested Distinction</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(-<span class="hljs-number">8</span> &gt;&gt; <span class="hljs-number">1</span>);  <span class="hljs-comment">// -4  (SIGNED right shift: preserves the sign bit, fills with 1s for negative numbers)</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(-<span class="hljs-number">8</span> &gt;&gt;&gt; <span class="hljs-number">1</span>); <span class="hljs-comment">// 2147483644  (UNSIGNED right shift: treats -8&#x27;s bit pattern as if it were a</span>
+                        <span class="hljs-comment">//  large POSITIVE number, fills with 0s regardless of original sign)</span></code></pre></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p><strong><code>&gt;&gt;</code> (signed/arithmetic right shift)</strong> preserves the number&#39;s sign by filling newly-vacated high bits with copies of the sign bit — dividing by 2 (rounding toward negative infinity) even for negative numbers. <strong><code>&gt;&gt;&gt;</code> (unsigned/logical right shift)</strong> always fills newly-vacated high bits with <code>0</code>, treating the original bit pattern as an unsigned number regardless of its original sign — which is precisely why <code>-8 &gt;&gt;&gt; 1</code> produces a huge positive number rather than <code>-4</code>. <strong>This distinction is a favorite, specific interview question</strong>, precisely because <code>&gt;&gt;&gt;</code> has no direct equivalent in many other mainstream languages, making it a genuinely JavaScript-specific piece of knowledge worth demonstrating unprompted.</p>
+</aside>
+<hr>
+
+<h2 id="24-2-the-bit-trick-toolkit-a-reference-you-ll-use-constantly">24.2 The Bit-Trick Toolkit: A Reference You&#39;ll Use Constantly</h2>
+<h3 id="24-2-1-check-if-the-i-th-bit-is-set">24.2.1 Check if the <code>i</code>-th Bit Is Set</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">isBitSet</span>(<span class="hljs-params">num, i</span>) {
+  <span class="hljs-keyword">return</span> (num &amp; (<span class="hljs-number">1</span> &lt;&lt; i)) !== <span class="hljs-number">0</span>;
+}</code></pre></div>
+<h3 id="24-2-2-set-the-i-th-bit">24.2.2 Set the <code>i</code>-th Bit</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">setBit</span>(<span class="hljs-params">num, i</span>) {
+  <span class="hljs-keyword">return</span> num | (<span class="hljs-number">1</span> &lt;&lt; i);
+}</code></pre></div>
+<h3 id="24-2-3-clear-unset-the-i-th-bit">24.2.3 Clear (Unset) the <code>i</code>-th Bit</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">clearBit</span>(<span class="hljs-params">num, i</span>) {
+  <span class="hljs-keyword">return</span> num &amp; ~(<span class="hljs-number">1</span> &lt;&lt; i);
+}</code></pre></div>
+<h3 id="24-2-4-toggle-the-i-th-bit">24.2.4 Toggle the <code>i</code>-th Bit</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">toggleBit</span>(<span class="hljs-params">num, i</span>) {
+  <span class="hljs-keyword">return</span> num ^ (<span class="hljs-number">1</span> &lt;&lt; i);
+}</code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-xor-as-a-toggle-switch" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: XOR as a Toggle Switch</span></h3>
+<p><strong>XOR (<code>^</code>) with <code>1</code> flips a bit; XOR with <code>0</code> leaves it unchanged.</strong> This is the entire mechanism behind &quot;toggle&quot; — <code>num ^ (1 &lt;&lt; i)</code> XORs a <code>1</code> at exactly position <code>i</code> (and <code>0</code> everywhere else, from the shifted <code>1</code>), flipping only that one bit and leaving every other bit untouched.</p>
+</aside>
+<h3 id="24-2-5-check-if-a-number-is-a-power-of-two">24.2.5 Check if a Number Is a Power of Two</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">isPowerOfTwo</span>(<span class="hljs-params">num</span>) {
+  <span class="hljs-keyword">return</span> num &gt; <span class="hljs-number">0</span> &amp;&amp; (num &amp; (num - <span class="hljs-number">1</span>)) === <span class="hljs-number">0</span>;
+}</code></pre></div>
+<aside class="callout callout-math">
+<h3 id="mathematical-explanation-why-num-num-1-clears-the-lowest-set-bit" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Mathematical Explanation: Why <code>num &amp; (num - 1)</code> Clears the Lowest Set Bit</span></h3>
+<p>This is worth understanding rigorously, since <code>num &amp; (num - 1)</code> is one of the most reused bit tricks in this entire chapter. <strong>Subtracting 1 from any number flips every bit from the rightmost set bit down to (and including) that bit itself</strong> (e.g., <code>1100 - 1 = 1011</code>: the lowest set bit at position 2 becomes 0, and every bit below it, previously all 0, becomes 1). <strong>ANDing the original number with this result cancels out that lowest set bit entirely, while leaving every higher bit unchanged</strong> (since those higher bits are identical in both <code>num</code> and <code>num-1</code>). A power of two has <strong>exactly one set bit</strong> — so clearing its only set bit produces <code>0</code>, which is the exact condition <code>isPowerOfTwo</code> checks.</p>
+</aside>
+<h3 id="24-2-6-count-the-number-of-set-bits-popcount">24.2.6 Count the Number of Set Bits (Popcount)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">countSetBits</span>(<span class="hljs-params">num</span>) {
+  <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">while</span> (num !== <span class="hljs-number">0</span>) {
+    num &amp;= (num - <span class="hljs-number">1</span>); <span class="hljs-comment">// clears the LOWEST set bit each iteration — the exact trick from 24.2.5!</span>
+    count++;
+  }
+  <span class="hljs-keyword">return</span> count;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">countSetBits</span>(<span class="hljs-number">13</span>)); <span class="hljs-comment">// 13 = 1101 -&gt; 3 set bits</span></code></pre></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-brian-kernighan-s-algorithm" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: Brian Kernighan&#39;s Algorithm</span></h3>
+<p>This specific technique — repeatedly clearing the lowest set bit via <code>num &amp; (num-1)</code> until <code>num</code> becomes <code>0</code>, counting iterations — is famous enough to have a name (<strong>Brian Kernighan&#39;s algorithm</strong>), and it&#39;s worth knowing by name as well as by mechanism. <strong>Its complexity is O(number of set bits), not O(total bit width)</strong> — a genuinely important, easy-to-miss distinction from a naive &quot;check every one of the 32 bits&quot; approach, which is always O(32) = O(1) but does strictly more work than necessary for numbers with few set bits.</p>
+</aside>
+<h3 id="24-2-7-the-xor-trick-family-finding-the-one-that-s-different">24.2.7 The XOR Trick Family: Finding &quot;The One That&#39;s Different&quot;</h3>
+<p><strong>Core XOR properties, worth memorizing as a group:</strong> <code>x ^ x = 0</code> (anything XORed with itself cancels to zero), <code>x ^ 0 = x</code> (XOR with zero is a no-op), and XOR is both commutative and associative (order and grouping don&#39;t matter).</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">findSingleNumber</span>(<span class="hljs-params">nums</span>) {
+  <span class="hljs-comment">// Every number appears TWICE except for one — find the one that appears ONCE.</span>
+  <span class="hljs-keyword">let</span> result = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> num <span class="hljs-keyword">of</span> nums) {
+    result ^= num; <span class="hljs-comment">// every PAIR cancels to 0 (x^x=0); whatever&#x27;s left is the unpaired number!</span>
+  }
+  <span class="hljs-keyword">return</span> result;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">findSingleNumber</span>([<span class="hljs-number">4</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>])); <span class="hljs-comment">// 4</span></code></pre></div>
+<h3 id="dry-run">Dry Run</h3>
+<pre class="is-plain"><code>nums = [4, 1, 2, 1, 2]
+result = 0
+
+result ^= 4 -&gt; result = 4       (0100)
+result ^= 1 -&gt; result = 5       (0101)
+result ^= 2 -&gt; result = 7       (0111)
+result ^= 1 -&gt; result = 6       (0110)  &lt;- the two 1's have now cancelled out (4^1^1 = 4)
+result ^= 2 -&gt; result = 4       (0100)  &lt;- the two 2's have now cancelled out too!
+
+Final result = 4 ✓ (the single, unpaired number)</code></pre>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>This is a beautiful, extremely elegant algorithm, and specifically worth having ready: it solves &quot;find the single non-duplicated element&quot; in <strong>O(n) time and O(1) space</strong> — beating a <code>Set</code>-based approach (<a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>, O(n) time but O(n) space) purely through XOR&#39;s cancellation property. It&#39;s a favorite interview question precisely because the O(1)-space solution is so much more elegant than the &quot;obvious&quot; hash-based approach, and recognizing &quot;everything appears twice except one&quot; as an XOR-cancellation signal is a genuine, transferable pattern-recognition skill.</p>
+</aside>
+<hr>
+
+<h2 id="24-3-bitmask-representation-of-sets-the-foundation-for-bitmask-dp">24.3 Bitmask Representation of Sets: The Foundation for Bitmask DP</h2>
+<h3 id="the-core-translation-table">The Core Translation Table</h3>
+<p><strong>A set of <code>n</code> items (where <code>n</code> is small, typically ≤ 20-25 for practical DP purposes) can be represented as an integer from <code>0</code> to <code>2^n - 1</code>, where bit <code>i</code> being set means &quot;item <code>i</code> is included in this set.&quot;</strong></p>
+<pre class="is-plain"><code>Set {0, 2, 3} out of items {0, 1, 2, 3} -&gt; bitmask 1101 (binary) = 13 (decimal)
+                                             ^  ^ ^
+                                        item 3  2 0 are set; item 1 is not
+
+Set operations, as bitwise operations:
+Union:        maskA | maskB
+Intersection: maskA &amp; maskB
+Add item i:   mask | (1 &lt;&lt; i)
+Remove item i: mask &amp; ~(1 &lt;&lt; i)
+Is item i in the set?: (mask &amp; (1 &lt;&lt; i)) !== 0
+Is set A a SUBSET of set B?: (maskA &amp; maskB) === maskA</code></pre>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-iterating-all-subsets-of-a-set" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: Iterating All Subsets of a Set</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">getAllSubsetMasks</span>(<span class="hljs-params">fullMask</span>) {
+  <span class="hljs-keyword">const</span> subsets = [];
+  <span class="hljs-keyword">let</span> subset = fullMask;
+
+  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+    subsets.<span class="hljs-title function_">push</span>(subset);
+    <span class="hljs-keyword">if</span> (subset === <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;
+    subset = (subset - <span class="hljs-number">1</span>) &amp; fullMask; <span class="hljs-comment">// the classic &quot;iterate all submasks&quot; trick</span>
+  }
+
+  <span class="hljs-keyword">return</span> subsets;
+}</code></pre></div>
+<p>This <code>(subset - 1) &amp; fullMask</code> trick is a genuinely advanced, specialized technique — worth knowing exists (it correctly enumerates every subset of <code>fullMask</code> in O(3^n) total across all masks of size <code>n</code>, a provably tight bound for this specific enumeration pattern), though full mastery of its derivation is more relevant to competitive programming than typical interviews.</p>
+</aside>
+<hr>
+
+<h2 id="24-4-bitmask-dynamic-programming-a-new-state-dimension">24.4 Bitmask Dynamic Programming: A New State Dimension</h2>
+<h3 id="the-core-insight-using-a-bitmask-as-a-dp-state-directly-extending-chapters-18-19">The Core Insight: Using a Bitmask as a DP State, Directly Extending Chapters 18-19</h3>
+<p>Recall <a href="/learn/dsa-master/dynamic-programming-1d" title="Dynamic Programming in JavaScript: 1D DP">Chapter 18</a>&#39;s five-step framework: define the sub-problem, write the recurrence, identify base cases, choose top-down/bottom-up, locate the answer. <strong>Bitmask DP is the exact same framework — the only new idea is that the sub-problem&#39;s &quot;position&quot; or &quot;state&quot; is now (at least partly) a bitmask representing which items have been used/visited/included so far</strong>, rather than a single integer index.</p>
+<h3 id="24-4-1-worked-example-traveling-salesman-problem-tsp-small-scale">24.4.1 Worked Example: Traveling Salesman Problem (TSP), Small-Scale</h3>
+<p><strong>The problem:</strong> given <code>n</code> cities and pairwise distances, find the shortest possible route that visits every city exactly once and returns to the start.</p>
+<h3 id="applying-the-five-step-framework">Applying the Five-Step Framework</h3>
+<ol>
+<li><strong>Define the sub-problem</strong>: <code>f(mask, i)</code> = the minimum cost to visit exactly the set of cities represented by <code>mask</code>, ending at city <code>i</code>.</li>
+<li><strong>Recurrence</strong>: to arrive at city <code>i</code> having visited the set <code>mask</code>, we must have come from some city <code>j</code> (also in <code>mask</code>, but with <code>i</code> excluded from the &quot;previous&quot; state) via the cheapest such predecessor: <strong><code>f(mask, i) = min(f(mask without i, j) + dist(j, i))</code> for every <code>j</code> in <code>mask</code> where <code>j != i</code>.</strong></li>
+<li><strong>Base case</strong>: <code>f({start}, start) = 0</code> (visiting only the starting city, already there, costs nothing).</li>
+<li><strong>Bottom-up</strong> (iterating masks in increasing numeric order naturally processes smaller subsets before larger ones that build on them).</li>
+<li><strong>Answer location</strong>: <code>min(f(fullMask, i) + dist(i, start))</code> across all cities <code>i</code> — the cheapest way to have visited everyone and return home.</li>
+</ol>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">tsp</span>(<span class="hljs-params">dist</span>) {
+  <span class="hljs-keyword">const</span> n = dist.<span class="hljs-property">length</span>;
+  <span class="hljs-keyword">const</span> fullMask = (<span class="hljs-number">1</span> &lt;&lt; n) - <span class="hljs-number">1</span>;
+  <span class="hljs-keyword">const</span> dp = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>({ <span class="hljs-attr">length</span>: <span class="hljs-number">1</span> &lt;&lt; n }, <span class="hljs-function">() =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(n).<span class="hljs-title function_">fill</span>(<span class="hljs-title class_">Infinity</span>));
+
+  dp[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>; <span class="hljs-comment">// mask=1 (binary ...0001) means &quot;only city 0 visited,&quot; ending at city 0</span>
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> mask = <span class="hljs-number">1</span>; mask &lt;= fullMask; mask++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {
+      <span class="hljs-keyword">if</span> (!(mask &amp; (<span class="hljs-number">1</span> &lt;&lt; i))) <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// city i must be IN this mask to be the &quot;ending&quot; city</span>
+      <span class="hljs-keyword">if</span> (dp[mask][i] === <span class="hljs-title class_">Infinity</span>) <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// this state is unreachable — skip</span>
+
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> next = <span class="hljs-number">0</span>; next &lt; n; next++) {
+        <span class="hljs-keyword">if</span> (mask &amp; (<span class="hljs-number">1</span> &lt;&lt; next)) <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// `next` must NOT already be visited</span>
+
+        <span class="hljs-keyword">const</span> newMask = mask | (<span class="hljs-number">1</span> &lt;&lt; next);
+        <span class="hljs-keyword">const</span> newCost = dp[mask][i] + dist[i][next];
+
+        <span class="hljs-keyword">if</span> (newCost &lt; dp[newMask][next]) {
+          dp[newMask][next] = newCost;
+        }
+      }
+    }
+  }
+
+  <span class="hljs-keyword">let</span> minCost = <span class="hljs-title class_">Infinity</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; i &lt; n; i++) {
+    <span class="hljs-keyword">if</span> (dp[fullMask][i] !== <span class="hljs-title class_">Infinity</span>) {
+      minCost = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(minCost, dp[fullMask][i] + dist[i][<span class="hljs-number">0</span>]); <span class="hljs-comment">// return to the start!</span>
+    }
+  }
+
+  <span class="hljs-keyword">return</span> minCost;
+}</code></pre></div>
+<aside class="callout callout-math">
+<h3 id="complexity-analysis-why-this-beats-brute-force-dramatically" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Complexity Analysis: Why This Beats Brute Force Dramatically</span></h3>
+<ul>
+<li><strong>Brute force</strong> (try every permutation of cities, <a href="/learn/dsa-master/backtracking-algorithms" title="Backtracking Algorithms in JavaScript">Chapter 17</a>&#39;s backtracking): <strong>O(n!)</strong> — for <code>n=15</code>, roughly <code>1.3 trillion</code> permutations, utterly infeasible.</li>
+<li><strong>Bitmask DP</strong>: <strong>O(n² · 2ⁿ)</strong> — for <code>n=15</code>, roughly <code>15² × 32,768 ≈ 7.4 million</code> operations, entirely feasible in well under a second.</li>
+</ul>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-when-bitmask-dp-applies" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: When Bitmask DP Applies</span></h3>
+<p>The signal: <strong>a small, fixed number of items (typically ≤ 20-25, since <code>2^25</code> is already around 33 million, pushing the limits of practical time/space) where the DP state fundamentally needs to track &quot;exactly which subset of items has been used/visited so far,&quot; not just a count or a position.</strong> TSP, &quot;assign tasks to workers minimizing total cost&quot; (assignment problem), and various &quot;can this set of items be partitioned to satisfy constraint X&quot; problems are the classic signal shapes.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-applying-bitmask-dp-to-problems-with-too-many-items" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Applying Bitmask DP to Problems With Too Many Items</span></h3>
+<p><strong>Bitmask DP&#39;s <code>2ⁿ</code> factor makes it explode rapidly</strong> — <code>n=20</code> gives <code>2^20 ≈ 1 million</code> masks (usually fine), but <code>n=30</code> gives <code>2^30 ≈ 1 billion</code> (usually too slow/memory-intensive for typical constraints). <strong>Always sanity-check the problem&#39;s stated constraints on <code>n</code> before committing to a bitmask DP approach</strong> — if <code>n</code> can be in the hundreds or thousands, bitmask DP is the wrong tool entirely, and the problem likely wants a different technique (perhaps Chapters <a href="/learn/dsa-master/dynamic-programming-1d" title="Dynamic Programming in JavaScript: 1D DP">18</a>-19&#39;s simpler DP, or <a href="/learn/dsa-master/greedy-algorithms" title="Greedy Algorithms in JavaScript, With Proofs">Chapter 20</a>&#39;s greedy approach).</p>
+</aside>
+<h3 id="24-4-2-a-second-simpler-worked-example-can-we-partition-into-two-equal-sum-subsets">24.4.2 A Second, Simpler Worked Example: Can We Partition Into Two Equal-Sum Subsets?</h3>
+<p>We solved this conceptually in <a href="/learn/dsa-master/dynamic-programming-2d" title="2D Dynamic Programming: LCS, Knapsack, Edit Distance">Chapter 19</a>&#39;s coding problems using subset-sum DP indexed by achievable sums. Here&#39;s the bitmask-DP framing for a <strong>small</strong> number of items, useful specifically when you need to track <em>which specific items</em> were used, not just whether a sum is achievable:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">canPartitionBitmask</span>(<span class="hljs-params">nums</span>) {
+  <span class="hljs-keyword">const</span> n = nums.<span class="hljs-property">length</span>;
+  <span class="hljs-keyword">const</span> totalSum = nums.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a + b, <span class="hljs-number">0</span>);
+  <span class="hljs-keyword">if</span> (totalSum % <span class="hljs-number">2</span> !== <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+
+  <span class="hljs-keyword">const</span> target = totalSum / <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">const</span> sumForMask = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(<span class="hljs-number">1</span> &lt;&lt; n).<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>);
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> mask = <span class="hljs-number">1</span>; mask &lt; (<span class="hljs-number">1</span> &lt;&lt; n); mask++) {
+    <span class="hljs-keyword">const</span> lowestSetBit = mask &amp; (-mask); <span class="hljs-comment">// Chapter 23&#x27;s Fenwick Tree trick, reused here!</span>
+    <span class="hljs-keyword">const</span> lowestIndex = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">log2</span>(lowestSetBit);
+    sumForMask[mask] = sumForMask[mask ^ lowestSetBit] + nums[lowestIndex];
+
+    <span class="hljs-keyword">if</span> (sumForMask[mask] === target) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+}</code></pre></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-the-i-i-trick-reappears" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: The <code>i &amp; (-i)</code> Trick Reappears</span></h3>
+<p>Notice <code>mask &amp; (-mask)</code> here — <strong>the exact same lowest-set-bit-isolation trick from <a href="/learn/dsa-master/segment-tree-fenwick-tree" title="Segment Tree &amp; Fenwick Tree (BIT) in JavaScript">Chapter 23</a>&#39;s Fenwick Tree.</strong> This is a genuinely satisfying, concrete demonstration of this book&#39;s central philosophy: a specific bit-manipulation technique, once learned deeply in one context (Fenwick Trees), transfers directly and recognizably to a completely different problem domain (bitmask DP subset-sum tracking) — exactly the kind of cross-chapter pattern transfer this entire book has been built to train.</p>
+</aside>
+<hr>
+
+<h2 id="24-5-edge-cases-and-gotchas-checklist-for-bit-manipulation-problems">24.5 Edge Cases and Gotchas Checklist for Bit Manipulation Problems</h2>
+<ol>
+<li><strong>32-bit signed integer conversion</strong> — always remember bitwise operators truncate to 32 bits internally; verify your numbers stay within <code>Number.MAX_SAFE_INTEGER</code>-adjacent-but-still-32-bit-safe ranges for correctness.</li>
+<li><strong><code>&gt;&gt;</code> vs. <code>&gt;&gt;&gt;</code> confusion</strong> — always double-check which shift you actually need, especially with negative numbers or numbers that might be interpreted as such.</li>
+<li><strong>Off-by-one in bit position indexing</strong> — always verify whether &quot;bit 0&quot; means the least significant bit (the overwhelming convention in this chapter) or the most significant, and stay consistent.</li>
+<li><strong>Bitmask DP array sizing</strong> — <code>1 &lt;&lt; n</code> for <code>n</code> up to ~25 is fine; verify this doesn&#39;t silently overflow or become impractically large for a given problem&#39;s actual constraints.</li>
+<li><strong>Negative numbers and bitwise operations</strong> — two&#39;s complement representation means negative numbers have &quot;all high bits set,&quot; which can produce surprising results in bit-counting or bit-position functions if not explicitly handled.</li>
+<li><strong>Empty bitmask (<code>0</code>) as a valid state</strong> — verify your DP base cases and iteration correctly handle the &quot;no items selected yet&quot; state, typically <code>mask = 0</code>, distinctly from an &quot;invalid/unreachable&quot; state.</li>
+</ol>
+<hr>
+
+<h2 id="24-6-chapter-summary">24.6 Chapter Summary</h2>
+<p>This chapter built genuine fluency with bitwise operations, opening with the precise mechanics often glossed over: JavaScript&#39;s bitwise operators convert operands to 32-bit signed integers internally, a fact with real consequences for large numbers, and the specifically JavaScript-relevant, frequently-tested distinction between <code>&gt;&gt;</code> (signed, sign-preserving) and <code>&gt;&gt;&gt;</code> (unsigned, always zero-filling) right shifts. We built a complete bit-trick toolkit — checking, setting, clearing, and toggling individual bits, testing for powers of two via the <code>num &amp; (num-1)</code> lowest-set-bit-clearing trick, and Brian Kernighan&#39;s algorithm for counting set bits by repeatedly applying that same trick — establishing <code>num &amp; (num-1)</code> as a genuinely reusable technique worth recognizing on sight, not a one-off formula.</p>
+<p>We covered the XOR trick family, anchored by the memorable core properties <code>x^x=0</code> and <code>x^0=x</code>, and demonstrated their power directly via the &quot;find the single non-duplicated element&quot; problem — an O(n) time, O(1) space solution that elegantly outperforms a <code>Set</code>-based approach (Chapter 4) purely through cancellation, a genuinely beautiful illustration of bit tricks succeeding where hash-based approaches would need extra memory. We then built the chapter&#39;s central idea: <strong>an integer can represent an entire small set, turning set operations (union, intersection, membership testing) into single O(1) bitwise operations</strong> — the direct foundation for everything that followed.</p>
+<p>This culminated in <strong>Bitmask Dynamic Programming</strong>, which we were careful to frame not as a new technique but as Chapter 18&#39;s five-step DP framework with one new twist: <strong>the sub-problem&#39;s state now includes a bitmask tracking exactly which items have been used/visited so far</strong>, worked through fully via the Traveling Salesman Problem, where bitmask DP&#39;s O(n²·2ⁿ) dramatically beats brute-force permutation&#39;s O(n!) — while being explicit that this technique only remains practical for small, fixed <code>n</code> (roughly ≤20-25), since <code>2ⁿ</code> growth is still exponential, just with a much smaller, more forgiving base than pure permutation counting. We closed with a genuinely satisfying cross-chapter callback: the exact <code>mask &amp; (-mask)</code> lowest-set-bit trick powering Chapter 23&#39;s Fenwick Tree reappearing, recognizably, inside a bitmask-DP subset-sum tracking solution — concrete proof that a bit-manipulation technique learned deeply in one context transfers directly to a completely different problem domain, exactly the pattern-transfer skill this entire book has been built to cultivate.</p>
+<hr>
+
+<h2 id="24-7-revision-notes">24.7 Revision Notes</h2>
+<ul>
+<li>JavaScript&#39;s bitwise operators convert operands to 32-bit signed integers internally — a real consequence for large numbers and negative-number behavior.</li>
+<li><code>&gt;&gt;</code> (signed, sign-preserving) versus <code>&gt;&gt;&gt;</code> (unsigned, always zero-filling) is a specifically JavaScript-relevant, frequently-tested distinction.</li>
+<li><code>num &amp; (num-1)</code> clears the lowest set bit — the foundation for power-of-two checking and Brian Kernighan&#39;s bit-counting algorithm.</li>
+<li>XOR&#39;s core properties (<code>x^x=0</code>, <code>x^0=x</code>) power elegant O(n)-time, O(1)-space solutions like &quot;find the single non-duplicated element,&quot; beating hash-based (Chapter 4) alternatives on space.</li>
+<li>An integer can represent an entire small set — union, intersection, and membership testing all become O(1) bitwise operations.</li>
+<li>Bitmask DP extends Chapter 18&#39;s five-step framework by making the state include a bitmask of used/visited items — TSP&#39;s O(n²·2ⁿ) dramatically beats brute-force O(n!), but remains practical only for small, fixed n (roughly ≤20-25).</li>
+<li>Bit-manipulation techniques transfer directly across contexts — the <code>mask &amp; (-mask)</code> trick from Chapter 23&#39;s Fenwick Tree reappears recognizably in bitmask-DP subset-sum tracking.</li>
+</ul>
+<hr>
+
+<h2 id="24-8-mind-map-ascii">24.8 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                    BIT MANIPULATION &amp; BITMASK DP
+                                  |
+      +------------------+-------+-------+------------------------+
+      |                  |               |                        |
+  OPERATOR           BIT-TRICK        XOR TRICK               BITMASK DP
+  PRECISION           TOOLKIT          FAMILY                       |
+      |                  |                |                  Ch.18's 5-step
+  JS converts to     isBitSet/setBit/  x^x=0, x^0=x           framework, state
+  32-bit signed      clearBit/         (cancellation)         now INCLUDES a
+  ints internally    toggleBit             |                  BITMASK of
+      |                  |             findSingleNumber:      used/visited items
+  &gt;&gt; (signed,        num &amp; (num-1)     O(n) time, O(1)              |
+  sign-preserving)   clears LOWEST     space -- beats          TSP: f(mask,i) =
+  vs &gt;&gt;&gt; (unsigned,  set bit           Set-based (Ch.4)        min cost ending
+  always zero-fill)       |            O(n) space              at i, having
+  -- JS-SPECIFIC     isPowerOfTwo,          |                  visited exactly
+  frequently tested  Brian Kernighan's  &quot;everything appears    `mask`
+                      popcount algo     twice except one&quot;           |
+  ~x = -(x+1)                          = XOR signal            O(n^2 * 2^n) beats
+  (two's complement)                                           brute-force O(n!)
+                                                                 (but only n&lt;=20-25!)
+                                                                      |
+                                                                mask &amp; (-mask)
+                                                                REAPPEARS from
+                                                                Ch.23's Fenwick
+                                                                Tree -- same trick,
+                                                                different domain!</code></pre>
+<hr>
+
+<h2 id="24-9-cheat-sheet">24.9 Cheat Sheet</h2>
+<pre class="is-plain"><code>BITWISE OPERATORS
+=====================
+&amp;   AND           |   OR            ^   XOR           ~   NOT (= -(x+1))
+&lt;&lt;  left shift (*2)  &gt;&gt;  signed right shift (/2, sign-preserving)
+&gt;&gt;&gt; unsigned right shift (always zero-fills, treats as unsigned)
+
+JS GOTCHA: all bitwise ops convert to 32-bit SIGNED integers first!
+
+BIT TRICK TOOLKIT
+=====================
+isBitSet(n,i):    (n &amp; (1&lt;&lt;i)) !== 0
+setBit(n,i):      n | (1&lt;&lt;i)
+clearBit(n,i):    n &amp; ~(1&lt;&lt;i)
+toggleBit(n,i):   n ^ (1&lt;&lt;i)
+isPowerOfTwo(n):  n &gt; 0 &amp;&amp; (n &amp; (n-1)) === 0
+countSetBits(n):  while(n){ n &amp;= (n-1); count++ }  [Brian Kernighan's algorithm]
+lowest set bit:   n &amp; (-n)  [Ch.23 Fenwick Tree trick, reused everywhere]
+
+XOR PROPERTIES
+=================
+x ^ x = 0        x ^ 0 = x        commutative &amp; associative (order doesn't matter)
+&quot;find the single non-duplicate&quot; -&gt; XOR everything, pairs cancel, answer remains
+
+BITMASK AS A SET
+===================
+Union:        maskA | maskB
+Intersection: maskA &amp; maskB
+Add item i:   mask | (1&lt;&lt;i)
+Remove item i: mask &amp; ~(1&lt;&lt;i)
+Subset check: (maskA &amp; maskB) === maskA
+
+BITMASK DP TEMPLATE
+=======================
+dp[mask][i] = best value achievable having used exactly the items in `mask`,
+              currently &quot;at&quot; or &quot;ending with&quot; item i
+Iterate masks 0 to 2^n - 1; for each valid (mask,i), try transitioning to
+every unused item `next`: newMask = mask | (1&lt;&lt;next)
+ONLY practical for n &lt;= ~20-25 (2^n growth, though far better than n!)</code></pre>
+<hr>
+
+<h2 id="24-10-key-takeaways">24.10 Key Takeaways</h2>
+<ol>
+<li>JavaScript&#39;s bitwise operators convert to 32-bit signed integers internally — know this and the <code>&gt;&gt;</code> vs <code>&gt;&gt;&gt;</code> distinction cold.</li>
+<li><code>num &amp; (num-1)</code> clears the lowest set bit — the foundation for power-of-two checks, Brian Kernighan&#39;s popcount, and (from Chapter 23) Fenwick Tree indexing.</li>
+<li>XOR&#39;s cancellation property (<code>x^x=0</code>) enables elegant O(1)-space solutions that outperform hash-based alternatives for specific &quot;find the odd one out&quot; problem shapes.</li>
+<li>An integer can represent an entire small set — set operations become single O(1) bitwise operations.</li>
+<li>Bitmask DP extends the standard DP framework with a bitmask state dimension, making previously-infeasible O(n!) problems tractable at O(n²·2ⁿ) — but only for small, fixed n.</li>
+</ol>
+<hr>
+
+<h2 id="24-11-20-multiple-choice-questions">24.11 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What do JavaScript&#39;s bitwise operators do to their operands before performing the operation?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Convert them to strings</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Convert them to 32-bit signed integers</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Convert them to floating-point doubles</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing; they operate on the native number type directly</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the difference between <code>&gt;&gt;</code> and <code>&gt;&gt;&gt;</code> in JavaScript?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">There is no difference</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>&gt;&gt;</code> preserves the sign bit when shifting; <code>&gt;&gt;&gt;</code> always fills with zeros, treating the value as unsigned</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>&gt;&gt;</code> only works on positive numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>&gt;&gt;&gt;</code> is faster but otherwise identical</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does <code>~x</code> equal, mathematically?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>x + 1</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>-(x + 1)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>-x</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>x * -1</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does the expression <code>num &amp; (num - 1)</code> do?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sets the lowest bit</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Clears the lowest set bit</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Reverses all bits</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Doubles the number</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What algorithm uses <code>num &amp; (num-1)</code> repeatedly to count set bits?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Dijkstra&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Brian Kernighan&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Kruskal&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">KMP algorithm</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of Brian Kernighan&#39;s bit-counting algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(32), always, regardless of the number</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(number of set bits), which can be less than the total bit width</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n²)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(log n)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What core XOR property enables the &quot;find the single non-duplicate number&quot; solution?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">x ^ 1 = x</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">x ^ x = 0 (anything XORed with itself cancels to zero)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">x ^ 0 = 1</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">XOR is not commutative</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time and space complexity of the XOR-based &quot;find the single number&quot; solution?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n) time, O(n) space</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n) time, O(1) space</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n²) time, O(1) space</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(log n) time, O(log n) space</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How can an integer represent an entire set of small items?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It cannot; sets require a Set object</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Each bit position acts as a yes/no flag for one item&#39;s membership</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">By storing the count of items only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">By converting the integer to a string</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What bitwise operation represents the UNION of two sets represented as bitmasks?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">maskA &amp; maskB</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">maskA | maskB</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">maskA ^ maskB</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">~maskA</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What bitwise operation represents the INTERSECTION of two sets represented as bitmasks?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">maskA | maskB</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">maskA &amp; maskB</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">~maskA</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">maskA ^ maskB</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does bitmask Dynamic Programming add to the standard five-step DP framework from Chapter 18?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A completely different framework with no relation to Chapter 18</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The sub-problem&#39;s state now includes a bitmask tracking which items have been used/visited</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It removes the need for a recurrence relation</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It only works with sorted arrays</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of the bitmask DP solution to the Traveling Salesman Problem, for n cities?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n!)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n² * 2^n)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(2^n) only, without the n² factor</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How does bitmask DP&#39;s complexity for TSP compare to brute-force permutation checking?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s always slower</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n² * 2^n) is dramatically faster than O(n!) for practical n values like 15-20</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They are the same complexity</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Bitmask DP cannot solve TSP at all</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the practical limit on <code>n</code> for bitmask DP to remain feasible?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">No limit; it works for any n</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Roughly n &lt;= 20-25, since 2^n growth remains exponential</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">n must be exactly 10</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">n must be a power of 2</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What earlier chapter&#39;s specific bit trick reappears in the bitmask-DP subset-sum example (section 24.4.2)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Chapter 15&#39;s sorting algorithms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Chapter 23&#39;s Fenwick Tree lowest-set-bit trick (mask &amp; (-mask))</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Chapter 9&#39;s heap building</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Chapter 6&#39;s stack operations</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What should you verify before committing to a bitmask DP approach for a new problem?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">That the array is sorted</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">That the number of items (n) is small enough (typically &lt;=20-25) for 2^n to remain feasible</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">That all values are positive</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">That the problem involves strings</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does <code>mask &amp; (-mask)</code> compute?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The total number of set bits</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The lowest set bit of mask, isolated</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The highest set bit of mask</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Whether mask is zero</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why is bit manipulation&#39;s O(1) set-operation performance an advantage over a Set object (Chapter 4) for small, fixed-size collections?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Set objects cannot store numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Bitwise operations on integers are single machine-level operations, versus a Set&#39;s hash-based overhead per operation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sets are always incorrect for this use case</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">There is no actual advantage</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a genuine risk of misapplying bitmask DP to a problem with too many items?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The code will not compile</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">2^n can become impractically large (e.g., n=30 gives over 1 billion masks), making the approach infeasible</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript cannot represent bitmasks at all</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The recurrence relation becomes undefined</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="24-12-20-coding-problems">24.12 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement <code>isBitSet</code>, <code>setBit</code>, <code>clearBit</code>, and <code>toggleBit</code> from memory (section 24.2).</li>
+<li>Implement <code>isPowerOfTwo</code> from memory (section 24.2.5), and test it against a range of numbers including edge cases (0, 1, negative numbers).</li>
+<li>Implement <code>countSetBits</code> (Brian Kernighan&#39;s algorithm) from memory (section 24.2.6).</li>
+<li>Implement <code>findSingleNumber</code> from memory (section 24.3), and verify it works correctly on an array where the &quot;single&quot; number is negative.</li>
+<li>Write a function to reverse the bits of a 32-bit integer.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Given an array where every number appears three times except one, find the single number that appears only once (a trickier variant of XOR-based single-number finding, requiring bit-counting per position instead of simple XOR).</li>
+<li>Given two integers, find the number of bits you&#39;d need to flip to convert one into the other (the &quot;Hamming distance&quot;).</li>
+<li>Implement a function to generate all subsets of a set using bitmask iteration (0 to 2^n - 1), rather than <a href="/learn/dsa-master/backtracking-algorithms" title="Backtracking Algorithms in JavaScript">Chapter 17</a>&#39;s recursive backtracking approach — compare the two approaches in a comment.</li>
+<li>Given a small set of items with weights and values, implement bitmask DP to solve a variant of the 0/1 Knapsack problem (<a href="/learn/dsa-master/dynamic-programming-2d" title="2D Dynamic Programming: LCS, Knapsack, Edit Distance">Chapter 19</a>) where you specifically need to know WHICH items were selected, not just the total value.</li>
+<li>Implement the <code>getAllSubsetMasks</code> function from memory (section 24.3), and verify it correctly enumerates every subset of a given bitmask.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Implement the full TSP bitmask DP solution (<code>tsp</code> function) from memory (section 24.4.1), and verify it against a brute-force permutation-based solution (Chapter 17) on a small (4-5 city) test case.</li>
+<li>Given a list of tasks each requiring a specific subset of skills, and a list of workers each possessing a specific subset of skills, use bitmask DP to determine the minimum number of workers needed to cover all required skills across all tasks.</li>
+<li>Implement &quot;Partition to K Equal Sum Subsets&quot; using bitmask DP, determining if an array can be partitioned into k subsets each summing to the same target value.</li>
+<li>Given a small graph (n &lt;= 20 vertices), use bitmask DP to solve the &quot;Hamiltonian Path&quot; problem: does a path exist that visits every vertex exactly once?</li>
+<li>Implement a bitmask-DP solution to the &quot;Assignment Problem&quot;: given n workers and n tasks with costs for each worker-task pairing, find the minimum-cost complete assignment (each worker to exactly one task).</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Given a small set of servers (n &lt;= 20) each with specific capability flags (represented as bitmasks), design a system to efficiently find the minimum number of servers needed to cover a required set of capabilities, using bitmask DP.</li>
+<li><strong>(Amazon-level)</strong> Given a small delivery route optimization problem (n &lt;= 15 delivery stops), implement the TSP bitmask DP solution to find the optimal route, and discuss in comments why this wouldn&#39;t scale to hundreds of stops (connecting back to the n&lt;=20-25 practical limit).</li>
+<li><strong>(Microsoft-level)</strong> Given a feature flag system where each user&#39;s enabled features are represented as a bitmask, implement efficient bitwise operations to determine feature overlap between user cohorts, feature adoption rates, and cohort intersection sizes.</li>
+<li><strong>(Meta-level)</strong> Given a small set of content categories (n &lt;= 20) and a user&#39;s viewing history represented as a bitmask, use bitmask DP to determine the minimum number of &quot;recommendation sessions&quot; needed to expose the user to all categories, given constraints on categories per session.</li>
+<li><strong>(Netflix-level)</strong> Design an A/B testing feature-flag combination tracker, using bitmasks to represent which experimental features are active for a given user session, and implement efficient bitwise queries for &quot;how many users have EXACTLY this combination of features enabled&quot; and &quot;how many users have AT LEAST this subset of features enabled&quot; (a subset-check query).</li>
+</ol>
+<hr>
+
+<h2 id="24-13-5-interview-questions">24.13 5 Interview Questions</h2>
+<ol>
+<li>&quot;What&#39;s the difference between <code>&gt;&gt;</code> and <code>&gt;&gt;&gt;</code> in JavaScript, and when would each matter?&quot; (Tests specific, JavaScript-relevant bitwise knowledge.)</li>
+<li>&quot;How would you count the number of set bits in an integer efficiently?&quot; (Tests Brian Kernighan&#39;s algorithm and the underlying <code>num &amp; (num-1)</code> trick.)</li>
+<li>&quot;Given an array where every element appears twice except one, find the unique element in O(1) space.&quot; (Tests the XOR cancellation trick and its space advantage over hashing.)</li>
+<li>&quot;How would you represent a small set of items as an integer, and what operations become possible?&quot; (Tests bitmask-as-set fluency.)</li>
+<li>&quot;How would you solve the Traveling Salesman Problem for a small number of cities more efficiently than brute force?&quot; (Tests bitmask DP and the O(n²·2ⁿ) vs O(n!) comparison.)</li>
+</ol>
+<hr>
+
+<h2 id="24-14-3-real-projects">24.14 3 Real Projects</h2>
+<ol>
+<li><strong>Complete Bit Manipulation Toolkit</strong>: Implement every bit trick from this chapter (bit checking/setting/clearing/toggling, power-of-two check, Brian Kernighan&#39;s popcount, XOR single-number finder) in a single library, with a self-check script verifying correctness across randomized and edge-case (0, negative, <code>Number.MAX_SAFE_INTEGER</code>-adjacent) inputs.</li>
+<li><strong>TSP Solver with Benchmark</strong>: Build the full bitmask-DP TSP solution and benchmark it against a brute-force permutation-based solution (Chapter 17) at increasing city counts, empirically demonstrating the point at which brute force becomes infeasible while bitmask DP remains practical.</li>
+<li><strong>Feature Flag Bitmask Manager</strong>: Build a small module representing user feature-flag combinations as bitmasks, supporting efficient union/intersection/subset queries across large numbers of users, and benchmark it against an equivalent <code>Set</code>-based (Chapter 4) implementation to empirically demonstrate the performance advantage for small, fixed-size flag collections.</li>
+</ol>
+<hr>
+
+<h2 id="24-15-further-reading">24.15 Further Reading</h2>
+<ul>
+<li>Henry S. Warren Jr., <em>Hacker&#39;s Delight</em> — the definitive, comprehensive reference on bit manipulation tricks, covering dozens of techniques beyond this chapter&#39;s core selection.</li>
+<li>Search &quot;Brian Kernighan bit counting trick&quot; for the algorithm&#39;s origin and additional variants.</li>
+<li>Search &quot;bitmask dynamic programming competitive programming&quot; for extensive additional problem sets built around the technique introduced in section 24.4.</li>
+<li>LeetCode&#39;s &quot;Bit Manipulation&quot; and &quot;Bitmask&quot; problem tags, for extensive additional practice directly extending this chapter&#39;s techniques.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Bit Manipulation &amp; Bitmask DP in JavaScript: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>How do bitwise operators work in JavaScript?</h3></summary><p>JavaScript converts both operands to 32-bit signed integers, applies the operation bit by bit, and converts the result back to a number. That means bitwise operations on numbers larger than 2³¹ − 1 give unexpected results unless you use BigInt.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the difference between &gt;&gt; and &gt;&gt;&gt; in JavaScript?</h3></summary><p>Both shift bits to the right. &gt;&gt; is a signed shift that copies the sign bit, so negative numbers stay negative; &gt;&gt;&gt; is an unsigned shift that fills with zeros and always returns a non-negative number.</p></details>
+<details class="learn-faq-item"><summary><h3>How do you check if a number is a power of two?</h3></summary><p>n &gt; 0 &amp;&amp; (n &amp; (n - 1)) === 0. A power of two has exactly one set bit, and n &amp; (n - 1) clears the lowest set bit, leaving zero only in that case.</p></details>
+<details class="learn-faq-item"><summary><h3>What is bitmask dynamic programming?</h3></summary><p>Bitmask DP uses an integer as part of the DP state to record which items of a small set have been used, for example which cities are visited in the travelling salesman problem. It turns an O(n!) search into roughly O(n² × 2ⁿ), which is practical for n up to about 20.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/segment-tree-fenwick-tree"><span>&larr; Previous &middot; Chapter 23</span><strong>Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/math-for-programmers-number-theory"><span>Next &middot; Chapter 25 &rarr;</span><strong>Math for Programmers: Number Theory &amp; Combinatorics</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#24-0-numbers-as-compact-sets-the-idea-that-unlocks-this-chapter">24.0 Numbers as Compact Sets: The Idea That Unlocks This Chapter</a></li><li><a href="#24-1-bitwise-operators-the-complete-precise-reference">24.1 Bitwise Operators: The Complete, Precise Reference</a></li><li><a href="#24-2-the-bit-trick-toolkit-a-reference-you-ll-use-constantly">24.2 The Bit-Trick Toolkit: A Reference You'll Use Constantly</a></li><li><a href="#24-3-bitmask-representation-of-sets-the-foundation-for-bitmask-dp">24.3 Bitmask Representation of Sets: The Foundation for Bitmask DP</a></li><li><a href="#24-4-bitmask-dynamic-programming-a-new-state-dimension">24.4 Bitmask Dynamic Programming: A New State Dimension</a></li><li><a href="#24-5-edge-cases-and-gotchas-checklist-for-bit-manipulation-problems">24.5 Edge Cases and Gotchas Checklist for Bit Manipulation Problems</a></li><li><a href="#24-6-chapter-summary">24.6 Chapter Summary</a></li><li><a href="#24-7-revision-notes">24.7 Revision Notes</a></li><li><a href="#24-8-mind-map-ascii">24.8 Mind Map (ASCII)</a></li><li><a href="#24-9-cheat-sheet">24.9 Cheat Sheet</a></li><li><a href="#24-10-key-takeaways">24.10 Key Takeaways</a></li><li><a href="#24-11-20-multiple-choice-questions">24.11 20 Multiple Choice Questions</a></li><li><a href="#24-12-20-coding-problems">24.12 20 Coding Problems</a></li><li><a href="#24-13-5-interview-questions">24.13 5 Interview Questions</a></li><li><a href="#24-14-3-real-projects">24.14 3 Real Projects</a></li><li><a href="#24-15-further-reading">24.15 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "bit-manipulation-bitmask-dp"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

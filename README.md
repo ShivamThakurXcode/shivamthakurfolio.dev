@@ -155,3 +155,15 @@ Every listing/detail page uses a **breadcrumb page-title header** at the top of 
 - **Images:** no broken images (all reuse existing jpgs); alt text present.
 - **SEO/AEO/GEO validation:** view-source each page — unique title/description/canonical, OG/Twitter tags present, one `<h1>`, skip-link present. Paste JSON-LD into Google Rich Results Test / schema.org validator → Person/WebSite, BlogPosting+FAQPage, CreativeWork+FAQPage, Service+FAQPage, BreadcrumbList all valid. `robots.txt`, `sitemap.xml` (well-formed XML, all 15 URLs), `llms.txt` reachable.
 - **Static-only check:** grep confirms no server-side includes / runtime data fetches added; every page is standalone HTML.
+
+## DSA Master (learn/dsa-master)
+
+The 28 chapter pages and the hub are generated from `docs/js-dsa-handbook/*.md`:
+
+```
+node tools/learn-pages/build.mjs      # pages
+node tools/learn-pages/og.mjs         # social cards (needs Edge/Chrome)
+node tools/learn-pages/sitewide.mjs   # sitemap, llms.txt, robots, redirects
+```
+
+SEO data per chapter (title, description, FAQ) lives in `tools/learn-pages/data.mjs`.

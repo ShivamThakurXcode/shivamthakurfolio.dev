@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</title>
+    <meta name="description" content="Learn string matching in JavaScript: why naive search is slow, KMP and the LPS array, Rabin-Karp rolling hash, and an intro to suffix arrays and trees.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="kmp algorithm, rabin karp, string matching algorithm, lps array, rolling hash, suffix array, suffix tree, pattern searching javascript, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/monotonic-stack-and-queue">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/segment-tree-fenwick-tree">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="kmp algorithm">
+    <meta property="article:tag" content="rabin karp">
+    <meta property="article:tag" content="string matching algorithm">
+    <meta property="article:tag" content="lps array">
+    <meta property="article:tag" content="rolling hash">
+    <meta property="article:tag" content="suffix array">
+    <meta property="article:tag" content="suffix tree">
+    <meta property="article:tag" content="pattern searching javascript">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays">
+    <meta property="og:description" content="Learn string matching in JavaScript: why naive search is slow, KMP and the LPS array, Rabin-Karp rolling hash, and an intro to suffix arrays and trees.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/string-algorithms-kmp-rabin-karp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="String Algorithms in JavaScript: KMP, Rabin-Karp and Suffix Structures: DSA Master chapter 22">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays">
+    <meta name="twitter:description" content="Learn string matching in JavaScript: why naive search is slow, KMP and the LPS array, Rabin-Karp rolling hash, and an intro to suffix arrays and trees.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/string-algorithms-kmp-rabin-karp.png">
+    <meta name="twitter:image:alt" content="String Algorithms in JavaScript: KMP, Rabin-Karp and Suffix Structures: DSA Master chapter 22">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp",
+          "name": "String Algorithms: KMP, Rabin-Karp & Suffix Arrays",
+          "description": "Learn string matching in JavaScript: why naive search is slow, KMP and the LPS array, Rabin-Karp rolling hash, and an intro to suffix arrays and trees.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/string-algorithms-kmp-rabin-karp.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "String Algorithms in JavaScript: KMP, Rabin-Karp and Suffix Structures"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#webpage"
+          },
+          "headline": "String Algorithms in JavaScript: KMP, Rabin-Karp and Suffix Structures",
+          "alternativeHeadline": "String Algorithms — KMP, Rabin-Karp, and Suffix Structures",
+          "description": "Learn string matching in JavaScript: why naive search is slow, KMP and the LPS array, Rabin-Karp rolling hash, and an intro to suffix arrays and trees.",
+          "abstract": "String matching algorithms find occurrences of a pattern inside a text faster than checking every position from scratch. KMP uses a precomputed LPS array so the text pointer never moves backwards, giving O(n + m) time, while Rabin-Karp compares rolling hashes of each window. This chapter implements both in JavaScript and introduces suffix arrays and suffix trees.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/string-algorithms-kmp-rabin-karp.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 5879,
+          "timeRequired": "PT27M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "kmp algorithm, rabin karp, string matching algorithm, lps array, rolling hash, suffix array, suffix tree, pattern searching javascript",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "Why naive substring search is O(n·m)",
+            "KMP and the LPS (failure) array",
+            "Rabin-Karp and rolling hashes",
+            "Handling hash collisions",
+            "Suffix arrays and suffix trees"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "kmp algorithm"
+          },
+          "isAccessibleForFree": true,
+          "position": 22,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/monotonic-stack-and-queue#article",
+            "name": "Monotonic Stack and Monotonic Queue in JavaScript",
+            "url": "https://shivamthakur.me/learn/dsa-master/monotonic-stack-and-queue"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "String Algorithms: KMP, Rabin-Karp & Suffix Arrays",
+              "item": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the KMP algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Knuth-Morris-Pratt is a string matching algorithm that precomputes, for every prefix of the pattern, the longest proper prefix that is also a suffix (the LPS array). On a mismatch it shifts the pattern using that table instead of restarting, finding all matches in O(n + m) time."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does Rabin-Karp work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Rabin-Karp computes a hash of the pattern and a rolling hash of each text window, updating the window hash in O(1) as it slides. Only when the hashes match does it compare characters, which confirms the match and guards against collisions."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "KMP or Rabin-Karp: which should I use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "KMP guarantees O(n + m) in the worst case and is ideal for a single pattern. Rabin-Karp is simpler to extend to searching many patterns at once or to finding repeated substrings, but its worst case is O(n·m) if collisions are frequent."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do rolling hashes in JavaScript need special care with %?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "JavaScript's % operator keeps the sign of the dividend, so subtracting the outgoing character can produce a negative remainder. Normalize with ((x % mod) + mod) % mod, and keep values below Number.MAX_SAFE_INTEGER or use BigInt."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#quiz",
+          "name": "String Algorithms: KMP, Rabin-Karp & Suffix Arrays: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "kmp algorithm"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/string-algorithms-kmp-rabin-karp#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of naive substring search in the worst case?",
+              "text": "What is the time complexity of naive substring search in the worst case?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n  m)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n + m)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n log n)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does the KMP LPS array represent?",
+              "text": "What does the KMP LPS array represent?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The length of the longest proper prefix of pattern[0..i] that is also a proper suffix"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The number of vowels in the pattern"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A sorted list of all suffixes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A hash of the pattern"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the key guarantee that makes KMP achieve O(n+m) worst-case time?",
+              "text": "What is the key guarantee that makes KMP achieve O(n+m) worst-case time?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The text pointer never moves backward during the search phase"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The pattern must be sorted first"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The text must contain no repeated characters"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It uses a hash table internally"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What happens when a mismatch occurs during KMP's search phase?",
+              "text": "What happens when a mismatch occurs during KMP's search phase?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The pattern pointer falls back using the precomputed LPS array, an O(1) lookup"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The text pointer moves backward to retry"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The entire search restarts from position 0"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An error is thrown"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the core mechanism of the Rabin-Karp algorithm?",
+              "text": "What is the core mechanism of the Rabin-Karp algorithm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Comparing rolling hashes of text windows against the pattern's hash, verifying on a match"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Building a suffix tree"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using KMP's LPS array"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting all substrings"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What must ALWAYS happen after a hash match is found in Rabin-Karp?",
+              "text": "What must ALWAYS happen after a hash match is found in Rabin-Karp?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A character-by-character verification, since hash collisions are mathematically possible"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing; the hash match is sufficient proof"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The hash function must be rebuilt"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The search must restart"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why are hash collisions in Rabin-Karp a genuine concern, not just theoretical?",
+              "text": "Why are hash collisions in Rabin-Karp a genuine concern, not just theoretical?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The pigeonhole principle (Chapter 4) guarantees collisions are possible given enough distinct inputs"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They never actually occur in practice"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript hash functions are broken"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Collisions only occur with very short patterns"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a JavaScript-specific gotcha relevant to rolling hash calculations?",
+              "text": "What is a JavaScript-specific gotcha relevant to rolling hash calculations?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The % operator can return negative results for negative dividends, requiring explicit normalization"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript doesn't support the modulo operator"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript numbers cannot exceed 100"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Modulo is always O(n) in JavaScript"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the worst-case time complexity of Rabin-Karp?",
+              "text": "What is the worst-case time complexity of Rabin-Karp?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n  m), if the hash function performs poorly with many collisions"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n + m), always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(1)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a key practical advantage of Rabin-Karp over KMP?",
+              "text": "What is a key practical advantage of Rabin-Karp over KMP?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It naturally extends to efficient multi-pattern search by hashing multiple patterns upfront"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It always runs faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It never has a worst case"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It doesn't require any preprocessing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a suffix array?",
+              "text": "What is a suffix array?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A sorted array of the starting indices of all suffixes of a text, ordered lexicographically"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "An array of all substrings of a text"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A hash table of character frequencies"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An array storing only the longest suffix"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the complexity of the naive suffix array construction shown in this chapter?",
+              "text": "What is the complexity of the naive suffix array construction shown in this chapter?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n² log n), due to materializing full substrings and comparing them"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n log n), production-grade"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n), optimal"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(1)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What technique enables O(m log n) pattern search using a suffix array?",
+              "text": "What technique enables O(m log n) pattern search using a suffix array?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Binary search (Chapter 16) over the sorted suffixes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A hash table lookup"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A monotonic stack"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Dynamic programming"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a suffix tree, in relation to concepts from Chapter 10?",
+              "text": "What is a suffix tree, in relation to concepts from Chapter 10?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A compressed trie (Chapter 10's radix tree concept) containing every suffix of a text"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "An entirely unrelated structure"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A binary search tree of suffixes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A hash table of suffixes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of pattern search using a fully-constructed suffix tree?",
+              "text": "What is the time complexity of pattern search using a fully-constructed suffix tree?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(m), independent of the text's length n"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n  m)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What advanced algorithm achieves O(n) suffix tree construction?",
+              "text": "What advanced algorithm achieves O(n) suffix tree construction?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ukkonen's algorithm"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "KMP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rabin-Karp"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Dijkstra's algorithm"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the expected level of depth for suffix trees/arrays in most technical interviews?",
+              "text": "What is the expected level of depth for suffix trees/arrays in most technical interviews?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Conceptual fluency: knowing what they enable and how they relate to tries, not full implementation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Full from-scratch implementation of O(n) construction algorithms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No knowledge is ever expected"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only the naive O(n² log n) construction is acceptable"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What underlying philosophy connects naive substring search's inefficiency to naive Fibonacci (Chapter 2) and naive isBalanced (Chapter 8)?",
+              "text": "What underlying philosophy connects naive substring search's inefficiency to naive Fibonacci (Chapter 2) and naive isBalanced (Chapter 8)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "All three waste redundant, already-known information that could be reused instead of recomputed"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They are all O(1) algorithms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They all require a heap"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They are unrelated inefficiencies with different root causes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What trade-off do suffix arrays/trees share with Chapter 3's prefix sums and Chapter 10's tries?",
+              "text": "What trade-off do suffix arrays/trees share with Chapter 3's prefix sums and Chapter 10's tries?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pay a one-time construction/setup cost to enable many fast repeated queries afterward"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "None; they are unrelated techniques"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They all require O(n²) space"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They all only work on numeric data"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What should you verify when implementing KMP or Rabin-Karp for overlapping pattern matches (e.g., \"aa\" in \"aaaa\")?",
+              "text": "What should you verify when implementing KMP or Rabin-Karp for overlapping pattern matches (e.g., \"aa\" in \"aaaa\")?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "That the algorithm correctly continues searching after a match (e.g., KMP's j = lps[j-1] after a match) rather than stopping"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Overlapping matches are impossible to find with these algorithms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "That the pattern contains no repeated characters"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "That the text is sorted first"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:78.6%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item active" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp" aria-current="page"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 22 of 28 &middot; Advanced</p>
+                        <h1>String Algorithms in JavaScript: KMP, Rabin-Karp and Suffix Structures</h1>
+                        <p class="learn-book-title">String Algorithms — KMP, Rabin-Karp, and Suffix Structures</p>
+                        <ul class="learn-meta text-caption">
+                            <li>27 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/string-algorithms-kmp-rabin-karp.webp"><img src="../../assets/images/learn/dsa-master/string-algorithms-kmp-rabin-karp.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="String Algorithms in JavaScript: KMP, Rabin-Karp and Suffix Structures: DSA Master chapter 22 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>String matching algorithms find occurrences of a pattern inside a text faster than checking every position from scratch. KMP uses a precomputed LPS array so the text pointer never moves backwards, giving O(n + m) time, while Rabin-Karp compares rolling hashes of each window. This chapter implements both in JavaScript and introduces suffix arrays and suffix trees.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Why naive substring search is O(n·m)</li><li>KMP and the LPS (failure) array</li><li>Rabin-Karp and rolling hashes</li><li>Handling hash collisions</li><li>Suffix arrays and suffix trees</li></ul>
+                        </section>
+<hr>
+
+<h2 id="22-0-the-problem-with-naive-substring-search">22.0 The Problem With Naive Substring Search</h2>
+<p><strong>The problem:</strong> given a text <code>T</code> of length <code>n</code> and a pattern <code>P</code> of length <code>m</code>, find all occurrences of <code>P</code> within <code>T</code>.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">naiveSearch</span>(<span class="hljs-params">text, pattern</span>) {
+  <span class="hljs-keyword">const</span> matches = [];
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt;= text.<span class="hljs-property">length</span> - pattern.<span class="hljs-property">length</span>; i++) {
+    <span class="hljs-keyword">let</span> j = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (j &lt; pattern.<span class="hljs-property">length</span> &amp;&amp; text[i + j] === pattern[j]) {
+      j++;
+    }
+    <span class="hljs-keyword">if</span> (j === pattern.<span class="hljs-property">length</span>) {
+      matches.<span class="hljs-title function_">push</span>(i);
+    }
+  }
+
+  <span class="hljs-keyword">return</span> matches;
+}
+<span class="hljs-comment">// Time: O(n * m) worst case — for EVERY starting position, we might compare up to m characters</span></code></pre></div>
+<h3 id="the-concrete-worst-case">The Concrete Worst Case</h3>
+<pre class="is-plain"><code>text = &quot;aaaaaaaaaaaaaaaaaaaaaaaab&quot; (many 'a's, then 'b')
+pattern = &quot;aaaab&quot;
+
+At almost EVERY starting position, we match several 'a's before finally failing
+at the last character. We repeatedly re-examine characters we've already
+confirmed match, throwing away that work every time a match attempt fails.
+
+This is EXACTLY the same &quot;wasted redundant work&quot; signature we've seen before:
+Chapter 2's naive Fibonacci recomputing shared sub-problems, Chapter 8's naive
+isBalanced recomputing shared subtree heights. The fix follows the same
+underlying philosophy: don't throw away information you've already learned.</code></pre>
+<p>This chapter builds two genuinely different, both extremely important, escape routes from O(n·m): <strong>KMP</strong> (which never re-examines a text character it doesn&#39;t have to, by precomputing pattern self-similarity) and <strong>Rabin-Karp</strong> (which uses <a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>&#39;s hashing to check candidate positions in O(1) amortized time each).</p>
+<hr>
+
+<h2 id="22-1-the-knuth-morris-pratt-kmp-algorithm">22.1 The Knuth-Morris-Pratt (KMP) Algorithm</h2>
+<h3 id="22-1-1-the-core-insight-never-waste-a-failed-comparison-s-information">22.1.1 The Core Insight: Never Waste a Failed Comparison&#39;s Information</h3>
+<p><strong>Definition:</strong> KMP precomputes, for a given pattern, a &quot;failure function&quot; (also called the LPS array — Longest Proper Prefix which is also a Suffix) that tells the algorithm, upon a mismatch, exactly how far it can safely skip ahead in the pattern <strong>without ever needing to re-examine already-matched text characters.</strong></p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-the-pattern-already-told-you-something-about-itself" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;The Pattern Already Told You Something About Itself&quot;</span></h3>
+<p>Here&#39;s the key realization: <strong>when a match attempt fails partway through, you already know exactly what the last several text characters were</strong> (they matched part of the pattern before failing) — <strong>because they matched part of the pattern.</strong> If the pattern itself has some internal repetition (a prefix that reappears as a suffix somewhere within itself), you can use that self-knowledge to jump the pattern forward intelligently, reusing the matched text characters instead of re-scanning them from scratch.</p>
+</aside>
+<h3 id="22-1-2-building-the-lps-longest-proper-prefix-suffix-array">22.1.2 Building the LPS (Longest Proper Prefix-Suffix) Array</h3>
+<p><strong>Definition:</strong> <code>lps[i]</code> = the length of the longest proper prefix of <code>pattern[0..i]</code> that is <em>also</em> a proper suffix of <code>pattern[0..i]</code>. (&quot;Proper&quot; means the prefix/suffix cannot be the entire substring itself.)</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">buildLPS</span>(<span class="hljs-params">pattern</span>) {
+  <span class="hljs-keyword">const</span> lps = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(pattern.<span class="hljs-property">length</span>).<span class="hljs-title function_">fill</span>(<span class="hljs-number">0</span>);
+  <span class="hljs-keyword">let</span> length = <span class="hljs-number">0</span>; <span class="hljs-comment">// length of the previous longest prefix-suffix match</span>
+  <span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>;
+
+  <span class="hljs-keyword">while</span> (i &lt; pattern.<span class="hljs-property">length</span>) {
+    <span class="hljs-keyword">if</span> (pattern[i] === pattern[length]) {
+      length++;
+      lps[i] = length;
+      i++;
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (length &gt; <span class="hljs-number">0</span>) {
+      length = lps[length - <span class="hljs-number">1</span>]; <span class="hljs-comment">// fall back — DON&#x27;T reset to 0 immediately! (this IS the KMP insight, applied recursively to the pattern itself)</span>
+    } <span class="hljs-keyword">else</span> {
+      lps[i] = <span class="hljs-number">0</span>;
+      i++;
+    }
+  }
+
+  <span class="hljs-keyword">return</span> lps;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">buildLPS</span>(<span class="hljs-string">&#x27;aabaaab&#x27;</span>)); <span class="hljs-comment">// [0,1,0,1,2,2,3]</span></code></pre></div>
+<h3 id="dry-run-building-the-lps-array-for-aabaaab">Dry Run: Building the LPS Array for <code>&#39;aabaaab&#39;</code></h3>
+<pre class="is-plain"><code>pattern = a a b a a a b
+index   = 0 1 2 3 4 5 6
+
+lps[0] = 0 (always, by definition — a single character has no proper prefix)
+length=0, i=1
+
+i=1: pattern[1]='a', pattern[length=0]='a'. MATCH!
+  length=1, lps[1]=1, i=2
+
+i=2: pattern[2]='b', pattern[length=1]='a'. NO MATCH. length(1) &gt; 0 -&gt; fall back: length = lps[0] = 0
+  (still no match: pattern[2]='b' vs pattern[length=0]='a', but length is now 0)
+  length is 0 -&gt; lps[2] = 0, i=3
+
+i=3: pattern[3]='a', pattern[length=0]='a'. MATCH!
+  length=1, lps[3]=1, i=4
+
+i=4: pattern[4]='a', pattern[length=1]='a'. MATCH!
+  length=2, lps[4]=2, i=5
+
+i=5: pattern[5]='a', pattern[length=2]='b'. NO MATCH. length(2)&gt;0 -&gt; fall back: length=lps[1]=1
+  pattern[5]='a' vs pattern[length=1]='a'. MATCH (after falling back)!
+  length=2, lps[5]=2, i=6
+
+i=6: pattern[6]='b', pattern[length=2]='b'. MATCH!
+  length=3, lps[6]=3, i=7. Loop ends (i === pattern.length).
+
+Final lps = [0,1,0,1,2,2,3]</code></pre>
+<h3 id="what-the-lps-array-actually-tells-you">What the LPS Array Actually Tells You</h3>
+<p><code>lps[6] = 3</code> means: <strong>the longest proper prefix of <code>&#39;aabaaab&#39;</code> that&#39;s also a proper suffix has length 3</strong> — specifically, <code>&#39;aab&#39;</code> (the first 3 characters) equals the last 3 characters (<code>&#39;aab&#39;</code>, positions 4-6... let&#39;s verify: <code>aabaaab</code>, last 3 chars are <code>&#39;a&#39;,&#39;a&#39;,&#39;b&#39;</code> = <code>&#39;aab&#39;</code>. Yes, matches!). This self-similarity is exactly what lets KMP skip ahead intelligently upon a mismatch during actual text searching.</p>
+<h3 id="22-1-3-the-full-kmp-search-algorithm">22.1.3 The Full KMP Search Algorithm</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">kmpSearch</span>(<span class="hljs-params">text, pattern</span>) {
+  <span class="hljs-keyword">if</span> (pattern.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> [];
+
+  <span class="hljs-keyword">const</span> lps = <span class="hljs-title function_">buildLPS</span>(pattern);
+  <span class="hljs-keyword">const</span> matches = [];
+
+  <span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; <span class="hljs-comment">// pointer into TEXT</span>
+  <span class="hljs-keyword">let</span> j = <span class="hljs-number">0</span>; <span class="hljs-comment">// pointer into PATTERN</span>
+
+  <span class="hljs-keyword">while</span> (i &lt; text.<span class="hljs-property">length</span>) {
+    <span class="hljs-keyword">if</span> (text[i] === pattern[j]) {
+      i++;
+      j++;
+
+      <span class="hljs-keyword">if</span> (j === pattern.<span class="hljs-property">length</span>) {
+        matches.<span class="hljs-title function_">push</span>(i - j); <span class="hljs-comment">// found a complete match!</span>
+        j = lps[j - <span class="hljs-number">1</span>]; <span class="hljs-comment">// continue searching for OVERLAPPING matches, using the LPS to skip intelligently</span>
+      }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (j &gt; <span class="hljs-number">0</span>) {
+      j = lps[j - <span class="hljs-number">1</span>]; <span class="hljs-comment">// MISMATCH: fall back using the LPS array — NEVER move `i` backward!</span>
+    } <span class="hljs-keyword">else</span> {
+      i++; <span class="hljs-comment">// no partial match to fall back on — just advance the text pointer</span>
+    }
+  }
+
+  <span class="hljs-keyword">return</span> matches;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">kmpSearch</span>(<span class="hljs-string">&#x27;ababcababcababc&#x27;</span>, <span class="hljs-string">&#x27;ababc&#x27;</span>)); <span class="hljs-comment">// [0, 5, 10]</span></code></pre></div>
+<h3 id="why-this-is-o-n-m-not-o-n-m-the-crucial-guarantee">Why This Is O(n + m), Not O(n·m) — The Crucial Guarantee</h3>
+<p><strong>The single most important property to internalize: <code>i</code> (the text pointer) NEVER moves backward, ever, at any point in the entire algorithm.</strong> Every single character in the text is examined a bounded number of times (in practice, <code>i</code> only ever increases), while <code>j</code> (the pattern pointer) can fall back, but only using the precomputed LPS array — an O(1) lookup, not a re-scan. <strong>Building the LPS array itself is O(m)</strong> (a single pass, using the same &quot;amortized, total movement bounded&quot; argument as <a href="/learn/dsa-master/monotonic-stack-and-queue" title="Monotonic Stack &amp; Queue in JavaScript">Chapter 21</a>&#39;s monotonic stack — <code>length</code> in <code>buildLPS</code> also never needs to redo work). Combined: <strong>O(n) for the search pass + O(m) for LPS construction = O(n + m) total</strong> — a dramatic, guaranteed improvement over the naive O(n·m), with <strong>zero risk of the pathological worst case</strong> that plagues the naive approach.</p>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>KMP&#39;s headline, quotable fact: <strong>&quot;KMP guarantees O(n + m) time by ensuring the text pointer never moves backward — any information learned from a partial match is never thrown away, unlike the naive approach, which can redundantly re-examine the same text characters across multiple failed match attempts.&quot;</strong> This is precisely the same &quot;don&#39;t recompute what you already know&quot; philosophy underlying memoization (<a href="/learn/dsa-master/recursion-in-javascript" title="Recursion in JavaScript: Call Stack &amp; Memoization">Chapter 2</a>) and monotonic stacks (<a href="/learn/dsa-master/monotonic-stack-and-queue" title="Monotonic Stack &amp; Queue in JavaScript">Chapter 21</a>), now applied to string matching specifically.</p>
+</aside>
+<hr>
+
+<h2 id="22-2-the-rabin-karp-algorithm-hashing-to-the-rescue">22.2 The Rabin-Karp Algorithm: Hashing to the Rescue</h2>
+<h3 id="22-2-1-the-core-insight-compare-hashes-first-characters-only-on-a-hash-match">22.2.1 The Core Insight: Compare Hashes First, Characters Only on a Hash Match</h3>
+<p><strong>Definition:</strong> Rabin-Karp computes a rolling hash of the pattern and of every equal-length substring (&quot;window&quot;) of the text, comparing hashes first (O(1) each, after setup) and only falling back to a full character-by-character comparison when hashes match (as a safeguard against hash collisions — directly recalling <a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>&#39;s collision discussion).</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-a-fingerprint-check-before-a-full-id-check" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;A Fingerprint Check Before a Full ID Check&quot;</span></h3>
+<p>Think of hash comparison as a quick fingerprint scan at a building&#39;s entrance: <strong>most people are correctly identified instantly via the fingerprint (hash match). Only in the rare case of an ambiguous or unclear scan (a hash collision) do you pull out their full ID for a detailed character-by-character check.</strong> This two-tier &quot;fast check first, slow verification only when needed&quot; strategy is exactly Rabin-Karp&#39;s mechanism, and it&#39;s a genuinely reusable pattern beyond just string matching.</p>
+</aside>
+<h3 id="22-2-2-the-rolling-hash-updating-in-o-1-as-the-window-slides">22.2.2 The Rolling Hash: Updating in O(1) as the Window Slides</h3>
+<p>The key technical trick that makes Rabin-Karp efficient: <strong>as the comparison window slides one position to the right, we can compute the new window&#39;s hash from the old window&#39;s hash in O(1), without rehashing the entire substring from scratch</strong> — directly the same &quot;subtract what leaves, add what enters&quot; idea as <a href="/learn/dsa-master/arrays-and-strings-javascript" title="Arrays &amp; Strings in JavaScript: DSA Patterns">Chapter 3</a>&#39;s sliding window sum optimization.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">rabinKarpSearch</span>(<span class="hljs-params">text, pattern</span>) {
+  <span class="hljs-keyword">const</span> n = text.<span class="hljs-property">length</span>;
+  <span class="hljs-keyword">const</span> m = pattern.<span class="hljs-property">length</span>;
+  <span class="hljs-keyword">if</span> (m &gt; n) <span class="hljs-keyword">return</span> [];
+
+  <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">BASE</span> = <span class="hljs-number">256</span>; <span class="hljs-comment">// treating characters as base-256 &quot;digits&quot;</span>
+  <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MOD</span> = <span class="hljs-number">1_000_000_007</span>; <span class="hljs-comment">// a large prime, to keep hash values manageable and reduce collisions</span>
+
+  <span class="hljs-keyword">let</span> patternHash = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">let</span> windowHash = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">let</span> highOrderMultiplier = <span class="hljs-number">1</span>; <span class="hljs-comment">// BASE^(m-1) % MOD, needed to &quot;remove&quot; the leftmost character when sliding</span>
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; m - <span class="hljs-number">1</span>; i++) {
+    highOrderMultiplier = (highOrderMultiplier * <span class="hljs-variable constant_">BASE</span>) % <span class="hljs-variable constant_">MOD</span>;
+  }
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; m; i++) {
+    patternHash = (patternHash * <span class="hljs-variable constant_">BASE</span> + pattern.<span class="hljs-title function_">charCodeAt</span>(i)) % <span class="hljs-variable constant_">MOD</span>;
+    windowHash = (windowHash * <span class="hljs-variable constant_">BASE</span> + text.<span class="hljs-title function_">charCodeAt</span>(i)) % <span class="hljs-variable constant_">MOD</span>;
+  }
+
+  <span class="hljs-keyword">const</span> matches = [];
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt;= n - m; i++) {
+    <span class="hljs-keyword">if</span> (patternHash === windowHash) {
+      <span class="hljs-comment">// Hash matches — but VERIFY character-by-character to guard against collisions!</span>
+      <span class="hljs-keyword">if</span> (text.<span class="hljs-title function_">substring</span>(i, i + m) === pattern) {
+        matches.<span class="hljs-title function_">push</span>(i);
+      }
+    }
+
+    <span class="hljs-keyword">if</span> (i &lt; n - m) {
+      <span class="hljs-comment">// ROLL the hash forward: remove the leftmost character&#x27;s contribution, add the new rightmost character</span>
+      windowHash = (
+        (windowHash - text.<span class="hljs-title function_">charCodeAt</span>(i) * highOrderMultiplier) * <span class="hljs-variable constant_">BASE</span> +
+        text.<span class="hljs-title function_">charCodeAt</span>(i + m)
+      ) % <span class="hljs-variable constant_">MOD</span>;
+
+      <span class="hljs-keyword">if</span> (windowHash &lt; <span class="hljs-number">0</span>) windowHash += <span class="hljs-variable constant_">MOD</span>; <span class="hljs-comment">// JavaScript&#x27;s % can return negative results — normalize!</span>
+    }
+  }
+
+  <span class="hljs-keyword">return</span> matches;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">rabinKarpSearch</span>(<span class="hljs-string">&#x27;ababcababcababc&#x27;</span>, <span class="hljs-string">&#x27;ababc&#x27;</span>)); <span class="hljs-comment">// [0, 5, 10]</span></code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-forgetting-to-verify-after-a-hash-match" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Forgetting to Verify After a Hash Match</span></h3>
+<p>This is the single most important correctness detail in Rabin-Karp, worth its own dedicated warning: <strong>a hash match is NOT proof of an actual string match — it&#39;s only a strong <em>suggestion</em>.</strong> Two genuinely different substrings can, by unlucky coincidence, produce the exact same hash value (a collision — directly recalling Chapter 4&#39;s pigeonhole-principle guarantee that collisions are mathematically inevitable given enough possible inputs). <strong>Always verify with an actual character-by-character comparison after a hash match, before reporting it as a confirmed result.</strong> Skipping this verification step is a subtle bug that produces <em>usually</em>-correct-but-occasionally-wrong results — a genuinely dangerous failure mode, since it can pass casual testing while still being fundamentally incorrect.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-javascript-s-modulo-operator-can-return-negative-numbers" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: JavaScript&#39;s Modulo Operator Can Return Negative Numbers</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(-<span class="hljs-number">7</span> % <span class="hljs-number">3</span>); <span class="hljs-comment">// -1 in JavaScript, NOT 2 (as it would be in Python, for example)!</span></code></pre></div>
+<p>This is a genuine, JavaScript-specific gotcha worth knowing cold: <strong>JavaScript&#39;s <code>%</code> operator returns a result with the same sign as the dividend</strong>, unlike some other languages&#39; modulo operators, which always return a non-negative result for a positive modulus. In rolling-hash calculations, subtraction can produce a temporarily negative intermediate value, and failing to normalize it (<code>if (windowHash &lt; 0) windowHash += MOD;</code>) introduces subtle, hard-to-diagnose bugs. Always explicitly normalize after any subtraction-involving modular arithmetic in JavaScript.</p>
+</aside>
+<aside class="callout callout-math">
+<h3 id="complexity-analysis" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Complexity Analysis</span></h3>
+<ul>
+<li><strong>Average case</strong>: <strong>O(n + m)</strong> — assuming a well-distributed hash function (Chapter 4&#39;s requirements, again) with few collisions, most windows are rejected via an O(1) hash comparison, with the O(m) verification step happening rarely.</li>
+<li><strong>Worst case</strong>: <strong>O(n·m)</strong> — if the hash function performs poorly (many collisions), every window might require full verification, degrading to the same complexity as naive search. This mirrors Chapter 4&#39;s honest &quot;O(1) average case, O(n) worst case with a poor hash function&quot; caveat for hash tables — the exact same nuance, applied here.</li>
+</ul>
+</aside>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-kmp-vs-rabin-karp" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: KMP vs. Rabin-Karp</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>KMP</th>
+<th>Rabin-Karp</th>
+</tr>
+</thead><tbody><tr>
+<td>Worst-case time</td>
+<td><strong>O(n + m), guaranteed</strong></td>
+<td>O(n·m) (rare, poor-hash-function dependent)</td>
+</tr>
+<tr>
+<td>Average-case time</td>
+<td>O(n + m)</td>
+<td>O(n + m)</td>
+</tr>
+<tr>
+<td>Core mechanism</td>
+<td>Precomputed pattern self-similarity (LPS array)</td>
+<td>Rolling hash + occasional verification</td>
+</tr>
+<tr>
+<td>Genuinely useful for</td>
+<td>Single-pattern search with a hard guarantee needed</td>
+<td><strong>Multi-pattern search</strong> (compute multiple pattern hashes upfront, check each window against all of them cheaply)</td>
+</tr>
+<tr>
+<td>Conceptual root</td>
+<td>&quot;Never re-examine text you&#39;ve already matched&quot;</td>
+<td>Chapter 4&#39;s hashing, applied to substrings via a rolling update</td>
+</tr>
+</tbody></table></div>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-2" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>The clean decision framework: <strong>&quot;KMP guarantees O(n+m) worst case unconditionally, making it the safer choice for a single pattern where predictable performance matters. Rabin-Karp&#39;s real strength is multi-pattern search — hashing multiple patterns upfront lets you check each text window against many patterns in roughly the same O(1)-per-window cost as checking against one, which KMP doesn&#39;t naturally offer.&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="22-3-a-conceptual-introduction-to-suffix-arrays-and-suffix-trees">22.3 A Conceptual Introduction to Suffix Arrays and Suffix Trees</h2>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-why-these-structures-exist" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip: Why These Structures Exist</span></h3>
+<p>KMP and Rabin-Karp both answer <strong>&quot;does this ONE specific pattern occur in this text?&quot;</strong> efficiently. Suffix arrays and suffix trees answer a more general, more powerful question: <strong>&quot;precompute a structure ONCE for a text, then answer MANY different pattern queries against it extremely fast&quot;</strong> — directly analogous to <a href="/learn/dsa-master/arrays-and-strings-javascript" title="Arrays &amp; Strings in JavaScript: DSA Patterns">Chapter 3</a>&#39;s prefix sums (pay a one-time setup cost, then answer many queries cheaply) and <a href="/learn/dsa-master/trie-data-structure" title="Trie Data Structure in JavaScript: Prefix Tree">Chapter 10</a>&#39;s tries (built once, queried repeatedly for many different prefixes).</p>
+</aside>
+<h3 id="22-3-1-suffix-arrays">22.3.1 Suffix Arrays</h3>
+<p><strong>Definition:</strong> A suffix array of a string is a sorted array of all of that string&#39;s suffixes (or, more precisely and efficiently, an array of the <em>starting indices</em> of all suffixes, sorted according to the suffixes&#39; lexicographic order).</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">buildSuffixArray</span>(<span class="hljs-params">text</span>) {
+  <span class="hljs-keyword">const</span> n = text.<span class="hljs-property">length</span>;
+  <span class="hljs-keyword">const</span> suffixes = [];
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) {
+    suffixes.<span class="hljs-title function_">push</span>({ <span class="hljs-attr">index</span>: i, <span class="hljs-attr">suffix</span>: text.<span class="hljs-title function_">substring</span>(i) });
+  }
+
+  suffixes.<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> (a.<span class="hljs-property">suffix</span> &lt; b.<span class="hljs-property">suffix</span> ? -<span class="hljs-number">1</span> : a.<span class="hljs-property">suffix</span> &gt; b.<span class="hljs-property">suffix</span> ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>));
+
+  <span class="hljs-keyword">return</span> suffixes.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">s</span> =&gt;</span> s.<span class="hljs-property">index</span>);
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">buildSuffixArray</span>(<span class="hljs-string">&#x27;banana&#x27;</span>));
+<span class="hljs-comment">// Suffixes: &quot;banana&quot;(0), &quot;anana&quot;(1), &quot;nana&quot;(2), &quot;ana&quot;(3), &quot;na&quot;(4), &quot;a&quot;(5)</span>
+<span class="hljs-comment">// Sorted:   &quot;a&quot;(5), &quot;ana&quot;(3), &quot;anana&quot;(1), &quot;banana&quot;(0), &quot;na&quot;(4), &quot;nana&quot;(2)</span>
+<span class="hljs-comment">// Suffix array: [5, 3, 1, 0, 4, 2]</span></code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-this-naive-construction-is-o-n-log-n-not-production-grade" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: This Naive Construction Is O(n² log n), Not Production-Grade</span></h3>
+<p>Building the suffix array this way — generating every suffix as an actual substring, then sorting with a generic comparator — costs O(n²) just to create all the substrings (each of average length O(n)), plus O(n log n) comparisons each potentially costing O(n) to compare two long strings, giving roughly <strong>O(n² log n)</strong> total. <strong>Real production suffix array construction uses specialized O(n log n) (or even O(n)) algorithms</strong> (like the SA-IS algorithm, mentioned in Further Reading) that avoid ever materializing full substrings. <strong>The naive version shown here is for conceptual clarity only</strong> — know this limitation and state it explicitly if implementing suffix arrays in an interview setting, exactly the same &quot;naive vs. production-grade&quot; honesty this book has modeled throughout (recall <a href="/learn/dsa-master/union-find-disjoint-set" title="Union-Find (Disjoint Set Union) in JavaScript">Chapter 14</a>&#39;s naive-vs-optimized Union-Find, <a href="/learn/dsa-master/heap-priority-queue-javascript" title="Heap &amp; Priority Queue in JavaScript">Chapter 9</a>&#39;s naive-vs-heapify construction).</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-what-suffix-arrays-enable" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: What Suffix Arrays Enable</span></h3>
+<p>Once built, a suffix array enables <strong>O(m log n) pattern search</strong> (binary search — <a href="/learn/dsa-master/binary-search-patterns" title="Binary Search Patterns: Answer, Rotated, Bounds">Chapter 16</a>! — over the sorted suffixes, since any occurrence of the pattern must be a prefix of some suffix, and sorted suffixes group matching prefixes together), finding the <strong>longest repeated substring</strong> in a text, and computing the <strong>longest common substring</strong> between multiple texts (by concatenating them with a separator and analyzing the combined suffix array) — all reusing the <em>same</em> precomputed structure for many different queries, exactly the &quot;pay once, query cheaply many times&quot; trade-off family this book has built repeatedly (Chapter 3&#39;s prefix sums, <a href="/learn/dsa-master/trie-data-structure" title="Trie Data Structure in JavaScript: Prefix Tree">Chapter 10</a>&#39;s tries, <a href="/learn/dsa-master/segment-tree-fenwick-tree" title="Segment Tree &amp; Fenwick Tree (BIT) in JavaScript">Chapter 23</a>&#39;s upcoming segment trees).</p>
+</aside>
+<h3 id="22-3-2-suffix-trees-conceptual-overview">22.3.2 Suffix Trees (Conceptual Overview)</h3>
+<p><strong>Definition:</strong> A suffix tree is a compressed trie (recall Chapter 10&#39;s radix tree / compressed trie preview!) containing every suffix of a string, enabling extremely fast substring queries — pattern search in O(m) time, independent of the text&#39;s length <code>n</code>, after an O(n) construction.</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-the-direct-callback-to-chapter-10" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: The Direct Callback to Chapter 10</span></h3>
+<p>A suffix tree is, quite literally, <strong>Chapter 10&#39;s trie concept, applied to every suffix of a text rather than every word in a dictionary, and compressed (per Chapter 10&#39;s radix-tree preview) to save memory on the long, often non-branching suffix chains.</strong> This is worth stating explicitly as a genuine &quot;aha&quot; connection: you already understand tries deeply from Chapter 10; a suffix tree is that exact same tool, retargeted at a different kind of input (all suffixes of one string, instead of a curated word list).</p>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-3" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>Full suffix tree <em>construction</em> algorithms (like Ukkonen&#39;s algorithm, achieving O(n) construction time) are genuinely advanced, rarely implemented from scratch even in difficult interviews. <strong>The expected depth for the overwhelming majority of interviews is conceptual fluency</strong>: knowing that suffix trees/arrays exist, what problem they solve (many pattern queries against one fixed text, extremely fast, after a one-time construction cost), and how they relate to structures you already know deeply (tries, compressed tries) — exactly the same &quot;conceptual introduction, not full implementation&quot; treatment this book gave AVL/Red-Black trees in <a href="/learn/dsa-master/binary-tree-and-bst-javascript" title="Binary Tree &amp; BST in JavaScript: Traversals">Chapter 8</a>.</p>
+</aside>
+<hr>
+
+<h2 id="22-4-edge-cases-and-gotchas-checklist-for-string-algorithm-problems">22.4 Edge Cases and Gotchas Checklist for String Algorithm Problems</h2>
+<ol>
+<li><strong>Empty pattern or empty text.</strong> Verify each algorithm&#39;s behavior is explicitly defined and sensible (an empty pattern typically &quot;matches&quot; at every position, or is defined as a special no-op case — state your convention).</li>
+<li><strong>Pattern longer than text.</strong> Should immediately return no matches, without attempting any comparisons.</li>
+<li><strong>Pattern equals the entire text.</strong> A boundary case worth verifying explicitly for both KMP and Rabin-Karp.</li>
+<li><strong>Overlapping matches</strong> (e.g., searching for <code>&quot;aa&quot;</code> in <code>&quot;aaaa&quot;</code>) — verify your algorithm correctly finds all overlapping occurrences, not just non-overlapping ones (KMP&#39;s <code>j = lps[j-1]</code> continuation after a match, shown in section 22.1.3, is specifically what enables this).</li>
+<li><strong>Hash collisions in Rabin-Karp</strong> — always include the character-by-character verification step; never skip it as a &quot;probably fine&quot; optimization.</li>
+<li><strong>JavaScript&#39;s modulo operator returning negative values</strong> in rolling hash calculations — always explicitly normalize.</li>
+<li><strong>Unicode/multi-byte characters</strong> — per Chapter 3&#39;s lesson, <code>charCodeAt</code> operates on UTF-16 code units, not full Unicode code points; be aware of this if pattern matching needs to be correct across the full Unicode range, not just ASCII/BMP text.</li>
+</ol>
+<hr>
+
+<h2 id="22-5-chapter-summary">22.5 Chapter Summary</h2>
+<p>This chapter tackled substring search, opening with a concrete demonstration that naive O(n·m) search wastes exactly the same kind of redundant, already-known information that <a href="/learn/dsa-master/recursion-in-javascript" title="Recursion in JavaScript: Call Stack &amp; Memoization">Chapter 2</a>&#39;s naive Fibonacci and <a href="/learn/dsa-master/binary-tree-and-bst-javascript" title="Binary Tree &amp; BST in JavaScript: Traversals">Chapter 8</a>&#39;s naive <code>isBalanced</code> wasted — a recurring theme throughout this book that &quot;the fix is almost always: don&#39;t recompute what you already know.&quot; We built <strong>KMP</strong> around the precomputed LPS (Longest Proper Prefix-Suffix) array, which encodes a pattern&#39;s internal self-similarity, letting the search phase guarantee that the text pointer <strong>never moves backward</strong> — a genuinely powerful, unconditional O(n+m) guarantee with zero pathological worst case, achieved by ensuring every failed comparison&#39;s partial-match information gets reused via an O(1) LPS lookup rather than discarded.</p>
+<p>We built <strong>Rabin-Karp</strong> as a fundamentally different escape route, directly extending Chapter 4&#39;s hashing philosophy and Chapter 3&#39;s sliding-window rolling-update technique: compute a rolling hash for each text window in O(1) per slide, compare hashes cheaply, and fall back to full character verification only on a hash match — with the crucial, non-negotiable correctness requirement (directly recalling Chapter 4&#39;s collision guarantee) that a hash match must <strong>always</strong> be verified character-by-character before being reported as a confirmed result, since collisions are mathematically inevitable, not a remote theoretical concern. We flagged a specifically JavaScript gotcha along the way: the <code>%</code> operator can return negative results for negative dividends, requiring explicit normalization in rolling-hash arithmetic — a subtle, real bug source worth knowing cold.</p>
+<p>We closed with a conceptual (not full-implementation) introduction to suffix arrays and suffix trees, framed explicitly around the &quot;pay a one-time construction cost, then answer many queries cheaply&quot; trade-off family this book has built repeatedly since Chapter 3&#39;s prefix sums and Chapter 10&#39;s tries — and made the connection to Chapter 10 as concrete as possible: <strong>a suffix tree is literally Chapter 10&#39;s trie/compressed-trie concept, retargeted at every suffix of a single text rather than a curated word dictionary.</strong> We were honest, in the same spirit as this book&#39;s treatment of AVL/Red-Black trees (Chapter 8) and Union-Find&#39;s amortized bound (<a href="/learn/dsa-master/union-find-disjoint-set" title="Union-Find (Disjoint Set Union) in JavaScript">Chapter 14</a>), that genuinely efficient suffix structure construction is an advanced topic beyond typical interview implementation expectations, while conceptual fluency — knowing what these structures enable and why — remains a valuable, realistic, and expected level of depth.</p>
+<hr>
+
+<h2 id="22-6-revision-notes">22.6 Revision Notes</h2>
+<ul>
+<li>Naive substring search is O(n·m), wasting redundant information exactly like naive Fibonacci (Chapter 2) or naive isBalanced (Chapter 8) — the fix is the same underlying philosophy: don&#39;t recompute what you already know.</li>
+<li>KMP&#39;s LPS array encodes a pattern&#39;s internal self-similarity, guaranteeing the text pointer never moves backward during search — an unconditional O(n+m), with zero pathological worst case.</li>
+<li>Rabin-Karp uses a rolling hash (directly extending Chapter 3&#39;s sliding-window update and Chapter 4&#39;s hashing) for O(1)-per-window comparison, but MUST verify character-by-character on every hash match — collisions are mathematically inevitable (Chapter 4&#39;s pigeonhole principle), not a remote concern.</li>
+<li>JavaScript&#39;s <code>%</code> can return negative results for negative dividends — always normalize in rolling-hash arithmetic.</li>
+<li>KMP guarantees O(n+m) worst case unconditionally; Rabin-Karp&#39;s real strength is efficient multi-pattern search via precomputed hashes.</li>
+<li>Suffix arrays/trees enable &quot;build once, query many times cheaply&quot; pattern search — a suffix tree is literally Chapter 10&#39;s trie/compressed-trie concept applied to every suffix of a text.</li>
+<li>Genuinely efficient suffix structure construction (SA-IS, Ukkonen&#39;s algorithm) is advanced and beyond typical interview implementation expectations; conceptual fluency is the expected depth.</li>
+</ul>
+<hr>
+
+<h2 id="22-7-mind-map-ascii">22.7 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                              STRING ALGORITHMS
+                                       |
+      +------------------+------------+------------+----------------------+
+      |                  |                         |                      |
+  NAIVE O(n*m)         KMP                    RABIN-KARP            SUFFIX ARRAYS/TREES
+  SEARCH               (LPS array)            (rolling hash)        (build ONCE,
+      |                     |                       |                query MANY times)
+  Wastes redundant     &quot;Never re-examine      Ch.3 sliding window        |
+  info -- SAME          text you've           rolling update         Suffix Array:
+  pattern as naive       already matched&quot;      + Ch.4 hashing         sorted suffixes,
+  Fibonacci (Ch.2),           |                     |                 O(m log n) search
+  naive isBalanced      i NEVER moves         MUST verify on         via binary search
+  (Ch.8)                backward -- LPS       hash match! (Ch.4      (Ch.16)
+                         gives O(1) fallback   collisions are             |
+                         on mismatch           MATHEMATICALLY         Suffix Tree =
+                              |                INEVITABLE)            Ch.10's trie/
+                        O(n+m) GUARANTEED           |                 compressed trie,
+                        (unconditional,        JS gotcha: %          retargeted at
+                        no pathological        can return            EVERY SUFFIX of
+                        worst case)            NEGATIVE! Must         one text
+                              |                normalize                   |
+                        Best for: SINGLE            |                O(m) search after
+                        pattern, hard          O(n+m) avg,           O(n) construction
+                        guarantee needed       O(n*m) worst          (Ukkonen's algo --
+                                               (poor hash fn)         ADVANCED, conceptual
+                                                    |                 knowledge expected,
+                                               Best for: MULTI-       not implementation)
+                                               PATTERN search</code></pre>
+<hr>
+
+<h2 id="22-8-cheat-sheet">22.8 Cheat Sheet</h2>
+<pre class="is-plain"><code>COMPLEXITY COMPARISON
+=========================
+Naive search:    O(n*m) worst case
+KMP:             O(n+m) GUARANTEED (unconditional, no worst-case degradation)
+Rabin-Karp:      O(n+m) average, O(n*m) worst (poor hash function)
+Suffix Array:    O(n log n) or better construction (specialized algo), O(m log n) per query
+Suffix Tree:     O(n) construction (Ukkonen's, advanced), O(m) per query
+
+KMP LPS ARRAY
+================
+lps[i] = length of longest proper prefix of pattern[0..i] that's also a proper suffix
+Build: if match, extend; if mismatch, fall back using lps[length-1] (DON'T reset to 0 directly!)
+Search: on mismatch, j = lps[j-1] (fall back in PATTERN); i NEVER moves backward in TEXT
+
+RABIN-KARP ROLLING HASH
+===========================
+newHash = ((oldHash - leftChar*highOrderMultiplier) * BASE + newRightChar) % MOD
+ALWAYS verify character-by-character after a hash match (collisions are real!)
+ALWAYS normalize negative results: if (hash &lt; 0) hash += MOD;  (JS % can be negative!)
+
+DECISION GUIDE
+=================
+Single pattern, need guaranteed worst-case performance -&gt; KMP
+Multiple patterns to search simultaneously             -&gt; Rabin-Karp (hash all patterns upfront)
+Many DIFFERENT queries against the SAME fixed text      -&gt; Suffix Array / Suffix Tree</code></pre>
+<hr>
+
+<h2 id="22-9-key-takeaways">22.9 Key Takeaways</h2>
+<ol>
+<li>Naive substring search wastes redundant match information — the same underlying inefficiency pattern as naive Fibonacci and naive isBalanced, fixed by the same &quot;don&#39;t recompute what you know&quot; philosophy.</li>
+<li>KMP&#39;s LPS array guarantees the text pointer never moves backward, achieving unconditional O(n+m) with zero pathological worst case.</li>
+<li>Rabin-Karp&#39;s rolling hash gives O(1)-per-window comparison, but character-by-character verification after every hash match is non-negotiable — collisions are mathematically inevitable, not a remote concern.</li>
+<li>JavaScript&#39;s <code>%</code> can return negative values — always normalize in rolling-hash arithmetic.</li>
+<li>Suffix arrays and suffix trees trade a one-time construction cost for fast repeated queries; a suffix tree is literally Chapter 10&#39;s trie concept retargeted at every suffix of a text.</li>
+</ol>
+<hr>
+
+<h2 id="22-10-20-multiple-choice-questions">22.10 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of naive substring search in the worst case?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n + m)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n * m)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(n log n)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does the KMP LPS array represent?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The number of vowels in the pattern</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The length of the longest proper prefix of pattern[0..i] that is also a proper suffix</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A sorted list of all suffixes</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A hash of the pattern</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the key guarantee that makes KMP achieve O(n+m) worst-case time?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The pattern must be sorted first</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The text pointer never moves backward during the search phase</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The text must contain no repeated characters</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It uses a hash table internally</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What happens when a mismatch occurs during KMP&#39;s search phase?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The text pointer moves backward to retry</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The pattern pointer falls back using the precomputed LPS array, an O(1) lookup</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The entire search restarts from position 0</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">An error is thrown</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the core mechanism of the Rabin-Karp algorithm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Building a suffix tree</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Comparing rolling hashes of text windows against the pattern&#39;s hash, verifying on a match</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Using KMP&#39;s LPS array</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sorting all substrings</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What must ALWAYS happen after a hash match is found in Rabin-Karp?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing; the hash match is sufficient proof</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A character-by-character verification, since hash collisions are mathematically possible</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The hash function must be rebuilt</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The search must restart</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why are hash collisions in Rabin-Karp a genuine concern, not just theoretical?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They never actually occur in practice</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The pigeonhole principle (Chapter 4) guarantees collisions are possible given enough distinct inputs</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript hash functions are broken</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Collisions only occur with very short patterns</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a JavaScript-specific gotcha relevant to rolling hash calculations?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">JavaScript doesn&#39;t support the modulo operator</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The <code>%</code> operator can return negative results for negative dividends, requiring explicit normalization</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript numbers cannot exceed 100</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Modulo is always O(n) in JavaScript</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the worst-case time complexity of Rabin-Karp?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n + m), always</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n * m), if the hash function performs poorly with many collisions</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(1)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a key practical advantage of Rabin-Karp over KMP?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It always runs faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It naturally extends to efficient multi-pattern search by hashing multiple patterns upfront</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It never has a worst case</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It doesn&#39;t require any preprocessing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a suffix array?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">An array of all substrings of a text</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A sorted array of the starting indices of all suffixes of a text, ordered lexicographically</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A hash table of character frequencies</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">An array storing only the longest suffix</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the complexity of the naive suffix array construction shown in this chapter?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n log n), production-grade</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n² log n), due to materializing full substrings and comparing them</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n), optimal</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(1)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What technique enables O(m log n) pattern search using a suffix array?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A hash table lookup</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Binary search (Chapter 16) over the sorted suffixes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A monotonic stack</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Dynamic programming</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a suffix tree, in relation to concepts from Chapter 10?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">An entirely unrelated structure</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A compressed trie (Chapter 10&#39;s radix tree concept) containing every suffix of a text</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A binary search tree of suffixes</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A hash table of suffixes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity of pattern search using a fully-constructed suffix tree?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(m), independent of the text&#39;s length n</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n * m)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(log n)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What advanced algorithm achieves O(n) suffix tree construction?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">KMP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Ukkonen&#39;s algorithm</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Rabin-Karp</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Dijkstra&#39;s algorithm</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the expected level of depth for suffix trees/arrays in most technical interviews?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Full from-scratch implementation of O(n) construction algorithms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Conceptual fluency: knowing what they enable and how they relate to tries, not full implementation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No knowledge is ever expected</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only the naive O(n² log n) construction is acceptable</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What underlying philosophy connects naive substring search&#39;s inefficiency to naive Fibonacci (Chapter 2) and naive isBalanced (Chapter 8)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They are all O(1) algorithms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">All three waste redundant, already-known information that could be reused instead of recomputed</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They all require a heap</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They are unrelated inefficiencies with different root causes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What trade-off do suffix arrays/trees share with Chapter 3&#39;s prefix sums and Chapter 10&#39;s tries?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">None; they are unrelated techniques</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Pay a one-time construction/setup cost to enable many fast repeated queries afterward</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They all require O(n²) space</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They all only work on numeric data</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What should you verify when implementing KMP or Rabin-Karp for overlapping pattern matches (e.g., &quot;aa&quot; in &quot;aaaa&quot;)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Overlapping matches are impossible to find with these algorithms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">That the algorithm correctly continues searching after a match (e.g., KMP&#39;s j = lps[j-1] after a match) rather than stopping</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">That the pattern contains no repeated characters</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">That the text is sorted first</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="22-11-20-coding-problems">22.11 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement naive substring search from memory, and identify its worst-case input by construction.</li>
+<li>Implement <code>buildLPS</code> from memory (section 22.1.2), and verify against the book&#39;s dry run for <code>&#39;aabaaab&#39;</code>.</li>
+<li>Given a string, use the LPS array concept to determine the shortest possible &quot;period&quot; of a repeating string (e.g., &quot;abcabcabc&quot; has period &quot;abc&quot;).</li>
+<li>Write a simple (non-rolling) hash function for strings, and verify it produces the same hash for identical strings.</li>
+<li>Given two strings, determine if one is a rotation of the other (hint: check if the target is a substring of the source concatenated with itself).</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement <code>kmpSearch</code> fully from memory (section 22.1.3), and verify it finds overlapping matches correctly.</li>
+<li>Implement <code>rabinKarpSearch</code> fully from memory (section 22.2.2), including the negative-modulo normalization, and verify against a hand-constructed hash collision test case (two different strings you&#39;ve confirmed hash to the same value with your specific BASE/MOD).</li>
+<li>Given a list of multiple patterns and one text, implement multi-pattern search using Rabin-Karp (hash all patterns upfront, check each window against the set).</li>
+<li>Implement the naive suffix array construction from memory (section 22.3.1), and use it to find the longest repeated substring in a text.</li>
+<li>Given a string, determine the longest palindromic substring using an &quot;expand around center&quot; approach, and discuss in comments how this relates to (but differs from) the string-matching techniques in this chapter.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Implement a function to find all anagram substrings of a pattern within a text (hint: combine Chapter 4&#39;s frequency-counting with Chapter 3&#39;s sliding window, contrasting this approach against KMP/Rabin-Karp for this specific problem shape).</li>
+<li>Given a text and a pattern with wildcard characters (where &#39;?&#39; matches any single character), adapt KMP or implement a DP-based approach (connecting back to <a href="/learn/dsa-master/dynamic-programming-2d" title="2D Dynamic Programming: LCS, Knapsack, Edit Distance">Chapter 19</a>) to find all matches.</li>
+<li>Implement the &quot;Z-function&quot; (a related string-preprocessing technique to KMP&#39;s LPS array, computing for every position the length of the longest substring starting there that matches a prefix of the string), and use it to solve pattern matching as an alternative to KMP.</li>
+<li>Given a very large text and a very large set of patterns (too many for practical individual Rabin-Karp hashing), describe (with a smaller simulated implementation) how the Aho-Corasick algorithm (combining Chapter 10&#39;s trie with KMP&#39;s failure-function concept) would efficiently solve simultaneous multi-pattern search.</li>
+<li>Implement a basic longest common substring finder between two strings using the suffix-array-based approach (concatenate with a separator, build the combined suffix array, analyze adjacent sorted suffixes).</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Given a massive log corpus and a need to repeatedly search for different error-message patterns, design a system choosing between KMP (single pattern, repeated searches) and Rabin-Karp (multiple patterns) based on the actual query pattern, justifying your choice in comments.</li>
+<li><strong>(Amazon-level)</strong> Given a product search feature needing substring matching across millions of product names, implement Rabin-Karp for efficient multi-keyword search, discussing hash collision mitigation strategies for production reliability.</li>
+<li><strong>(Microsoft-level)</strong> Given a plagiarism detection requirement (finding common substrings between two large documents), use the suffix-array-based longest-common-substring technique (problem 15) and discuss its scalability compared to a naive O(n²) character-by-character comparison approach.</li>
+<li><strong>(Meta-level)</strong> Given a content moderation system needing to detect banned phrases (including common obfuscated variants) in user posts, implement KMP for exact matching and discuss in comments what additional techniques (fuzzy matching, edit distance from <a href="/learn/dsa-master/dynamic-programming-2d" title="2D Dynamic Programming: LCS, Knapsack, Edit Distance">Chapter 19</a>) would be needed for the obfuscated-variant detection.</li>
+<li><strong>(Netflix-level)</strong> Design a subtitle search feature allowing users to search for a spoken line across an entire show&#39;s transcript (a large text corpus), using suffix array concepts to enable fast repeated substring queries, and discuss the trade-off between build-time cost (constructing the suffix array once per transcript) and query-time speed at scale.</li>
+</ol>
+<hr>
+
+<h2 id="22-12-5-interview-questions">22.12 5 Interview Questions</h2>
+<ol>
+<li>&quot;Implement KMP&#39;s LPS array construction, and explain what it represents.&quot; (Tests both implementation and conceptual understanding of self-similarity encoding.)</li>
+<li>&quot;Why does KMP guarantee O(n+m) time, unlike naive search?&quot; (Tests understanding of the &quot;text pointer never moves backward&quot; guarantee specifically.)</li>
+<li>&quot;Implement Rabin-Karp, and explain why you must verify after a hash match.&quot; (Tests both implementation and the non-negotiable collision-verification requirement.)</li>
+<li>&quot;When would you choose Rabin-Karp over KMP, or vice versa?&quot; (Tests the single-pattern-guarantee vs. multi-pattern-efficiency decision framework.)</li>
+<li>&quot;What is a suffix array, and how does it relate to a trie (Chapter 10)?&quot; (Tests conceptual fluency and cross-chapter connection-making, not implementation depth.)</li>
+</ol>
+<hr>
+
+<h2 id="22-13-3-real-projects">22.13 3 Real Projects</h2>
+<ol>
+<li><strong>Complete String-Matching Library</strong>: Implement naive search, KMP, and Rabin-Karp in a single library, with a self-check script verifying all three produce identical match results across randomized text/pattern pairs, and benchmarking their performance on both average-case and adversarially-constructed worst-case inputs (e.g., KMP&#39;s guaranteed performance versus naive search&#39;s pathological slowdown on repetitive text).</li>
+<li><strong>Multi-Pattern Log Scanner</strong>: Build a Node.js CLI tool that scans a log file for multiple error-message patterns simultaneously using Rabin-Karp&#39;s multi-pattern technique, reporting all matches with their line numbers.</li>
+<li><strong>Plagiarism/Similarity Checker</strong>: Build a tool implementing the suffix-array-based longest-common-substring technique to compare two text documents and report their longest shared passage, along with a simple &quot;similarity score&quot; based on the shared substring&#39;s length relative to document size.</li>
+</ol>
+<hr>
+
+<h2 id="22-14-further-reading">22.14 Further Reading</h2>
+<ul>
+<li>Donald Knuth, James Morris, and Vaughan Pratt&#39;s original 1977 paper introducing KMP, and Richard Karp and Michael Rabin&#39;s original paper introducing Rabin-Karp — both foundational, genuinely readable papers in the history of algorithm design.</li>
+<li>Search &quot;Z-function algorithm&quot; for the closely-related string-preprocessing technique mentioned in coding problem #13, often taught alongside KMP.</li>
+<li>Search &quot;Aho-Corasick algorithm&quot; for the trie-plus-failure-function combination (mentioned in coding problem #14) that efficiently generalizes KMP&#39;s single-pattern guarantee to simultaneous multi-pattern search.</li>
+<li>Search &quot;SA-IS algorithm suffix array construction&quot; and &quot;Ukkonen&#39;s algorithm suffix tree&quot; for the genuinely advanced, linear-time construction techniques referenced but not fully implemented in section 22.3.</li>
+<li>LeetCode&#39;s &quot;String Matching&quot; and &quot;KMP Algorithm&quot; tagged problems, for extensive additional practice.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">String Algorithms: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is the KMP algorithm?</h3></summary><p>Knuth-Morris-Pratt is a string matching algorithm that precomputes, for every prefix of the pattern, the longest proper prefix that is also a suffix (the LPS array). On a mismatch it shifts the pattern using that table instead of restarting, finding all matches in O(n + m) time.</p></details>
+<details class="learn-faq-item"><summary><h3>How does Rabin-Karp work?</h3></summary><p>Rabin-Karp computes a hash of the pattern and a rolling hash of each text window, updating the window hash in O(1) as it slides. Only when the hashes match does it compare characters, which confirms the match and guards against collisions.</p></details>
+<details class="learn-faq-item"><summary><h3>KMP or Rabin-Karp: which should I use?</h3></summary><p>KMP guarantees O(n + m) in the worst case and is ideal for a single pattern. Rabin-Karp is simpler to extend to searching many patterns at once or to finding repeated substrings, but its worst case is O(n·m) if collisions are frequent.</p></details>
+<details class="learn-faq-item"><summary><h3>Why do rolling hashes in JavaScript need special care with %?</h3></summary><p>JavaScript's % operator keeps the sign of the dividend, so subtracting the outgoing character can produce a negative remainder. Normalize with ((x % mod) + mod) % mod, and keep values below Number.MAX_SAFE_INTEGER or use BigInt.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/monotonic-stack-and-queue"><span>&larr; Previous &middot; Chapter 21</span><strong>Monotonic Stack &amp; Queue in JavaScript</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/segment-tree-fenwick-tree"><span>Next &middot; Chapter 23 &rarr;</span><strong>Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#22-0-the-problem-with-naive-substring-search">22.0 The Problem With Naive Substring Search</a></li><li><a href="#22-1-the-knuth-morris-pratt-kmp-algorithm">22.1 The Knuth-Morris-Pratt (KMP) Algorithm</a></li><li><a href="#22-2-the-rabin-karp-algorithm-hashing-to-the-rescue">22.2 The Rabin-Karp Algorithm: Hashing to the Rescue</a></li><li><a href="#22-3-a-conceptual-introduction-to-suffix-arrays-and-suffix-trees">22.3 A Conceptual Introduction to Suffix Arrays and Suffix Trees</a></li><li><a href="#22-4-edge-cases-and-gotchas-checklist-for-string-algorithm-problems">22.4 Edge Cases and Gotchas Checklist for String Algorithm Problems</a></li><li><a href="#22-5-chapter-summary">22.5 Chapter Summary</a></li><li><a href="#22-6-revision-notes">22.6 Revision Notes</a></li><li><a href="#22-7-mind-map-ascii">22.7 Mind Map (ASCII)</a></li><li><a href="#22-8-cheat-sheet">22.8 Cheat Sheet</a></li><li><a href="#22-9-key-takeaways">22.9 Key Takeaways</a></li><li><a href="#22-10-20-multiple-choice-questions">22.10 20 Multiple Choice Questions</a></li><li><a href="#22-11-20-coding-problems">22.11 20 Coding Problems</a></li><li><a href="#22-12-5-interview-questions">22.12 5 Interview Questions</a></li><li><a href="#22-13-3-real-projects">22.13 3 Real Projects</a></li><li><a href="#22-14-further-reading">22.14 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "string-algorithms-kmp-rabin-karp"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

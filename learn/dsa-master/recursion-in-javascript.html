@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Recursion in JavaScript: Call Stack &amp; Memoization</title>
+    <meta name="description" content="Master recursion in JavaScript: base cases, the call stack, Fibonacci dry runs, memoization, recursion vs iteration and how to debug recursive functions.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/recursion-in-javascript">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/recursion-in-javascript">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/recursion-in-javascript">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="recursion in javascript, recursive function, call stack, base case, memoization, recursion vs iteration, fibonacci recursion, tail call optimization, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/big-o-notation-time-complexity">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/arrays-and-strings-javascript">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="recursion in javascript">
+    <meta property="article:tag" content="recursive function">
+    <meta property="article:tag" content="call stack">
+    <meta property="article:tag" content="base case">
+    <meta property="article:tag" content="memoization">
+    <meta property="article:tag" content="recursion vs iteration">
+    <meta property="article:tag" content="fibonacci recursion">
+    <meta property="article:tag" content="tail call optimization">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Recursion in JavaScript: Call Stack &amp; Memoization">
+    <meta property="og:description" content="Master recursion in JavaScript: base cases, the call stack, Fibonacci dry runs, memoization, recursion vs iteration and how to debug recursive functions.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/recursion-in-javascript">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/recursion-in-javascript.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Recursion in JavaScript: Call Stack, Base Cases and Memoization: DSA Master chapter 2">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Recursion in JavaScript: Call Stack &amp; Memoization">
+    <meta name="twitter:description" content="Master recursion in JavaScript: base cases, the call stack, Fibonacci dry runs, memoization, recursion vs iteration and how to debug recursive functions.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/recursion-in-javascript.png">
+    <meta name="twitter:image:alt" content="Recursion in JavaScript: Call Stack, Base Cases and Memoization: DSA Master chapter 2">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript",
+          "name": "Recursion in JavaScript: Call Stack & Memoization",
+          "description": "Master recursion in JavaScript: base cases, the call stack, Fibonacci dry runs, memoization, recursion vs iteration and how to debug recursive functions.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/recursion-in-javascript.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Recursion in JavaScript: Call Stack, Base Cases and Memoization"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#webpage"
+          },
+          "headline": "Recursion in JavaScript: Call Stack, Base Cases and Memoization",
+          "alternativeHeadline": "The Recursion Masterclass",
+          "description": "Master recursion in JavaScript: base cases, the call stack, Fibonacci dry runs, memoization, recursion vs iteration and how to debug recursive functions.",
+          "abstract": "Recursion is a technique where a function solves a problem by calling itself on a smaller version of the same problem until it reaches a base case. This chapter covers the anatomy of a recursive function, what happens on the call stack, why naive Fibonacci is exponential, how memoization fixes it, and when iteration is the better choice.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/recursion-in-javascript.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 8027,
+          "timeRequired": "PT36M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "recursion in javascript, recursive function, call stack, base case, memoization, recursion vs iteration, fibonacci recursion, tail call optimization",
+          "proficiencyLevel": "Beginner",
+          "educationalLevel": "Beginner",
+          "teaches": [
+            "Base case and recursive case",
+            "How the call stack works",
+            "Memoization",
+            "Recursion vs iteration trade-offs",
+            "Debugging recursive functions"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "recursion in javascript"
+          },
+          "isAccessibleForFree": true,
+          "position": 2,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/big-o-notation-time-complexity#article",
+            "name": "Big-O Notation and Time Complexity in JavaScript",
+            "url": "https://shivamthakur.me/learn/dsa-master/big-o-notation-time-complexity"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Recursion in JavaScript: Call Stack & Memoization",
+              "item": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is recursion in JavaScript?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Recursion is when a function calls itself to solve a smaller instance of the same problem. Every recursive function needs a base case that stops the calls and a recursive case that moves the input closer to that base case."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens if a recursive function has no base case?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It keeps calling itself until the call stack runs out of space, and JavaScript throws a RangeError: Maximum call stack size exceeded."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is memoization?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Memoization caches the result of each sub-problem the first time it is computed, usually in a Map, so repeated calls return instantly. It turns naive recursive Fibonacci from O(2ⁿ) time into O(n)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does JavaScript support tail call optimization?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In practice, no. Tail call optimization is in the ES2015 specification, but V8 (Chrome and Node.js) and most engines do not implement it, so a tail-recursive function still uses O(n) stack space in production JavaScript."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#quiz",
+          "name": "Recursion in JavaScript: Call Stack & Memoization: 20 multiple choice questions",
+          "educationalLevel": "Beginner",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "recursion in javascript"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/recursion-in-javascript#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What are the two required components of a correct recursive function?",
+              "text": "What are the two required components of a correct recursive function?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A base case and a recursive case"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A loop and a counter"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An array and a pointer"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A try/catch block"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What happens if a recursive function has no base case?",
+              "text": "What happens if a recursive function has no base case?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It causes infinite recursion, typically resulting in a stack overflow error"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It returns undefined immediately"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript automatically infers one"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It runs once and stops"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What data structure underlies how recursive function calls are managed in memory?",
+              "text": "What data structure underlies how recursive function calls are managed in memory?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Stack (LIFO)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Queue (FIFO)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Linked List"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Hash Table"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity of naive (non-memoized) recursive Fibonacci?",
+              "text": "What is the time complexity of naive (non-memoized) recursive Fibonacci?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(2ⁿ)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n²)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What technique fixes the exponential blowup in naive recursive Fibonacci?",
+              "text": "What technique fixes the exponential blowup in naive recursive Fibonacci?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Memoization (caching sub-problem results)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Using var instead of let"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Increasing the call stack size"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using a while loop instead"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the space complexity of a recursive function with recursion depth n, even if it declares no other variables?",
+              "text": "What is the space complexity of a recursive function with recursion depth n, even if it declares no other variables?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(n)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(1)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n²)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which of these is an example of \"linear recursion\" (a chain, one recursive call per invocation)?",
+              "text": "Which of these is an example of \"linear recursion\" (a chain, one recursive call per invocation)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Factorial"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Fibonacci"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Generating all subsets"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary tree traversal with two children"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Does V8 (Chrome/Node.js) implement tail call optimization from the ES2015 spec?",
+              "text": "Does V8 (Chrome/Node.js) implement tail call optimization from the ES2015 spec?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, despite it being in the spec"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Yes, fully"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only for arrow functions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only in strict mode"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the backtracking subset-generation example, why must we push [...currentSubset] instead of currentSubset directly?",
+              "text": "In the backtracking subset-generation example, why must we push [...currentSubset] instead of currentSubset directly?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "currentSubset is mutated in place across the recursion, so pushing the reference causes all results to reflect only its final state"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Spread syntax is faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Arrays cannot be pushed into other arrays"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's required by ES2024 syntax rules"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the defining three-step rhythm of backtracking?",
+              "text": "What is the defining three-step rhythm of backtracking?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Choose, explore, un-choose"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Loop, break, continue"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Map, filter, reduce"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Push, pop, shift"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What error does JavaScript throw for infinite or excessively deep recursion?",
+              "text": "What error does JavaScript throw for infinite or excessively deep recursion?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "RangeError: Maximum call stack size exceeded"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "TypeError"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SyntaxError"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "ReferenceError"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the \"fast power\" (exponentiation by squaring) algorithm, what is the time complexity?",
+              "text": "In the \"fast power\" (exponentiation by squaring) algorithm, what is the time complexity?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(log n)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(n log n)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(2ⁿ)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is the naive recursive string reversal actually O(n²), not O(n)?",
+              "text": "Why is the naive recursive string reversal actually O(n²), not O(n)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": ".slice() itself costs O(n), called across n recursive levels"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Recursion is always O(n²)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "String concatenation is O(1)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JavaScript strings are stored as linked lists"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is \"the leap of faith\" in recursion?",
+              "text": "What is \"the leap of faith\" in recursion?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Trusting that the recursive call already correctly solves a smaller version of the problem"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Never testing your code"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Assuming the base case is unnecessary"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ignoring edge cases"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which scenario most strongly favors recursion over iteration?",
+              "text": "Which scenario most strongly favors recursion over iteration?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Traversing a naturally tree-shaped/nested data structure"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Summing a flat array of numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Finding the max of a list"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Counting characters in a string"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which scenario most strongly favors iteration over recursion in JavaScript?",
+              "text": "Which scenario most strongly favors iteration over recursion in JavaScript?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Processing a flat array with 5,000,000 elements"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Traversing a small binary tree"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Generating all permutations of 4 items"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Solving a small maze puzzle"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does memoization fundamentally rely on to work correctly?",
+              "text": "What does memoization fundamentally rely on to work correctly?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The same inputs always producing the same output (pure function behavior)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The function being impure (having side effects)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The function having no base case"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using var for the cache"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why do we use a Map rather than a plain object for memoization caches in this book's convention?",
+              "text": "Why do we use a Map rather than a plain object for memoization caches in this book's convention?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Map is better suited to dynamically generated keys, unlike objects better suited to fixed known property names"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Objects cannot store numbers as keys"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Map is required by the ES2024 spec for caching"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Objects are always slower than Maps for every use case"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the file-system total-size example, what makes recursion the natural fit?",
+              "text": "In the file-system total-size example, what makes recursion the natural fit?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The data itself is recursively defined (a folder contains files and/or more folders)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Folders are always empty"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Recursion is required by JavaScript for objects"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Arrays cannot hold nested objects"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the total number of subsets (including the empty set) for a set of n elements?",
+              "text": "What is the total number of subsets (including the empty set) for a set of n elements?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "2ⁿ"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "n"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "n²"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "n!"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">Recursion in JavaScript: Call Stack &amp; Memoization</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:7.1%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item active" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript" aria-current="page"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 2 of 28 &middot; Beginner</p>
+                        <h1>Recursion in JavaScript: Call Stack, Base Cases and Memoization</h1>
+                        <p class="learn-book-title">The Recursion Masterclass</p>
+                        <ul class="learn-meta text-caption">
+                            <li>36 min read</li>
+                            <li>Beginner</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/recursion-in-javascript.webp"><img src="../../assets/images/learn/dsa-master/recursion-in-javascript.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Recursion in JavaScript: Call Stack, Base Cases and Memoization: DSA Master chapter 2 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Recursion is a technique where a function solves a problem by calling itself on a smaller version of the same problem until it reaches a base case. This chapter covers the anatomy of a recursive function, what happens on the call stack, why naive Fibonacci is exponential, how memoization fixes it, and when iteration is the better choice.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Base case and recursive case</li><li>How the call stack works</li><li>Memoization</li><li>Recursion vs iteration trade-offs</li><li>Debugging recursive functions</li></ul>
+                        </section>
+<hr>
+
+<h2 id="2-0-why-this-chapter-exists-before-any-data-structure-chapter">2.0 Why This Chapter Exists Before Any Data Structure Chapter</h2>
+<p>Here&#39;s an uncomfortable truth about DSA education: <strong>almost every advanced topic in this book secretly depends on recursion.</strong> Trees are naturally recursive. Graph traversal (DFS) is naturally recursive. Backtracking <em>is</em> recursion with a specific discipline. Divide-and-conquer sorting algorithms (Merge Sort, Quick Sort) are recursion. Dynamic Programming is &quot;recursion with memory.&quot; If your mental model of recursion is shaky, every one of those chapters will feel like memorizing disconnected magic tricks instead of applying one deeply-understood idea over and over.</p>
+<p>So we stop here, before touching a single data structure, and build recursion from the studs up. Take this chapter seriously — more interview failures trace back to a shaky recursion model than to any single data structure.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>Recursion and the mathematical concept of <strong>induction</strong> were formalized around the same time in the early 20th century. In fact, writing a correct recursive function and writing a correct mathematical proof by induction are <em>the same skill</em> wearing different clothes: prove/handle the smallest case, then prove/handle that if it works for a smaller version, it works for the current version. If you&#39;ve ever done a proof by induction in a math class, you already have recursion intuition — you just didn&#39;t know it had a different name in code.</p>
+</aside>
+<hr>
+
+<h2 id="2-1-what-is-recursion-really">2.1 What Is Recursion, Really?</h2>
+<p><strong>Definition:</strong> Recursion is a technique where a function solves a problem by calling itself on a smaller version of the same problem, until it reaches a case simple enough to answer directly.</p>
+<p>That&#39;s the textbook definition. Now let&#39;s build the actual intuition, because the definition alone won&#39;t save you when you&#39;re staring at a blank editor in an interview.</p>
+<h3 id="real-life-analogy-russian-nesting-dolls-matryoshka">Real-Life Analogy: Russian Nesting Dolls (Matryoshka)</h3>
+<p>Imagine you&#39;re handed a Russian nesting doll and asked &quot;how many dolls are in this set?&quot; You don&#39;t need a special &quot;count all dolls&quot; superpower. You just need one simple rule, applied repeatedly:</p>
+<blockquote>
+<p>&quot;Open this doll. If there&#39;s nothing inside, the count is 1 (just me). If there&#39;s a smaller doll inside, the count is 1 (me) plus whatever the answer is for that smaller doll.&quot;</p>
+</blockquote>
+<p>Notice what just happened: you defined &quot;how many dolls are in <em>this</em> set&quot; <strong>in terms of</strong> &quot;how many dolls are in a <em>smaller</em> set.&quot; You never had to think about the whole tower of dolls at once. You only ever had to think about <strong>one layer</strong>, and trust that the same rule, applied to the smaller doll, would give the right answer.</p>
+<p>This is the single most important mental shift in this entire chapter:</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-the-leap-of-faith" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: The Leap of Faith</span></h3>
+<p>When writing a recursive function, <strong>do not try to trace the entire call stack in your head while writing it.</strong> This is the #1 reason beginners freeze up. Instead, take what Grady Booch and later recursion teachers call <strong>&quot;the leap of faith&quot;</strong>: assume your function already correctly solves the problem for a <em>smaller</em> input, and just write the one step of logic that combines &quot;the smaller answer&quot; with &quot;the current layer&quot; to produce the answer for the current input.</p>
+<p>You verify correctness by checking two things, and <em>only</em> two things:</p>
+<ol>
+<li><strong>Does it stop?</strong> (Base case)</li>
+<li><strong>Does one layer of logic correctly combine with a trusted smaller answer?</strong> (Recursive case)</li>
+</ol>
+<p>If both are true, the <em>entire</em> recursive structure is correct — by the same logic as mathematical induction. You do not need to mentally unwind ten layers of calls to trust your code.</p>
+</aside>
+<hr>
+
+<h2 id="2-2-anatomy-of-a-recursive-function">2.2 Anatomy of a Recursive Function</h2>
+<p>Every correct recursive function has exactly two required ingredients:</p>
+<h3 id="2-2-1-the-base-case">2.2.1 The Base Case</h3>
+<p><strong>Definition:</strong> The base case is the condition under which the function stops calling itself and returns a direct, non-recursive answer.</p>
+<p>Without a base case, your function calls itself forever (or until the program crashes) — this is the recursive equivalent of an infinite loop, and it&#39;s called <strong>infinite recursion</strong>.</p>
+<h3 id="2-2-2-the-recursive-case">2.2.2 The Recursive Case</h3>
+<p><strong>Definition:</strong> The recursive case is the step where the function calls itself with a <em>smaller or simpler</em> version of the input, then uses that result to compute the answer for the current input.</p>
+<p>Let&#39;s see both in the simplest possible example: factorial.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">factorial</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-comment">// BASE CASE: the simplest possible input we can answer directly</span>
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span> || n === <span class="hljs-number">1</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+  }
+
+  <span class="hljs-comment">// RECURSIVE CASE: solve a smaller problem (n-1), then combine</span>
+  <span class="hljs-keyword">return</span> n * <span class="hljs-title function_">factorial</span>(n - <span class="hljs-number">1</span>);
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">factorial</span>(<span class="hljs-number">5</span>)); <span class="hljs-comment">// 120</span></code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-1-forgetting-the-base-case" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake #1: Forgetting the Base Case</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// BROKEN — no base case, will recurse forever until stack overflow</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">factorialBroken</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">return</span> n * <span class="hljs-title function_">factorialBroken</span>(n - <span class="hljs-number">1</span>);
+}</code></pre></div>
+<p>Running this throws <code>RangeError: Maximum call stack size exceeded</code>. This error message is your friend — it&#39;s JavaScript telling you, very specifically, &quot;you have infinite (or too-deep) recursion, go find your missing or wrong base case.&quot;</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-2-the-recursive-case-doesn-t-shrink-the-problem" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake #2: The Recursive Case Doesn&#39;t Shrink the Problem</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// BROKEN — calls itself with the SAME n, never approaches the base case</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">factorialBroken2</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+  <span class="hljs-keyword">return</span> n * <span class="hljs-title function_">factorialBroken2</span>(n); <span class="hljs-comment">// should be (n - 1), not (n)!</span>
+}</code></pre></div>
+<p>This is a subtler, extremely common bug: the base case exists, but the recursive call never actually moves <em>toward</em> it. Always ask yourself explicitly: <strong>&quot;does every recursive call bring me strictly closer to a base case?&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="2-3-the-call-stack-what-s-actually-happening-in-memory">2.3 The Call Stack: What&#39;s Actually Happening in Memory</h2>
+<p>To truly understand recursion (not just pattern-match syntax), you must understand <strong>the call stack</strong>, because that&#39;s the actual physical mechanism recursion relies on.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-the-stack-of-plates" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: The Stack of Plates</span></h3>
+<p>Remember from <a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a> — a stack of plates is Last-In-First-Out (LIFO). The JavaScript call stack works exactly the same way. Every time a function is called (recursively or not), a new <strong>stack frame</strong> is pushed onto the call stack, containing that call&#39;s local variables and where to return to. When a function returns, its frame is popped off, and control resumes in the frame below it.</p>
+<p>Let&#39;s dry-run <code>factorial(3)</code> and watch the call stack build up and unwind.</p>
+<pre class="is-plain"><code>CALL STACK BUILDING UP (each call waits on the one below to resolve):
+
+factorial(3) called
+  needs: 3 * factorial(2)
+  |
+  factorial(2) called
+    needs: 2 * factorial(1)
+    |
+    factorial(1) called
+      BASE CASE HIT: returns 1
+    |
+  factorial(2) resumes: 2 * 1 = 2, returns 2
+  |
+factorial(3) resumes: 3 * 2 = 6, returns 6
+
+FINAL ANSWER: 6</code></pre>
+<p>Visualized as an actual stack (bottom = called first, top = called most recently):</p>
+<pre class="is-plain"><code>   Stack grows UP as calls happen, unwinds DOWN as they return
+
+   Time step 1:        Time step 2:        Time step 3:        Time step 4 (unwinding):
+   +-------------+                                              +-------------+
+   |             |                                              | f(1)-&gt;1     |  &lt;- returns 1
+   +-------------+     +-------------+     +-------------+      +-------------+
+   |             |     | f(2)        |     | f(2)        |      | f(2)=2*1=2  |  &lt;- returns 2
+   +-------------+     +-------------+     +-------------+      +-------------+
+   | f(3)        |     | f(3)        |     | f(3)        |      | f(3)=3*2=6  |  &lt;- returns 6
+   +-------------+     +-------------+     +-------------+      +-------------+</code></pre>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>When an interviewer asks &quot;what&#39;s the space complexity of this recursive function?&quot;, the answer almost always must account for <strong>the call stack itself</strong>, not just any explicit variables you declared. A recursive function with <code>n</code> levels of recursion uses <strong>O(n) space</strong>, even if it never explicitly creates an array — because each of those <code>n</code> stack frames occupies real memory until it returns. This is one of the most commonly missed points in interviews: candidates report O(1) space for a recursive solution because they only counted their own variables, forgetting the stack itself is memory too.</p>
+</aside>
+<hr>
+
+<h2 id="2-4-dry-run-fibonacci-where-recursion-gets-interesting">2.4 Dry Run: Fibonacci — Where Recursion Gets Interesting</h2>
+<p>Factorial only ever makes <strong>one</strong> recursive call per invocation — a &quot;linear&quot; recursion, shaped like a straight chain. Let&#39;s now study a function that makes <strong>two</strong> recursive calls, because this is where recursion becomes visually a <em>tree</em>, and where naive approaches become dangerously slow.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">fib</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;      <span class="hljs-comment">// BASE CASE 1</span>
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;      <span class="hljs-comment">// BASE CASE 2</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fib</span>(n - <span class="hljs-number">1</span>) + <span class="hljs-title function_">fib</span>(n - <span class="hljs-number">2</span>);  <span class="hljs-comment">// RECURSIVE CASE: two smaller calls</span>
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fib</span>(<span class="hljs-number">6</span>)); <span class="hljs-comment">// 8</span></code></pre></div>
+<h3 id="visualization-the-call-tree-for-fib-5">Visualization: The Call Tree for <code>fib(5)</code></h3>
+<pre class="is-plain"><code>                          fib(5)
+                        /        \
+                   fib(4)          fib(3)
+                  /      \        /      \
+             fib(3)    fib(2)  fib(2)   fib(1)
+            /     \    /    \  /    \
+       fib(2)  fib(1) fib(1) fib(0) fib(1) fib(0)
+       /    \
+   fib(1) fib(0)</code></pre>
+<p>Look closely at this tree. Do you notice something alarming? <strong><code>fib(3)</code> is computed twice. <code>fib(2)</code> is computed three times. <code>fib(1)</code> and <code>fib(0)</code> are computed many times.</strong> We are re-solving the exact same sub-problems over and over, throwing away the answer each time instead of remembering it.</p>
+<aside class="callout callout-math">
+<h3 id="mathematical-explanation-why-naive-fibonacci-is-o-2" class="callout-title" data-callout="math"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/><path d="M16 14v4"/></svg></span><span>Mathematical Explanation: Why Naive Fibonacci Is O(2ⁿ)</span></h3>
+<p>Each call to <code>fib(n)</code> (for n &gt; 1) spawns exactly 2 more calls. This branching factor of 2, repeated to a depth of roughly <code>n</code>, gives us a call tree with roughly <code>2ⁿ</code> total nodes (it&#39;s actually closer to <code>1.618ⁿ</code>, tied to the golden ratio, but for Big-O purposes we say <strong>O(2ⁿ)</strong> — exponential, and one of the worst complexity classes from <a href="/learn/dsa-master/big-o-notation-time-complexity" title="Big-O Notation &amp; Time Complexity in JavaScript">Chapter 1</a>&#39;s chart).</p>
+<p>This is your first concrete, painful proof that <strong>a correct recursive solution is not automatically an efficient one.</strong> Correctness and efficiency are separate questions, and this exact example — naive recursive Fibonacci — is one of the most common ways interviewers introduce the idea of <strong>memoization</strong>, which we build next.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake</span></h3>
+<p>Many beginners believe &quot;recursion is just slow&quot; after seeing naive Fibonacci run painfully slowly for <code>n = 40</code>. Recursion itself is not inherently slow — <strong>redundant recomputation of identical sub-problems</strong> is slow. Fix the redundancy (via memoization, which follows) and the recursive structure becomes perfectly efficient.</p>
+</aside>
+<hr>
+
+<h2 id="2-5-memoization-giving-recursion-a-memory">2.5 Memoization: Giving Recursion a Memory</h2>
+<p><strong>Definition:</strong> Memoization is an optimization technique where we cache (remember) the results of expensive function calls, so that if the same inputs occur again, we return the cached result instead of recomputing it.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>&quot;Memo-ization&quot; literally contains the word &quot;memo&quot; — think of it as <strong>the function leaving itself sticky notes</strong>: &quot;I already solved <code>fib(7)</code>, the answer is 13, don&#39;t redo this work.&quot;</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">fibMemo</span>(<span class="hljs-params">n, memo = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>()</span>) {
+  <span class="hljs-keyword">if</span> (memo.<span class="hljs-title function_">has</span>(n)) <span class="hljs-keyword">return</span> memo.<span class="hljs-title function_">get</span>(n);           <span class="hljs-comment">// Check the sticky note first!</span>
+
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+
+  <span class="hljs-keyword">const</span> result = <span class="hljs-title function_">fibMemo</span>(n - <span class="hljs-number">1</span>, memo) + <span class="hljs-title function_">fibMemo</span>(n - <span class="hljs-number">2</span>, memo);
+  memo.<span class="hljs-title function_">set</span>(n, result);                            <span class="hljs-comment">// Leave a sticky note before returning</span>
+  <span class="hljs-keyword">return</span> result;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fibMemo</span>(<span class="hljs-number">50</span>)); <span class="hljs-comment">// Instant, even though naive fib(50) would take longer than</span>
+                           <span class="hljs-comment">// the current age of the universe on typical hardware</span></code></pre></div>
+<p>We use a <code>Map</code> here rather than a plain object — modern JavaScript convention favors <code>Map</code> for dictionaries whose keys are dynamically generated (as opposed to objects, which are better suited to fixed, known-ahead-of-time property names). We&#39;ll dissect <code>Map</code> internals fully in <a href="/learn/dsa-master/hashing-hash-table-javascript" title="Hash Tables in JavaScript: Map, Set &amp; Hashing">Chapter 4</a>, but for now, just know: <code>Map.has(key)</code> and <code>Map.get(key)</code> are both O(1) average case.</p>
+</aside>
+<h3 id="complexity-after-memoization">Complexity After Memoization</h3>
+<ul>
+<li><strong>Time</strong>: O(n) — each unique value of <code>n</code> from <code>0</code> to the target is computed <strong>exactly once</strong>, and every subsequent request is an O(1) cache lookup.</li>
+<li><strong>Space</strong>: O(n) — for the memo cache, <em>plus</em> O(n) for the call stack depth. Still simplifies to O(n) total (we add these, and both are the same order).</li>
+</ul>
+<p>This is an almost unbelievable improvement: <strong>from O(2ⁿ) to O(n)</strong> by adding four lines of caching logic. This exact pattern — &quot;naive recursion is exponential because of overlapping sub-problems; add memoization to make it polynomial&quot; — is the entire conceptual seed of the <strong>Dynamic Programming Masterclass</strong> chapter later in this book. If you deeply understand this Fibonacci example, you have already understood 50% of what makes DP click for most learners.</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-a-reusable-generic-memoizer" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip: A Reusable Generic Memoizer</span></h3>
+<p>In real production JavaScript, you rarely hand-write memoization logic inline for every function. Instead, engineers write a generic <strong>higher-order function</strong> that wraps any pure function with memoization:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">memoize</span>(<span class="hljs-params">fn</span>) {
+  <span class="hljs-keyword">const</span> cache = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span> (<span class="hljs-params">...args</span>) {
+    <span class="hljs-keyword">const</span> key = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(args); <span class="hljs-comment">// simple key strategy for demonstration</span>
+    <span class="hljs-keyword">if</span> (cache.<span class="hljs-title function_">has</span>(key)) <span class="hljs-keyword">return</span> cache.<span class="hljs-title function_">get</span>(key);
+    <span class="hljs-keyword">const</span> result = <span class="hljs-title function_">fn</span>(...args);
+    cache.<span class="hljs-title function_">set</span>(key, result);
+    <span class="hljs-keyword">return</span> result;
+  };
+}
+
+<span class="hljs-keyword">const</span> fastFib = <span class="hljs-title function_">memoize</span>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">fib</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> n;
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fastFib</span>(n - <span class="hljs-number">1</span>) + <span class="hljs-title function_">fastFib</span>(n - <span class="hljs-number">2</span>);
+});
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fastFib</span>(<span class="hljs-number">40</span>)); <span class="hljs-comment">// fast</span></code></pre></div>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-json-stringify-key-collisions" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: <code>JSON.stringify</code> Key Collisions</span></h3>
+<p>Using <code>JSON.stringify(args)</code> as a cache key is a convenient teaching simplification, but it has real edge cases in production: it can&#39;t distinguish <code>undefined</code> from a missing argument in all cases, doesn&#39;t handle functions or symbols as arguments, and can be slow for very large objects. For simple numeric/string arguments (like our Fibonacci example), it&#39;s perfectly fine. For production-grade generic memoizers handling arbitrary object arguments, engineers typically use nested <code>Map</code>/<code>WeakMap</code> structures keyed by object identity instead of serialization. We&#39;ll revisit this exact trade-off when we reach the Dynamic Programming Masterclass.</p>
+</aside>
+<hr>
+
+<h2 id="2-6-two-recursion-patterns-every-engineer-must-recognize">2.6 Two Recursion Patterns Every Engineer Must Recognize</h2>
+<h3 id="2-6-1-linear-recursion-one-recursive-call">2.6.1 Linear Recursion (One Recursive Call)</h3>
+<p>Shape: a straight chain, like a single line of dominoes falling. Factorial, summing an array recursively, and traversing a singly-linked list are all linear recursion.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sumArray</span>(<span class="hljs-params">arr, index = <span class="hljs-number">0</span></span>) {
+  <span class="hljs-keyword">if</span> (index === arr.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;              <span class="hljs-comment">// BASE CASE: ran off the end</span>
+  <span class="hljs-keyword">return</span> arr[index] + <span class="hljs-title function_">sumArray</span>(arr, index + <span class="hljs-number">1</span>);     <span class="hljs-comment">// RECURSIVE CASE</span>
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">sumArray</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>])); <span class="hljs-comment">// 15</span></code></pre></div>
+<p><strong>Dry run for <code>sumArray([1,2,3])</code>:</strong></p>
+<pre class="is-plain"><code>sumArray([1,2,3], 0) = 1 + sumArray([1,2,3], 1)
+                     = 1 + (2 + sumArray([1,2,3], 2))
+                     = 1 + (2 + (3 + sumArray([1,2,3], 3)))
+                     = 1 + (2 + (3 + 0))                    &lt;- base case hit
+                     = 1 + (2 + 3)
+                     = 1 + 5
+                     = 6</code></pre>
+<h3 id="2-6-2-branching-tree-recursion-multiple-recursive-calls">2.6.2 Branching (Tree) Recursion (Multiple Recursive Calls)</h3>
+<p>Shape: a tree, like Fibonacci above, or exploring every possible path through a maze. This is the shape underlying tree traversal, graph DFS, and backtracking — all covered in later chapters.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">countPaths</span>(<span class="hljs-params">row, col</span>) {
+  <span class="hljs-comment">// Counts paths from (row, col) to (0, 0), moving only up or left</span>
+  <span class="hljs-keyword">if</span> (row === <span class="hljs-number">0</span> &amp;&amp; col === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;   <span class="hljs-comment">// BASE CASE: reached the destination</span>
+  <span class="hljs-keyword">if</span> (row &lt; <span class="hljs-number">0</span> || col &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;       <span class="hljs-comment">// BASE CASE: walked off the grid</span>
+
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">countPaths</span>(row - <span class="hljs-number">1</span>, col) + <span class="hljs-title function_">countPaths</span>(row, col - <span class="hljs-number">1</span>); <span class="hljs-comment">// branch two ways</span>
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">countPaths</span>(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)); <span class="hljs-comment">// 6</span></code></pre></div>
+<aside class="callout callout-revise">
+<h3 id="quick-revision" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision</span></h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Pattern</th>
+<th>Shape</th>
+<th>Examples</th>
+</tr>
+</thead><tbody><tr>
+<td>Linear recursion</td>
+<td>Chain</td>
+<td>Factorial, array sum, linked list traversal</td>
+</tr>
+<tr>
+<td>Branching recursion</td>
+<td>Tree</td>
+<td>Fibonacci, tree traversal, backtracking, DFS</td>
+</tr>
+</tbody></table></div>
+</aside>
+<hr>
+
+<h2 id="2-7-recursion-vs-iteration-the-eternal-trade-off">2.7 Recursion vs. Iteration: The Eternal Trade-off</h2>
+<p>Every recursive solution <em>can</em> be rewritten as an iterative (loop-based) solution, and vice versa — they are formally equivalent in power. But they are not equally <em>convenient</em> for every problem. Choosing correctly is a real engineering skill.</p>
+<h3 id="naive-vs-better-vs-best-summing-an-array-three-ways">Naive vs. Better vs. Best: Summing an Array Three Ways</h3>
+<p><strong>Naive (recursive, as shown above):</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sumRecursive</span>(<span class="hljs-params">arr, index = <span class="hljs-number">0</span></span>) {
+  <span class="hljs-keyword">if</span> (index === arr.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">return</span> arr[index] + <span class="hljs-title function_">sumRecursive</span>(arr, index + <span class="hljs-number">1</span>);
+}
+<span class="hljs-comment">// Time: O(n)   Space: O(n) — due to call stack depth!</span></code></pre></div>
+<p><strong>Better (iterative):</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sumIterative</span>(<span class="hljs-params">arr</span>) {
+  <span class="hljs-keyword">let</span> total = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> num <span class="hljs-keyword">of</span> arr) {
+    total += num;
+  }
+  <span class="hljs-keyword">return</span> total;
+}
+<span class="hljs-comment">// Time: O(n)   Space: O(1) — no call stack growth, just one accumulator variable</span></code></pre></div>
+<p><strong>Best (built-in, most idiomatic modern JS):</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sumBuiltIn</span>(<span class="hljs-params">arr</span>) {
+  <span class="hljs-keyword">return</span> arr.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">total, num</span>) =&gt;</span> total + num, <span class="hljs-number">0</span>);
+}
+<span class="hljs-comment">// Time: O(n)   Space: O(1) auxiliary (reduce doesn&#x27;t grow a call stack per element)</span></code></pre></div>
+<h3 id="when-to-actually-choose-recursion-over-iteration">When to Actually Choose Recursion Over Iteration</h3>
+<p>Given that iteration is often more space-efficient, why use recursion at all? Because <strong>some problems are naturally tree-shaped or self-similar, and forcing them into a loop-based shape makes the code drastically harder to read, write, and prove correct.</strong></p>
+<p>Concretely, prefer recursion when:</p>
+<ol>
+<li><strong>The data structure itself is recursive</strong> — trees and graphs are defined in terms of smaller trees/graphs. Traversing them recursively mirrors their actual structure. (You <em>can</em> iteratively traverse a tree using an explicit stack, and we will show this too in the Trees chapter — but the recursive version is almost always more readable.)</li>
+<li><strong>You need to explore multiple branching possibilities</strong> — backtracking problems (generate all subsets, all permutations, solve a maze) are dramatically cleaner recursively, because the call stack does the &quot;remember where I was and try the next option&quot; bookkeeping <em>for you, automatically</em>.</li>
+<li><strong>Divide-and-conquer is the natural strategy</strong> — Merge Sort and Quick Sort (Chapter on Sorting) are dramatically clearer recursively.</li>
+</ol>
+<p>Prefer iteration when:</p>
+<ol>
+<li><strong>The problem is a simple linear pass</strong> — summing, finding a max, filtering — a <code>for</code> loop is more direct and avoids unnecessary call stack usage.</li>
+<li><strong>Stack depth could be dangerously large</strong> — JavaScript engines impose a maximum call stack size (typically somewhere around 10,000–15,000 frames depending on the engine and available memory, though this is not a spec-guaranteed number). A recursive solution over, say, 1,000,000 items will crash with <code>RangeError: Maximum call stack size exceeded</code>, while an iterative solution handles it fine.</li>
+</ol>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-blind-recursion-on-unbounded-input" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Blind Recursion on Unbounded Input</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// DANGEROUS if `arr` can be very large (e.g., 100,000+ elements)</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">sumRecursive</span>(<span class="hljs-params">arr, index = <span class="hljs-number">0</span></span>) {
+  <span class="hljs-keyword">if</span> (index === arr.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">return</span> arr[index] + <span class="hljs-title function_">sumRecursive</span>(arr, index + <span class="hljs-number">1</span>);
+}
+
+<span class="hljs-title function_">sumRecursive</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(<span class="hljs-number">1_000_000</span>).<span class="hljs-title function_">fill</span>(<span class="hljs-number">1</span>)); <span class="hljs-comment">// 💥 RangeError: Maximum call stack size exceeded</span></code></pre></div>
+<p>A shockingly common interview and real-world bug: a candidate writes an elegant recursive solution, and it&#39;s correct — but it silently assumes the input will always be small. <strong>Always ask about expected input size before committing to a recursive approach for a simple linear-shaped problem.</strong> For tree/graph-shaped problems, this is less of a concern in typical interview-sized examples, but it matters enormously in production systems processing deep or large real-world trees (e.g., deeply nested JSON, enormous file system trees).</p>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-tail-call-optimization-and-why-you-can-t-rely-on-it-in-js" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip: Tail Call Optimization (and why you can&#39;t rely on it in JS)</span></h3>
+<p>Some languages optimize a specific pattern called <strong>tail call optimization (TCO)</strong> — where if a recursive call is the very last operation in a function (nothing left to do after it returns), the engine can reuse the current stack frame instead of pushing a new one, making the recursion run in O(1) space.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// This IS a tail call — the recursive call is the very last action, nothing</span>
+<span class="hljs-comment">// happens to its result afterward except returning it directly.</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">sumTailRecursive</span>(<span class="hljs-params">arr, index = <span class="hljs-number">0</span>, accumulator = <span class="hljs-number">0</span></span>) {
+  <span class="hljs-keyword">if</span> (index === arr.<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> accumulator;
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">sumTailRecursive</span>(arr, index + <span class="hljs-number">1</span>, accumulator + arr[index]);
+}</code></pre></div>
+<p><strong>The catch:</strong> TCO is part of the ECMAScript 2015 (ES6) specification, but as of this writing, <strong>only Safari&#39;s JavaScriptCore engine actually implements it</strong>. V8 (Chrome, Node.js, Edge) and SpiderMonkey (Firefox) do <strong>not</strong> implement proper tail call optimization, despite it being in the spec. This is a well-known, somewhat infamous gap between spec and reality in the JavaScript ecosystem.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-interview-tip-combined" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake / Interview Tip Combined</span></h3>
+<p>Do <strong>not</strong> tell an interviewer &quot;I&#39;ll rely on tail call optimization to make this O(1) space in JavaScript&quot; — a strong interviewer will immediately follow up with &quot;does V8 actually implement that?&quot; and the honest, correct answer is <strong>no</strong>. Writing tail-recursive-<em>style</em> code in JavaScript is still a good practice for clarity, but you must report its space complexity as O(n) (stack depth) in virtually every real JavaScript engine today, not O(1). This is a fantastic, specific piece of JavaScript trivia that signals real depth if you bring it up proactively.</p>
+</aside>
+<hr>
+
+<h2 id="2-8-classic-recursion-problems-fully-worked">2.8 Classic Recursion Problems, Fully Worked</h2>
+<p>Let&#39;s now build real muscle memory by working through canonical recursion problems the <em>right</em> way: naive → better → best, with full dry runs.</p>
+<h3 id="2-8-1-reversing-a-string-recursively">2.8.1 Reversing a String Recursively</h3>
+<p><strong>Naive recursive approach:</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">reverseString</span>(<span class="hljs-params">str</span>) {
+  <span class="hljs-keyword">if</span> (str.<span class="hljs-property">length</span> &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> str;                    <span class="hljs-comment">// BASE CASE</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">reverseString</span>(str.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>)) + str[<span class="hljs-number">0</span>];         <span class="hljs-comment">// RECURSIVE CASE</span>
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">reverseString</span>(<span class="hljs-string">&#x27;hello&#x27;</span>)); <span class="hljs-comment">// &#x27;olleh&#x27;</span></code></pre></div>
+<p><strong>Dry run for <code>&#39;abc&#39;</code>:</strong></p>
+<pre class="is-plain"><code>reverseString('abc')
+  = reverseString('bc') + 'a'
+  = (reverseString('c') + 'b') + 'a'
+  = (('' + 'c') + 'b') + 'a'      &lt;- reverseString('') hits base case first... </code></pre>
+<p>Wait — let&#39;s be precise. <code>str.length &lt;= 1</code> catches single characters directly as the base case:</p>
+<pre class="is-plain"><code>reverseString('abc')
+  = reverseString('bc') + 'a'
+  = (reverseString('c') + 'b') + 'a'
+  = ('c' + 'b') + 'a'        &lt;- reverseString('c') hits base case, returns 'c' directly
+  = 'cb' + 'a'
+  = 'cba'</code></pre>
+<ul>
+<li><strong>Time</strong>: O(n²) in most engines! Because <code>str.slice(1)</code> itself is O(n), and we call it n times → O(n) × O(n) = O(n²). This is a sneaky trap: the recursion <em>looks</em> like it should be O(n), but the hidden cost of <code>.slice()</code> at every level makes it quadratic.</li>
+<li><strong>Space</strong>: O(n) for the call stack, plus O(n) for the string concatenation results at each level.</li>
+</ul>
+<p><strong>Better — iterative with array + two pointers (as previewed in Chapter 1):</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">reverseStringIterative</span>(<span class="hljs-params">str</span>) {
+  <span class="hljs-keyword">const</span> chars = str.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;&#x27;</span>);
+  <span class="hljs-keyword">let</span> left = <span class="hljs-number">0</span>, right = chars.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>;
+  <span class="hljs-keyword">while</span> (left &lt; right) {
+    [chars[left], chars[right]] = [chars[right], chars[left]];
+    left++;
+    right--;
+  }
+  <span class="hljs-keyword">return</span> chars.<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27;&#x27;</span>);
+}
+<span class="hljs-comment">// Time: O(n)   Space: O(n) for the array copy (strings are immutable, so this is</span>
+<span class="hljs-comment">//              essentially unavoidable if you want a genuinely new reversed string)</span></code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-2" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake</span></h3>
+<p>Beginners see the elegant one-line recursive string reversal in tutorials and assume it&#39;s &quot;the efficient way&quot; because it&#39;s short. <strong>Short code and fast code are unrelated properties.</strong> Always separately verify complexity — never infer it from how elegant or compact code looks.</p>
+</aside>
+<hr>
+<h3 id="2-8-2-power-function-x-n">2.8.2 Power Function: <code>x^n</code></h3>
+<p><strong>Naive recursive:</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">power</span>(<span class="hljs-params">x, n</span>) {
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;                 <span class="hljs-comment">// BASE CASE: anything^0 = 1</span>
+  <span class="hljs-keyword">return</span> x * <span class="hljs-title function_">power</span>(x, n - <span class="hljs-number">1</span>);            <span class="hljs-comment">// RECURSIVE CASE</span>
+}
+<span class="hljs-comment">// Time: O(n)   Space: O(n)</span></code></pre></div>
+<p><strong>Optimized — &quot;fast power&quot; using divide and conquer:</strong></p>
+<p>This is a genuinely important interview pattern, not just a toy optimization. The key insight: <code>x^n = (x^(n/2))²</code>, and we only need to compute the half-power <em>once</em> and square it, instead of computing the full chain of <code>n</code> multiplications.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">fastPower</span>(<span class="hljs-params">x, n</span>) {
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;                          <span class="hljs-comment">// BASE CASE</span>
+
+  <span class="hljs-keyword">const</span> half = <span class="hljs-title function_">fastPower</span>(x, <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(n / <span class="hljs-number">2</span>));   <span class="hljs-comment">// compute ONCE</span>
+
+  <span class="hljs-keyword">if</span> (n % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">return</span> half * half;                            <span class="hljs-comment">// even exponent</span>
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span> half * half * x;                        <span class="hljs-comment">// odd exponent, one extra factor</span>
+  }
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">fastPower</span>(<span class="hljs-number">2</span>, <span class="hljs-number">10</span>)); <span class="hljs-comment">// 1024</span></code></pre></div>
+<p><strong>Dry run for <code>fastPower(2, 10)</code>:</strong></p>
+<pre class="is-plain"><code>fastPower(2, 10)
+  half = fastPower(2, 5)
+    half = fastPower(2, 2)
+      half = fastPower(2, 1)
+        half = fastPower(2, 0) = 1                  &lt;- base case
+        n=1 is odd: 1 * 1 * 2 = 2
+      n=2 is even: 2 * 2 = 4
+    n=5 is odd: 4 * 4 * 2 = 32
+  n=10 is even: 32 * 32 = 1024
+
+RESULT: 1024 ✓</code></pre>
+<ul>
+<li><strong>Naive time</strong>: O(n) — n sequential multiplications.</li>
+<li><strong>Fast power time</strong>: <strong>O(log n)</strong> — because at every recursive level, <code>n</code> is cut in half, exactly the same halving pattern as binary search from Chapter 1.</li>
+<li><strong>Space</strong>: O(log n) for both the call stack depth (since fast power only recurses log n times).</li>
+</ul>
+<p>This is a beautiful, concrete illustration of the <strong>&quot;naive → better → best&quot;</strong> framework the whole book follows: same problem, same correctness, but a fundamentally different growth rate by exploiting a mathematical structure (repeated squaring) instead of brute-force repetition.</p>
+<aside class="callout callout-interview">
+<h3 id="interview-tip-2" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>&quot;Fast exponentiation&quot; (also called &quot;exponentiation by squaring&quot;) appears frequently in problems involving modular arithmetic (common in cryptography-adjacent interview questions) and in problems explicitly asking you to compute <code>x^n mod m</code> for huge <code>n</code>. Recognizing &quot;this smells like repeated halving&quot; is a pattern worth having on instant recall.</p>
+</aside>
+<hr>
+<h3 id="2-8-3-generating-all-subsets-of-a-set-power-set-branching-recursion-in-action">2.8.3 Generating All Subsets of a Set (Power Set) — Branching Recursion in Action</h3>
+<p>This is our first real taste of the <strong>backtracking</strong> family (a full masterclass chapter awaits later), and it&#39;s the perfect example of branching recursion solving an exponential-by-nature problem as efficiently as mathematically possible.</p>
+<p><strong>The problem:</strong> given <code>[1, 2, 3]</code>, generate every possible subset: <code>[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]</code>.</p>
+<h3 id="intuition-the-include-or-exclude-decision-tree">Intuition: The &quot;Include or Exclude&quot; Decision Tree</h3>
+<p>For every single element, we face exactly one binary decision: <strong>include it in the current subset, or don&#39;t.</strong> With <code>n</code> elements, that&#39;s <code>n</code> binary decisions, giving <code>2ⁿ</code> total possible subsets — which matches our O(2ⁿ) complexity class from Chapter 1 exactly, and this time, it&#39;s <em>unavoidable</em>, because there genuinely are <code>2ⁿ</code> valid outputs to produce. (Unlike naive Fibonacci, where O(2ⁿ) was a <em>bug</em> we could fix — here, O(2ⁿ) is the honest lower bound, because we must generate that many results.)</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">generateSubsets</span>(<span class="hljs-params">nums</span>) {
+  <span class="hljs-keyword">const</span> result = [];
+
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">backtrack</span>(<span class="hljs-params">index, currentSubset</span>) {
+    <span class="hljs-comment">// BASE CASE: we&#x27;ve made a decision for every element</span>
+    <span class="hljs-keyword">if</span> (index === nums.<span class="hljs-property">length</span>) {
+      result.<span class="hljs-title function_">push</span>([...currentSubset]); <span class="hljs-comment">// copy! (explained below)</span>
+      <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-comment">// CHOICE 1: exclude nums[index]</span>
+    <span class="hljs-title function_">backtrack</span>(index + <span class="hljs-number">1</span>, currentSubset);
+
+    <span class="hljs-comment">// CHOICE 2: include nums[index]</span>
+    currentSubset.<span class="hljs-title function_">push</span>(nums[index]);
+    <span class="hljs-title function_">backtrack</span>(index + <span class="hljs-number">1</span>, currentSubset);
+    currentSubset.<span class="hljs-title function_">pop</span>(); <span class="hljs-comment">// undo the choice — this is the &quot;backtrack&quot; step!</span>
+  }
+
+  <span class="hljs-title function_">backtrack</span>(<span class="hljs-number">0</span>, []);
+  <span class="hljs-keyword">return</span> result;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">generateSubsets</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]));
+<span class="hljs-comment">// [[], [3], [2], [2,3], [1], [1,3], [1,2], [1,2,3]]</span></code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-forgetting-to-copy-the-array" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Forgetting to Copy the Array</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">result.<span class="hljs-title function_">push</span>(currentSubset);      <span class="hljs-comment">// <span class="hljs-doctag">BUG:</span> pushes a REFERENCE, not a snapshot</span>
+result.<span class="hljs-title function_">push</span>([...currentSubset]); <span class="hljs-comment">// CORRECT: pushes a fresh copy</span></code></pre></div>
+<p>This is one of the single most common bugs in all of backtracking-style code, so common it deserves its own callout box:</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-critical-memorize-this-one" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake (Critical — Memorize This One)</span></h3>
+<p><code>currentSubset</code> is <strong>one single array object</strong>, mutated in place throughout the entire recursive process (via <code>.push()</code> and <code>.pop()</code>), because mutating in place is O(1) per operation, versus O(n) if we created a brand-new array copy at every recursive call. But this means if you push the <em>reference</em> to <code>result</code> instead of a copy, every entry in your final <code>result</code> array ends up <strong>pointing to the exact same underlying array</strong> — and by the time recursion finishes, they&#39;ll all show whatever the <em>final</em> state of <code>currentSubset</code> happened to be (usually empty, since we pop everything back out by the end). Always push <code>[...currentSubset]</code> (a shallow copy) when saving a mutable working array into a results collection, never the mutable array itself.</p>
+</aside>
+<h3 id="the-undo-step-is-what-makes-it-backtracking">The &quot;Undo&quot; Step Is What Makes It Backtracking</h3>
+<p>Notice the <code>currentSubset.pop()</code> after the recursive call returns. This is the defining signature of backtracking: <strong>try a choice, recurse, then undo the choice before trying the next one</strong>, so that sibling branches in the decision tree don&#39;t see stale state from a previous branch. We will formalize this completely in the dedicated Backtracking Masterclass chapter — for now, just recognize the shape: <strong>choose → explore → un-choose.</strong></p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-2" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>Backtracking&#39;s core rhythm, in three words: <strong>&quot;Choose, Explore, Unchoose.&quot;</strong> Say it like a mantra whenever you see a problem asking for &quot;all possible ways to...&quot; or &quot;all combinations/permutations/subsets of...&quot;.</p>
+</aside>
+<hr>
+
+<h2 id="2-9-recursion-on-recursive-data-a-preview-of-trees">2.9 Recursion on Recursive Data (A Preview of Trees)</h2>
+<p>So far we&#39;ve recursed on arrays, strings, and numbers. But recursion&#39;s <em>truest</em> home is recursively-defined data — and there&#39;s no better preview than a directory/file system, since everyone already has the right mental model for it.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// A simplified file-system-like structure</span>
+<span class="hljs-keyword">const</span> fileSystem = {
+  <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;root&#x27;</span>,
+  <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;folder&#x27;</span>,
+  <span class="hljs-attr">children</span>: [
+    { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;photo.jpg&#x27;</span>, <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;file&#x27;</span>, <span class="hljs-attr">size</span>: <span class="hljs-number">500</span> },
+    {
+      <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;documents&#x27;</span>,
+      <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;folder&#x27;</span>,
+      <span class="hljs-attr">children</span>: [
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;resume.pdf&#x27;</span>, <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;file&#x27;</span>, <span class="hljs-attr">size</span>: <span class="hljs-number">200</span> },
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;notes.txt&#x27;</span>, <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;file&#x27;</span>, <span class="hljs-attr">size</span>: <span class="hljs-number">10</span> },
+      ],
+    },
+  ],
+};
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">getTotalSize</span>(<span class="hljs-params">node</span>) {
+  <span class="hljs-keyword">if</span> (node.<span class="hljs-property">type</span> === <span class="hljs-string">&#x27;file&#x27;</span>) {
+    <span class="hljs-keyword">return</span> node.<span class="hljs-property">size</span>;                 <span class="hljs-comment">// BASE CASE: a file&#x27;s size is just itself</span>
+  }
+
+  <span class="hljs-comment">// RECURSIVE CASE: a folder&#x27;s size is the sum of all its children&#x27;s sizes</span>
+  <span class="hljs-keyword">let</span> total = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> child <span class="hljs-keyword">of</span> node.<span class="hljs-property">children</span>) {
+    total += <span class="hljs-title function_">getTotalSize</span>(child);
+  }
+  <span class="hljs-keyword">return</span> total;
+}
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">getTotalSize</span>(fileSystem)); <span class="hljs-comment">// 710</span></code></pre></div>
+<p>Notice the structure of the problem itself is recursive: <strong>a folder is defined as &quot;a collection of files and/or other folders.&quot;</strong> This is precisely the same shape as a tree data structure (which we build formally, node by node, in the Trees chapter), and precisely why tree algorithms are almost always written recursively — the code mirrors the natural recursive definition of the data. This example is the bridge from &quot;recursion as a technique&quot; (this chapter) to &quot;recursion as the natural language of hierarchical data structures&quot; (upcoming chapters).</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip</span></h3>
+<p>Whenever you see data described as &quot;a thing that contains more of the same kind of thing&quot; (a folder containing folders, a comment containing reply-comments, an org chart where a manager has direct reports who are also potentially managers), your brain should immediately flag: <strong>&quot;this is recursively-shaped data, and a recursive function is very likely the natural tool here.&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="2-10-debugging-recursive-functions-a-practical-toolkit">2.10 Debugging Recursive Functions: A Practical Toolkit</h2>
+<p>Recursive bugs are notoriously confusing to beginners because the &quot;state&quot; of the program is smeared across many stack frames instead of sitting in one place. Here is the practical toolkit professionals actually use.</p>
+<h3 id="technique-1-indented-console-logging-visualize-the-tree-shape">Technique 1: Indented Console Logging (Visualize the Tree Shape)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">fibDebug</span>(<span class="hljs-params">n, depth = <span class="hljs-number">0</span></span>) {
+  <span class="hljs-keyword">const</span> indent = <span class="hljs-string">&#x27;  &#x27;</span>.<span class="hljs-title function_">repeat</span>(depth);
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">${indent}</span>fib(<span class="hljs-subst">${n}</span>) called`</span>);
+
+  <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">1</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">${indent}</span>-&gt; returning <span class="hljs-subst">${n}</span> (base case)`</span>);
+    <span class="hljs-keyword">return</span> n;
+  }
+
+  <span class="hljs-keyword">const</span> result = <span class="hljs-title function_">fibDebug</span>(n - <span class="hljs-number">1</span>, depth + <span class="hljs-number">1</span>) + <span class="hljs-title function_">fibDebug</span>(n - <span class="hljs-number">2</span>, depth + <span class="hljs-number">1</span>);
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">${indent}</span>-&gt; returning <span class="hljs-subst">${result}</span>`</span>);
+  <span class="hljs-keyword">return</span> result;
+}
+
+<span class="hljs-title function_">fibDebug</span>(<span class="hljs-number">4</span>);</code></pre></div>
+<p>Output (indentation visually reconstructs the call tree from section 2.4):</p>
+<pre class="is-plain"><code>fib(4) called
+  fib(3) called
+    fib(2) called
+      fib(1) called
+      -&gt; returning 1 (base case)
+      fib(0) called
+      -&gt; returning 0 (base case)
+    -&gt; returning 1
+    fib(1) called
+    -&gt; returning 1 (base case)
+  -&gt; returning 2
+  fib(2) called
+    fib(1) called
+    -&gt; returning 1 (base case)
+    fib(0) called
+    -&gt; returning 0 (base case)
+  -&gt; returning 1
+-&gt; returning 3</code></pre>
+<h3 id="technique-2-always-verify-the-base-case-in-isolation-first">Technique 2: Always Verify the Base Case in Isolation First</h3>
+<p>Before trusting <em>any</em> recursive function, manually verify: does calling it with the smallest/simplest possible input return the exact right answer, with zero recursive calls happening? If the base case itself is wrong, every single answer built on top of it (via the leap of faith) will be wrong too, no matter how correct your recursive-case logic is.</p>
+<h3 id="technique-3-print-stack-depth-to-catch-runaway-recursion-early">Technique 3: Print Stack Depth to Catch Runaway Recursion Early</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">safeRecurse</span>(<span class="hljs-params">n, depth = <span class="hljs-number">0</span></span>) {
+  <span class="hljs-keyword">if</span> (depth &gt; <span class="hljs-number">10000</span>) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;Recursion depth exceeded expected bound — likely infinite recursion bug&#x27;</span>);
+  }
+  <span class="hljs-comment">// ... rest of function</span>
+}</code></pre></div>
+<p>This is a defensive technique for developing (not shipping) recursive functions on unfamiliar recursive data — it turns a cryptic native <code>RangeError</code> (which gives you no context about <em>which</em> function or <em>why</em>) into an error message that at least confirms your suspicion and marks where to look.</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-3" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake</span></h3>
+<p>A <code>RangeError: Maximum call stack size exceeded</code> does <strong>not</strong> always mean &quot;my base case is missing.&quot; It can also mean: the base case exists but is unreachable due to a logic bug (see Common Mistake #2 in section 2.2), or the recursion is <em>correct</em> but the input is legitimately too large/deep for recursion to handle safely in JavaScript (see section 2.7). Diagnose which of these three scenarios you&#39;re in before &quot;fixing&quot; anything — a wrong fix (like arbitrarily increasing stack size via Node flags) can mask a genuine logic bug.</p>
+</aside>
+<hr>
+
+<h2 id="2-11-chapter-summary">2.11 Chapter Summary</h2>
+<p>We built recursion from first principles in this chapter, and it is worth restating the throughline explicitly because it underlies nearly everything left in this book. Recursion is a technique for solving a problem by trusting that a smaller version of the exact same problem is already solved (the &quot;leap of faith&quot;), and writing only the logic needed to combine that trusted smaller answer with the current layer. Every correct recursive function needs exactly two ingredients: a <strong>base case</strong> that stops the recursion, and a <strong>recursive case</strong> that both shrinks the problem and combines results correctly.</p>
+<p>We learned that recursion is physically implemented via the <strong>call stack</strong>, a Last-In-First-Out structure, and that this has a real, often-overlooked consequence: recursive solutions carry <strong>O(depth) space complexity</strong> from stack frames alone, regardless of whether they declare any other memory. We saw the two fundamental shapes recursion takes — <strong>linear</strong> (a chain, like factorial) and <strong>branching</strong> (a tree, like Fibonacci or subset generation) — and we proved, via naive Fibonacci&#39;s O(2ⁿ) blowup, that a recursive solution being <em>correct</em> says nothing about it being <em>efficient</em>: overlapping sub-problems must be caught and cached via <strong>memoization</strong> to avoid catastrophic redundant recomputation, a technique that is the direct conceptual ancestor of the entire Dynamic Programming chapter ahead.</p>
+<p>We compared recursion against iteration honestly, without dogma in either direction: iteration wins for simple linear passes and for avoiding JavaScript&#39;s real, practical call-stack depth limits, while recursion wins decisively whenever the <em>data itself</em> is recursively shaped (trees, nested structures) or the problem requires exploring many branching possibilities (backtracking). We learned the specific, sometimes-surprising JavaScript trivia that <strong>tail call optimization exists in the ECMAScript spec but is not implemented in V8</strong>, meaning you must never claim O(1) space from tail recursion in a Node.js or Chrome context. Finally, we worked five classic problems end-to-end with the naive → better → best framework (factorial, Fibonacci, string reversal, fast exponentiation, and power-set generation via backtracking), and previewed how recursion naturally mirrors recursively-defined data like file systems — the exact bridge into the Trees chapter ahead.</p>
+<hr>
+
+<h2 id="2-12-revision-notes">2.12 Revision Notes</h2>
+<ul>
+<li>Every recursive function needs a base case (stops it) and a recursive case (shrinks the problem toward the base case).</li>
+<li>The &quot;leap of faith&quot;: trust the recursive call on a smaller input already works; only verify the current layer&#39;s combining logic.</li>
+<li>The call stack is real memory: recursion depth <code>n</code> means O(n) space, even with zero other variables.</li>
+<li>Naive branching recursion can hide exponential blowup from overlapping sub-problems (Fibonacci) — memoization fixes this by caching already-solved sub-problems.</li>
+<li>Recursion shapes: linear (chain) vs. branching (tree).</li>
+<li>Prefer recursion for recursively-shaped data (trees, nested structures) and branching-exploration problems (backtracking). Prefer iteration for simple linear passes and when input size threatens JS&#39;s real call stack limits.</li>
+<li>JavaScript engines (V8 especially) do <strong>not</strong> implement tail call optimization despite it being in the ES2015 spec — never claim O(1) space from tail recursion in JS.</li>
+<li>Backtracking&#39;s rhythm: choose → explore → un-choose (undo mutations after the recursive call returns), and always push a <em>copy</em> of a mutable working array into a results collection, never the live reference.</li>
+</ul>
+<hr>
+
+<h2 id="2-13-mind-map-ascii">2.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                                  RECURSION
+                                      |
+        +---------------+------------+------------+----------------+
+        |               |                          |                |
+   ANATOMY          CALL STACK               PATTERNS          RECURSION vs
+        |               |                          |            ITERATION
+   Base case      LIFO frames                +-----+-----+          |
+   Recursive      O(depth) space         Linear      Branching   Use recursion:
+   case shrinks   even w/ no vars        (chain)      (tree)     - recursive data
+   toward base                              |            |       - branching search
+                                        factorial    fibonacci,   Use iteration:
+                                        array sum    subsets,     - simple linear pass
+                                                     backtracking - stack depth risk
+                                                          |
+                                                    OVERLAPPING SUBPROBLEMS
+                                                          |
+                                                    MEMOIZATION
+                                                    (cache results)
+                                                    O(2^n) -&gt; O(n)
+                                                          |
+                                                    seeds DYNAMIC PROGRAMMING
+                                                    (later chapter)</code></pre>
+<hr>
+
+<h2 id="2-14-cheat-sheet">2.14 Cheat Sheet</h2>
+<pre class="is-plain"><code>RECURSION CHECKLIST
+=====================
+1. What is the base case? (simplest input, answered directly, no recursive call)
+2. Does every recursive call move STRICTLY closer to the base case?
+3. What does the recursive case need to COMBINE (current layer + trusted smaller answer)?
+4. Are there overlapping sub-problems? -&gt; add memoization (Map cache)
+5. What's the real space complexity? -&gt; don't forget O(depth) for the call stack itself!
+6. Is input size safe for JS's real stack limit (~10-15k frames)? If not, consider iteration.
+
+PATTERN RECOGNITION
+=====================
+&quot;smaller version of the same problem&quot;     -&gt; recursion candidate
+&quot;tree / nested / hierarchical data&quot;       -&gt; recursion is natural
+&quot;generate all subsets/permutations/combos&quot;-&gt; branching recursion + backtracking
+&quot;same expensive call repeated with same
+ inputs across the recursion tree&quot;        -&gt; add memoization
+&quot;x^n, repeated halving structure&quot;         -&gt; divide &amp; conquer (O(log n))
+
+JAVASCRIPT-SPECIFIC GOTCHAS
+=============================
+- No real tail call optimization in V8 -&gt; tail-recursive style is still O(n) space in Node/Chrome
+- str.slice()/substring() inside recursion adds hidden O(n) cost per call
+- Pushing a mutable working array into results without [...copy] causes stale-reference bugs
+- RangeError: Maximum call stack size exceeded -&gt; missing base case, unreachable base case,
+  OR legitimately-too-deep input for recursion</code></pre>
+<hr>
+
+<h2 id="2-15-key-takeaways">2.15 Key Takeaways</h2>
+<ol>
+<li>Recursion = trust the smaller answer, write only the current layer&#39;s combining logic (the leap of faith).</li>
+<li>Base case + recursive case that shrinks toward it are the only two non-negotiable ingredients.</li>
+<li>The call stack is real memory — always report O(depth) space for recursive solutions.</li>
+<li>Correctness ≠ efficiency: naive branching recursion can hide exponential blowup; memoization is the fix.</li>
+<li>Recursion shines on recursively-shaped data (trees) and branching search (backtracking); iteration shines on simple linear passes and deep/large inputs.</li>
+<li>JavaScript engines do not reliably implement tail call optimization — never assume O(1) space from tail recursion in production JS.</li>
+</ol>
+<hr>
+
+<h2 id="2-16-20-multiple-choice-questions">2.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What are the two required components of a correct recursive function?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A loop and a counter</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A base case and a recursive case</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">An array and a pointer</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A try/catch block</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What happens if a recursive function has no base case?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It returns <code>undefined</code> immediately</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It causes infinite recursion, typically resulting in a stack overflow error</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JavaScript automatically infers one</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It runs once and stops</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What data structure underlies how recursive function calls are managed in memory?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Queue (FIFO)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Stack (LIFO)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Linked List</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Hash Table</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">What is the time complexity of naive (non-memoized) recursive Fibonacci?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(n log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(2ⁿ)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(n²)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What technique fixes the exponential blowup in naive recursive Fibonacci?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Using <code>var</code> instead of <code>let</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Memoization (caching sub-problem results)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Increasing the call stack size</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using a <code>while</code> loop instead</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">What is the space complexity of a recursive function with recursion depth <code>n</code>, even if it declares no other variables?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(1)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(n²)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Which of these is an example of &quot;linear recursion&quot; (a chain, one recursive call per invocation)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Fibonacci</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Factorial</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Generating all subsets</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Binary tree traversal with two children</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Does V8 (Chrome/Node.js) implement tail call optimization from the ES2015 spec?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Yes, fully</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">No, despite it being in the spec</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only for arrow functions</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only in strict mode</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In the backtracking subset-generation example, why must we push <code>[...currentSubset]</code> instead of <code>currentSubset</code> directly?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Spread syntax is faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>currentSubset</code> is mutated in place across the recursion, so pushing the reference causes all results to reflect only its final state</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Arrays cannot be pushed into other arrays</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s required by ES2024 syntax rules</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the defining three-step rhythm of backtracking?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Loop, break, continue</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Choose, explore, un-choose</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Map, filter, reduce</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Push, pop, shift</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">What error does JavaScript throw for infinite or excessively deep recursion?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">TypeError</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">SyntaxError</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">RangeError: Maximum call stack size exceeded</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">ReferenceError</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In the &quot;fast power&quot; (exponentiation by squaring) algorithm, what is the time complexity?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(n)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(n log n)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(2ⁿ)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why is the naive recursive string reversal actually O(n²), not O(n)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Recursion is always O(n²)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>.slice()</code> itself costs O(n), called across n recursive levels</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">String concatenation is O(1)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">JavaScript strings are stored as linked lists</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is &quot;the leap of faith&quot; in recursion?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Never testing your code</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Trusting that the recursive call already correctly solves a smaller version of the problem</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Assuming the base case is unnecessary</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Ignoring edge cases</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Which scenario most strongly favors recursion over iteration?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Summing a flat array of numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Traversing a naturally tree-shaped/nested data structure</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Finding the max of a list</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Counting characters in a string</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">Which scenario most strongly favors iteration over recursion in JavaScript?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Traversing a small binary tree</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Generating all permutations of 4 items</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Processing a flat array with 5,000,000 elements</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Solving a small maze puzzle</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does memoization fundamentally rely on to work correctly?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The function being impure (having side effects)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The same inputs always producing the same output (pure function behavior)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The function having no base case</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using <code>var</code> for the cache</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why do we use a <code>Map</code> rather than a plain object for memoization caches in this book&#39;s convention?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Objects cannot store numbers as keys</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Map is better suited to dynamically generated keys, unlike objects better suited to fixed known property names</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Map is required by the ES2024 spec for caching</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Objects are always slower than Maps for every use case</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">In the file-system total-size example, what makes recursion the natural fit?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Folders are always empty</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The data itself is recursively defined (a folder contains files and/or more folders)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Recursion is required by JavaScript for objects</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Arrays cannot hold nested objects</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c"><p class="quiz-text">What is the total number of subsets (including the empty set) for a set of <code>n</code> elements?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">n</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">n²</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">2ⁿ</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">n!</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-c, 5-b, 6-c, 7-b, 8-b, 9-b, 10-b, 11-c, 12-b, 13-b, 14-b, 15-b, 16-c, 17-b, 18-b, 19-b, 20-c</p></details>
+</div>
+<h2 id="2-17-20-coding-problems">2.17 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Write a recursive function to compute the sum of digits of a positive integer (e.g., <code>sumDigits(1234)</code> → <code>10</code>).</li>
+<li>Write a recursive function to check if a number is a power of two.</li>
+<li>Write a recursive function to count the number of vowels in a string.</li>
+<li>Write a recursive function to find the maximum value in an array without using <code>Math.max</code> or loops.</li>
+<li>Write a recursive function to check whether a string is a palindrome.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Write a memoized recursive function to compute the <code>n</code>-th Fibonacci number, and state before/after time complexity.</li>
+<li>Write a recursive function to flatten a deeply nested array (e.g., <code>[1, [2, [3, [4]], 5]]</code> → <code>[1,2,3,4,5]</code>).</li>
+<li>Write a recursive function that computes the greatest common divisor (GCD) of two numbers using the Euclidean algorithm. State its time complexity.</li>
+<li>Write a recursive function to generate all permutations of an array of unique numbers.</li>
+<li>Write a recursive binary search function (recursive version of Chapter 1&#39;s phone book strategy) and state its time and space complexity, specifically addressing call stack space.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Write a recursive function that solves the &quot;count paths in a grid&quot; problem from section 2.6.2, then add memoization to make it efficient for large grids. Compare complexity before and after.</li>
+<li>Implement recursive Merge Sort from scratch (a full deep dive comes in the Sorting chapter, but attempt it now using only what you&#39;ve learned about divide-and-conquer recursion).</li>
+<li>Write a recursive function to generate all valid combinations of balanced parentheses for <code>n</code> pairs (e.g., <code>n=2</code> → <code>[&quot;(())&quot;, &quot;()()&quot;]</code>).</li>
+<li>Implement the &quot;power set&quot; (subset generation) problem from section 2.8.3 from memory, without looking back, then verify against the book&#39;s version.</li>
+<li>Write a recursive function that solves the Tower of Hanoi puzzle for <code>n</code> disks, printing each move, and derive its time complexity from first principles (hint: how many total moves are required?).</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Given a nested object representing arbitrary JSON, write a recursive function that returns the maximum nesting depth.</li>
+<li><strong>(Amazon-level)</strong> Implement a recursive function to compute <code>x^n mod m</code> efficiently for very large <code>n</code> (combine fast exponentiation with modular arithmetic), relevant to rate-limiting/hashing/crypto-adjacent systems.</li>
+<li><strong>(Microsoft-level)</strong> Given a recursive function that&#39;s hitting <code>RangeError: Maximum call stack size exceeded</code> on large inputs, but the underlying problem is a simple linear pass, rewrite it iteratively and explain in a comment exactly why the recursive version was unsafe.</li>
+<li><strong>(Meta-level)</strong> Write a recursive function to determine if two given binary trees (simple <code>{value, left, right}</code> objects) are structurally identical (same shape, same values) — this previews the Trees chapter&#39;s core traversal pattern.</li>
+<li><strong>(Netflix-level)</strong> Design (with recursion) a function that recursively resolves a dependency graph of &quot;modules,&quot; where each module lists other modules it depends on, detecting and reporting if a circular dependency exists (return <code>true</code>/<code>false</code>), previewing the Graph Algorithms chapter&#39;s cycle detection.</li>
+</ol>
+<hr>
+
+<h2 id="2-18-5-interview-questions">2.18 5 Interview Questions</h2>
+<ol>
+<li>&quot;Explain the base case and recursive case of a function you just wrote, and convince me it terminates.&quot; (Tests fundamental correctness reasoning.)</li>
+<li>&quot;What is the space complexity of this recursive function, including anything you might be tempted to forget?&quot; (Tests whether the candidate remembers call stack space.)</li>
+<li>&quot;This naive recursive solution is exponential. Why, exactly, and how would you fix it?&quot; (Tests understanding of overlapping sub-problems and memoization — almost always asked via a Fibonacci-shaped question.)</li>
+<li>&quot;Would you solve this with recursion or a loop, and why?&quot; (Tests judgment, not just capability — a strong answer discusses call stack risk and code clarity trade-offs, not just &quot;recursion is elegant.&quot;)</li>
+<li>&quot;Does JavaScript optimize tail-recursive functions to avoid stack growth?&quot; (A specific, high-signal trivia question — correct answer: no, not in V8, despite being in the ES2015 spec.)</li>
+</ol>
+<hr>
+
+<h2 id="2-19-3-real-projects">2.19 3 Real Projects</h2>
+<ol>
+<li><strong>Recursive JSON Explorer</strong>: Build a small Node.js CLI tool that takes an arbitrary JSON file and recursively reports: max nesting depth, total number of keys, total number of leaf values, and a breakdown of value types encountered — all computed with recursive traversal functions you write yourself.</li>
+<li><strong>Memoization Benchmark Suite</strong>: Build on the &quot;Complexity Profiler Tool&quot; from Chapter 1&#39;s projects — specifically benchmark naive vs. memoized Fibonacci (and naive vs. memoized &quot;count paths in a grid&quot; from section 2.6.2) at increasing <code>n</code>, and produce console output that empirically demonstrates the O(2ⁿ) → O(n) improvement from memoization.</li>
+<li><strong>Subset &amp; Permutation Playground</strong>: Build a small interactive Node.js script that takes an array from the command line and prints all subsets, all permutations, and (bonus) all combinations of a given size <code>k</code>, all implemented via the choose/explore/un-choose backtracking rhythm from section 2.8.3 — this becomes your personal reference implementation to revisit before the Backtracking Masterclass chapter.</li>
+</ol>
+<hr>
+
+<h2 id="2-20-further-reading">2.20 Further Reading</h2>
+<ul>
+<li>Structure and Interpretation of Computer Programs (SICP) — Abelson &amp; Sussman, especially the early chapters on recursive process vs. iterative process, a distinction that goes deeper than what we covered here.</li>
+<li>MDN Web Docs: &quot;Recursion&quot; and &quot;Function&quot; — for JavaScript-specific call stack behavior notes.</li>
+<li>Search &quot;V8 blog tail calls&quot; for the engineering team&#39;s own public explanation of why proper tail call optimization was implemented and then later removed/never shipped broadly in V8.</li>
+<li>Steven Skiena, <em>The Algorithm Design Manual</em>, chapter on recursion and backtracking, for additional war-story-style problem framing.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Recursion in JavaScript: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is recursion in JavaScript?</h3></summary><p>Recursion is when a function calls itself to solve a smaller instance of the same problem. Every recursive function needs a base case that stops the calls and a recursive case that moves the input closer to that base case.</p></details>
+<details class="learn-faq-item"><summary><h3>What happens if a recursive function has no base case?</h3></summary><p>It keeps calling itself until the call stack runs out of space, and JavaScript throws a RangeError: Maximum call stack size exceeded.</p></details>
+<details class="learn-faq-item"><summary><h3>What is memoization?</h3></summary><p>Memoization caches the result of each sub-problem the first time it is computed, usually in a Map, so repeated calls return instantly. It turns naive recursive Fibonacci from O(2ⁿ) time into O(n).</p></details>
+<details class="learn-faq-item"><summary><h3>Does JavaScript support tail call optimization?</h3></summary><p>In practice, no. Tail call optimization is in the ES2015 specification, but V8 (Chrome and Node.js) and most engines do not implement it, so a tail-recursive function still uses O(n) stack space in production JavaScript.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/big-o-notation-time-complexity"><span>&larr; Previous &middot; Chapter 1</span><strong>Big-O Notation &amp; Time Complexity in JavaScript</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/arrays-and-strings-javascript"><span>Next &middot; Chapter 3 &rarr;</span><strong>Arrays &amp; Strings in JavaScript: DSA Patterns</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#2-0-why-this-chapter-exists-before-any-data-structure-chapter">2.0 Why This Chapter Exists Before Any Data Structure Chapter</a></li><li><a href="#2-1-what-is-recursion-really">2.1 What Is Recursion, Really?</a></li><li><a href="#2-2-anatomy-of-a-recursive-function">2.2 Anatomy of a Recursive Function</a></li><li><a href="#2-3-the-call-stack-what-s-actually-happening-in-memory">2.3 The Call Stack: What's Actually Happening in Memory</a></li><li><a href="#2-4-dry-run-fibonacci-where-recursion-gets-interesting">2.4 Dry Run: Fibonacci — Where Recursion Gets Interesting</a></li><li><a href="#2-5-memoization-giving-recursion-a-memory">2.5 Memoization: Giving Recursion a Memory</a></li><li><a href="#2-6-two-recursion-patterns-every-engineer-must-recognize">2.6 Two Recursion Patterns Every Engineer Must Recognize</a></li><li><a href="#2-7-recursion-vs-iteration-the-eternal-trade-off">2.7 Recursion vs. Iteration: The Eternal Trade-off</a></li><li><a href="#2-8-classic-recursion-problems-fully-worked">2.8 Classic Recursion Problems, Fully Worked</a></li><li><a href="#2-9-recursion-on-recursive-data-a-preview-of-trees">2.9 Recursion on Recursive Data (A Preview of Trees)</a></li><li><a href="#2-10-debugging-recursive-functions-a-practical-toolkit">2.10 Debugging Recursive Functions: A Practical Toolkit</a></li><li><a href="#2-11-chapter-summary">2.11 Chapter Summary</a></li><li><a href="#2-12-revision-notes">2.12 Revision Notes</a></li><li><a href="#2-13-mind-map-ascii">2.13 Mind Map (ASCII)</a></li><li><a href="#2-14-cheat-sheet">2.14 Cheat Sheet</a></li><li><a href="#2-15-key-takeaways">2.15 Key Takeaways</a></li><li><a href="#2-16-20-multiple-choice-questions">2.16 20 Multiple Choice Questions</a></li><li><a href="#2-17-20-coding-problems">2.17 20 Coding Problems</a></li><li><a href="#2-18-5-interview-questions">2.18 5 Interview Questions</a></li><li><a href="#2-19-3-real-projects">2.19 3 Real Projects</a></li><li><a href="#2-20-further-reading">2.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "recursion-in-javascript"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

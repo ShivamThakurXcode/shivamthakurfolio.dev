@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</title>
+    <meta name="description" content="Learn advanced graph algorithms in JavaScript: bipartite matching, Ford-Fulkerson and Edmonds-Karp maximum flow, residual graphs and max-flow min-cut.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="network flow, maximum flow, ford fulkerson, edmonds karp, max flow min cut theorem, bipartite graph, bipartite matching, residual graph, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/dsa-master/math-for-programmers-number-theory">
+    <link rel="next" href="https://shivamthakur.me/learn/dsa-master/dsa-for-system-design">
+    <meta property="article:published_time" content="2026-07-22T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-10-27T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Data Structures &amp; Algorithms">
+    <meta property="article:tag" content="network flow">
+    <meta property="article:tag" content="maximum flow">
+    <meta property="article:tag" content="ford fulkerson">
+    <meta property="article:tag" content="edmonds karp">
+    <meta property="article:tag" content="max flow min cut theorem">
+    <meta property="article:tag" content="bipartite graph">
+    <meta property="article:tag" content="bipartite matching">
+    <meta property="article:tag" content="residual graph">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut">
+    <meta property="og:description" content="Learn advanced graph algorithms in JavaScript: bipartite matching, Ford-Fulkerson and Edmonds-Karp maximum flow, residual graphs and max-flow min-cut.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/advanced-graph-algorithms-network-flow.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Advanced Graph Theory: Bipartite Matching, Maximum Flow and Min-Cut: DSA Master chapter 26">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut">
+    <meta name="twitter:description" content="Learn advanced graph algorithms in JavaScript: bipartite matching, Ford-Fulkerson and Edmonds-Karp maximum flow, residual graphs and max-flow min-cut.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/dsa-master/advanced-graph-algorithms-network-flow.png">
+    <meta name="twitter:image:alt" content="Advanced Graph Theory: Bipartite Matching, Maximum Flow and Min-Cut: DSA Master chapter 26">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#webpage",
+          "url": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow",
+          "name": "Network Flow & Bipartite Matching: Max-Flow Min-Cut",
+          "description": "Learn advanced graph algorithms in JavaScript: bipartite matching, Ford-Fulkerson and Edmonds-Karp maximum flow, residual graphs and max-flow min-cut.",
+          "inLanguage": "en",
+          "dateModified": "2026-10-27",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#image",
+          "url": "https://shivamthakur.me/assets/images/learn/dsa-master/advanced-graph-algorithms-network-flow.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Advanced Graph Theory: Bipartite Matching, Maximum Flow and Min-Cut"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#webpage"
+          },
+          "headline": "Advanced Graph Theory: Bipartite Matching, Maximum Flow and Min-Cut",
+          "alternativeHeadline": "Advanced Graph Theory and Network Flow",
+          "description": "Learn advanced graph algorithms in JavaScript: bipartite matching, Ford-Fulkerson and Edmonds-Karp maximum flow, residual graphs and max-flow min-cut.",
+          "abstract": "Network flow algorithms find the maximum amount that can move from a source to a sink through a graph whose edges have capacities. This chapter starts with bipartite graphs and bipartite matching, builds the Ford-Fulkerson method and the Edmonds-Karp algorithm on a residual graph, and explains the max-flow min-cut theorem and how to recover the minimum cut.",
+          "image": "https://shivamthakur.me/assets/images/learn/dsa-master/advanced-graph-algorithms-network-flow.png",
+          "url": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-07-22",
+          "dateModified": "2026-10-27",
+          "wordCount": 5404,
+          "timeRequired": "PT25M",
+          "articleSection": "Data Structures & Algorithms",
+          "keywords": "network flow, maximum flow, ford fulkerson, edmonds karp, max flow min cut theorem, bipartite graph, bipartite matching, residual graph",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "Bipartite graphs and two-coloring",
+            "Bipartite matching with augmenting paths",
+            "Ford-Fulkerson and residual graphs",
+            "Edmonds-Karp in O(VE²)",
+            "The max-flow min-cut theorem"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": "JavaScript",
+          "about": {
+            "@type": "Thing",
+            "name": "network flow"
+          },
+          "isAccessibleForFree": true,
+          "position": 26,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/dsa-master/math-for-programmers-number-theory#article",
+            "name": "Mathematics for Programmers: Number Theory, Combinatorics and Game Theory",
+            "url": "https://shivamthakur.me/learn/dsa-master/math-for-programmers-number-theory"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "DSA Master",
+              "item": "https://shivamthakur.me/learn/dsa-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Network Flow & Bipartite Matching: Max-Flow Min-Cut",
+              "item": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is a bipartite graph?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A bipartite graph is one whose vertices split into two groups where every edge connects the two groups. A graph is bipartite exactly when it has no odd-length cycle, which you can test by two-coloring it with BFS."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the maximum flow problem?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Given a directed graph with edge capacities, a source and a sink, the maximum flow problem asks for the largest amount that can be sent from source to sink without exceeding any edge's capacity."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does Ford-Fulkerson need reverse edges?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reverse edges in the residual graph let the algorithm undo flow it sent earlier. Without them, an early poor choice of path could lock the algorithm into a non-maximum flow."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does the max-flow min-cut theorem say?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The maximum flow from source to sink equals the minimum total capacity of edges whose removal disconnects the sink from the source. After the flow is computed, the vertices reachable from the source in the residual graph give that cut."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#quiz",
+          "name": "Network Flow & Bipartite Matching: Max-Flow Min-Cut: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "network flow"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/dsa-master/advanced-graph-algorithms-network-flow#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What defines a bipartite graph?",
+              "text": "What defines a bipartite graph?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A graph whose vertices can be split into two groups where every edge connects one group to the other, never within a group"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A graph with exactly two vertices"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A graph with exactly two edges"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A tree with two branches"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What technique detects whether a graph is bipartite?",
+              "text": "What technique detects whether a graph is bipartite?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A two-coloring test using BFS, checking that no edge connects same-colored vertices"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sorting the vertices"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Computing the graph's diameter"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Running Dijkstra's algorithm"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What structural property is equivalent to a graph being bipartite?",
+              "text": "What structural property is equivalent to a graph being bipartite?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Containing no odd-length cycles"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Having exactly n-1 edges"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Being a tree"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Having a Hamiltonian path"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the \"displace and recursively re-match\" technique in bipartite matching?",
+              "text": "What is the \"displace and recursively re-match\" technique in bipartite matching?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "When a contested match is found, recursively checking if the current holder can be reassigned elsewhere, freeing the slot"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Randomly reassigning all matches"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting all vertices before matching"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Always keeping the first match found, never revising it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does the bipartite matching algorithm's core technique directly seed?",
+              "text": "What does the bipartite matching algorithm's core technique directly seed?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "This chapter's maximum flow algorithm (augmenting paths)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sorting algorithms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary search"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Hash table design"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is an augmenting path in the context of maximum flow?",
+              "text": "What is an augmenting path in the context of maximum flow?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A path from source to sink with available (unused) capacity along every edge"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Any path from source to sink"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The shortest path in the network"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A path with zero capacity"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the \"bottleneck\" of an augmenting path?",
+              "text": "What is the \"bottleneck\" of an augmenting path?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The minimum residual capacity among all edges along the path"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The total capacity of all edges combined"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The number of edges in the path"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The maximum capacity among all edges"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the single most critical, commonly-missed detail in implementing Ford-Fulkerson?",
+              "text": "What is the single most critical, commonly-missed detail in implementing Ford-Fulkerson?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Adding a reverse \"undo\" edge to the residual graph after every forward flow push"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Using DFS instead of BFS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting the edges by capacity first"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using a Fenwick Tree for capacity tracking"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is the reverse residual edge update necessary for correctness?",
+              "text": "Why is the reverse residual edge update necessary for correctness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It allows the algorithm to revise/undo an earlier suboptimal flow-routing choice"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's optional; the algorithm works fine without it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only matters for undirected graphs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It prevents integer overflow"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What earlier chapter's lesson does the reverse-edge requirement directly echo?",
+              "text": "What earlier chapter's lesson does the reverse-edge requirement directly echo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Chapter 20's lesson that naive greedy strategies aren't automatically correct without a revision mechanism"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 15's sorting stability"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 9's heap building"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Chapter 5's linked list reversal"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the difference between \"Ford-Fulkerson\" and \"Edmonds-Karp\"?",
+              "text": "What is the difference between \"Ford-Fulkerson\" and \"Edmonds-Karp\"?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ford-Fulkerson is the general method with an unspecified path-finding strategy; Edmonds-Karp specifically uses BFS, guaranteeing O(VE²)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They are unrelated algorithms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Edmonds-Karp doesn't use residual graphs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ford-Fulkerson only works on bipartite graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the time complexity guarantee of Edmonds-Karp?",
+              "text": "What is the time complexity guarantee of Edmonds-Karp?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O(V  E²)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "O(V + E)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(E  maxFlow), dependent on flow value"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "O(V²)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a potential problem with the general Ford-Fulkerson method if a poor path-finding strategy (e.g., naive DFS) is used?",
+              "text": "What is a potential problem with the general Ford-Fulkerson method if a poor path-finding strategy (e.g., naive DFS) is used?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The number of iterations can become proportional to the flow value itself, not just graph size"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It becomes incorrect"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It cannot find any augmenting path at all"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only works for undirected graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does the Max-Flow Min-Cut Theorem state?",
+              "text": "What does the Max-Flow Min-Cut Theorem state?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Maximum flow is always EXACTLY equal to the minimum cut capacity"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Max flow is always greater than min cut"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Max flow and min cut are unrelated quantities"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Min cut is always zero"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Is the min cut capacity merely an upper bound on max flow, or is it always achievable?",
+              "text": "Is the min cut capacity merely an upper bound on max flow, or is it always achievable?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It's always exactly achievable, not just a bound"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's merely a theoretical upper bound, rarely achieved"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It depends on whether the graph is bipartite"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's only achievable for undirected graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How can you find the min cut for free after running max flow to completion?",
+              "text": "How can you find the min cut for free after running max flow to completion?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "BFS/DFS from the source using only edges with remaining residual capacity; reachable vertices are the source side"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Re-run the entire algorithm from scratch with different parameters"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sort all edges by capacity"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It cannot be found without a separate algorithm"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How does bipartite matching relate to maximum flow?",
+              "text": "How does bipartite matching relate to maximum flow?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Bipartite matching reduces directly to a max flow computation via a super-source/super-sink construction with capacity-1 edges"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They are unrelated problems"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bipartite matching is always faster than max flow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Maximum flow only works on bipartite graphs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a real-world application of the min-cut concept mentioned in this chapter?",
+              "text": "What is a real-world application of the min-cut concept mentioned in this chapter?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Network reliability/bottleneck analysis and image segmentation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sorting large datasets"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "String pattern matching"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary search optimization"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What data structure from earlier chapters powers the Edmonds-Karp augmenting-path search?",
+              "text": "What data structure from earlier chapters powers the Edmonds-Karp augmenting-path search?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A queue, for BFS (Chapters 6 and 11)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A stack (Chapter 6)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A heap (Chapter 9)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A trie (Chapter 10)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What should you verify regarding undirected edges when modeling a flow network?",
+              "text": "What should you verify regarding undirected edges when modeling a flow network?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An undirected edge with capacity c is typically modeled as two directed edges, each with capacity c"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Undirected edges cannot be used in flow networks"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Undirected edges automatically have infinite capacity"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Undirected edges must be removed before running max flow"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/dsa-master">DSA Master</a></li>
+                    <li><span aria-current="page">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="DSA Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/dsa-master">DSA Master</a></p>
+                        <p class="learn-side-sub text-caption">28 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:92.9%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 big-o notation &amp; time complexity in javascript"><a class="learn-link" href="/learn/dsa-master/big-o-notation-time-complexity"><span class="num">01</span><span class="name">Big-O Notation &amp; Time Complexity in JavaScript</span></a></div>
+<div class="learn-item" data-text="2 recursion in javascript: call stack &amp; memoization"><a class="learn-link" href="/learn/dsa-master/recursion-in-javascript"><span class="num">02</span><span class="name">Recursion in JavaScript: Call Stack &amp; Memoization</span></a></div>
+<div class="learn-item" data-text="3 arrays &amp; strings in javascript: dsa patterns"><a class="learn-link" href="/learn/dsa-master/arrays-and-strings-javascript"><span class="num">03</span><span class="name">Arrays &amp; Strings in JavaScript: DSA Patterns</span></a></div>
+<div class="learn-item" data-text="4 hash tables in javascript: map, set &amp; hashing"><a class="learn-link" href="/learn/dsa-master/hashing-hash-table-javascript"><span class="num">04</span><span class="name">Hash Tables in JavaScript: Map, Set &amp; Hashing</span></a></div>
+<div class="learn-item" data-text="5 linked list in javascript: singly &amp; doubly"><a class="learn-link" href="/learn/dsa-master/linked-list-javascript"><span class="num">05</span><span class="name">Linked List in JavaScript: Singly &amp; Doubly</span></a></div>
+<div class="learn-item" data-text="6 stack and queue in javascript: lifo &amp; fifo"><a class="learn-link" href="/learn/dsa-master/stack-and-queue-javascript"><span class="num">06</span><span class="name">Stack and Queue in JavaScript: LIFO &amp; FIFO</span></a></div>
+<div class="learn-item" data-text="7 fast and slow pointers: floyd's cycle detection"><a class="learn-link" href="/learn/dsa-master/fast-and-slow-pointers"><span class="num">07</span><span class="name">Fast and Slow Pointers: Floyd's Cycle Detection</span></a></div>
+<div class="learn-item" data-text="8 binary tree &amp; bst in javascript: traversals"><a class="learn-link" href="/learn/dsa-master/binary-tree-and-bst-javascript"><span class="num">08</span><span class="name">Binary Tree &amp; BST in JavaScript: Traversals</span></a></div>
+<div class="learn-item" data-text="9 heap &amp; priority queue in javascript"><a class="learn-link" href="/learn/dsa-master/heap-priority-queue-javascript"><span class="num">09</span><span class="name">Heap &amp; Priority Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="10 trie data structure in javascript: prefix tree"><a class="learn-link" href="/learn/dsa-master/trie-data-structure"><span class="num">10</span><span class="name">Trie Data Structure in JavaScript: Prefix Tree</span></a></div>
+<div class="learn-item" data-text="11 graphs in javascript: bfs, dfs &amp; adjacency list"><a class="learn-link" href="/learn/dsa-master/graph-bfs-dfs-javascript"><span class="num">11</span><span class="name">Graphs in JavaScript: BFS, DFS &amp; Adjacency List</span></a></div>
+<div class="learn-item" data-text="12 shortest path: dijkstra, bellman-ford, floyd"><a class="learn-link" href="/learn/dsa-master/shortest-path-dijkstra-bellman-ford"><span class="num">12</span><span class="name">Shortest Path: Dijkstra, Bellman-Ford, Floyd</span></a></div>
+<div class="learn-item" data-text="13 topological sort &amp; mst: kahn, kruskal, prim"><a class="learn-link" href="/learn/dsa-master/topological-sort-minimum-spanning-tree"><span class="num">13</span><span class="name">Topological Sort &amp; MST: Kahn, Kruskal, Prim</span></a></div>
+<div class="learn-item" data-text="14 union-find (disjoint set union) in javascript"><a class="learn-link" href="/learn/dsa-master/union-find-disjoint-set"><span class="num">14</span><span class="name">Union-Find (Disjoint Set Union) in JavaScript</span></a></div>
+<div class="learn-item" data-text="15 sorting algorithms in javascript: complete guide"><a class="learn-link" href="/learn/dsa-master/sorting-algorithms-javascript"><span class="num">15</span><span class="name">Sorting Algorithms in JavaScript: Complete Guide</span></a></div>
+<div class="learn-item" data-text="16 binary search patterns: answer, rotated, bounds"><a class="learn-link" href="/learn/dsa-master/binary-search-patterns"><span class="num">16</span><span class="name">Binary Search Patterns: Answer, Rotated, Bounds</span></a></div>
+<div class="learn-item" data-text="17 backtracking algorithms in javascript"><a class="learn-link" href="/learn/dsa-master/backtracking-algorithms"><span class="num">17</span><span class="name">Backtracking Algorithms in JavaScript</span></a></div>
+<div class="learn-item" data-text="18 dynamic programming in javascript: 1d dp"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-1d"><span class="num">18</span><span class="name">Dynamic Programming in JavaScript: 1D DP</span></a></div>
+<div class="learn-item" data-text="19 2d dynamic programming: lcs, knapsack, edit distance"><a class="learn-link" href="/learn/dsa-master/dynamic-programming-2d"><span class="num">19</span><span class="name">2D Dynamic Programming: LCS, Knapsack, Edit Distance</span></a></div>
+<div class="learn-item" data-text="20 greedy algorithms in javascript, with proofs"><a class="learn-link" href="/learn/dsa-master/greedy-algorithms"><span class="num">20</span><span class="name">Greedy Algorithms in JavaScript, With Proofs</span></a></div>
+<div class="learn-item" data-text="21 monotonic stack &amp; queue in javascript"><a class="learn-link" href="/learn/dsa-master/monotonic-stack-and-queue"><span class="num">21</span><span class="name">Monotonic Stack &amp; Queue in JavaScript</span></a></div>
+<div class="learn-item" data-text="22 string algorithms: kmp, rabin-karp &amp; suffix arrays"><a class="learn-link" href="/learn/dsa-master/string-algorithms-kmp-rabin-karp"><span class="num">22</span><span class="name">String Algorithms: KMP, Rabin-Karp &amp; Suffix Arrays</span></a></div>
+<div class="learn-item" data-text="23 segment tree &amp; fenwick tree (bit) in javascript"><a class="learn-link" href="/learn/dsa-master/segment-tree-fenwick-tree"><span class="num">23</span><span class="name">Segment Tree &amp; Fenwick Tree (BIT) in JavaScript</span></a></div>
+<div class="learn-item" data-text="24 bit manipulation &amp; bitmask dp in javascript"><a class="learn-link" href="/learn/dsa-master/bit-manipulation-bitmask-dp"><span class="num">24</span><span class="name">Bit Manipulation &amp; Bitmask DP in JavaScript</span></a></div>
+<div class="learn-item" data-text="25 math for programmers: number theory &amp; combinatorics"><a class="learn-link" href="/learn/dsa-master/math-for-programmers-number-theory"><span class="num">25</span><span class="name">Math for Programmers: Number Theory &amp; Combinatorics</span></a></div>
+<div class="learn-item active" data-text="26 network flow &amp; bipartite matching: max-flow min-cut"><a class="learn-link" href="/learn/dsa-master/advanced-graph-algorithms-network-flow" aria-current="page"><span class="num">26</span><span class="name">Network Flow &amp; Bipartite Matching: Max-Flow Min-Cut</span></a></div>
+<div class="learn-item" data-text="27 dsa in system design: lru, rate limiting &amp; b-trees"><a class="learn-link" href="/learn/dsa-master/dsa-for-system-design"><span class="num">27</span><span class="name">DSA in System Design: LRU, Rate Limiting &amp; B-Trees</span></a></div>
+<div class="learn-item" data-text="28 dsa interview prep roadmap: 90-day plan &amp; patterns"><a class="learn-link" href="/learn/dsa-master/dsa-interview-preparation-roadmap"><span class="num">28</span><span class="name">DSA Interview Prep Roadmap: 90-Day Plan &amp; Patterns</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 26 of 28 &middot; Advanced</p>
+                        <h1>Advanced Graph Theory: Bipartite Matching, Maximum Flow and Min-Cut</h1>
+                        <p class="learn-book-title">Advanced Graph Theory and Network Flow</p>
+                        <ul class="learn-meta text-caption">
+                            <li>25 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-10-27">27 Oct 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/dsa-master/advanced-graph-algorithms-network-flow.webp"><img src="../../assets/images/learn/dsa-master/advanced-graph-algorithms-network-flow.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Advanced Graph Theory: Bipartite Matching, Maximum Flow and Min-Cut: DSA Master chapter 26 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Network flow algorithms find the maximum amount that can move from a source to a sink through a graph whose edges have capacities. This chapter starts with bipartite graphs and bipartite matching, builds the Ford-Fulkerson method and the Edmonds-Karp algorithm on a residual graph, and explains the max-flow min-cut theorem and how to recover the minimum cut.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Bipartite graphs and two-coloring</li><li>Bipartite matching with augmenting paths</li><li>Ford-Fulkerson and residual graphs</li><li>Edmonds-Karp in O(VE²)</li><li>The max-flow min-cut theorem</li></ul>
+                        </section>
+<hr>
+
+<h2 id="26-0-the-question-this-chapter-answers">26.0 The Question This Chapter Answers</h2>
+<p>Chapters <a href="/learn/dsa-master/graph-bfs-dfs-javascript" title="Graphs in JavaScript: BFS, DFS &amp; Adjacency List">11</a>-14 built the foundational graph toolkit: traversal, shortest paths, spanning trees, connectivity. This chapter tackles a genuinely different, higher-level question: <strong>given a network with capacity limits on each edge (think: pipes with maximum flow rates, or roads with maximum traffic capacity), what is the maximum amount of &quot;stuff&quot; that can flow from a source to a destination?</strong> This is the <strong>Maximum Flow</strong> problem, and it comes with one of the most beautiful, surprising results in all of graph theory: <strong>it is exactly equal to the Minimum Cut</strong> — the smallest total capacity of edges that, if removed, would disconnect the source from the destination entirely.</p>
+<hr>
+
+<h2 id="26-1-bipartite-graphs-and-bipartite-matching">26.1 Bipartite Graphs and Bipartite Matching</h2>
+<h3 id="26-1-1-what-is-a-bipartite-graph">26.1.1 What Is a Bipartite Graph?</h3>
+<p><strong>Definition:</strong> A bipartite graph is a graph whose vertices can be divided into two disjoint groups, such that every edge connects a vertex in one group to a vertex in the other — never connecting two vertices within the same group.</p>
+<h3 id="real-life-analogy-job-applicants-and-job-openings">Real-Life Analogy: Job Applicants and Job Openings</h3>
+<p>Picture a graph with job applicants on one side and job openings on the other, with an edge connecting an applicant to every job they&#39;re qualified for. <strong>This is inherently bipartite</strong> — applicants never connect to other applicants, and jobs never connect to other jobs.</p>
+<h3 id="detecting-bipartiteness-a-direct-callback-to-chapter-11-s-bfs">Detecting Bipartiteness (A Direct Callback to Chapter 11&#39;s BFS)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">isBipartite</span>(<span class="hljs-params">graph</span>) {
+  <span class="hljs-keyword">const</span> colors = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(); <span class="hljs-comment">// vertex -&gt; 0 or 1 (the two &quot;sides&quot;)</span>
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> startVertex <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">getAllVertices</span>()) {
+    <span class="hljs-keyword">if</span> (colors.<span class="hljs-title function_">has</span>(startVertex)) <span class="hljs-keyword">continue</span>; <span class="hljs-comment">// already colored via an earlier component</span>
+
+    colors.<span class="hljs-title function_">set</span>(startVertex, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">const</span> queue = [startVertex]; <span class="hljs-comment">// Chapter 6/11&#x27;s BFS queue</span>
+
+    <span class="hljs-keyword">while</span> (queue.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">const</span> current = queue.<span class="hljs-title function_">shift</span>();
+
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> neighbor <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">getNeighbors</span>(current)) {
+        <span class="hljs-keyword">if</span> (!colors.<span class="hljs-title function_">has</span>(neighbor)) {
+          colors.<span class="hljs-title function_">set</span>(neighbor, <span class="hljs-number">1</span> - colors.<span class="hljs-title function_">get</span>(current)); <span class="hljs-comment">// opposite color from current</span>
+          queue.<span class="hljs-title function_">push</span>(neighbor);
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (colors.<span class="hljs-title function_">get</span>(neighbor) === colors.<span class="hljs-title function_">get</span>(current)) {
+          <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>; <span class="hljs-comment">// two adjacent vertices have the SAME color -&gt; NOT bipartite!</span>
+        }
+      }
+    }
+  }
+
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}</code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-the-two-coloring-test" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: The &quot;Two-Coloring&quot; Test</span></h3>
+<p>A graph is bipartite <strong>if and only if</strong> it can be colored with exactly two colors such that no edge connects two same-colored vertices — directly, this is also <strong>equivalent to the graph containing no odd-length cycles</strong> (a genuinely elegant, provable fact: any odd cycle forces some adjacent pair to share a color, since alternating colors around an odd-length loop cannot consistently avoid a same-color collision).</p>
+</aside>
+<h3 id="26-1-2-bipartite-matching-the-job-assignment-problem">26.1.2 Bipartite Matching: The Job-Assignment Problem</h3>
+<p><strong>Definition:</strong> A matching in a bipartite graph is a set of edges with no shared endpoints — in the job-applicant analogy, each matched edge represents one applicant assigned to one job, with no applicant or job used twice. <strong>Maximum Bipartite Matching</strong> finds the largest such set.</p>
+<h3 id="the-augmenting-path-algorithm-a-direct-preview-of-this-chapter-s-central-technique">The Augmenting Path Algorithm (A Direct Preview of This Chapter&#39;s Central Technique)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">maxBipartiteMatching</span>(<span class="hljs-params">leftVertices, graph</span>) {
+  <span class="hljs-keyword">const</span> matchRight = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(); <span class="hljs-comment">// right-side vertex -&gt; the left-side vertex it&#x27;s matched to</span>
+
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">tryMatch</span>(<span class="hljs-params">leftVertex, visited</span>) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> rightVertex <span class="hljs-keyword">of</span> graph.<span class="hljs-title function_">getNeighbors</span>(leftVertex)) {
+      <span class="hljs-keyword">if</span> (visited.<span class="hljs-title function_">has</span>(rightVertex)) <span class="hljs-keyword">continue</span>;
+      visited.<span class="hljs-title function_">add</span>(rightVertex);
+
+      <span class="hljs-comment">// If rightVertex is unmatched, OR we can find an ALTERNATIVE match for</span>
+      <span class="hljs-comment">// whoever it&#x27;s currently matched to (freeing it up for leftVertex) -- take it!</span>
+      <span class="hljs-keyword">if</span> (!matchRight.<span class="hljs-title function_">has</span>(rightVertex) || <span class="hljs-title function_">tryMatch</span>(matchRight.<span class="hljs-title function_">get</span>(rightVertex), visited)) {
+        matchRight.<span class="hljs-title function_">set</span>(rightVertex, leftVertex);
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+      }
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  }
+
+  <span class="hljs-keyword">let</span> matchCount = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> leftVertex <span class="hljs-keyword">of</span> leftVertices) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">tryMatch</span>(leftVertex, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>())) {
+      matchCount++;
+    }
+  }
+
+  <span class="hljs-keyword">return</span> matchCount;
+}</code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-bump-the-current-match-see-if-it-can-find-someone-else" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;Bump the Current Match, See If It Can Find Someone Else&quot;</span></h3>
+<p>The key insight, worth internalizing since it&#39;s the exact seed of this chapter&#39;s central Max Flow technique: <strong>when trying to match a new applicant to an already-taken job, don&#39;t give up immediately — recursively check if the CURRENTLY matched applicant can be reassigned to a different job instead, freeing up the contested job for the new applicant.</strong> This &quot;displace and recursively re-match&quot; idea, generalized, becomes exactly the <strong>augmenting path</strong> concept powering maximum flow.</p>
+</aside>
+<hr>
+
+<h2 id="26-2-maximum-flow-the-ford-fulkerson-method">26.2 Maximum Flow: The Ford-Fulkerson Method</h2>
+<h3 id="26-2-1-the-setup-flow-networks">26.2.1 The Setup: Flow Networks</h3>
+<p><strong>Definition:</strong> A flow network is a directed graph where each edge has a <strong>capacity</strong> (the maximum flow it can carry), with a designated <strong>source</strong> vertex (where flow originates) and <strong>sink</strong> vertex (where flow terminates). The Maximum Flow problem asks for the greatest total flow rate achievable from source to sink, without exceeding any edge&#39;s capacity.</p>
+<h3 id="ascii-visualization">ASCII Visualization</h3>
+<pre class="is-plain"><code>           10        5
+      S -------&gt; A -------&gt; T
+      |                     ^
+      |          15         |
+      +--------&gt; B ---------+
+                       10
+
+S = source, T = sink (target)
+Capacities shown on each edge. What's the MAXIMUM total flow from S to T?</code></pre>
+<h3 id="26-2-2-the-core-idea-augmenting-paths-and-residual-graphs">26.2.2 The Core Idea: Augmenting Paths and Residual Graphs</h3>
+<p><strong>Definition:</strong> The Ford-Fulkerson method repeatedly finds an <strong>augmenting path</strong> — any path from source to sink with available (unused) capacity along every edge — and pushes as much additional flow as that path&#39;s <strong>bottleneck</strong> (its minimum remaining capacity) allows, updating a <strong>residual graph</strong> that tracks remaining capacity (and, crucially, &quot;undo&quot; capacity in the reverse direction) after each push.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-why-the-residual-graph-needs-reverse-edges" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: Why the Residual Graph Needs Reverse Edges</span></h3>
+<p>This is the single most important, most commonly misunderstood detail in the entire algorithm, worth extended attention. <strong>Every time you push flow along an edge, you must add an equal amount of capacity to that edge&#39;s REVERSE direction in the residual graph</strong> — even if no such edge existed in the original network. This isn&#39;t bookkeeping trivia; it&#39;s what allows the algorithm to <strong>&quot;change its mind&quot;</strong> about a previous flow decision if a better overall routing is later discovered.</p>
+<pre class="is-plain"><code>Example showing why reverse edges are ESSENTIAL for correctness:
+
+      S --10--&gt; A --10--&gt; T
+      |                   ^
+      +---5---&gt; B --------+
+                    5
+
+Suppose we FIRST push 10 units along S-&gt;A-&gt;T (using the direct route).
+Residual graph now: S-&gt;A has 0 remaining capacity, A-&gt;S has 10 &quot;undo&quot; capacity.
+                     A-&gt;T has 0 remaining capacity, T-&gt;A has 10 &quot;undo&quot; capacity.
+
+Now we ALSO want to push 5 units along S-&gt;B-&gt;? but B only connects meaningfully
+IF we could somehow route through A-&gt;T again, which is now full...
+
+BUT: what if there had ALSO been an edge B-&gt;A with capacity 5 in the original graph?
+Then: push S-&gt;B (5 units), then B-&gt;A (5 units) -- but A-&gt;T is FULL (0 remaining)!
+HOWEVER, the residual reverse edge T-&gt;A (10 capacity, from undoing our first push)
+combined with the FORWARD residual A-&gt;T... 
+
+The general point: reverse residual edges let a later augmenting path &quot;cancel out&quot;
+part of an earlier suboptimal flow choice, rerouting it through a different path,
+which is EXACTLY what makes Ford-Fulkerson correct even when the FIRST augmenting
+path found isn't part of the truly optimal final solution.</code></pre>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-undo-capacity-is-not-optional" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: &quot;Undo&quot; Capacity Is Not Optional</span></h3>
+<p><strong>Without reverse residual edges, Ford-Fulkerson can get &quot;stuck&quot; at a suboptimal total flow</strong>, because it would have no mechanism to reconsider an earlier greedy choice. This directly parallels a lesson from <a href="/learn/dsa-master/greedy-algorithms" title="Greedy Algorithms in JavaScript, With Proofs">Chapter 20</a> (Greedy Algorithms): <strong>a naive, purely greedy &quot;just push flow along the first path you find&quot; approach is NOT guaranteed optimal on its own</strong> — the residual graph&#39;s reverse edges are precisely the mechanism that lets the algorithm effectively &quot;undo and retry,&quot; which is what elevates it from a potentially-wrong greedy heuristic into a provably correct algorithm.</p>
+</aside>
+<h3 id="26-2-3-full-implementation-using-bfs-edmonds-karp-variant">26.2.3 Full Implementation Using BFS (Edmonds-Karp Variant)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">maxFlow</span>(<span class="hljs-params">graph, source, sink, numVertices</span>) {
+  <span class="hljs-comment">// graph: adjacency matrix representation, graph[u][v] = capacity from u to v (0 if no edge)</span>
+  <span class="hljs-keyword">const</span> residual = graph.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">row</span> =&gt;</span> [...row]); <span class="hljs-comment">// deep copy — this WILL be mutated</span>
+
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">bfsFindAugmentingPath</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-keyword">const</span> parent = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(numVertices).<span class="hljs-title function_">fill</span>(-<span class="hljs-number">1</span>);
+    <span class="hljs-keyword">const</span> visited = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(numVertices).<span class="hljs-title function_">fill</span>(<span class="hljs-literal">false</span>);
+    <span class="hljs-keyword">const</span> queue = [source];
+    visited[source] = <span class="hljs-literal">true</span>;
+
+    <span class="hljs-keyword">while</span> (queue.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {
+      <span class="hljs-keyword">const</span> current = queue.<span class="hljs-title function_">shift</span>(); <span class="hljs-comment">// Chapter 6/11&#x27;s BFS, again!</span>
+
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> next = <span class="hljs-number">0</span>; next &lt; numVertices; next++) {
+        <span class="hljs-keyword">if</span> (!visited[next] &amp;&amp; residual[current][next] &gt; <span class="hljs-number">0</span>) {
+          visited[next] = <span class="hljs-literal">true</span>;
+          parent[next] = current;
+          queue.<span class="hljs-title function_">push</span>(next);
+
+          <span class="hljs-keyword">if</span> (next === sink) <span class="hljs-keyword">return</span> parent; <span class="hljs-comment">// found a path to the sink!</span>
+        }
+      }
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>; <span class="hljs-comment">// no augmenting path exists — we&#x27;re DONE</span>
+  }
+
+  <span class="hljs-keyword">let</span> totalFlow = <span class="hljs-number">0</span>;
+
+  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+    <span class="hljs-keyword">const</span> parent = <span class="hljs-title function_">bfsFindAugmentingPath</span>();
+    <span class="hljs-keyword">if</span> (parent === <span class="hljs-literal">null</span>) <span class="hljs-keyword">break</span>;
+
+    <span class="hljs-comment">// Find the BOTTLENECK: the minimum residual capacity along the found path</span>
+    <span class="hljs-keyword">let</span> pathFlow = <span class="hljs-title class_">Infinity</span>;
+    <span class="hljs-keyword">let</span> node = sink;
+    <span class="hljs-keyword">while</span> (node !== source) {
+      <span class="hljs-keyword">const</span> prev = parent[node];
+      pathFlow = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(pathFlow, residual[prev][node]);
+      node = prev;
+    }
+
+    <span class="hljs-comment">// Update the residual graph: subtract forward, ADD backward (the &quot;undo&quot; mechanism!)</span>
+    node = sink;
+    <span class="hljs-keyword">while</span> (node !== source) {
+      <span class="hljs-keyword">const</span> prev = parent[node];
+      residual[prev][node] -= pathFlow;
+      residual[node][prev] += pathFlow; <span class="hljs-comment">// THE CRUCIAL REVERSE EDGE UPDATE</span>
+      node = prev;
+    }
+
+    totalFlow += pathFlow;
+  }
+
+  <span class="hljs-keyword">return</span> totalFlow;
+}</code></pre></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-ford-fulkerson-vs-edmonds-karp-a-naming-distinction-worth-knowing" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: &quot;Ford-Fulkerson&quot; vs. &quot;Edmonds-Karp&quot; — A Naming Distinction Worth Knowing</span></h3>
+<p><strong>&quot;Ford-Fulkerson&quot; refers to the general METHOD</strong> (repeatedly find any augmenting path, push flow, update residuals) — it doesn&#39;t specify <em>how</em> to find the augmenting path, and a poor choice (e.g., always taking whatever DFS finds first) can, in rare constructed cases, require an enormous number of iterations. <strong>&quot;Edmonds-Karp&quot; is the SPECIFIC, standard implementation that uses BFS to find the augmenting path</strong> (as shown above), which provably guarantees a bound of <strong>O(VE²)</strong> total time — a genuinely important refinement worth naming specifically if asked to implement max flow, since &quot;just use Ford-Fulkerson&quot; without specifying the augmenting-path-finding strategy is an incomplete answer.</p>
+</aside>
+<h3 id="dry-run-using-the-network-from-section-26-2-1">Dry Run (Using the Network From Section 26.2.1)</h3>
+<pre class="is-plain"><code>S=0, A=1, B=2, T=3
+Capacities: S-&gt;A=10, S-&gt;B=15, A-&gt;T=5, B-&gt;T=10
+
+BFS finds path S-&gt;A-&gt;T (bottleneck = min(10,5) = 5)
+  residual[S][A] -= 5 -&gt; 5.  residual[A][S] += 5 -&gt; 5.
+  residual[A][T] -= 5 -&gt; 0.  residual[T][A] += 5 -&gt; 5.
+  totalFlow = 5
+
+BFS finds path S-&gt;B-&gt;T (bottleneck = min(15,10) = 10)
+  residual[S][B] -= 10 -&gt; 5.  residual[B][S] += 10 -&gt; 10.
+  residual[B][T] -= 10 -&gt; 0.  residual[T][B] += 10 -&gt; 10.
+  totalFlow = 15
+
+BFS looks for another path: S-&gt;A has 5 remaining, but A-&gt;T is now 0 (and A-&gt;B doesn't
+exist in this simple example) -- no augmenting path found via A. S-&gt;B has 5 remaining,
+but B-&gt;T is now 0. NO AUGMENTING PATH EXISTS.
+
+Final totalFlow = 15 (matches the intuitive maximum: S can send at most 10+15=25 out,
+but T can only receive at most 5+10=15 in, so 15 is indeed the true bottleneck-limited max)</code></pre>
+<aside class="callout callout-revise">
+<h3 id="quick-revision-ford-fulkerson-edmonds-karp-complexity" class="callout-title" data-callout="revise"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></span><span>Quick Revision: Ford-Fulkerson / Edmonds-Karp Complexity</span></h3>
+<ul>
+<li><strong>Ford-Fulkerson (general method, DFS-based path-finding)</strong>: O(E · maxFlow) — genuinely problematic if capacities are large, since the number of augmenting-path iterations can be proportional to the flow value itself, not just the graph&#39;s size.</li>
+<li><strong>Edmonds-Karp (BFS-based path-finding)</strong>: <strong>O(V·E²)</strong> — a provable bound independent of the actual flow values, making it the standard, safe choice.</li>
+</ul>
+</aside>
+<hr>
+
+<h2 id="26-3-the-max-flow-min-cut-theorem-a-genuinely-beautiful-result">26.3 The Max-Flow Min-Cut Theorem: A Genuinely Beautiful Result</h2>
+<p><strong>Definition:</strong> A cut in a flow network is a partition of vertices into two groups, one containing the source and the other containing the sink. The capacity of a cut is the sum of capacities of edges crossing from the source&#39;s group to the sink&#39;s group. <strong>The Max-Flow Min-Cut Theorem states that the maximum possible flow from source to sink is exactly equal to the minimum possible cut capacity.</strong></p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-the-bottleneck-intuition" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: The Bottleneck Intuition</span></h3>
+<p>Think of the network as a system of pipes: <strong>no matter how flow is routed, it can never exceed the capacity of the &quot;narrowest choke point&quot; separating the source from the sink</strong> — and the minimum cut IS precisely that narrowest choke point, found by considering every possible way to separate source from sink and taking the cheapest such separation. <strong>The theorem&#39;s genuinely surprising claim is that this upper bound (min cut) is always exactly <em>achievable</em></strong> — not just an unreachable theoretical ceiling, but a value the max flow algorithm actually attains.</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-finding-the-min-cut-from-a-completed-max-flow-run" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern: Finding the Min Cut From a Completed Max Flow Run</span></h3>
+<p>Once Ford-Fulkerson/Edmonds-Karp terminates (no more augmenting paths exist), <strong>the min cut is found for free</strong>: run a BFS/DFS from the source using only edges with remaining residual capacity — every vertex reachable this way is on the &quot;source side&quot; of the min cut, and every unreachable vertex is on the &quot;sink side.&quot; The cut edges are exactly the original edges crossing from a reachable vertex to an unreachable one, and their capacities sum to exactly the max flow value.</p>
+</aside>
+<aside class="callout callout-interview">
+<h3 id="interview-tip" class="callout-title" data-callout="interview"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span>Interview Tip</span></h3>
+<p>This is one of the most quotable, elegant results in all of graph theory, worth having ready verbatim: <strong>&quot;Max flow equals min cut — the maximum amount of flow you can push through a network is exactly equal to the capacity of the network&#39;s narrowest bottleneck separating source from sink, and this isn&#39;t just a theoretical bound, it&#39;s always achievable. You can find the actual min cut for free once max flow terminates, just by checking which vertices remain reachable via residual capacity.&quot;</strong></p>
+</aside>
+<h3 id="real-world-applications-worth-naming-unprompted">Real-World Applications Worth Naming Unprompted</h3>
+<ul>
+<li><strong>Bipartite matching</strong> (section 26.1.2) is directly solvable as a max flow problem: connect a super-source to every left vertex (capacity 1 each), every right vertex to a super-sink (capacity 1 each), and the original bipartite edges (capacity 1 each) — the max flow equals the maximum matching size, a genuinely elegant unification of two seemingly separate techniques into one.</li>
+<li><strong>Network reliability/bottleneck analysis</strong>: identifying the min cut in a computer network or supply chain reveals exactly which connections, if disrupted, would most severely limit total throughput — directly actionable for infrastructure investment decisions.</li>
+<li><strong>Image segmentation</strong> (a computer vision application): pixels as vertices, similarity as edge capacity, min cut separates an image into foreground/background regions.</li>
+<li><strong>Project selection with dependencies</strong> (&quot;maximum weight closure&quot; problems): a genuinely clever reduction of certain optimization problems into a min-cut computation.</li>
+</ul>
+<hr>
+
+<h2 id="26-4-edge-cases-and-gotchas-checklist">26.4 Edge Cases and Gotchas Checklist</h2>
+<ol>
+<li><strong>Disconnected source and sink.</strong> Verify your max flow implementation correctly returns <code>0</code> if no path exists at all.</li>
+<li><strong>Self-loops or parallel edges in the flow network.</strong> Verify your adjacency matrix representation handles these correctly (self-loops typically contribute nothing useful and should be ignored or given zero effective capacity).</li>
+<li><strong>Forgetting the reverse residual edge update</strong> — this is, without exaggeration, the single most common and most severe bug in Ford-Fulkerson implementations, silently producing an incorrect (too-low) max flow value, since the algorithm loses its ability to &quot;undo&quot; suboptimal early choices.</li>
+<li><strong>Using DFS instead of BFS for augmenting path finding without realizing the complexity implications</strong> — always default to BFS (Edmonds-Karp) unless you have a specific reason and have verified the graph&#39;s structure won&#39;t trigger DFS&#39;s pathological slow case.</li>
+<li><strong>Integer vs. floating-point capacities</strong> — verify your bottleneck (<code>Math.min</code>) calculations behave correctly if capacities aren&#39;t guaranteed to be integers.</li>
+<li><strong>Directed vs. undirected flow networks</strong> — an undirected edge with capacity <code>c</code> is typically modeled as two directed edges (each direction, capacity <code>c</code>), not capacity <code>c</code> shared between both directions; verify this distinction matches your specific problem&#39;s intent.</li>
+</ol>
+<hr>
+
+<h2 id="26-5-chapter-summary">26.5 Chapter Summary</h2>
+<p>This chapter extended Chapters <a href="/learn/dsa-master/graph-bfs-dfs-javascript" title="Graphs in JavaScript: BFS, DFS &amp; Adjacency List">11</a>-14&#39;s graph foundations into genuinely advanced territory, opening with bipartite graphs — detected via Chapter 11&#39;s BFS combined with a two-coloring test, and provably equivalent to the graph containing no odd-length cycles — and bipartite matching, whose augmenting-path algorithm (&quot;displace the current match, recursively check if it can find an alternative, then take the freed slot&quot;) turned out to be the exact conceptual seed of this chapter&#39;s central technique, not a separate, unrelated idea.</p>
+<p>We built <strong>Maximum Flow</strong> around the Ford-Fulkerson method: repeatedly find an augmenting path with available capacity, push flow equal to its bottleneck, and update a <strong>residual graph</strong>. We gave extended, careful attention to the single most commonly misunderstood detail in the entire algorithm: <strong>every forward flow push must be accompanied by an equal &quot;undo&quot; capacity added in the reverse direction</strong>, without which the algorithm would have no mechanism to reconsider an earlier suboptimal routing choice — directly echoing <a href="/learn/dsa-master/greedy-algorithms" title="Greedy Algorithms in JavaScript, With Proofs">Chapter 20</a>&#39;s lesson that naive, purely greedy, &quot;never look back&quot; strategies aren&#39;t automatically correct, and that a genuine correctness guarantee requires the specific mechanism (here, reverse residual edges) that allows revision. We distinguished the general <strong>Ford-Fulkerson method</strong> from its specific, standard <strong>Edmonds-Karp implementation</strong> (using BFS, directly reusing <a href="/learn/dsa-master/stack-and-queue-javascript" title="Stack and Queue in JavaScript: LIFO &amp; FIFO">Chapter 6</a>/11&#39;s queue-based traversal, to find augmenting paths), noting the provable O(VE²) bound this specific choice guarantees, versus the general method&#39;s potentially problematic dependence on the actual flow value&#39;s magnitude when a poorer path-finding strategy is used.</p>
+<p>We closed with the <strong>Max-Flow Min-Cut Theorem</strong> — a genuinely beautiful, surprising result stating that the maximum achievable flow is always <em>exactly</em> equal to the network&#39;s narrowest bottleneck (the minimum cut separating source from sink), not merely bounded by it, and that this minimum cut can be recovered for free once max flow terminates, simply by checking residual reachability from the source. We closed with a survey of real-world applications worth naming unprompted in an interview: bipartite matching reduces directly to a max flow computation (a genuinely elegant unification of two techniques covered in the same chapter), alongside network reliability analysis, image segmentation, and project-selection-with-dependencies problems — demonstrating that this chapter&#39;s techniques, while among the most mathematically sophisticated in the book, have correspondingly wide, genuinely practical real-world reach.</p>
+<hr>
+
+<h2 id="26-6-revision-notes">26.6 Revision Notes</h2>
+<ul>
+<li>Bipartite graphs are detected via Chapter 11&#39;s BFS combined with two-coloring; equivalent to containing no odd-length cycles.</li>
+<li>Bipartite matching&#39;s augmenting-path algorithm (&quot;displace and recursively re-match&quot;) is the conceptual seed of this chapter&#39;s central max-flow technique, not a separate idea.</li>
+<li>Ford-Fulkerson repeatedly finds an augmenting path, pushes flow equal to its bottleneck, and updates a residual graph — the reverse residual edge update is non-negotiable, providing the &quot;undo&quot; mechanism that makes the algorithm correct rather than a potentially-wrong greedy heuristic.</li>
+<li>Edmonds-Karp is the specific, standard implementation using BFS for augmenting-path finding, guaranteeing O(VE²) — a critical refinement over the unspecified general Ford-Fulkerson method.</li>
+<li>The Max-Flow Min-Cut Theorem: maximum flow always exactly equals the minimum cut capacity — not just an upper bound, but always achievable, and recoverable for free via residual reachability once max flow terminates.</li>
+<li>Bipartite matching reduces directly to a max flow computation via a super-source/super-sink construction — a genuine unification of this chapter&#39;s two halves.</li>
+</ul>
+<hr>
+
+<h2 id="26-7-mind-map-ascii">26.7 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                  ADVANCED GRAPH THEORY &amp; NETWORK FLOW
+                                  |
+      +------------------+-------+-------+------------------------+
+      |                  |               |                        |
+  BIPARTITE           MAXIMUM FLOW    RESIDUAL GRAPH          MAX-FLOW
+  GRAPHS              (Ford-Fulkerson) &amp; REVERSE EDGES        MIN-CUT THEOREM
+      |                    |               |                       |
+  Two-coloring test    Augmenting path: Every forward push    Max flow EXACTLY
+  (Ch.11 BFS) =        find path with   needs a reverse       equals min cut
+  equivalent to        available        &quot;undo&quot; edge -- THE    capacity (narrowest
+  &quot;no odd cycles&quot;      capacity, push   #1 correctness         bottleneck)
+      |                bottleneck       requirement (echoes         |
+  Bipartite            flow                  Ch.20: naive      NOT just a bound
+  MATCHING:                |             greedy isn't          -- ALWAYS
+  augmenting-path      Edmonds-Karp =    automatically         ACHIEVABLE
+  algorithm            SPECIFIC impl.    correct without a          |
+  (&quot;displace &amp;         using BFS         revision mechanism)   Find min cut FREE:
+  re-match&quot;)           (Ch.6/11 queue)        |                BFS/DFS from source
+  = SEED of this        -&gt; O(V*E^2)      Ford-Fulkerson =      using residual
+  chapter's max-        guaranteed       the GENERAL method,   capacity; reachable
+  flow technique        bound            unspecified path-      = source side
+      |                                  finding strategy            |
+  REDUCES TO MAX                                               Applications:
+  FLOW via super-                                              bipartite matching,
+  source/super-sink                                            network reliability,
+  construction!                                                image segmentation,
+  (unifies both                                                project selection
+  halves of chapter)</code></pre>
+<hr>
+
+<h2 id="26-8-cheat-sheet">26.8 Cheat Sheet</h2>
+<pre class="is-plain"><code>BIPARTITE GRAPH DETECTION
+=============================
+Two-color via BFS (Ch.11): if any edge connects two same-colored vertices -&gt; NOT bipartite
+Equivalent fact: bipartite &lt;=&gt; no odd-length cycles
+
+BIPARTITE MATCHING (AUGMENTING PATH)
+========================================
+For each left vertex, try to match it to an unmatched right neighbor.
+If all neighbors are taken, try to DISPLACE one (recursively re-match its
+current partner to a DIFFERENT vertex) -- if successful, take the freed slot.
+
+MAX FLOW (FORD-FULKERSON / EDMONDS-KARP)
+============================================
+while an augmenting path (source to sink, available capacity) exists:
+    bottleneck = MIN residual capacity along the path
+    for each edge (u,v) on the path:
+        residual[u][v] -= bottleneck    &lt;- forward: use up capacity
+        residual[v][u] += bottleneck    &lt;- REVERSE: add &quot;undo&quot; capacity (CRITICAL!)
+    totalFlow += bottleneck
+return totalFlow
+
+Ford-Fulkerson (general method): path-finding strategy unspecified, can be O(E*maxFlow) worst case
+Edmonds-Karp (BFS-specific):     O(V*E^2) GUARANTEED -- the standard, safe choice
+
+MAX-FLOW MIN-CUT THEOREM
+============================
+max flow == min cut capacity (ALWAYS, exactly, not just an upper bound)
+Find min cut for FREE after max flow completes:
+  BFS/DFS from source using only edges with remaining residual capacity
+  Reachable vertices = source side. Unreachable = sink side.
+  Cut edges = original edges crossing from reachable to unreachable.
+
+APPLICATIONS
+===============
+Bipartite matching = max flow (super-source -&gt; left, capacity 1 each;
+                                right -&gt; super-sink, capacity 1 each;
+                                original edges, capacity 1 each)
+Network reliability, image segmentation, project selection (max weight closure)</code></pre>
+<hr>
+
+<h2 id="26-9-key-takeaways">26.9 Key Takeaways</h2>
+<ol>
+<li>Bipartite graphs are detected via two-coloring (Chapter 11&#39;s BFS) and are equivalent to having no odd-length cycles.</li>
+<li>Bipartite matching&#39;s &quot;displace and recursively re-match&quot; augmenting-path technique is the direct conceptual seed of maximum flow, not a separate idea.</li>
+<li>The residual graph&#39;s reverse &quot;undo&quot; edges are non-negotiable for Ford-Fulkerson&#39;s correctness — without them, the algorithm can&#39;t revise an earlier suboptimal choice.</li>
+<li>Edmonds-Karp (BFS-based augmenting paths) guarantees O(VE²), a critical, specific refinement over the unspecified general Ford-Fulkerson method.</li>
+<li>The Max-Flow Min-Cut Theorem states these two quantities are always exactly equal, not just bounded — and the min cut is recoverable for free via residual reachability.</li>
+</ol>
+<hr>
+
+<h2 id="26-10-20-multiple-choice-questions">26.10 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What defines a bipartite graph?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A graph with exactly two vertices</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A graph whose vertices can be split into two groups where every edge connects one group to the other, never within a group</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A graph with exactly two edges</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A tree with two branches</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What technique detects whether a graph is bipartite?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sorting the vertices</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A two-coloring test using BFS, checking that no edge connects same-colored vertices</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Computing the graph&#39;s diameter</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Running Dijkstra&#39;s algorithm</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What structural property is equivalent to a graph being bipartite?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Having exactly n-1 edges</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Containing no odd-length cycles</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Being a tree</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Having a Hamiltonian path</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the &quot;displace and recursively re-match&quot; technique in bipartite matching?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Randomly reassigning all matches</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">When a contested match is found, recursively checking if the current holder can be reassigned elsewhere, freeing the slot</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sorting all vertices before matching</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Always keeping the first match found, never revising it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does the bipartite matching algorithm&#39;s core technique directly seed?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sorting algorithms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">This chapter&#39;s maximum flow algorithm (augmenting paths)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Binary search</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Hash table design</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is an augmenting path in the context of maximum flow?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Any path from source to sink</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A path from source to sink with available (unused) capacity along every edge</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The shortest path in the network</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A path with zero capacity</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the &quot;bottleneck&quot; of an augmenting path?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The total capacity of all edges combined</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The minimum residual capacity among all edges along the path</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The number of edges in the path</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The maximum capacity among all edges</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the single most critical, commonly-missed detail in implementing Ford-Fulkerson?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Using DFS instead of BFS</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Adding a reverse &quot;undo&quot; edge to the residual graph after every forward flow push</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sorting the edges by capacity first</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using a Fenwick Tree for capacity tracking</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Why is the reverse residual edge update necessary for correctness?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s optional; the algorithm works fine without it</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It allows the algorithm to revise/undo an earlier suboptimal flow-routing choice</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It only matters for undirected graphs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It prevents integer overflow</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What earlier chapter&#39;s lesson does the reverse-edge requirement directly echo?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Chapter 15&#39;s sorting stability</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Chapter 20&#39;s lesson that naive greedy strategies aren&#39;t automatically correct without a revision mechanism</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Chapter 9&#39;s heap building</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Chapter 5&#39;s linked list reversal</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the difference between &quot;Ford-Fulkerson&quot; and &quot;Edmonds-Karp&quot;?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They are unrelated algorithms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Ford-Fulkerson is the general method with an unspecified path-finding strategy; Edmonds-Karp specifically uses BFS, guaranteeing O(VE²)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Edmonds-Karp doesn&#39;t use residual graphs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Ford-Fulkerson only works on bipartite graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is the time complexity guarantee of Edmonds-Karp?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">O(V + E)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">O(V * E²)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">O(E * maxFlow), dependent on flow value</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">O(V²)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a potential problem with the general Ford-Fulkerson method if a poor path-finding strategy (e.g., naive DFS) is used?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It becomes incorrect</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The number of iterations can become proportional to the flow value itself, not just graph size</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It cannot find any augmenting path at all</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It only works for undirected graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What does the Max-Flow Min-Cut Theorem state?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Max flow is always greater than min cut</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Maximum flow is always EXACTLY equal to the minimum cut capacity</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Max flow and min cut are unrelated quantities</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Min cut is always zero</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">Is the min cut capacity merely an upper bound on max flow, or is it always achievable?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s merely a theoretical upper bound, rarely achieved</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It&#39;s always exactly achievable, not just a bound</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It depends on whether the graph is bipartite</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s only achievable for undirected graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How can you find the min cut for free after running max flow to completion?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Re-run the entire algorithm from scratch with different parameters</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">BFS/DFS from the source using only edges with remaining residual capacity; reachable vertices are the source side</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sort all edges by capacity</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It cannot be found without a separate algorithm</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">How does bipartite matching relate to maximum flow?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They are unrelated problems</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Bipartite matching reduces directly to a max flow computation via a super-source/super-sink construction with capacity-1 edges</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Bipartite matching is always faster than max flow</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Maximum flow only works on bipartite graphs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What is a real-world application of the min-cut concept mentioned in this chapter?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sorting large datasets</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Network reliability/bottleneck analysis and image segmentation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">String pattern matching</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Binary search optimization</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What data structure from earlier chapters powers the Edmonds-Karp augmenting-path search?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A stack (Chapter 6)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A queue, for BFS (Chapters 6 and 11)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A heap (Chapter 9)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A trie (Chapter 10)</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b"><p class="quiz-text">What should you verify regarding undirected edges when modeling a flow network?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Undirected edges cannot be used in flow networks</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An undirected edge with capacity c is typically modeled as two directed edges, each with capacity c</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Undirected edges automatically have infinite capacity</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Undirected edges must be removed before running max flow</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="26-11-20-coding-problems">26.11 20 Coding Problems</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement <code>isBipartite</code> from memory (section 26.1.1), and test it on both a bipartite and a non-bipartite (odd-cycle-containing) graph.</li>
+<li>Write a function to construct a simple flow network (adjacency matrix) from a list of edges with capacities.</li>
+<li>Implement a function to find the bottleneck (minimum capacity) along a given path in a flow network.</li>
+<li>Given a flow network, write a function to verify that a claimed flow assignment respects every edge&#39;s capacity constraint.</li>
+<li>Implement a simple BFS-based path existence checker for a residual graph (a helper for the full max flow algorithm).</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement <code>maxBipartiteMatching</code> from memory (section 26.1.2), and verify it against a small hand-constructed job-assignment example.</li>
+<li>Implement the full <code>maxFlow</code> (Edmonds-Karp) function from memory (section 26.2.3), and verify against the book&#39;s dry run.</li>
+<li>Given a completed max flow computation, implement a function to find the min cut (the specific edges) using residual-graph reachability.</li>
+<li>Given a bipartite graph representing students and elective courses (each student can take one course, each course has one slot), use max flow to determine the maximum number of students that can be assigned.</li>
+<li>Implement a function to verify the Max-Flow Min-Cut theorem empirically: compute max flow and min cut independently on the same network, and confirm they&#39;re equal.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="11">
+<li>Given a network with multiple sources and multiple sinks, adapt the max flow algorithm using a &quot;super-source&quot; and &quot;super-sink&quot; construction (connecting all sources/sinks with infinite-capacity edges) to find the maximum total flow.</li>
+<li>Implement &quot;Minimum Vertex Cover&quot; for a bipartite graph using König&#39;s theorem (a genuinely elegant result stating that in bipartite graphs, the minimum vertex cover size equals the maximum matching size), building on your bipartite matching implementation.</li>
+<li>Given a flow network where edges also have MINIMUM required flow (not just maximum capacity), describe (with a simplified implementation) how the max flow algorithm would need to be adapted to handle this &quot;lower bound&quot; constraint.</li>
+<li>Implement a project-selection (&quot;maximum weight closure&quot;) solver: given projects with profits/costs and dependencies, use a min-cut reduction to determine the optimal subset of projects to undertake.</li>
+<li>Given a large bipartite graph (e.g., thousands of applicants and jobs), benchmark your max-flow-based matching solution against the direct augmenting-path bipartite matching algorithm (section 26.1.2), discussing when each approach is preferable.</li>
+</ol>
+<p><strong>Interview Level</strong></p>
+<ol start="16">
+<li><strong>(Google-level)</strong> Given a data center network with bandwidth capacities between servers, use max flow to determine the maximum sustainable data transfer rate between two specific servers, and use min cut to identify the specific network links that would need upgrading to increase capacity.</li>
+<li><strong>(Amazon-level)</strong> Given a warehouse-to-customer delivery network with capacity constraints on each route segment, use max flow to determine the maximum number of packages deliverable per day, and discuss how this informs logistics infrastructure investment decisions.</li>
+<li><strong>(Microsoft-level)</strong> Given a task-assignment system where employees have varying skill sets (bipartite: employees to tasks) and each task can be assigned to exactly one employee, use max flow to find the maximum number of tasks that can be staffed, and discuss handling employees who can do multiple tasks.</li>
+<li><strong>(Meta-level)</strong> Given a content moderation queue distribution problem (moderators to content types, bipartite, each moderator can handle multiple content types up to a capacity limit), extend the standard bipartite matching to a capacitated flow problem and solve it with max flow.</li>
+<li><strong>(Netflix-level)</strong> Design a content delivery network (CDN) capacity planning tool: given server-to-region bandwidth capacities, use max flow to determine the maximum total content delivery rate to a specific region, and use the min-cut result to identify and report the exact bottleneck links limiting further scaling.</li>
+</ol>
+<hr>
+
+<h2 id="26-12-5-interview-questions">26.12 5 Interview Questions</h2>
+<ol>
+<li>&quot;How would you determine if a graph is bipartite?&quot; (Tests the two-coloring BFS technique and the odd-cycle equivalence.)</li>
+<li>&quot;Implement maximum bipartite matching, and explain the core idea behind your algorithm.&quot; (Tests the augmenting-path/displacement technique specifically.)</li>
+<li>&quot;Implement the Ford-Fulkerson algorithm for maximum flow, and explain why the residual graph needs reverse edges.&quot; (Tests both implementation and the critical correctness detail.)</li>
+<li>&quot;What is the Max-Flow Min-Cut theorem, and how would you find the actual min cut once you&#39;ve computed max flow?&quot; (Tests the theorem itself and the free min-cut-recovery technique.)</li>
+<li>&quot;How does bipartite matching relate to maximum flow?&quot; (Tests the unifying reduction connecting both halves of this chapter.)</li>
+</ol>
+<hr>
+
+<h2 id="26-13-3-real-projects">26.13 3 Real Projects</h2>
+<ol>
+<li><strong>Complete Flow Algorithm Library</strong>: Implement bipartite graph detection, bipartite matching, and Edmonds-Karp maximum flow (with min-cut recovery) in a single library, with a self-check script verifying the Max-Flow Min-Cut theorem holds across randomized test networks.</li>
+<li><strong>Job Assignment Optimizer</strong>: Build a tool that takes a list of job applicants with their qualifications and a list of job openings with requirements, models it as a bipartite graph, and uses max flow to find the maximum number of successful assignments, reporting the specific matches made.</li>
+<li><strong>Network Bottleneck Analyzer</strong>: Build a tool that takes a network topology with bandwidth capacities, computes the maximum flow between any two specified nodes, and reports the specific min-cut edges — directly useful for identifying which network links would most improve throughput if upgraded.</li>
+</ol>
+<hr>
+
+<h2 id="26-14-further-reading">26.14 Further Reading</h2>
+<ul>
+<li>L.R. Ford Jr. and D.R. Fulkerson&#39;s original 1956 paper introducing the max flow method bearing their names.</li>
+<li>Jack Edmonds and Richard Karp&#39;s 1972 paper establishing the BFS-based polynomial-time bound for the algorithm bearing their names.</li>
+<li>Search &quot;König&#39;s theorem bipartite graphs&quot; for the elegant minimum-vertex-cover result mentioned in coding problem #12.</li>
+<li>Jon Kleinberg and Éva Tardos, <em>Algorithm Design</em>, chapter on network flow, for the definitive, rigorous treatment of max flow applications, including project selection and image segmentation.</li>
+<li>LeetCode&#39;s and competitive programming resources&#39; &quot;Network Flow&quot; and &quot;Bipartite Matching&quot; problem sets, for extensive additional practice.</li>
+</ul>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Network Flow &amp; Bipartite Matching: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is a bipartite graph?</h3></summary><p>A bipartite graph is one whose vertices split into two groups where every edge connects the two groups. A graph is bipartite exactly when it has no odd-length cycle, which you can test by two-coloring it with BFS.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the maximum flow problem?</h3></summary><p>Given a directed graph with edge capacities, a source and a sink, the maximum flow problem asks for the largest amount that can be sent from source to sink without exceeding any edge's capacity.</p></details>
+<details class="learn-faq-item"><summary><h3>Why does Ford-Fulkerson need reverse edges?</h3></summary><p>Reverse edges in the residual graph let the algorithm undo flow it sent earlier. Without them, an early poor choice of path could lock the algorithm into a non-maximum flow.</p></details>
+<details class="learn-faq-item"><summary><h3>What does the max-flow min-cut theorem say?</h3></summary><p>The maximum flow from source to sink equals the minimum total capacity of edges whose removal disconnects the sink from the source. After the flow is computed, the vertices reachable from the source in the residual graph give that cut.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. DSA Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/dsa-master/math-for-programmers-number-theory"><span>&larr; Previous &middot; Chapter 25</span><strong>Math for Programmers: Number Theory &amp; Combinatorics</strong></a>
+                        <a class="next" rel="next" href="/learn/dsa-master/dsa-for-system-design"><span>Next &middot; Chapter 27 &rarr;</span><strong>DSA in System Design: LRU, Rate Limiting &amp; B-Trees</strong></a>
+                    </nav>
+                    </article>
+
+                    <details class="learn-toc" id="learnToc" open>
+                        <summary>On this page</summary>
+                        <nav aria-label="On this page"><ul><li><a href="#26-0-the-question-this-chapter-answers">26.0 The Question This Chapter Answers</a></li><li><a href="#26-1-bipartite-graphs-and-bipartite-matching">26.1 Bipartite Graphs and Bipartite Matching</a></li><li><a href="#26-2-maximum-flow-the-ford-fulkerson-method">26.2 Maximum Flow: The Ford-Fulkerson Method</a></li><li><a href="#26-3-the-max-flow-min-cut-theorem-a-genuinely-beautiful-result">26.3 The Max-Flow Min-Cut Theorem: A Genuinely Beautiful Result</a></li><li><a href="#26-4-edge-cases-and-gotchas-checklist">26.4 Edge Cases and Gotchas Checklist</a></li><li><a href="#26-5-chapter-summary">26.5 Chapter Summary</a></li><li><a href="#26-6-revision-notes">26.6 Revision Notes</a></li><li><a href="#26-7-mind-map-ascii">26.7 Mind Map (ASCII)</a></li><li><a href="#26-8-cheat-sheet">26.8 Cheat Sheet</a></li><li><a href="#26-9-key-takeaways">26.9 Key Takeaways</a></li><li><a href="#26-10-20-multiple-choice-questions">26.10 20 Multiple Choice Questions</a></li><li><a href="#26-11-20-coding-problems">26.11 20 Coding Problems</a></li><li><a href="#26-12-5-interview-questions">26.12 5 Interview Questions</a></li><li><a href="#26-13-3-real-projects">26.13 3 Real Projects</a></li><li><a href="#26-14-further-reading">26.14 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                    </details>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/recursion-in-javascript" class="text-body-3">Recursion in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/hashing-hash-table-javascript" class="text-body-3">Hash Tables in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/graph-bfs-dfs-javascript" class="text-body-3">Graphs in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/sorting-algorithms-javascript" class="text-body-3">Sorting Algorithms in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming in JavaScript</a></li>
+                            <li><a href="../../learn/dsa-master/dsa-interview-preparation-roadmap" class="text-body-3">DSA Interview Prep Roadmap</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('dsaMasterLast', "advanced-graph-algorithms-network-flow"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note');
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans + '.';
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>
