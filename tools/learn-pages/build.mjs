@@ -442,13 +442,13 @@ ${faqHtml(c.faq, `${c.title.split(":")[0]}: frequently asked questions`)}
                         ${next ? `<a class="next" rel="next" href="${pathOf(next)}"><span>Next &middot; Chapter ${next.n} &rarr;</span><strong>${esc(next.title)}</strong></a>` : `<a class="next" href="/learn/dsa-master"><span>Course complete &rarr;</span><strong>Back to all chapters</strong></a>`}
                     </nav>
                     </article>
-
-                    <details class="learn-toc" id="learnToc" open>
-                        <summary>On this page</summary>
-                        <nav aria-label="On this page"><ul>${[...r.heads, { id: "faq-title", text: "Frequently asked questions" }].map((h) => `<li><a href="#${h.id}">${esc(h.text)}</a></li>`).join("")}</ul></nav>
-                    </details>
                   </div>
                 </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul>${[...r.heads, { id: "faq-title", text: "Frequently asked questions" }].map((h) => `<li><a href="#${h.id}">${esc(h.text)}</a></li>`).join("")}</ul></nav>
+                </details>
             </div>
         </div>
 `;
