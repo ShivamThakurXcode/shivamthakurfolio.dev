@@ -35,6 +35,20 @@ const FOOD = {
 };
 const food = (k, x, y, name, { off = false } = {}) => `<g${off ? ' opacity=".35"' : ""}>${FOOD[k](x, y)}</g>${off ? `<path d="M${x - 40} ${y - 20} L${x + 40} ${y + 30}" stroke="${RED}" stroke-width="4" stroke-linecap="round"/>` : ""}${t(x, y + 62, name, { size: 18, weight: 700, anchor: "middle", fill: off ? "#A0A0A0" : C.ink })}`;
 
+
+// vertical-less horizontal timeline: events [{ when, title, sub, col }] spread across the width
+const timeline = (heading, tagText, events, { y0 = 330 } = {}) => {
+  const n = events.length, x0 = 215, x1 = 1185, gap = (x1 - x0) / (n - 1);
+  return `${box(60, 60, 1280, 734, { r: 30 })}
+${tag(92, 92, tagText, { fill: C.ink, color: "#fff", size: 22, h: 46 })}${t(92, 190, heading, { size: 40, weight: 700, font: TITLE })}
+<path d="M${x0} ${y0} H${x1}" stroke="#D9D9D9" stroke-width="6" stroke-linecap="round"/>
+${events.map((e, i) => { const x = x0 + i * gap, up = i % 2 === 0, col = e.col || C.g2; return `<circle cx="${x}" cy="${y0}" r="16" fill="${col}" stroke="#fff" stroke-width="5"/>
+<path d="M${x} ${y0 + (up ? 22 : 22)} V${y0 + 70}" stroke="#D9D9D9" stroke-width="3"/>
+${box(x - 110, y0 + 70 + (up ? 0 : 150), 220, 150, { r: 20, fill: "#F6F6F6", stroke: "#F6F6F6", shadow: false })}
+${tag(x - 90, y0 + 84 + (up ? 0 : 150), e.when, { fill: col === RED ? "#FDE7E8" : col === "#F59E0B" ? "#FEF3C7" : C.gt, color: col === RED ? RED : col === "#F59E0B" ? "#B45309" : C.g2, size: 17, h: 34, pad: 14 })}
+${t(x - 90, y0 + 148 + (up ? 0 : 150), e.title, { size: 20, weight: 800 })}${note(x - 90, y0 + 176 + (up ? 0 : 150), e.sub, { size: 16 })}`; }).join("")}`;
+};
+
 const FIG = {
   // ── REST vs GraphQL: the restaurant analogy
   "rest-graphql-restaurant": () => `
@@ -253,6 +267,45 @@ ${box(60, 670, 820, 124, { r: 24, shadow: false })}
 <rect x="530" y="708" width="44" height="30" rx="8" fill="${C.gt}" stroke="${C.g2}" stroke-width="2" stroke-dasharray="5 4"/>${t(586, 731, "Text node", { size: 19, weight: 700 })}
 ${note(92, 770, "Every tag and every piece of text is a node.", { size: 17 })}
 ${box(920, 670, 420, 124, { r: 24, fill: C.ink, stroke: C.ink, shadow: false })}${sparkle(966, 732, 0.9)}${t(1000, 724, "JavaScript can change", { size: 21, weight: 800, fill: "#fff" })}${t(1000, 754, "any node, live", { size: 21, weight: 800, fill: C.g })}`,
+
+  // ── Microsoft 365 outage: timeline of Nov 12-13
+  "ms365-outage-timeline": () => timeline("Microsoft 365 outage, hour by hour", "Nov 12–13, 2026", [
+    { when: "9:45 AM ET", title: "Teams incident", sub: "TM1550488, fixed 10:53", col: "#F59E0B" },
+    { when: "1:26 PM ET", title: "Main outage", sub: "Exchange, Teams, more", col: RED },
+    { when: "~4 PM ET", title: "First fix", sub: "New health check", col: C.g2 },
+    { when: "6:57 PM ET", title: "Limited recovery", sub: "Servers returning", col: C.g2 },
+    { when: "Nov 13, 5 AM ET", title: "Still variable", sub: "No full ETA given", col: "#F59E0B" },
+  ]),
+  // ── Microsoft 365 outage: what Microsoft said happened, and what it did
+  "ms365-outage-cause": () => `
+${box(60, 60, 1280, 734, { r: 30 })}
+${tag(92, 92, "As Microsoft described it", { fill: C.ink, color: "#fff", size: 22, h: 46 })}
+${[["Servers go", "unavailable", "Unexpectedly, in several regions", RED], ["Load shifts to", "what is left", "Remaining capacity is strained", "#F59E0B"], ["Connections", "fail", "Outlook, Teams, SharePoint, Copilot", RED]].map(([a, b, c, col], i) => { const x = 92 + i * 420; return `${box(x, 200, 360, 200, { r: 24 })}${step(x + 40, 244, i + 1, col)}${t(x + 74, 240, a, { size: 25, weight: 800, font: TITLE })}${t(x + 74, 272, b, { size: 25, weight: 800, font: TITLE })}${note(x + 28, 340, c, { size: 18 })}${i < 2 ? arrow(`M${x + 366} 300 H${x + 414}`, { color: C.ink, head: "ahk" }) : ""}`; }).join("")}
+${t(92, 480, "What Microsoft did about it", { size: 28, weight: 800, font: TITLE })}
+${[["Paused all deployments", "No new changes while it recovers"], ["Rebalanced traffic", "Spread across its global infrastructure"], ["Restarted servers", "Returned to service in stages"], ["Added a new health check", "Brought some servers back online"]].map(([a, b], i) => { const x = 92 + (i % 2) * 620, y = 520 + Math.floor(i / 2) * 120; return `${box(x, y, 580, 100, { r: 20, fill: C.gt, stroke: C.gt, shadow: false })}${tick(x + 40, y + 50, 18)}${t(x + 74, y + 46, a, { size: 22, weight: 800 })}${note(x + 74, y + 76, b, { size: 17 })}`; }).join("")}`,
+  // ── Nvidia: who holds which role now
+  "nvidia-leadership-handover": () => `
+${box(60, 60, 620, 734, { r: 30 })}
+${tag(92, 92, "Before Nov 12", { fill: "#F0F0F0", color: C.sub, size: 22, h: 46 })}
+${box(92, 190, 556, 150, { r: 24, fill: "#F6F6F6", stroke: "#F6F6F6", shadow: false })}${t(124, 246, "Jensen Huang", { size: 30, weight: 800, font: TITLE })}${note(124, 284, "President, CEO and board member")}${note(124, 314, "Co-founder (1993)", { size: 17 })}
+${box(92, 370, 556, 150, { r: 24, fill: "#F6F6F6", stroke: "#F6F6F6", shadow: false })}${t(124, 426, "Colette Kress", { size: 30, weight: 800, font: TITLE })}${note(124, 464, "EVP and Chief Financial Officer")}${note(124, 494, "At Nvidia since 2013", { size: 17 })}
+${box(92, 550, 556, 150, { r: 24, fill: "#F6F6F6", stroke: "#F6F6F6", shadow: false })}${t(124, 606, "Board chair", { size: 30, weight: 800, font: TITLE })}${note(124, 644, "The role did not exist before")}
+${t(92, 750, "Jensen Huang left the CEO job and the board.", { size: 19, weight: 600, fill: C.sub })}
+
+${box(720, 60, 620, 734, { r: 30, stroke: C.g, sw: 3 })}
+${tag(752, 92, "After Nov 12", { fill: C.g, color: C.ink, size: 22, h: 46 })}
+${box(752, 190, 556, 150, { r: 24, fill: C.ink, stroke: C.ink })}${t(784, 246, "Colette Kress", { size: 30, weight: 800, font: TITLE, fill: "#fff" })}${t(784, 284, "Interim CEO, and still CFO", { size: 22, weight: 600, fill: C.g })}${t(784, 314, "Until a permanent CEO is named", { size: 17, fill: "#BDBDBD", weight: 500 })}
+${box(752, 370, 556, 150, { r: 24 })}${t(784, 426, "Harvey C. Jones", { size: 30, weight: 800, font: TITLE })}${note(784, 464, "First-ever Chair of the Board")}${note(784, 494, "Former CEO of Synopsys", { size: 17 })}
+${box(752, 550, 556, 150, { r: 24, fill: C.gt, stroke: C.gt, shadow: false })}${t(784, 606, "CEO search", { size: 30, weight: 800, font: TITLE })}${note(784, 644, "Internal and external candidates")}${note(784, 674, "No successor named yet", { size: 17 })}
+${t(752, 750, "Source: Nvidia press release and 8-K filing.", { size: 19, weight: 600, fill: C.sub })}`,
+  // ── Nvidia: the week of events
+  "nvidia-key-dates": () => timeline("The week Nvidia changed CEOs", "Nov 2026", [
+    { when: "Sun Nov 8", title: "Board probe", sub: "Reported by NBC", col: "#F59E0B" },
+    { when: "Tue Nov 10", title: "Outside counsel", sub: "Law firm hired", col: "#F59E0B" },
+    { when: "Wed Nov 11", title: "Board meets", sub: "Per NBC's source", col: "#F59E0B" },
+    { when: "Thu Nov 12", title: "Huang resigns", sub: "Kress is interim CEO", col: RED },
+    { when: "Tue Nov 17", title: "Q3 earnings", sub: "1:20 PM PT, as planned", col: C.g2 },
+  ]),
 };
 
 const only = process.argv[2];

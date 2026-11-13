@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model accounts {
+  id      Int @id
+  balance Int
+}
+
+model categories {
+  id               Int          @id @default(autoincrement())
+  name             String       @unique
+  parent_id        Int?
+  categories       categories?  @relation("categoriesTocategories", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_categories categories[] @relation("categoriesTocategories")
+  products         products[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model demo_stock {
+  id    Int @id
+  stock Int
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model order_items {
+  order_id         BigInt
+  product_id       BigInt
+  quantity         Int
+  unit_price_minor Int
+  orders           orders   @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products         products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([order_id, product_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model orders {
+  id          BigInt        @id @default(autoincrement())
+  user_id     BigInt
+  status      String
+  created_at  DateTime      @db.Timestamptz(6)
+  order_items order_items[]
+  users       users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model pages_demo {
+  id    Int?
+  name  String?
+  price Int?
+
+  @@index([id])
+  @@ignore
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model products {
+  id          BigInt        @id @default(autoincrement())
+  category_id Int
+  name        String
+  price_minor Int
+  stock       Int           @default(0)
+  active      Boolean       @default(true)
+  attrs       Json          @default("{}")
+  order_items order_items[]
+  categories  categories    @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviews     reviews[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model reviews {
+  id         BigInt   @id @default(autoincrement())
+  product_id BigInt
+  user_id    BigInt
+  rating     Int
+  body       String?
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  products   products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([product_id, user_id])
+}
+
+model users {
+  id         BigInt    @id @default(autoincrement())
+  email      String    @unique
+  name       String
+  country    String    @db.Char(2)
+  phone      String?
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  orders     orders[]
+  reviews    reviews[]
+}
+
+model users_demo {
+  id       Int      @id @default(autoincrement())
+  email    String?
+  is_admin Boolean? @default(false)
+  secret   String?
+}

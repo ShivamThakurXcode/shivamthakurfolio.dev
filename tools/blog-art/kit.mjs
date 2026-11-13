@@ -1,5 +1,5 @@
 // Shared drawing + render toolkit for the static blog images (thumbnails and in-article figures).
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -9,7 +9,7 @@ import { C } from "../service-art/lib.mjs";
 export { C };
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../..");
 const TMP = join(tmpdir(), "blog-art");
-const CAPTURE = join(ROOT, ".claude/skills/anatomy/scripts/capture.mjs");
+const BROWSER = ["C:/Program Files/Google/Chrome/Application/chrome.exe", "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe", "C:/Program Files/Microsoft/Edge/Application/msedge.exe"].find(existsSync);
 
 export const TITLE = `font-family="'Apfel Grotezk', Inter, sans-serif"`, SANS = `font-family="Inter, 'Segoe UI', sans-serif"`, MONO = `font-family="Consolas, 'Courier New', monospace"`;
 export const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -60,7 +60,8 @@ export function render(items, W, H) {
     const html = join(TMP, `${name}.html`), png = join(TMP, `${name}.png`);
     writeFileSync(join(TMP, `${name}.svg`), svg);
     writeFileSync(html, `<!doctype html><meta charset="utf-8">${FONTS}${svg}`);
-    execFileSync(process.execPath, ["--experimental-websocket", CAPTURE, html, "--out", png, "--width", String(W), "--height", String(H), "--scale", "1", "--wait", "900", "--select", "svg"], { stdio: "pipe" });
+    // headless Chrome/Edge screenshot (the old anatomy capture script is not in this checkout); Pillow crops to W×H below
+    execFileSync(BROWSER, ["--headless=new", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=1", `--window-size=${W},${H + 200}`, "--virtual-time-budget=4000", `--screenshot=${png}`, pathToFileURL(html).href], { stdio: "pipe" });
     mkdirSync(dirname(out), { recursive: true });
     pairs.push([png, out]);
     console.log("rendered", name);

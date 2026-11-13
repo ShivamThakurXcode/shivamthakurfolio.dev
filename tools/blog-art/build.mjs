@@ -168,9 +168,42 @@ ${[["code", "Resources & verbs"], ["layers", "Schema & resolvers"], ["chart", "N
       return `${box(x, 600, 192, 84, { r: 20 })}<rect x="${x + 16}" y="618" width="48" height="48" rx="14" fill="${C.gt}"/>${icon(ic, x + 40, 642, { s: 0.7, col: C.g2 })}${t(x + 74, 637, l.split(" & ")[0] + " &", { size: 16, weight: 700 })}${t(x + 74, 659, l.split(" & ")[1], { size: 16, weight: 700 })}`;
     }).join("")}`;
   },
+  "microsoft-365-outage-november-2026": () => {
+    const RED = "#E5484D", AMB = "#F59E0B";
+    const rows = [["Outlook", "Down", RED], ["Exchange Online", "Down", RED], ["Microsoft Teams", "Degraded", AMB], ["SharePoint", "Degraded", AMB], ["Copilot", "Down", RED]];
+    return `
+${box(720, 90, 600, 520)}
+<rect x="752" y="122" width="48" height="48" rx="14" fill="${C.ink}"/>${t(776, 156, "M", { size: 28, fill: C.g, weight: 800, anchor: "middle", font: TITLE })}
+${t(816, 143, "Service health", { size: 24, weight: 800 })}${t(816, 168, "Microsoft 365 · Nov 12", { size: 17, fill: C.sub })}
+${pill(1150, 128, "INCIDENT", { fill: "#FDE7E8", color: RED, size: 16, h: 34, pad: 16 }).svg}
+<path d="M720 196 H1320" stroke="#EFEFEF" stroke-width="2"/>
+${rows.map(([n, st, col], i) => { const y = 222 + i * 68; return `<rect x="752" y="${y}" width="536" height="54" rx="16" fill="#F6F6F6"/><circle cx="782" cy="${y + 27}" r="9" fill="${col}"/>${t(806, y + 35, n, { size: 21, weight: 700 })}${pill(1288 - (st.length * 12.6 + 36), y + 8, st, { fill: col === RED ? "#FDE7E8" : "#FEF3C7", color: col === RED ? RED : "#B45309", size: 18, h: 38, pad: 18 }).svg}`; }).join("")}
+${box(720, 640, 600, 84, { r: 22, fill: C.ink, stroke: C.ink, shadow: false })}${t(752, 676, "Advisory MO1550821", { size: 21, weight: 800, fill: "#fff" })}${t(752, 705, "Microsoft: no sign of malicious activity", { size: 17, fill: C.g, weight: 600 })}`;
+  },
+
+  "jensen-huang-resigns-nvidia-ceo": () => `
+${box(720, 90, 600, 250)}
+${t(752, 134, "LEADERSHIP CHANGE", { size: 16, weight: 800, fill: C.sub, extra: 'letter-spacing="2"' })}
+<circle cx="800" cy="214" r="38" fill="${C.mute}"/>${t(800, 226, "JH", { size: 30, weight: 800, anchor: "middle", fill: C.sub, font: TITLE })}
+${t(852, 206, "Jensen Huang", { size: 24, weight: 800 })}${t(852, 236, "Resigned as CEO & director", { size: 17, fill: C.sub })}
+${pill(752, 270, "Effective immediately", { fill: "#FDE7E8", color: "#E5484D", size: 17, h: 36, pad: 16 }).svg}${t(1288, 296, "8-K · Nov 12, 2026", { size: 16, fill: C.sub, weight: 600, anchor: "end" })}
+${box(720, 360, 290, 170, { r: 24, fill: C.ink, stroke: C.ink })}
+<circle cx="770" cy="414" r="26" fill="${C.g}"/>${t(770, 424, "CK", { size: 22, weight: 800, anchor: "middle", font: TITLE })}
+${t(808, 410, "Colette Kress", { size: 20, weight: 800, fill: "#fff" })}${t(808, 434, "Interim CEO + CFO", { size: 15, fill: C.g, weight: 700 })}
+${t(744, 490, "Search for a permanent CEO", { size: 16, fill: "#CFCFCF", weight: 600 })}${t(744, 512, "is under way", { size: 16, fill: "#CFCFCF", weight: 600 })}
+${box(1030, 360, 290, 170, { r: 24 })}
+<circle cx="1080" cy="414" r="26" fill="${C.gt}"/>${t(1080, 424, "HJ", { size: 22, weight: 800, anchor: "middle", fill: C.g2, font: TITLE })}
+${t(1118, 410, "Harvey C. Jones", { size: 19, weight: 800 })}${t(1118, 434, "First-ever Chair", { size: 15, fill: C.sub, weight: 700 })}
+${t(1054, 490, "Appointed by the", { size: 16, fill: C.sub, weight: 600 })}${t(1054, 512, "Nvidia board", { size: 16, fill: C.sub, weight: 600 })}
+${box(720, 560, 600, 164, { r: 24 })}
+${t(752, 604, "NVDA · Nov 12", { size: 18, weight: 800 })}${t(752, 626, "Illustrative, not to scale", { size: 14, fill: C.sub, weight: 600 })}${pill(1130, 578, "Closed down ~4%", { fill: "#FDE7E8", color: "#E5484D", size: 15, h: 32, pad: 14 }).svg}
+<path d="M752 664 L840 676 L920 640 L1000 690 L1090 656 L1180 666 L1290 648" fill="none" stroke="${C.g2}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="1000" cy="690" r="8" fill="#E5484D"/>${t(1000, 714, "intraday low", { size: 14, fill: C.sub, anchor: "middle", weight: 600 })}`,
 };
 
 const POSTS = [
+  { slug: "microsoft-365-outage-november-2026", chip: "Outage", title: ["Microsoft 365", "goes *down*"], sub: ["Outlook, Teams & Copilot:", "what we know so far"], read: 6 },
+  { slug: "jensen-huang-resigns-nvidia-ceo", chip: "Nvidia", title: ["Nvidia's CEO", "*steps down*"], sub: ["Jensen Huang resigns: what happens", "next for the AI chip giant"], read: 6 },
   { slug: "chatgpt-6-astra-guide", chip: "AI", title: ["GPT-6 *Astra*", "explained"], sub: ["What OpenAI's newest model", "means for ChatGPT"], read: 11 },
   { slug: "deploying-fullstack-on-vercel", chip: "DevOps", title: ["Deploy a", "*full-stack* app"], sub: ["On Vercel, properly: builds,", "previews, env vars & caching"], read: 14 },
   { slug: "javascript-complete-guide-for-beginners", chip: "JavaScript", title: ["JavaScript,", "finally *clicked*"], sub: ["Zero to confident", "in one read"], read: 22 },
