@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Backend Testing Strategy: Node.js Guide | Backend Master</title>
+    <meta name="description" content="Test a Node.js backend properly: the node:test runner, integration tests with a real database, fakes vs mocks, fast-check, flaky tests and mutation testing.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="nodejs testing, node:test runner, integration testing database, property based testing fast-check, mocks vs fakes, flaky tests, mutation testing, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="nodejs testing">
+    <meta property="article:tag" content="node:test runner">
+    <meta property="article:tag" content="integration testing database">
+    <meta property="article:tag" content="property based testing fast-check">
+    <meta property="article:tag" content="mocks vs fakes">
+    <meta property="article:tag" content="flaky tests">
+    <meta property="article:tag" content="mutation testing">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Backend Testing Strategy: Node.js Guide">
+    <meta property="og:description" content="Test a Node.js backend properly: the node:test runner, integration tests with a real database, fakes vs mocks, fast-check, flaky tests and mutation testing.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/backend-testing-strategy-node-test-integration-property.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Backend Testing Strategy: Unit, Integration, Property-Based and Mutation Tests: Backend Master chapter 24">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Backend Testing Strategy: Node.js Guide">
+    <meta name="twitter:description" content="Test a Node.js backend properly: the node:test runner, integration tests with a real database, fakes vs mocks, fast-check, flaky tests and mutation testing.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/backend-testing-strategy-node-test-integration-property.png">
+    <meta name="twitter:image:alt" content="Backend Testing Strategy: Unit, Integration, Property-Based and Mutation Tests: Backend Master chapter 24">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property",
+          "name": "Backend Testing Strategy: Node.js Guide | Backend Master",
+          "description": "Test a Node.js backend properly: the node:test runner, integration tests with a real database, fakes vs mocks, fast-check, flaky tests and mutation testing.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/backend-testing-strategy-node-test-integration-property.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Backend Testing Strategy: Unit, Integration, Property-Based and Mutation Tests"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#webpage"
+          },
+          "headline": "Backend Testing Strategy: Unit, Integration, Property-Based and Mutation Tests",
+          "alternativeHeadline": "Testing Strategy — Proving Your Backend Works (and Keeps Working)",
+          "description": "Test a Node.js backend properly: the node:test runner, integration tests with a real database, fakes vs mocks, fast-check, flaky tests and mutation testing.",
+          "abstract": "More tests and higher coverage do not guarantee a safe backend. This chapter builds a 25-test suite with the built-in node:test runner and a real PostgreSQL, shows a property test finding a negative order total, a mock hiding a broken SQL update, a flaky timing test, 99.6 percent coverage with surviving mutants, and a load test.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/backend-testing-strategy-node-test-integration-property.png",
+          "url": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 7244,
+          "timeRequired": "PT33M",
+          "articleSection": "Backend Development",
+          "keywords": "nodejs testing, node:test runner, integration testing database, property based testing fast-check, mocks vs fakes, flaky tests, mutation testing",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "The test pyramid and F.I.R.S.T. tests",
+            "Property-based testing with fast-check",
+            "Fakes, mocks and contract tests",
+            "Isolating database tests",
+            "Fake timers, flaky tests and mutation testing"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs testing"
+          },
+          "isAccessibleForFree": true,
+          "position": 24,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#article",
+            "name": "Web and API Security: XSS, CSRF, SSRF, CORS, Injection and Hardening",
+            "url": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Backend Testing Strategy: Node.js Guide",
+              "item": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is 100 percent code coverage a good goal?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. Coverage shows which lines ran, not whether they were checked. A suite with full line coverage let three mutants through in our test; mutation testing is a better quality signal."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When should I use mocks?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "For external services you cannot run cheaply, such as payment gateways. For your own database layer use a real database or a fake verified by a contract test; mocked tests passed while our real SQL was wrong."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I deal with flaky tests?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Treat them as bugs: inject clocks and seeds, use fake timers, isolate data per test and quarantine while fixing. One timing test failed four of 20 runs on an idle machine."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I isolate database tests?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use a transaction per test with rollback, truncate between tests, or a separate schema per test file so files can run in parallel."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#quiz",
+          "name": "Backend Testing Strategy: Node.js Guide: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs testing"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which test level best catches an incorrect SQL UPDATE?",
+              "text": "Which test level best catches an incorrect SQL UPDATE?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Integration test with a real database"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Unit test with a mock repo"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A linter"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A snapshot"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The test pyramid recommends:",
+              "text": "The test pyramid recommends:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Many fast unit tests, fewer integration tests, fewest E2E tests"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Mostly E2E tests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only integration tests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No unit tests"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why test at 50000 and 49999 for a >= 50000 rule?",
+              "text": "Why test at 50000 and 49999 for a >= 50000 rule?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Boundaries expose >= vs > bugs"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Style"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Performance"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Coverage"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Property-based testing:",
+              "text": "Property-based testing:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Generates many inputs to check invariants that must always hold"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Tests private properties"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replaces all unit tests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only works with numbers"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What did the property test find in orderTotal?",
+              "text": "What did the property test find in orderTotal?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A fixed coupon exceeding the subtotal, producing a negative total"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A rounding error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A slow query"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A null pointer"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is \"shrinking\"?",
+              "text": "What is \"shrinking\"?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reducing a failing input to a minimal counterexample"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Reducing test time"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Compressing logs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Deleting tests"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A fake differs from a mock in that a fake:",
+              "text": "A fake differs from a mock in that a fake:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Is a working lightweight implementation, checked by outcomes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Records call expectations"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is always random"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Hits the network"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did mocked tests pass despite the stock + $2 bug?",
+              "text": "Why did mocked tests pass despite the stock + $2 bug?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "They never ran the real SQL"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The mock was wrong"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "PostgreSQL ignored it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The bug wasn't real"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A contract test is useful because it:",
+              "text": "A contract test is useful because it:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Runs the same expectations against both the fake and the real implementation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Replaces integration tests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Tests CSS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Checks licenses"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which isolation technique lets test files run in parallel safely?",
+              "text": "Which isolation technique lets test files run in parallel safely?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A separate schema per test file"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Shared tables"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Global variables"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sleeping"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why start the test server on port 0?",
+              "text": "Why start the test server on port 0?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The OS picks a free port, avoiding collisions"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Port 0 is privileged"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Required by Express"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The API test that caught a real bug showed:",
+              "text": "The API test that caught a real bug showed:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A failed multi-item order left other items' stock decremented (no transaction)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A syntax error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Slow startup"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A typo"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "An identical timing test failed 4 of 20 times on an idle machine because:",
+              "text": "An identical timing test failed 4 of 20 times on an idle machine because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It depended on real elapsed time and machine jitter"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The code changed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "fast-check"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Coverage"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Fake timers let you test a 15-minute rule:",
+              "text": "Fake timers let you test a 15-minute rule:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "By advancing virtual time instantly and deterministically"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "By waiting 15 minutes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By skipping it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By mocking PostgreSQL"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why can 100% line coverage still miss bugs?",
+              "text": "Why can 100% line coverage still miss bugs?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Lines can run without being verified by assertions"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Coverage is wrong"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Tests are slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It can't be 100%"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A mutant that \"survives\" means:",
+              "text": "A mutant that \"survives\" means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The suite failed to detect an injected bug"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The test suite is excellent"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The code is secure"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The mutant crashed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our mutation run the 5-example suite killed:",
+              "text": "In our mutation run the 5-example suite killed:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "4/7"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "7/7"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0/7"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "2/7"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is node --test running test/helpers.js a problem?",
+              "text": "Why is node --test running test/helpers.js a problem?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It executes every .js in a test directory as a test; keep helpers elsewhere"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's required"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It deletes files"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the load test, a larger pool was slower because:",
+              "text": "In the load test, a larger pool was slower because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Requests contended on one hot row lock; more concurrency only added waiting"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Pools are always bad"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Autocannon bug"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DNS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best policy for a flaky test is:",
+              "text": "The best policy for a flaky test is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Quarantine, find the root cause, fix or delete"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Retry until green permanently"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ignore"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Increase timeouts forever"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Backend Testing Strategy: Node.js Guide</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:66.7%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item active" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" aria-current="page"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 24 of 36 &middot; Intermediate</p>
+                        <h1>Backend Testing Strategy: Unit, Integration, Property-Based and Mutation Tests</h1>
+                        <p class="learn-book-title">Testing Strategy — Proving Your Backend Works (and Keeps Working)</p>
+                        <ul class="learn-meta text-caption">
+                            <li>33 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/backend-testing-strategy-node-test-integration-property.webp"><img src="../../assets/images/learn/backend-master/backend-testing-strategy-node-test-integration-property.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Backend Testing Strategy: Unit, Integration, Property-Based and Mutation Tests: Backend Master chapter 24 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>More tests and higher coverage do not guarantee a safe backend. This chapter builds a 25-test suite with the built-in node:test runner and a real PostgreSQL, shows a property test finding a negative order total, a mock hiding a broken SQL update, a flaky timing test, 99.6 percent coverage with surviving mutants, and a load test.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>The test pyramid and F.I.R.S.T. tests</li><li>Property-based testing with fast-check</li><li>Fakes, mocks and contract tests</li><li>Isolating database tests</li><li>Fake timers, flaky tests and mutation testing</li></ul>
+                        </section>
+<hr>
+
+<h2 id="24-0-why-this-chapter-matters">24.0 Why This Chapter Matters</h2>
+<p>In Chapters <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">21</a>–23 you attacked your own code by hand: forged a JWT, read someone else&#39;s order, froze a server with a regex. Those were <em>experiments</em>. If nothing records them, the next refactor quietly reintroduces the bug and nobody notices until a customer does.</p>
+<p><strong>Tests are executable memory.</strong> A good test suite lets you change code with confidence, catches regressions in seconds instead of in production, documents what the system is supposed to do, and makes refactors safe. A <em>bad</em> suite does the opposite: it&#39;s slow, flaky, tests implementation details so every refactor breaks it, and gives false confidence.</p>
+<p>The surprising lesson of this chapter, shown with measurements rather than slogans, is that <strong>more tests and higher coverage do not mean a better suite</strong>:</p>
+<ul>
+<li>A test suite with <strong>100% line coverage</strong> let three mutated (broken) versions of our pricing code through. We&#39;ll show you how to find out.</li>
+<li>A <strong>mocked</strong> unit test happily passed while the real SQL was subtracting stock in the wrong direction.</li>
+<li>A test that is correct on your laptop <strong>failed 4 out of 20 times</strong> with nothing changed.</li>
+<li>A <strong>property-based</strong> test found a pricing bug (a negative order total) that five hand-written examples missed.</li>
+</ul>
+<p>You&#39;ll build a real test suite for ShopLine&#39;s order flow with Node&#39;s <strong>built-in test runner</strong> and see all of this happen.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>Everything below ran on Node 22.17 (<code>node:test</code>, <code>node:assert</code>, <code>mock.fn</code>, <code>mock.timers</code>, built-in coverage), <strong>fast-check 4.10.2</strong>, <strong>autocannon 9.0.0</strong>, Express 5.3.0, and real PostgreSQL 17. The full project is in <a href="/learn/backend-master/resources/ch24/README.txt">resources/ch24/</a>; <code>npm test</code> runs 25 tests in about <strong>1.4 seconds</strong>. <strong>Not run:</strong> Vitest, Jest, Playwright/browser end-to-end tests, Testcontainers, Stryker (the real mutation-testing tool: I wrote a tiny hand-rolled one to show the idea), Pact contract testing, and any CI service. Those appear as described-only.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>In 1999 NASA lost the <strong>Mars Climate Orbiter</strong> (a $125 million spacecraft) because one team&#39;s software produced thrust data in pound-force seconds and another consumed it as newton-seconds. Each component passed its own tests; <strong>the bug lived in the integration</strong>. Remember it whenever you&#39;re tempted to rely only on unit tests.</p>
+</aside>
+<hr>
+
+<h2 id="24-1-what-tests-are-for">24.1 What Tests Are For</h2>
+<p>A test answers one question: <strong>&quot;If this behaviour broke, would I find out before my users do?&quot;</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Catch regressions</strong></td>
+<td>The negative-total bug can never return</td>
+</tr>
+<tr>
+<td><strong>Specify behaviour</strong></td>
+<td>&quot;Free shipping starts at exactly ₹500.00&quot; is written down, executably</td>
+</tr>
+<tr>
+<td><strong>Enable refactoring</strong></td>
+<td>Swap Knex for Kysely (Ch 17) and the contract tests still pass</td>
+</tr>
+<tr>
+<td><strong>Design feedback</strong></td>
+<td>A function that&#39;s painful to test is usually badly designed (hidden dependencies, too many responsibilities, Ch 11)</td>
+</tr>
+<tr>
+<td><strong>Living documentation</strong></td>
+<td>Tests show how the API is meant to be called</td>
+</tr>
+</tbody></table></div>
+<p>What tests <strong>can&#39;t</strong> do: prove the absence of bugs. They show behaviour for the inputs you tried. Everything in this chapter is about choosing <em>which</em> inputs and <em>which kind</em> of test give the most confidence per minute of runtime and per hour of maintenance.</p>
+<hr>
+
+<h2 id="24-2-the-test-pyramid-and-its-cousins">24.2 The Test Pyramid (and Its Cousins)</h2>
+<pre class="is-plain"><code>                 ▲   few, slow, brittle, expensive
+                ╱ ╲        END-TO-END: real browser/clients, whole deployed system
+               ╱───╲
+              ╱     ╲      INTEGRATION / API: real DB, real HTTP, several modules together
+             ╱───────╲
+            ╱         ╲    UNIT: one function/class, no I/O, runs in microseconds
+           ╱───────────╲
+                 ▼   many, fast, precise, cheap</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Level</th>
+<th>Real dependencies?</th>
+<th>Speed</th>
+<th>Finds</th>
+<th>Misses</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Unit</strong></td>
+<td>None (fakes/mocks)</td>
+<td>µs–ms</td>
+<td>Logic bugs, edge cases, boundary errors</td>
+<td>Wiring, SQL, config, integration bugs</td>
+</tr>
+<tr>
+<td><strong>Integration</strong></td>
+<td>Real DB, cache, HTTP</td>
+<td>10–500 ms</td>
+<td>SQL bugs, transactions, serialisation, constraints</td>
+<td>UI/browser behaviour</td>
+</tr>
+<tr>
+<td><strong>End-to-end</strong></td>
+<td>The whole system</td>
+<td>seconds</td>
+<td>Whole-journey breakage, deployment config</td>
+<td>Pinpointing the cause</td>
+</tr>
+</tbody></table></div>
+<p>Many modern backend teams prefer a <strong>&quot;testing trophy&quot;</strong> shape: a solid base of static checks (types, lint), <em>fewer</em> isolated unit tests, and <strong>most value from integration tests</strong> that use the real database, because most backend bugs (SQL, transactions, constraints) live at that boundary. The honest lesson of our experiments below is the same: unit tests are essential for <em>logic</em>; integration tests are essential for <em>truth</em>. You need both, in proportions that fit your system.</p>
+<h3 id="the-first-properties-of-a-good-test">The FIRST properties of a good test</h3>
+<p><strong>F</strong>ast · <strong>I</strong>ndependent (no test depends on another&#39;s leftovers, any order works) · <strong>R</strong>epeatable (same result every run, on any machine) · <strong>S</strong>elf-validating (pass/fail, no human reading logs) · <strong>T</strong>imely (written with the code, not months later).</p>
+<hr>
+
+<h2 id="24-3-setup-node-s-built-in-test-runner">24.3 Setup: Node&#39;s Built-In Test Runner</h2>
+<p>Since Node 18/20 you can test with <strong>zero dependencies</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> { test, describe } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:test&#x27;</span>;
+<span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:assert/strict&#x27;</span>;
+
+<span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;orderTotal&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;free shipping exactly at the threshold&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    assert.<span class="hljs-title function_">deepEqual</span>(<span class="hljs-title function_">orderTotal</span>({ <span class="hljs-attr">items</span>: [{ <span class="hljs-attr">qty</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">unitPriceMinor</span>: <span class="hljs-number">50000</span> }] }),
+                     { <span class="hljs-attr">subtotal</span>: <span class="hljs-number">50000</span>, <span class="hljs-attr">discount</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">shipping</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">total</span>: <span class="hljs-number">50000</span> });
+  });
+});</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">node --<span class="hljs-built_in">test</span>                                   <span class="hljs-comment"># discovers and runs all tests</span>
+node --<span class="hljs-built_in">test</span> --experimental-test-coverage      <span class="hljs-comment"># + coverage</span>
+node --<span class="hljs-built_in">test</span> --test-reporter=spec              <span class="hljs-comment"># readable output</span>
+node --<span class="hljs-built_in">test</span> --watch                           <span class="hljs-comment"># re-run on change</span></code></pre></div>
+<p>Built in: <code>describe/test/it</code>, hooks (<code>before/after/beforeEach/afterEach</code>), <code>mock.fn()</code>, <code>mock.timers</code>, snapshot and coverage support, parallel files, and TAP/spec reporters. <strong>Vitest</strong> (fast, Jest-compatible, great watch mode and TypeScript) and <strong>Jest</strong> (the long-time default) are popular alternatives with richer ecosystems <em>(not run here; the concepts below transfer directly)</em>.</p>
+<h3 id="a-real-gotcha-we-hit">A real gotcha we hit</h3>
+<p><code>node --test</code> runs <strong>every <code>.js</code> file inside a directory named <code>test</code></strong>, not only <code>*.test.js</code>. My first version kept a <code>helpers.js</code> in <code>test/</code>; the runner executed it <em>as a test</em> and reported a phantom test (<code>✔ test\helpers.js</code>). Fix: keep non-test code in a different folder (<code>support/</code>).</p>
+<h3 id="the-project">The project</h3>
+<pre class="is-plain"><code>src/pricing.js            pure logic: orderTotal(items, coupon, shipping)
+src/order.service.js      business rules; takes a unit of work (uow), clock, newId (Ch 11)
+src/repos.memory.js       in-memory fakes (fast)
+src/repos.pg.js           PostgreSQL repositories + unit of work (Ch 16)
+src/app.js                Express routes
+test/*.test.js            the tests
+support/helpers.js        schema-per-test-file setup, seed data</code></pre>
+<p>Injecting the <strong>clock</strong> and <strong>id generator</strong> into the service (instead of calling <code>new Date()</code>/<code>randomUUID()</code> inside) is what makes the service deterministic to test, the <em>&quot;depend on abstractions&quot;</em> rule from <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a> paying off.</p>
+<hr>
+
+<h2 id="24-4-unit-tests-logic-boundaries-examples">24.4 Unit Tests: Logic, Boundaries, Examples</h2>
+<p>Table-driven tests keep many cases readable:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> cases = [
+  [<span class="hljs-string">&#x27;no coupon, below free-shipping threshold&#x27;</span>, { <span class="hljs-attr">items</span>: [{ <span class="hljs-attr">qty</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">unitPriceMinor</span>: <span class="hljs-number">8000</span> }] }, { <span class="hljs-attr">subtotal</span>: <span class="hljs-number">16000</span>, <span class="hljs-attr">discount</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">shipping</span>: <span class="hljs-number">4000</span>, <span class="hljs-attr">total</span>: <span class="hljs-number">20000</span> }],
+  [<span class="hljs-string">&#x27;10% coupon rounds to nearest minor unit&#x27;</span>, { <span class="hljs-attr">items</span>: [{ <span class="hljs-attr">qty</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">unitPriceMinor</span>: <span class="hljs-number">1999</span> }], <span class="hljs-attr">coupon</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;percent&#x27;</span>, <span class="hljs-attr">value</span>: <span class="hljs-number">10</span> } }, { <span class="hljs-attr">subtotal</span>: <span class="hljs-number">1999</span>, <span class="hljs-attr">discount</span>: <span class="hljs-number">200</span>, <span class="hljs-attr">shipping</span>: <span class="hljs-number">4000</span>, <span class="hljs-attr">total</span>: <span class="hljs-number">5799</span> }],
+  [<span class="hljs-string">&#x27;free shipping exactly at the threshold (boundary)&#x27;</span>, { <span class="hljs-attr">items</span>: [{ <span class="hljs-attr">qty</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">unitPriceMinor</span>: <span class="hljs-number">50000</span> }] }, { <span class="hljs-attr">subtotal</span>: <span class="hljs-number">50000</span>, <span class="hljs-attr">discount</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">shipping</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">total</span>: <span class="hljs-number">50000</span> }],
+  [<span class="hljs-string">&#x27;one minor unit below the threshold&#x27;</span>, { <span class="hljs-attr">items</span>: [{ <span class="hljs-attr">qty</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">unitPriceMinor</span>: <span class="hljs-number">49999</span> }] }, { <span class="hljs-attr">subtotal</span>: <span class="hljs-number">49999</span>, <span class="hljs-attr">discount</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">shipping</span>: <span class="hljs-number">4000</span>, <span class="hljs-attr">total</span>: <span class="hljs-number">53999</span> }],
+];
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [name, input, expected] <span class="hljs-keyword">of</span> cases) <span class="hljs-title function_">test</span>(name, <span class="hljs-function">() =&gt;</span> assert.<span class="hljs-title function_">deepEqual</span>(<span class="hljs-title function_">orderTotal</span>(input), expected));</code></pre></div>
+<p><strong>Boundary values are where bugs live</strong>: the cases for exactly <code>50000</code> and <code>49999</code> catch <code>&gt;=</code> vs <code>&gt;</code>. Whenever there&#39;s a threshold, test <strong>at it, just below, and just above</strong>. Also test empty, one, many; zero; negative where allowed; the maximum.</p>
+<h3 id="test-structure-arrange-act-assert">Test structure: Arrange–Act–Assert</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;out of stock -&gt; DomainError and no order stored&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> { svc, orders } = <span class="hljs-title function_">build</span>();                                              <span class="hljs-comment">// Arrange</span>
+  <span class="hljs-keyword">await</span> assert.<span class="hljs-title function_">rejects</span>(svc.<span class="hljs-title function_">create</span>({ <span class="hljs-attr">userId</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">items</span>: [{ <span class="hljs-attr">productId</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">qty</span>: <span class="hljs-number">2</span> }] }), { <span class="hljs-attr">code</span>: <span class="hljs-string">&#x27;OUT_OF_STOCK&#x27;</span> });   <span class="hljs-comment">// Act + assert the error</span>
+  assert.<span class="hljs-title function_">equal</span>((<span class="hljs-keyword">await</span> orders.<span class="hljs-title function_">all</span>()).<span class="hljs-property">length</span>, <span class="hljs-number">0</span>);                                 <span class="hljs-comment">// Assert the side effect (nothing stored)</span>
+});</code></pre></div>
+<p>One behaviour per test; a name that reads like a sentence (&quot;rejects an empty order&quot;); assert on <strong>observable behaviour</strong> (return values, stored state, errors), not on private internals.</p>
+<h3 id="a-gotcha-synchronous-throw-vs-rejected-promise">A gotcha: synchronous throw vs rejected promise</h3>
+<p>My service&#39;s <code>create</code> was a plain function that threw <code>EMPTY_ORDER</code> <em>synchronously</em>, before returning a promise. The test <code>assert.rejects(svc.create(...))</code> failed because there was no promise to reject, and the HTTP handler&#39;s <code>await</code> would have worked by luck. The fix was one word: <strong><code>async create(...)</code></strong>, so <em>every</em> failure is a rejected promise. (Express 5 forwards rejected promises from async handlers to the error middleware; a sync throw inside a non-async callback chain may not follow the same path.) Make async functions always <code>async</code>.</p>
+<hr>
+
+<h2 id="24-5-property-based-testing-let-the-computer-find-the-edge-cases">24.5 Property-Based Testing: Let the Computer Find the Edge Cases</h2>
+<p>Example-based tests check inputs <em>you thought of</em>. <strong>Property-based testing</strong> (fast-check) states <strong>rules that must always hold</strong> and generates hundreds of random inputs to try to break them.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> item = fc.<span class="hljs-title function_">record</span>({ <span class="hljs-attr">qty</span>: fc.<span class="hljs-title function_">integer</span>({ <span class="hljs-attr">min</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">max</span>: <span class="hljs-number">20</span> }), <span class="hljs-attr">unitPriceMinor</span>: fc.<span class="hljs-title function_">integer</span>({ <span class="hljs-attr">min</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">max</span>: <span class="hljs-number">200000</span> }) });
+<span class="hljs-keyword">const</span> coupon = fc.<span class="hljs-title function_">option</span>(fc.<span class="hljs-title function_">oneof</span>(
+  fc.<span class="hljs-title function_">record</span>({ <span class="hljs-attr">type</span>: fc.<span class="hljs-title function_">constant</span>(<span class="hljs-string">&#x27;percent&#x27;</span>), <span class="hljs-attr">value</span>: fc.<span class="hljs-title function_">integer</span>({ <span class="hljs-attr">min</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">max</span>: <span class="hljs-number">100</span> }) }),
+  fc.<span class="hljs-title function_">record</span>({ <span class="hljs-attr">type</span>: fc.<span class="hljs-title function_">constant</span>(<span class="hljs-string">&#x27;fixed&#x27;</span>),   <span class="hljs-attr">value</span>: fc.<span class="hljs-title function_">integer</span>({ <span class="hljs-attr">min</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">max</span>: <span class="hljs-number">500000</span> }) })), { <span class="hljs-attr">nil</span>: <span class="hljs-literal">null</span> });
+<span class="hljs-keyword">const</span> order = fc.<span class="hljs-title function_">record</span>({ <span class="hljs-attr">items</span>: fc.<span class="hljs-title function_">array</span>(item, { <span class="hljs-attr">minLength</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">maxLength</span>: <span class="hljs-number">6</span> }), coupon });
+
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;the total is never negative&#x27;</span>,               <span class="hljs-function">() =&gt;</span> fc.<span class="hljs-title function_">assert</span>(fc.<span class="hljs-title function_">property</span>(order, <span class="hljs-function">(<span class="hljs-params">o</span>) =&gt;</span> <span class="hljs-title function_">orderTotal</span>(o).<span class="hljs-property">total</span> &gt;= <span class="hljs-number">0</span>)));
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;the discount never exceeds the subtotal&#x27;</span>,   <span class="hljs-function">() =&gt;</span> fc.<span class="hljs-title function_">assert</span>(fc.<span class="hljs-title function_">property</span>(order, <span class="hljs-function">(<span class="hljs-params">o</span>) =&gt;</span> <span class="hljs-title function_">orderTotal</span>(o).<span class="hljs-property">discount</span> &lt;= <span class="hljs-title function_">orderTotal</span>(o).<span class="hljs-property">subtotal</span>)));
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;every amount is an integer (no float money)&#x27;</span>,<span class="hljs-function">() =&gt;</span> fc.<span class="hljs-title function_">assert</span>(fc.<span class="hljs-title function_">property</span>(order, <span class="hljs-function">(<span class="hljs-params">o</span>) =&gt;</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">values</span>(<span class="hljs-title function_">orderTotal</span>(o)).<span class="hljs-title function_">every</span>(<span class="hljs-title class_">Number</span>.<span class="hljs-property">isInteger</span>))));</code></pre></div>
+<p><strong>My first draft of <code>orderTotal</code> let a fixed coupon exceed the subtotal.</strong> All <strong>five hand-written examples passed</strong>. The property tests failed immediately, and fast-check <strong>shrank</strong> the failing input to the smallest possible counterexample:</p>
+<pre class="is-plain"><code>  ✔ no coupon, below free-shipping threshold
+  ✔ 10% coupon rounds to nearest minor unit
+  ✔ fixed coupon
+  ✔ free shipping exactly at the threshold (boundary)
+  ✔ one minor unit below the threshold
+  ✖ the total is never negative
+     Property failed after 56 tests
+     Counterexample: [{&quot;items&quot;:[{&quot;qty&quot;:1,&quot;unitPriceMinor&quot;:0}],&quot;coupon&quot;:{&quot;type&quot;:&quot;fixed&quot;,&quot;value&quot;:4001}}]
+  ✖ the discount never exceeds the subtotal
+  ✔ every amount is an integer (no floating-point money)</code></pre>
+<p>The counterexample: a ₹0.00 item with a ₹40.01 coupon: <code>0 − 4001 + 4000 = −1</code>, a <strong>negative order total</strong>. In production that is a refund the customer didn&#39;t pay for. The fix (one line) and the green run:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (coupon?.<span class="hljs-property">type</span> === <span class="hljs-string">&#x27;fixed&#x27;</span>) discount = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(coupon.<span class="hljs-property">value</span>, subtotal);   <span class="hljs-comment">// a coupon can never make goods cost &lt; 0</span></code></pre></div>
+<pre class="is-plain"><code>✔ the total is never negative · ✔ the discount never exceeds the subtotal · ✔ every amount is an integer     tests 8, pass 8</code></pre>
+<p><strong>Where properties shine:</strong> money and arithmetic, parsers/serialisers (<code>parse(format(x)) === x</code>), sorting/pagination (no item lost or duplicated), idempotent operations (<code>f(f(x)) === f(x)</code>), state machines, and &quot;never crashes on any input&quot; fuzzing. fast-check prints the <strong>seed</strong> of a failure so you can replay it.</p>
+<hr>
+
+<h2 id="24-6-test-doubles-fakes-stubs-spies-mocks">24.6 Test Doubles: Fakes, Stubs, Spies, Mocks</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Double</th>
+<th>What it is</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Dummy</strong></td>
+<td>A placeholder never used</td>
+<td><code>null</code> passed where an argument is required</td>
+</tr>
+<tr>
+<td><strong>Stub</strong></td>
+<td>Returns canned answers</td>
+<td><code>findById: async () =&gt; ({ id: 1 })</code></td>
+</tr>
+<tr>
+<td><strong>Fake</strong></td>
+<td>A <em>working</em> lightweight implementation</td>
+<td><code>memoryProducts</code> (a <code>Map</code>)</td>
+</tr>
+<tr>
+<td><strong>Spy</strong></td>
+<td>Records how it was called</td>
+<td><code>mock.fn()</code> then inspect calls</td>
+</tr>
+<tr>
+<td><strong>Mock</strong></td>
+<td>A spy with expectations about interactions</td>
+<td>&quot;must call <code>decrementStock(1, 2)</code> once&quot;</td>
+</tr>
+</tbody></table></div>
+<p>Our service has two kinds of unit test. With an <strong>in-memory fake</strong>, the test checks <em>outcomes</em> (order stored, stock reduced, totals right). With a <strong>mock</strong>, it checks <em>interactions</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> products = { <span class="hljs-attr">decrementStock</span>: mock.<span class="hljs-title function_">fn</span>(<span class="hljs-keyword">async</span> () =&gt; ({ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">priceMinor</span>: <span class="hljs-number">12000</span> })) };
+<span class="hljs-keyword">const</span> orders = { <span class="hljs-attr">create</span>: mock.<span class="hljs-title function_">fn</span>(<span class="hljs-keyword">async</span> (o) =&gt; o) };
+<span class="hljs-comment">// … run the service …</span>
+assert.<span class="hljs-title function_">deepEqual</span>(products.<span class="hljs-property">decrementStock</span>.<span class="hljs-property">mock</span>.<span class="hljs-property">calls</span>[<span class="hljs-number">0</span>].<span class="hljs-property">arguments</span>, [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]);</code></pre></div>
+<h3 id="the-danger-of-over-mocking-demonstrated">The danger of over-mocking, demonstrated</h3>
+<p>I planted a one-character bug in the <strong>real</strong> PostgreSQL repository: <code>stock = stock + $2</code> instead of <code>stock - $2</code>. Then I ran the suite:</p>
+<pre class="is-plain"><code>✔ order service with in-memory fakes ... 3 tests
+✔ the same service with a MOCK repository       ← interaction test passes
+✔ products repo contract: in-memory fake        ← the fake is correct
+✖ products repo contract: PostgreSQL (real DB)
+    ✖ decrementStock returns the price and reduces stock     actual: 7, expected: 3
+    ✖ can take exactly the remaining stock (boundary)         actual: 2, expected: 0</code></pre>
+<p>Every test that used a fake or mock <strong>passed, because they were testing a model of the database, not the database.</strong> Only the tests that ran the <em>real</em> SQL found the bug. (Note that &quot;refuses to go below zero&quot; still <em>passed</em> with the bug: a test can pass for the wrong reason, one more reason to have several tests per behaviour.)</p>
+<p><strong>Guidelines:</strong></p>
+<ul>
+<li><strong>Mock only what you don&#39;t own or can&#39;t run cheaply</strong>: third-party HTTP APIs, payment gateways, email. Never mock your own database layer for tests that claim to test the data layer.</li>
+<li><strong>Prefer fakes to mocks</strong> when a faithful fake exists, and <strong>prove the fake is faithful with a contract test</strong> (next section).</li>
+<li>Mocks that assert exact call sequences <strong>couple the test to the implementation</strong>: refactor the internals and the test breaks though behaviour is unchanged. Assert outcomes where possible.</li>
+<li>Never mock the thing under test, or value objects like <code>Date</code>/<code>Math</code> (inject a clock or use fake timers instead).</li>
+</ul>
+<hr>
+
+<h2 id="24-7-integration-tests-with-a-real-database">24.7 Integration Tests With a Real Database</h2>
+<h3 id="the-contract-test-one-suite-every-implementation">The contract test: one suite, every implementation</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">productRepoContract</span>(<span class="hljs-params">label, setup</span>) {
+  <span class="hljs-title function_">describe</span>(<span class="hljs-string">`products repo contract: <span class="hljs-subst">${label}</span>`</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">let</span> repo, teardown;
+    <span class="hljs-title function_">beforeEach</span>(<span class="hljs-keyword">async</span> () =&gt; { ({ repo, teardown } = <span class="hljs-keyword">await</span> <span class="hljs-title function_">setup</span>()); });
+    <span class="hljs-title function_">afterEach</span>(<span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-keyword">await</span> <span class="hljs-title function_">teardown</span>(); });
+    <span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;decrementStock returns the price and reduces stock&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-comment">/* … */</span> });
+    <span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;refuses to go below zero and leaves stock untouched&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-comment">/* … */</span> });
+    <span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;can take exactly the remaining stock (boundary)&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-comment">/* … */</span> });
+    <span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;unknown product -&gt; null&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-comment">/* … */</span> });
+  });
+}
+<span class="hljs-title function_">productRepoContract</span>(<span class="hljs-string">&#x27;in-memory fake&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; ({ <span class="hljs-attr">repo</span>: <span class="hljs-title function_">memoryProducts</span>(<span class="hljs-variable constant_">SEED</span>), <span class="hljs-attr">teardown</span>: <span class="hljs-keyword">async</span> () =&gt; {} }));
+<span class="hljs-title function_">productRepoContract</span>(<span class="hljs-string">&#x27;PostgreSQL (real database, transaction rolled back after each test)&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> c = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">begin</span>(); <span class="hljs-keyword">await</span> <span class="hljs-title function_">seedPg</span>(c);
+  <span class="hljs-keyword">return</span> { <span class="hljs-attr">repo</span>: <span class="hljs-title function_">pgProducts</span>(c), <span class="hljs-attr">teardown</span>: <span class="hljs-function">() =&gt;</span> db.<span class="hljs-title function_">rollback</span>(c) };
+});</code></pre></div>
+<p>The <strong>same four tests</strong> run against the in-memory fake <em>and</em> the real database. If the fake ever disagrees with PostgreSQL, a contract test fails, so unit tests built on the fake stay trustworthy. (This is <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a>&#39;s repository interface paying a second dividend.) Result: 4 + 4 tests, the real-DB group in about 120 ms.</p>
+<h3 id="test-isolation-three-techniques">Test isolation: three techniques</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Technique</th>
+<th>How</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Transaction per test, roll back</strong></td>
+<td><code>BEGIN</code> in <code>beforeEach</code>, <code>ROLLBACK</code> in <code>afterEach</code> (our contract tests)</td>
+<td>Very fast; perfect isolation</td>
+<td>Can&#39;t test code that opens its <em>own</em> transactions/connections or <code>COMMIT</code> behaviour</td>
+</tr>
+<tr>
+<td><strong>Truncate between tests</strong></td>
+<td><code>TRUNCATE … CASCADE</code> in <code>beforeEach</code> (our API tests)</td>
+<td>Works with any code path</td>
+<td>Slower; tests in one file can&#39;t run in parallel</td>
+</tr>
+<tr>
+<td><strong>Schema/database per test file</strong></td>
+<td><code>CREATE SCHEMA t24_&lt;file&gt;</code> (our <code>testDb(name)</code>)</td>
+<td>Files run <strong>in parallel</strong> without interfering</td>
+<td>Setup cost per file</td>
+</tr>
+</tbody></table></div>
+<p>We combined the last two: each test <strong>file</strong> gets its own schema (so <code>node --test</code> can run files in parallel safely), and tests inside a file truncate or roll back. <strong>Testcontainers</strong> (spin up a disposable PostgreSQL per run) is the usual way to get a real database in CI without a shared server <em>(not run here: I used the persistent test container from <a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">Chapter 12</a>)</em>. <strong>Never run tests against a shared or production database.</strong></p>
+<h3 id="api-tests-real-http-real-database">API tests: real HTTP, real database</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">server = <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> { <span class="hljs-keyword">const</span> s = <span class="hljs-title function_">makeApp</span>(<span class="hljs-title function_">makeOrderService</span>({ <span class="hljs-attr">uow</span>: <span class="hljs-title function_">pgUow</span>(db.<span class="hljs-property">pool</span>) })).<span class="hljs-title function_">listen</span>(<span class="hljs-number">0</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">r</span>(s)); });   <span class="hljs-comment">// port 0 = any free port</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">post</span> = (<span class="hljs-params">body</span>) =&gt; <span class="hljs-title function_">fetch</span>(base + <span class="hljs-string">&#x27;/orders&#x27;</span>, { <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>, <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;content-type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> }, <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(body) });</code></pre></div>
+<pre class="is-plain"><code>✔ 201 and the stored totals match
+✔ 400 on a malformed body
+✔ 409 when out of stock, and nothing is persisted
+✔ a failed multi-item order restores the stock of the other items (transaction)
+✔ concurrent buyers never oversell the last backpack</code></pre>
+<p>Two of those tests are the whole point of integration testing:</p>
+<ol>
+<li><strong>The transaction test found a real bug.</strong> My first service version had no transaction (stock was decremented per item). With an order for product 1 (in stock) and product 3 (out of stock), the API returned <code>409</code> correctly, <strong>but product 1&#39;s stock stayed decremented</strong> (<code>actual: 4, expected: 5</code>). No unit test using fakes would see it. The fix was the unit-of-work (<code>uow.run(fn)</code>: <code>BEGIN … COMMIT/ROLLBACK</code>, <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>) and the test now passes. <em>(I&#39;m being straightforward here: I wrote the service without a transaction on purpose to show the test catching it; <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>&#39;s checkout had one.)</em></li>
+<li><strong>The concurrency test</strong>: ten parallel requests for the last backpack produce exactly one <code>201</code> and nine <code>409</code>s. A test like this is the only way to know your locking works.</li>
+</ol>
+<p>Use <code>port 0</code> so parallel runs never collide, assert on <strong>both the HTTP response and the database state</strong>, and test the <em>unhappy paths</em> (validation, conflict, auth failure: Chapters <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">21</a>–23) as carefully as the happy one.</p>
+<hr>
+
+<h2 id="24-8-time-randomness-and-flaky-tests">24.8 Time, Randomness and Flaky Tests</h2>
+<p>A <strong>flaky test</strong> passes and fails on the same code. Flakiness destroys trust: people re-run until green, ignore red builds, and real failures hide. The usual culprits:</p>
+<ol>
+<li><strong>Real time</strong> (sleeps, timeouts, <code>Date.now()</code>, &quot;today&quot;).</li>
+<li><strong>Randomness</strong> and unordered data (<code>Set</code>/object order, <code>ORDER BY</code> missing).</li>
+<li><strong>Shared state</strong> between tests (leftover rows, global singletons, ports, files).</li>
+<li><strong>Concurrency races</strong> in the test itself (not awaiting something).</li>
+<li><strong>External services</strong> (network, third-party APIs).</li>
+</ol>
+<h3 id="a-flaky-test-measured">A flaky test, measured</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;a 10 ms timer fires within 25 ms&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> t0 = performance.<span class="hljs-title function_">now</span>(); <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, <span class="hljs-number">10</span>));
+  assert.<span class="hljs-title function_">ok</span>(performance.<span class="hljs-title function_">now</span>() - t0 &lt; <span class="hljs-number">25</span>, <span class="hljs-string">&#x27;took too long&#x27;</span>);
+});</code></pre></div>
+<p>I ran the identical test repeatedly:</p>
+<pre class="is-plain"><code>idle machine, 20 runs in sequence  : failures = 4
+loaded machine, 60 runs in parallel: failures = 14 of 60   &lt;- same code, same test, different verdict</code></pre>
+<p>On an <em>idle</em> laptop it failed 4 out of 20 (process start-up and timer jitter on Windows); under load, 14 of 60 (23%). Nothing about the code changed; the test depended on the machine&#39;s speed.</p>
+<h3 id="the-fix-fake-time">The fix: fake time</h3>
+<p>Our reservation code holds stock for 15 minutes. You can&#39;t wait 15 real minutes in a test. Node&#39;s <strong>fake timers</strong> advance time instantly and deterministically:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;a reservation is released after 15 minutes (fake timers: runs in milliseconds)&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">t</span>) =&gt;</span> {
+  t.<span class="hljs-property">mock</span>.<span class="hljs-property">timers</span>.<span class="hljs-title function_">enable</span>({ <span class="hljs-attr">apis</span>: [<span class="hljs-string">&#x27;setTimeout&#x27;</span>, <span class="hljs-string">&#x27;Date&#x27;</span>] });
+  <span class="hljs-keyword">const</span> released = [];
+  <span class="hljs-keyword">const</span> r = <span class="hljs-title function_">makeReservations</span>({ <span class="hljs-attr">release</span>: <span class="hljs-function">(<span class="hljs-params">id</span>) =&gt;</span> released.<span class="hljs-title function_">push</span>(id), <span class="hljs-attr">now</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() });
+  r.<span class="hljs-title function_">hold</span>(<span class="hljs-string">&#x27;cart-1&#x27;</span>);
+  t.<span class="hljs-property">mock</span>.<span class="hljs-property">timers</span>.<span class="hljs-title function_">tick</span>(<span class="hljs-variable constant_">HOLD_MS</span> - <span class="hljs-number">1</span>);
+  assert.<span class="hljs-title function_">deepEqual</span>(released, [], <span class="hljs-string">&#x27;not released one ms early&#x27;</span>);
+  t.<span class="hljs-property">mock</span>.<span class="hljs-property">timers</span>.<span class="hljs-title function_">tick</span>(<span class="hljs-number">1</span>);
+  assert.<span class="hljs-title function_">deepEqual</span>(released, [<span class="hljs-string">&#x27;cart-1&#x27;</span>]);
+});</code></pre></div>
+<pre class="is-plain"><code>✔ a reservation is released after 15 minutes (fake timers: runs in milliseconds)   (5.6 ms)</code></pre>
+<p>It tests a 15-minute behaviour <strong>at the exact boundary</strong> (<code>HOLD_MS − 1</code> vs <code>HOLD_MS</code>) in 5.6 ms, with zero flakiness. The same idea: <strong>inject the clock</strong> (<code>now: () =&gt; Date.now()</code> in our code, <code>clock</code> in the order service), <strong>seed or inject randomness</strong>, <code>ORDER BY</code> everything you assert on, give each test its own data, and put external services behind a stub.</p>
+<p><strong>Policy for flaky tests:</strong> quarantine immediately (mark skipped with a ticket), find the root cause, fix or delete. Never &quot;retry 3 times&quot; as a permanent solution.</p>
+<hr>
+
+<h2 id="24-9-coverage-and-why-100-doesn-t-mean-safe">24.9 Coverage, and Why 100% Doesn&#39;t Mean Safe</h2>
+<p>Coverage measures <strong>which lines/branches ran</strong> during tests, not whether the tests <em>checked</em> anything.</p>
+<pre class="is-plain"><code>node --test --experimental-test-coverage
+file               | line % | branch % | funcs % | uncovered lines
+ app.js            |  93.75 |    72.73 |  100.00 | 13
+ order.service.js  | 100.00 |   100.00 |  100.00 |
+ pricing.js        | 100.00 |   100.00 |  100.00 |
+ repos.memory.js   | 100.00 |   100.00 |  100.00 |
+ repos.pg.js       | 100.00 |    92.31 |   77.78 |
+all files          |  99.62 |    96.90 |   97.75 |</code></pre>
+<p>99.6% line coverage looks superb. It tells you where you have <strong>no</strong> tests (the uncovered error branch at <code>app.js:13</code>, the 22% of functions in <code>repos.pg.js</code>: genuinely useful), but it cannot tell you the covered lines are <em>verified</em>. (The report also counts the test files themselves; configure exclusions in real use.)</p>
+<h3 id="mutation-testing-testing-your-tests">Mutation testing: testing your tests</h3>
+<p><strong>Mutation testing</strong> deliberately injects small bugs (&quot;mutants&quot;: <code>&gt;=</code>→<code>&gt;</code>, <code>+</code>→<code>-</code>, delete a line) and checks whether the suite <strong>fails</strong>. A mutant the tests don&#39;t catch has <em>survived</em>, and shows a gap that coverage can&#39;t. The professional tool is <strong>Stryker</strong> <em>(not run here)</em>. I wrote a 30-line version to show the idea: seven mutants, run against two suites: the five example tests alone (pricing.js is <strong>100% line-covered</strong> by them) vs the full 25 tests.</p>
+<pre class="is-plain"><code>mutant                                                          examples only (5 tests)   full suite (25 tests)
+&gt;= becomes &gt; (off-by-one at the free-shipping boundary)         killed                    killed
+shipping subtracted instead of added                            killed                    killed
+remove the cap on fixed coupons (the earlier real bug)          SURVIVED (bad)            killed
+round -&gt; floor                                                  killed                    killed
+wrong coupon type string                                        killed                    killed
+stop sorting items (lock-order / deadlock rule)                 SURVIVED (bad)            killed
+typo in the error code                                          SURVIVED (bad)            killed
+mutation score:                                                 4/7                       7/7</code></pre>
+<p>The weak suite had full coverage of <code>pricing.js</code> yet <strong>three bugs sailed through</strong>, including the very negative-total bug we found earlier. The full suite killed all seven. <strong>Mutation score is a far better quality metric than coverage.</strong> (It&#39;s slow on big code bases, so run it on critical modules like pricing, auth and money.)</p>
+<h3 id="what-coverage-targets-are-sensible">What coverage targets are sensible?</h3>
+<p>Use coverage as a <strong>map of untested code</strong>, not a goal: it&#39;s reasonable to require &quot;no drop on PRs&quot; and high coverage on business-critical modules, but never reward chasing 100% with meaningless assertions (<code>assert.ok(true)</code>), the surest way to a green, useless suite.</p>
+<hr>
+
+<h2 id="24-10-testing-security-and-reliability-behaviours">24.10 Testing Security and Reliability Behaviours</h2>
+<p>The attacks from Chapters 21–23 become <strong>regression tests</strong>. A sketch:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;another user cannot read my order (BOLA)&#x27;</span>,     <span class="hljs-keyword">async</span> () =&gt; assert.<span class="hljs-title function_">equal</span>((<span class="hljs-keyword">await</span> api.<span class="hljs-title function_">as</span>(<span class="hljs-string">&#x27;ravi&#x27;</span>).<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/orders/101&#x27;</span>)).<span class="hljs-property">status</span>, <span class="hljs-number">404</span>));
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;alg:none token is rejected&#x27;</span>,                   <span class="hljs-keyword">async</span> () =&gt; assert.<span class="hljs-title function_">equal</span>((<span class="hljs-keyword">await</span> api.<span class="hljs-title function_">withToken</span>(noneToken).<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/me&#x27;</span>)).<span class="hljs-property">status</span>, <span class="hljs-number">401</span>));
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;PATCH /me ignores role&#x27;</span>,                       <span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-keyword">await</span> api.<span class="hljs-title function_">as</span>(<span class="hljs-string">&#x27;ravi&#x27;</span>).<span class="hljs-title function_">patch</span>(<span class="hljs-string">&#x27;/me&#x27;</span>, { <span class="hljs-attr">role</span>: <span class="hljs-string">&#x27;admin&#x27;</span> }); assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">roleOf</span>(<span class="hljs-string">&#x27;ravi&#x27;</span>), <span class="hljs-string">&#x27;customer&#x27;</span>); });
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;refresh token reuse revokes the family&#x27;</span>,       <span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-comment">/* use R0, R1, replay R0, expect R2 dead */</span> });
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;SSRF: private addresses are blocked&#x27;</span>,          <span class="hljs-keyword">async</span> () =&gt; assert.<span class="hljs-title function_">equal</span>((<span class="hljs-keyword">await</span> api.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/fetch?url=http://127.0.0.1/&#x27;</span>)).<span class="hljs-property">status</span>, <span class="hljs-number">400</span>));
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;a 28-character evil input does not stall the event loop&#x27;</span>, <span class="hljs-comment">/* run in a worker with a timeout */</span>);</code></pre></div>
+<p><em>(These mirror checks I ran by hand in Chapters 21–23; here they&#39;re shown as test shapes, not a new run.)</em> Also test: <strong>idempotency</strong> (same <code>Idempotency-Key</code> twice → one order), <strong>rate limits</strong> (the 6th request → <code>429</code>), <strong>pagination stability</strong>, <strong>migrations</strong> (apply all migrations to an empty database in CI, <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>), and <strong>error shapes</strong> (problem+json, <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>).</p>
+<hr>
+
+<h2 id="24-11-contract-and-end-to-end-testing">24.11 Contract and End-to-End Testing</h2>
+<h3 id="contract-tests-between-services-described-not-run">Contract tests between services (described; not run)</h3>
+<p>When service A calls service B (or a mobile app calls your API), unit tests on each side can both pass while the <em>agreement</em> is broken: the Mars Orbiter problem. <strong>Consumer-driven contract testing</strong> (<strong>Pact</strong>) records what the consumer expects (&quot;<code>GET /products/1</code> returns <code>{id, name, priceMinor}</code>&quot;) and verifies the provider satisfies it. Cheaper alternatives: <strong>OpenAPI-driven tests</strong> (validate responses against the spec from <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>) and shared schema packages.</p>
+<h3 id="end-to-end-tests-described-not-run">End-to-end tests (described; not run)</h3>
+<p>Drive the real system like a user: <strong>Playwright</strong> for browser flows (log in → add to cart → checkout). Keep them <strong>few and focused on critical journeys</strong> (sign-up, checkout, payment): they&#39;re the slowest, most brittle layer. Run them against a staging environment on a schedule or before release, and keep the rest of the confidence in the lower layers.</p>
+<h3 id="snapshot-tests">Snapshot tests</h3>
+<p><code>assert.snapshot</code> / <code>toMatchSnapshot</code> store a known-good output and flag <em>any</em> change. Useful for stable, structured outputs (OpenAPI document, rendered email); dangerous for large, volatile outputs where people &quot;update the snapshot&quot; without reading the diff.</p>
+<hr>
+
+<h2 id="24-12-load-and-performance-testing">24.12 Load and Performance Testing</h2>
+<p>Correctness under one user isn&#39;t enough (Chapters <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">15</a>, 16). We ran <strong>autocannon</strong> (a Node load generator) against the real <code>POST /orders</code> endpoint with PostgreSQL: 50 concurrent clients, 6 seconds, comparing a connection pool of 2 vs 20:</p>
+<pre class="is-plain"><code>pool max=2  | 50 clients, 6 s | 86 req/s | latency p50 524 ms  p97.5 886 ms  p99 934 ms  max 943 ms  | 2xx 518
+pool max=20 | 50 clients, 6 s | 57 req/s | latency p50 681 ms  p97.5 2076 ms p99 2389 ms max 2498 ms | 2xx 341
+orders created: 883 | stock consumed: 883   (must be equal: nothing lost or double-counted)</code></pre>
+<p>Two lessons:</p>
+<ol>
+<li><strong>A bigger pool was <em>slower</em></strong> (57 req/s vs 86, p99 2.4 s vs 0.9 s). Every request updates <strong>the same product row</strong>, so they queue on that row&#39;s lock (Chapter 16); more concurrent transactions just means more waiting plus more commit overhead. <em>More concurrency doesn&#39;t help a hot row.</em> (I didn&#39;t isolate why with more experiments, and absolute numbers are poor because this is Docker on Windows with a disk flush per commit: <strong>read the ratios, not the figures</strong>.)</li>
+<li><strong>The invariant check at the end</strong> (orders created = stock consumed = 883) shows load tests should verify <em>correctness</em>, not just speed. (The autocannon request counts, 859, are lower by the requests still in flight when the timer stopped.)</li>
+</ol>
+<p><strong>Practice:</strong> measure <strong>percentiles (p50/p95/p99)</strong>, not averages; test with realistic data volumes and think-time; separate <strong>load</strong> (expected traffic), <strong>stress</strong> (find the breaking point), <strong>soak</strong> (hours, to find leaks), and <strong>spike</strong> (sudden bursts) tests; run against an environment shaped like production; and watch DB/CPU/queue metrics (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>) during the run. Tools: autocannon, <strong>k6</strong>, Artillery, Gatling <em>(only autocannon was run)</em>.</p>
+<hr>
+
+<h2 id="24-13-testing-in-ci-and-day-to-day-practice">24.13 Testing in CI and Day-to-Day Practice</h2>
+<pre class="is-plain"><code>on every pull request:   lint + typecheck → unit tests → integration tests (service containers) → build
+nightly / pre-release:   e2e tests, mutation tests on critical modules, load test, dependency audit (Ch 23)</code></pre>
+<ul>
+<li><strong>Fast feedback first</strong>: unit tests in seconds; fail the build early. Our whole suite, including a real PostgreSQL, takes ~1.4 s.</li>
+<li><strong>Parallelise</strong> by file, with per-file schemas (§24.7); keep tests independent.</li>
+<li><strong>Test data builders</strong> (<code>makeOrder({ status: &#39;paid&#39; })</code> with sensible defaults) beat giant fixtures; give every test the minimal data it needs.</li>
+<li>Treat <strong>flaky = broken</strong> (§24.8); track the slowest tests; keep a &quot;testing debt&quot; list.</li>
+<li><strong>TDD</strong> (write the failing test first, then the code) is a useful tool <em>especially for bug fixes</em> (reproduce with a failing test, then fix) and for pure logic. Use it where it helps; don&#39;t be dogmatic.</li>
+<li>Review tests in code review as seriously as code. A test that can&#39;t fail is worse than no test.</li>
+</ul>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;How do you test a backend service?&quot;</em> A layered answer: unit tests for pure logic (including property-based tests for invariants); integration tests with a real database (transaction-per-test or schema-per-file isolation, contract tests so fakes match reality); API tests over real HTTP including unhappy paths and concurrency; a few end-to-end tests for critical journeys; fake time and injected dependencies for determinism; mutation testing or at least boundary-focused cases rather than chasing coverage; load tests with percentiles; everything in CI with flaky tests treated as bugs.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="24-14-edge-cases-and-gotchas-checklist">24.14 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Only unit tests with mocked data layers: SQL, constraints and transaction bugs are invisible.</li>
+<li><input disabled="" type="checkbox"> Mocks asserting call sequences (coupled to implementation); mocking the thing under test.</li>
+<li><input disabled="" type="checkbox"> Fakes without a contract test proving they match the real implementation.</li>
+<li><input disabled="" type="checkbox"> Tests sharing database state/ordering; tests passing only in a particular order.</li>
+<li><input disabled="" type="checkbox"> Real clocks, sleeps and <code>Math.random</code> in tests; no injected time/seed.</li>
+<li><input disabled="" type="checkbox"> No tests at boundaries (<code>&gt;=</code> vs <code>&gt;</code>, 0, 1, max, empty, exactly-at-limit).</li>
+<li><input disabled="" type="checkbox"> Only happy paths; no tests for validation, auth failure, conflict, timeout.</li>
+<li><input disabled="" type="checkbox"> Helpers placed in the <code>test</code> folder (executed as tests by <code>node --test</code>).</li>
+<li><input disabled="" type="checkbox"> Sync-throwing functions that should be <code>async</code> (and tests that <code>assert.rejects</code> them).</li>
+<li><input disabled="" type="checkbox"> Chasing coverage; assertions that can&#39;t fail; snapshots updated without review.</li>
+<li><input disabled="" type="checkbox"> No concurrency tests for stock/money/idempotency logic.</li>
+<li><input disabled="" type="checkbox"> Running tests against a shared/production database.</li>
+<li><input disabled="" type="checkbox"> Load testing with averages only, on unrealistic data, without correctness checks.</li>
+<li><input disabled="" type="checkbox"> Flaky tests tolerated with automatic retries.</li>
+<li><input disabled="" type="checkbox"> No CI gate; tests that only run on one developer&#39;s laptop.</li>
+</ul>
+<hr>
+
+<h2 id="24-15-chapter-summary">24.15 Chapter Summary</h2>
+<ul>
+<li>Tests are <strong>executable memory</strong>: catch regressions, specify behaviour, enable refactoring. Use the <strong>pyramid/trophy</strong>: many fast unit tests for logic, <strong>integration tests with the real database for truth</strong>, few E2E tests. Aim for <strong>F.I.R.S.T.</strong> tests.</li>
+<li>Node 22&#39;s <strong>built-in runner</strong> (<code>node --test</code>, <code>mock.fn</code>, <code>mock.timers</code>, coverage) is enough to start. 25 tests, including real PostgreSQL, ran in ~1.4 s. (Don&#39;t put helpers in <code>test/</code>.)</li>
+<li><strong>Boundaries</strong> matter (<code>50000</code> vs <code>49999</code>). <strong>Property-based testing</strong> (fast-check) found a <strong>negative order total</strong> that five example tests missed, and shrank it to a one-item counterexample.</li>
+<li><strong>Test doubles:</strong> prefer <strong>fakes</strong> proven by a <strong>contract test</strong>; <strong>mocks</strong> couple tests to implementation. A planted <code>stock + $2</code> bug passed every fake/mock test and failed only on the real database.</li>
+<li><strong>Integration tests</strong> isolate by transaction-rollback, truncation or <strong>schema per file</strong>; the API tests caught a <strong>missing-transaction bug</strong> and verified <strong>no overselling</strong> under concurrency.</li>
+<li><strong>Flaky tests</strong> come from time, randomness, shared state and races: an identical timing test failed <strong>4/20 idle and 14/60 loaded</strong>; <strong>fake timers</strong> tested a 15-minute rule in 5.6 ms. Inject clocks; quarantine flakes.</li>
+<li><strong>Coverage is a map, not a score</strong>: 99.6% line coverage coexisted with three surviving mutants; <strong>mutation testing</strong> scored the weak suite 4/7, the full suite 7/7.</li>
+<li><strong>Load tests</strong> need percentiles and correctness checks: a bigger pool was <em>slower</em> on a hot row. Put it all in <strong>CI</strong>, fast checks first.</li>
+</ul>
+<hr>
+
+<h2 id="24-16-revision-notes">24.16 Revision Notes</h2>
+<ul>
+<li><code>node --test</code>, <code>--experimental-test-coverage</code>, <code>--test-reporter=spec</code>; helpers outside <code>test/</code>.</li>
+<li>Boundary cases: at, just below, just above. AAA structure; one behaviour per test.</li>
+<li>Property tests: state invariants; fast-check shrinks to minimal counterexamples; keep the seed.</li>
+<li>Fakes + contract tests &gt; mocks; mock only external, unowned systems.</li>
+<li>DB tests: transaction-per-test, truncate, or schema-per-file; port <code>0</code> for servers; test both HTTP and DB state.</li>
+<li>Time: inject a clock, <code>t.mock.timers.enable/tick</code>; never sleep in tests.</li>
+<li>Flaky = broken: quarantine, root-cause. Coverage = map; mutation score = quality.</li>
+<li>Load: p50/p95/p99, correctness assertions, realistic data; hot rows don&#39;t scale with concurrency.</li>
+<li>CI order: lint/types → unit → integration → build; nightly e2e/mutation/load.</li>
+</ul>
+<hr>
+
+<h2 id="24-17-mind-map-ascii">24.17 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                                TESTING
+                                   │
+   ┌──────────┬───────────┬────────┼─────────┬──────────────┬──────────────┐
+ LEVELS     TECHNIQUES   DOUBLES  DATABASE   RELIABILITY   QUALITY       OPERATIONS
+   │            │           │         │          │             │              │
+ unit       examples     fake      transaction  fake timers   coverage      CI gates
+ integration boundaries  stub      rollback     inject clock  mutation      speed
+ API        properties   spy       truncate     no sleep      (not 100%     load (p99)
+ e2e        (fast-check) mock      schema/file  quarantine     = safe)      security
+ contract   snapshots    contract  testcontainers flaky                     regressions</code></pre>
+<hr>
+
+<h2 id="24-18-cheat-sheet">24.18 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> { test, describe, before, after, beforeEach, afterEach, mock } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:test&#x27;</span>;
+<span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:assert/strict&#x27;</span>;
+assert.<span class="hljs-title function_">deepEqual</span>(a, b);  <span class="hljs-keyword">await</span> assert.<span class="hljs-title function_">rejects</span>(promise, { <span class="hljs-attr">code</span>: <span class="hljs-string">&#x27;X&#x27;</span> });  assert.<span class="hljs-title function_">throws</span>(fn, <span class="hljs-regexp">/msg/</span>);
+<span class="hljs-keyword">const</span> f = mock.<span class="hljs-title function_">fn</span>(impl);  f.<span class="hljs-property">mock</span>.<span class="hljs-title function_">callCount</span>();  f.<span class="hljs-property">mock</span>.<span class="hljs-property">calls</span>[<span class="hljs-number">0</span>].<span class="hljs-property">arguments</span>;
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;…&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">t</span>) =&gt;</span> { t.<span class="hljs-property">mock</span>.<span class="hljs-property">timers</span>.<span class="hljs-title function_">enable</span>({ <span class="hljs-attr">apis</span>: [<span class="hljs-string">&#x27;setTimeout&#x27;</span>, <span class="hljs-string">&#x27;Date&#x27;</span>] }); <span class="hljs-comment">/* … */</span> t.<span class="hljs-property">mock</span>.<span class="hljs-property">timers</span>.<span class="hljs-title function_">tick</span>(ms); });
+fc.<span class="hljs-title function_">assert</span>(fc.<span class="hljs-title function_">property</span>(arbitrary, <span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> <span class="hljs-title function_">invariant</span>(x)));</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">node --<span class="hljs-built_in">test</span>                                  <span class="hljs-comment"># run   |  --watch  |  --experimental-test-coverage  |  --test-reporter=spec</span>
+node --<span class="hljs-built_in">test</span> --test-name-pattern=<span class="hljs-string">&quot;boundary&quot;</span>   <span class="hljs-comment"># filter by name</span></code></pre></div>
+<hr>
+
+<h2 id="24-19-key-takeaways">24.19 Key Takeaways</h2>
+<ol>
+<li><strong>Test behaviour at the boundaries; let property tests find the cases you didn&#39;t think of.</strong></li>
+<li><strong>Use the real database for tests that claim to test the data layer.</strong> Fakes need contract tests; mocks lie.</li>
+<li><strong>Make time and randomness injectable.</strong> Flaky tests are bugs.</li>
+<li><strong>Coverage shows what&#39;s untested; mutation testing shows what&#39;s <em>under</em>-tested.</strong></li>
+<li><strong>Test the unhappy paths, concurrency, and security regressions</strong>, not just the happy path.</li>
+<li><strong>Fast, independent, in CI.</strong> If it&#39;s not run automatically, it&#39;s not a test, it&#39;s a hope.</li>
+</ol>
+<hr>
+
+<h2 id="24-20-20-multiple-choice-questions">24.20 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Real SQL."><p class="quiz-text">Which test level best catches an incorrect SQL <code>UPDATE</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Unit test with a mock repo</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Integration test with a real database</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A linter</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A snapshot</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Pyramid."><p class="quiz-text">The test pyramid recommends:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Mostly E2E tests</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Many fast unit tests, fewer integration tests, fewest E2E tests</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only integration tests</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No unit tests</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Boundary bugs."><p class="quiz-text">Why test at <code>50000</code> and <code>49999</code> for a <code>&gt;= 50000</code> rule?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Style</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Boundaries expose <code>&gt;=</code> vs <code>&gt;</code> bugs</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Performance</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Coverage</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Invariants over generated inputs."><p class="quiz-text">Property-based testing:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Tests private properties</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Generates many inputs to check invariants that must always hold</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Replaces all unit tests</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only works with numbers</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Negative total."><p class="quiz-text">What did the property test find in <code>orderTotal</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A rounding error</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A fixed coupon exceeding the subtotal, producing a negative total</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A slow query</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A null pointer</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Minimal counterexample."><p class="quiz-text">What is &quot;shrinking&quot;?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Reducing test time</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Reducing a failing input to a minimal counterexample</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Compressing logs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Deleting tests</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Working implementation."><p class="quiz-text">A <strong>fake</strong> differs from a <strong>mock</strong> in that a fake:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Records call expectations</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Is a working lightweight implementation, checked by outcomes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Is always random</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Hits the network</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Never ran real SQL."><p class="quiz-text">Why did mocked tests pass despite the <code>stock + $2</code> bug?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The mock was wrong</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">They never ran the real SQL</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">PostgreSQL ignored it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The bug wasn&#39;t real</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Same suite, both implementations."><p class="quiz-text">A contract test is useful because it:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Replaces integration tests</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Runs the same expectations against both the fake and the real implementation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Tests CSS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Checks licenses</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Schema per file."><p class="quiz-text">Which isolation technique lets test <em>files</em> run in parallel safely?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Shared tables</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A separate schema per test file</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Global variables</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sleeping</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Free port."><p class="quiz-text">Why start the test server on port <code>0</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The OS picks a free port, avoiding collisions</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Port 0 is privileged</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Required by Express</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Missing transaction."><p class="quiz-text">The API test that caught a real bug showed:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A syntax error</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A failed multi-item order left other items&#39; stock decremented (no transaction)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Slow startup</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A typo</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Real time + jitter."><p class="quiz-text">An identical timing test failed 4 of 20 times on an idle machine because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The code changed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It depended on real elapsed time and machine jitter</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">fast-check</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Coverage</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Virtual time."><p class="quiz-text">Fake timers let you test a 15-minute rule:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">By waiting 15 minutes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">By advancing virtual time instantly and deterministically</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">By skipping it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">By mocking PostgreSQL</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Not verified."><p class="quiz-text">Why can 100% line coverage still miss bugs?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Coverage is wrong</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Lines can run without being verified by assertions</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Tests are slow</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It can&#39;t be 100%</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Undetected bug."><p class="quiz-text">A mutant that &quot;survives&quot; means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The test suite is excellent</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The suite failed to detect an injected bug</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The code is secure</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The mutant crashed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="4 of 7."><p class="quiz-text">In our mutation run the 5-example suite killed:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">7/7</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">4/7</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">0/7</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">2/7</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Helpers run as tests."><p class="quiz-text">Why is <code>node --test</code> running <code>test/helpers.js</code> a problem?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It executes every <code>.js</code> in a <code>test</code> directory as a test; keep helpers elsewhere</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s required</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It deletes files</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Hot-row contention."><p class="quiz-text">In the load test, a larger pool was slower because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Pools are always bad</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Requests contended on one hot row lock; more concurrency only added waiting</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Autocannon bug</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">DNS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Quarantine and root-cause."><p class="quiz-text">The best policy for a flaky test is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Retry until green permanently</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Quarantine, find the root cause, fix or delete</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Ignore</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Increase timeouts forever</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="24-21-20-hands-on-exercises">24.21 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch24/README.txt">resources/ch24/</a>; read its README.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>npm test</code>; read the spec output; run with <code>--experimental-test-coverage</code>.</li>
+<li>Add a test case at exactly 50000 and 49999 for free shipping and confirm both pass.</li>
+<li>Break <code>&gt;=</code> to <code>&gt;</code> by hand; confirm which test fails.</li>
+<li>Write three <code>assert.rejects</code> tests for <code>DomainError</code> codes.</li>
+<li>Create a test that fails because of a missing <code>await</code>; explain why.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Write fast-check properties for a <code>paginate(items, page, size)</code> function (no item lost or duplicated; page sizes ≤ size).</li>
+<li>Add an <code>Idempotency-Key</code> feature and test: same key twice → one order, same response.</li>
+<li>Write the contract suite for <code>orders</code> repos (memory vs PostgreSQL) and fix whatever disagrees.</li>
+<li>Use <code>t.mock.timers</code> to test a token expiry of 10 minutes at the exact boundary.</li>
+<li>Turn the Chapter 21 <code>alg:none</code> and <a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a> BOLA attacks into regression tests.</li>
+<li>Plant five bugs of your own in the service and see which tests catch them; add tests for the survivors.</li>
+<li>Convert truncate-based isolation to transaction-per-test where possible and compare timing.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Run Stryker on <code>pricing.js</code> and compare its report to the hand-rolled mutator.</li>
+<li>Run the suite with Testcontainers instead of the shared container.</li>
+<li>Add a Playwright test for login → add to cart → checkout against a local build.</li>
+<li>Introduce Pact (or OpenAPI response validation) between the API and a consumer; break the contract and watch CI fail.</li>
+<li>Write a k6 script with a realistic mix (80% reads, 20% writes), ramp up, and thresholds on p95 and error rate.</li>
+<li>Find a hot-row bottleneck in your own endpoint with a load test and fix it (e.g., sharded counters, queue).</li>
+<li>Build a GitHub Actions workflow running lint, unit, integration (PostgreSQL service container), and uploading coverage.</li>
+<li>Audit an existing suite: list its flaky tests, slowest tests, and mutation survivors; produce a one-page improvement plan.</li>
+</ol>
+<hr>
+
+<h2 id="24-22-5-interview-questions">24.22 5 Interview Questions</h2>
+<p><strong>1. What&#39;s the difference between unit, integration and end-to-end tests, and how do you balance them?</strong>
+<em>Model answer:</em> Unit tests check isolated logic quickly; integration tests verify modules with real dependencies (database, HTTP) and find SQL/transaction/wiring bugs; E2E tests drive the deployed system through critical user journeys. Balance with many fast unit tests for logic, a strong integration layer for boundaries (often the most valuable for backends), and a few E2E tests. Run fast ones on every commit.</p>
+<p><strong>2. When should you use mocks vs fakes vs real dependencies?</strong>
+<em>Model answer:</em> Use real dependencies for what you own and can run cheaply (the database in integration tests); fakes for fast tests of business logic, kept honest with contract tests; mocks/stubs for external services you can&#39;t control (payment, email). Avoid interaction-heavy mocks that pin implementation. In my example, mock-based tests passed with a broken SQL update that the real-database contract test caught.</p>
+<p><strong>3. How do you deal with flaky tests?</strong>
+<em>Model answer:</em> Treat them as bugs. Identify the cause (real time, randomness, shared state, races, external services), then inject clocks and seeds, use fake timers, isolate data per test, await properly, stub externals. Quarantine while fixing; don&#39;t mask with permanent retries. Track flakiness rate in CI.</p>
+<p><strong>4. Is 100% code coverage a good goal?</strong>
+<em>Model answer:</em> No. Coverage shows executed lines, not verified behaviour. I&#39;d demonstrate with mutation testing: a suite with full line coverage let three mutants through (including a real negative-total bug). Use coverage to find untested code, and mutation testing, boundary cases and property-based tests to judge test quality, especially on critical modules like money and auth.</p>
+<p><strong>5. How do you test code that depends on time or randomness?</strong>
+<em>Model answer:</em> Make them dependencies: inject a clock/ID generator or use fake timers (<code>mock.timers</code>) and seeded RNGs, so tests are deterministic and can check exact boundaries (14:59.999 vs 15:00.000) instantly instead of sleeping.</p>
+<hr>
+
+<h2 id="24-23-3-real-projects">24.23 3 Real Projects</h2>
+<p><strong>Project 1: Test Suite Overhaul (intermediate, ~10 hours).</strong>
+Take ShopLine&#39;s modules from earlier chapters and build the full suite: unit + property tests for pricing and inventory, contract tests for every repository, API tests with auth/IDOR/validation cases, concurrency tests for stock and idempotency. Report mutation score (Stryker) and fix survivors.</p>
+<p><strong>Project 2: CI Pipeline With Quality Gates (intermediate, ~8 hours).</strong>
+A GitHub Actions workflow: lint and typecheck, unit, integration with a PostgreSQL service container, coverage diff check, mutation tests on <code>pricing</code>/<code>auth</code> nightly, <code>npm audit</code>, and a smoke load test with k6 thresholds. Add a flaky-test dashboard.</p>
+<p><strong>Project 3: Load-Testing Lab (advanced, ~10 hours).</strong>
+Build a load-testing harness (k6 or autocannon) with realistic traffic models; reproduce the hot-row contention finding; implement and benchmark three fixes (atomic counters, queue-based serialization, optimistic retry); publish a report with percentiles, saturation points and correctness verification.</p>
+<hr>
+
+<h2 id="24-24-further-reading">24.24 Further Reading</h2>
+<ul>
+<li>Node.js docs: <em>Test runner</em> (<code>node:test</code>), <em>Mocking</em>, <em>Code coverage</em>; Vitest and Jest docs.</li>
+<li>Martin Fowler: <em>The Practical Test Pyramid</em>, <em>Mocks Aren&#39;t Stubs</em>, <em>Test Doubles</em>; Kent C. Dodds: <em>The Testing Trophy</em>.</li>
+<li><em>Unit Testing: Principles, Practices, and Patterns</em> (Vladimir Khorikov): the best book on what to test and how to avoid brittleness.</li>
+<li>fast-check documentation; John Hughes, <em>Testing the Hard Stuff and Staying Sane</em> (property-based testing talk).</li>
+<li>Stryker Mutator docs; Google&#39;s <em>Software Engineering at Google</em>, &quot;Testing Overview&quot; chapters.</li>
+<li>Pact docs (consumer-driven contracts); Playwright docs; k6 docs; Testcontainers for Node.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-25-logging-monitoring-and-debugging">Up next → Chapter 25: Logging, Monitoring and Debugging</h3>
+<p>Tests tell you the code was right <em>before</em> it shipped. Production is different: real traffic, real failures, real 3 a.m. pages. Next: structured logging with correlation ids, metrics (RED/USE), traces (OpenTelemetry), health checks, alerting and SLOs, and debugging a live Node.js process: heap snapshots, CPU profiles, and event-loop lag, all measured on the ShopLine service.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Backend Testing Strategy: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Is 100 percent code coverage a good goal?</h3></summary><p>No. Coverage shows which lines ran, not whether they were checked. A suite with full line coverage let three mutants through in our test; mutation testing is a better quality signal.</p></details>
+<details class="learn-faq-item"><summary><h3>When should I use mocks?</h3></summary><p>For external services you cannot run cheaply, such as payment gateways. For your own database layer use a real database or a fake verified by a contract test; mocked tests passed while our real SQL was wrong.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I deal with flaky tests?</h3></summary><p>Treat them as bugs: inject clocks and seeds, use fake timers, isolate data per test and quarantine while fixing. One timing test failed four of 20 runs on an idle machine.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I isolate database tests?</h3></summary><p>Use a transaction per test with rollback, truncate between tests, or a separate schema per test file so files can run in parallel.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span>&larr; Previous &middot; Chapter 23</span><strong>Web &amp; API Security: XSS, CSRF, SSRF, CORS</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span>Next &middot; Chapter 25 &rarr;</span><strong>Logging, Monitoring &amp; Tracing in Node.js</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#24-0-why-this-chapter-matters">24.0 Why This Chapter Matters</a></li><li><a href="#24-1-what-tests-are-for">24.1 What Tests Are For</a></li><li><a href="#24-2-the-test-pyramid-and-its-cousins">24.2 The Test Pyramid (and Its Cousins)</a></li><li><a href="#24-3-setup-node-s-built-in-test-runner">24.3 Setup: Node's Built-In Test Runner</a></li><li><a href="#24-4-unit-tests-logic-boundaries-examples">24.4 Unit Tests: Logic, Boundaries, Examples</a></li><li><a href="#24-5-property-based-testing-let-the-computer-find-the-edge-cases">24.5 Property-Based Testing: Let the Computer Find the Edge Cases</a></li><li><a href="#24-6-test-doubles-fakes-stubs-spies-mocks">24.6 Test Doubles: Fakes, Stubs, Spies, Mocks</a></li><li><a href="#24-7-integration-tests-with-a-real-database">24.7 Integration Tests With a Real Database</a></li><li><a href="#24-8-time-randomness-and-flaky-tests">24.8 Time, Randomness and Flaky Tests</a></li><li><a href="#24-9-coverage-and-why-100-doesn-t-mean-safe">24.9 Coverage, and Why 100% Doesn't Mean Safe</a></li><li><a href="#24-10-testing-security-and-reliability-behaviours">24.10 Testing Security and Reliability Behaviours</a></li><li><a href="#24-11-contract-and-end-to-end-testing">24.11 Contract and End-to-End Testing</a></li><li><a href="#24-12-load-and-performance-testing">24.12 Load and Performance Testing</a></li><li><a href="#24-13-testing-in-ci-and-day-to-day-practice">24.13 Testing in CI and Day-to-Day Practice</a></li><li><a href="#24-14-edge-cases-and-gotchas-checklist">24.14 Edge Cases and Gotchas Checklist</a></li><li><a href="#24-15-chapter-summary">24.15 Chapter Summary</a></li><li><a href="#24-16-revision-notes">24.16 Revision Notes</a></li><li><a href="#24-17-mind-map-ascii">24.17 Mind Map (ASCII)</a></li><li><a href="#24-18-cheat-sheet">24.18 Cheat Sheet</a></li><li><a href="#24-19-key-takeaways">24.19 Key Takeaways</a></li><li><a href="#24-20-20-multiple-choice-questions">24.20 20 Multiple Choice Questions</a></li><li><a href="#24-21-20-hands-on-exercises">24.21 20 Hands-on Exercises</a></li><li><a href="#24-22-5-interview-questions">24.22 5 Interview Questions</a></li><li><a href="#24-23-3-real-projects">24.23 3 Real Projects</a></li><li><a href="#24-24-further-reading">24.24 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "backend-testing-strategy-node-test-integration-property"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

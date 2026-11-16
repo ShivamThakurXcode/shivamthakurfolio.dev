@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Authorization: RBAC, IDOR &amp; RLS | Backend Master</title>
+    <meta name="description" content="Secure access control in Node.js: RBAC and ABAC policies, fixing IDOR/BOLA, mass assignment, multi-tenant isolation and PostgreSQL row-level security.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="authorization rbac abac, idor bola vulnerability, mass assignment, postgresql row level security, multi tenant isolation, owasp broken access control, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="authorization rbac abac">
+    <meta property="article:tag" content="idor bola vulnerability">
+    <meta property="article:tag" content="mass assignment">
+    <meta property="article:tag" content="postgresql row level security">
+    <meta property="article:tag" content="multi tenant isolation">
+    <meta property="article:tag" content="owasp broken access control">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Authorization: RBAC, IDOR &amp; RLS">
+    <meta property="og:description" content="Secure access control in Node.js: RBAC and ABAC policies, fixing IDOR/BOLA, mass assignment, multi-tenant isolation and PostgreSQL row-level security.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/authorization-rbac-idor-row-level-security.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Authorization and Access Control: RBAC, IDOR, Mass Assignment and Row-Level Security: Backend Master chapter 22">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Authorization: RBAC, IDOR &amp; RLS">
+    <meta name="twitter:description" content="Secure access control in Node.js: RBAC and ABAC policies, fixing IDOR/BOLA, mass assignment, multi-tenant isolation and PostgreSQL row-level security.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/authorization-rbac-idor-row-level-security.png">
+    <meta name="twitter:image:alt" content="Authorization and Access Control: RBAC, IDOR, Mass Assignment and Row-Level Security: Backend Master chapter 22">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security",
+          "name": "Authorization: RBAC, IDOR & RLS | Backend Master",
+          "description": "Secure access control in Node.js: RBAC and ABAC policies, fixing IDOR/BOLA, mass assignment, multi-tenant isolation and PostgreSQL row-level security.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/authorization-rbac-idor-row-level-security.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Authorization and Access Control: RBAC, IDOR, Mass Assignment and Row-Level Security"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#webpage"
+          },
+          "headline": "Authorization and Access Control: RBAC, IDOR, Mass Assignment and Row-Level Security",
+          "alternativeHeadline": "Authorization and Access Control — Who May Do What",
+          "description": "Secure access control in Node.js: RBAC and ABAC policies, fixing IDOR/BOLA, mass assignment, multi-tenant isolation and PostgreSQL row-level security.",
+          "abstract": "Authorization decides what an authenticated user may do, and broken access control is the top web vulnerability. This chapter attacks a small API with IDOR, a missing role check and mass assignment, fixes each, builds a central default-deny policy function, and enforces tenant isolation with PostgreSQL row-level security and its three traps.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/authorization-rbac-idor-row-level-security.png",
+          "url": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 5519,
+          "timeRequired": "PT25M",
+          "articleSection": "Backend Development",
+          "keywords": "authorization rbac abac, idor bola vulnerability, mass assignment, postgresql row level security, multi tenant isolation, owasp broken access control",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "RBAC, ABAC and ownership checks",
+            "Fixing IDOR and BOLA in the query",
+            "Function-level authorization and mass assignment",
+            "A central default-deny policy",
+            "Row-level security for multi-tenant data"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "authorization rbac abac"
+          },
+          "isAccessibleForFree": true,
+          "position": 22,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa#article",
+            "name": "Authentication: Password Hashing, Sessions, JWT, Refresh Tokens, OAuth and MFA",
+            "url": "https://shivamthakur.me/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Authorization: RBAC, IDOR & RLS",
+              "item": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is IDOR or BOLA?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An endpoint returns an object by id without checking the caller may access it, so changing the id exposes other users' data. Put ownership and tenant in the query and return 404 for foreign objects."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is mass assignment?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Writing client-supplied fields straight onto a record, letting users set fields such as role. Use an allow-list of editable fields and strict schemas."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I return 403 or 404 for someone else's object?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Return 404 so you do not confirm the object exists. Use 403 when the user can see the object but lacks the right to perform the action."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What are the pitfalls of row-level security?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Superusers and table owners bypass it unless forced, and session-level settings can leak across pooled connections. Use a non-owner app role and set_config(..., true) inside transactions."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#quiz",
+          "name": "Authorization: RBAC, IDOR & RLS: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "authorization rbac abac"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "BOLA stands for:",
+              "text": "BOLA stands for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Broken Object Level Authorization"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Basic Object Login Auth"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary Object Load Attack"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bad OAuth Link Abuse"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The v1 order endpoint was vulnerable because it:",
+              "text": "The v1 order endpoint was vulnerable because it:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Fetched by id without checking the caller's ownership/tenant"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Used HTTP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Lacked a JWT"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Used PostgreSQL"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Where is the best place for the ownership check?",
+              "text": "Where is the best place for the ownership check?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In the SQL query/policy at the resource"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "In the UI"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "In a comment"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only in a front-end route guard"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Returning 404 for another user's order (instead of 403):",
+              "text": "Returning 404 for another user's order (instead of 403):",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Avoids confirming the object exists"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is wrong"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is slower"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Violates HTTP"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "UUID ids as a BOLA fix are:",
+              "text": "UUID ids as a BOLA fix are:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Defence in depth only; the check is still required"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sufficient"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Harmful"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Required by REST"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "BFLA is:",
+              "text": "BFLA is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A missing check on an entire function/endpoint (e.g., admin routes)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A cookie flag"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A database lock"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A CSS issue"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Mass assignment happens when:",
+              "text": "Mass assignment happens when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The client controls which fields get written"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The server assigns many rows"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Many users share a role"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A transaction is large"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which fix stops {\"role\":\"admin\"} in a PATCH?",
+              "text": "Which fix stops {\"role\":\"admin\"} in a PATCH?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An allow-list of editable fields (and type checks)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Hide the field in the UI"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Longer passwords"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rate limiting"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Interpolating JSON keys into SQL leads to:",
+              "text": "Interpolating JSON keys into SQL leads to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SQL injection through identifiers"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Faster queries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Better caching"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "can(user, 'order:delete', o) for an action not in the policy returns:",
+              "text": "can(user, 'order:delete', o) for an action not in the policy returns:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "false (default deny)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "true"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "throws"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "undefined behaviour"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why return 404 for read-denied but 403 for action-denied?",
+              "text": "Why return 404 for read-denied but 403 for action-denied?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Hide objects the caller can't see; admit rights are missing for visible ones"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Random"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HTTP requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Caching"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Authorization logic belongs primarily in:",
+              "text": "Authorization logic belongs primarily in:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The service layer, with an explicit actor"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The browser"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CSS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The load balancer only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A JWT role claim can be stale because:",
+              "text": "A JWT role claim can be stale because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Claims are frozen until expiry"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Tokens are encrypted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Roles expire hourly"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis evicts them"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "RLS fails closed when the tenant setting is unset because:",
+              "text": "RLS fails closed when the tenant setting is unset because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The policy compares tenant_id to NULL, matching no rows"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Postgres errors"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It defaults to tenant 1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It disables the table"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which role ignores RLS by default?",
+              "text": "Which role ignores RLS by default?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Superusers (and BYPASSRLS roles) and table owners"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A normal app role"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Read-only roles"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "None"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "set_config('app.tenant_id', '2', false) on a pooled connection:",
+              "text": "set_config('app.tenant_id', '2', false) on a pooled connection:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Persists for the session and can leak to the next request"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is transaction-local"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is invalid"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Resets automatically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "WITH CHECK in a policy:",
+              "text": "WITH CHECK in a policy:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Restricts which rows may be inserted/updated"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Filters reads"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Adds an index"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Logs queries"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "An admin in a multi-tenant app should usually be:",
+              "text": "An admin in a multi-tenant app should usually be:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Admin within their own tenant"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Global across tenants"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unrestricted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Anonymous"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The most effective test for access control bugs is:",
+              "text": "The most effective test for access control bugs is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Calling endpoints as the wrong user / other tenant and expecting 404/403"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Logging in as the correct user only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unit-testing CSS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Load tests"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which statement about scopes is true?",
+              "text": "Which statement about scopes is true?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The action must be allowed by both the user's rights and the token's scopes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They replace user permissions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They are only for browsers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They're encrypted"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Authorization: RBAC, IDOR &amp; RLS</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:61.1%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item active" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security" aria-current="page"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 22 of 36 &middot; Intermediate</p>
+                        <h1>Authorization and Access Control: RBAC, IDOR, Mass Assignment and Row-Level Security</h1>
+                        <p class="learn-book-title">Authorization and Access Control — Who May Do What</p>
+                        <ul class="learn-meta text-caption">
+                            <li>25 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/authorization-rbac-idor-row-level-security.webp"><img src="../../assets/images/learn/backend-master/authorization-rbac-idor-row-level-security.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Authorization and Access Control: RBAC, IDOR, Mass Assignment and Row-Level Security: Backend Master chapter 22 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Authorization decides what an authenticated user may do, and broken access control is the top web vulnerability. This chapter attacks a small API with IDOR, a missing role check and mass assignment, fixes each, builds a central default-deny policy function, and enforces tenant isolation with PostgreSQL row-level security and its three traps.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>RBAC, ABAC and ownership checks</li><li>Fixing IDOR and BOLA in the query</li><li>Function-level authorization and mass assignment</li><li>A central default-deny policy</li><li>Row-level security for multi-tenant data</li></ul>
+                        </section>
+<hr>
+
+<h2 id="22-0-why-this-chapter-matters">22.0 Why This Chapter Matters</h2>
+<p><a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a> answered <em>&quot;who are you?&quot;</em> This chapter answers the harder, more dangerous question: <strong>&quot;what are you allowed to do?&quot;</strong></p>
+<p>It is dangerous because <strong>authentication bugs are loud</strong> (nobody can log in) while <strong>authorization bugs are silent</strong>: everything works perfectly for the honest user, and nobody notices that changing <code>/orders/101</code> to <code>/orders/102</code> shows a stranger&#39;s order. Broken access control consistently tops vulnerability lists: it is <strong>#1 in the OWASP Top 10 (2021)</strong> and <strong>API1, &quot;Broken Object Level Authorization,&quot; in the OWASP API Security Top 10 (2023)</strong>. Most large data breaches through APIs are exactly this bug.</p>
+<p>The bug is easy to write because <strong>an authenticated request looks completely legitimate</strong>: the token is valid, the user exists, the route exists. Only a <em>missing question</em> (&quot;is this <em>your</em> order?&quot;) separates a feature from a breach.</p>
+<p>In this chapter we build a small API and <strong>attack it four ways</strong>, then fix each:</p>
+<ol>
+<li><strong>BOLA/IDOR</strong>: reading other users&#39; (and other tenants&#39;) orders by changing an id.</li>
+<li><strong>Function-level</strong>: a customer calling an admin endpoint someone forgot to protect.</li>
+<li><strong>Mass assignment</strong>: promoting yourself to admin by adding one field to a JSON body.</li>
+<li><strong>Central policy</strong>: moving every decision into one default-deny <code>can(user, action, resource)</code>.</li>
+</ol>
+<p>Then we push the rule down into the database with <strong>PostgreSQL row-level security</strong>, and test its failure modes (including the one that silently disables it).</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>Everything shown was executed: Express 5, <code>jose</code>, PostgreSQL 17, with the attacks sent over real HTTP. <strong>Not run:</strong> Casbin, CASL, OPA/Cedar, Zanzibar-style relationship stores (OpenFGA/SpiceDB), GraphQL field-level authorization, and OAuth scopes against a real provider; they&#39;re described only. The demo contains <strong>deliberately vulnerable routes</strong> (in <a href="/learn/backend-master/resources/ch22/README.txt">resources/ch22/</a>); do not deploy them.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>In 2019 a real-estate company exposed <strong>885 million records</strong> because document URLs used sequential numbers and <em>any logged-out visitor</em> could change the number and read another person&#39;s mortgage paperwork. No hacking tool was involved: just editing an integer in the address bar. That is BOLA in its purest form.</p>
+</aside>
+<hr>
+
+<h2 id="22-1-the-vocabulary">22.1 The Vocabulary</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Term</th>
+<th>Meaning</th>
+<th>ShopLine example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Subject / principal</strong></td>
+<td>Who is acting</td>
+<td>user 1 (Asha)</td>
+</tr>
+<tr>
+<td><strong>Action</strong></td>
+<td>What they attempt</td>
+<td><code>order:cancel</code></td>
+</tr>
+<tr>
+<td><strong>Resource</strong></td>
+<td>What it targets</td>
+<td>order 104</td>
+</tr>
+<tr>
+<td><strong>Policy</strong></td>
+<td>The rule deciding allow/deny</td>
+<td>&quot;owner may cancel a <em>pending</em> order&quot;</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>A named bundle of permissions</td>
+<td><code>customer</code>, <code>support</code>, <code>admin</code></td>
+</tr>
+<tr>
+<td><strong>Scope</strong></td>
+<td>A permission embedded in a token</td>
+<td><code>orders:read</code></td>
+</tr>
+<tr>
+<td><strong>Tenant</strong></td>
+<td>An isolated customer organisation</td>
+<td>shop A vs shop B</td>
+</tr>
+</tbody></table></div>
+<p>Two principles to tattoo on your brain:</p>
+<blockquote>
+<p><strong>Default deny</strong>: if no rule explicitly allows an action, it is denied.
+<strong>Check on the server, every time, at the resource</strong>: the UI hiding a button is cosmetics; the API is the only thing an attacker talks to.</p>
+</blockquote>
+<h3 id="authorization-models">Authorization models</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Model</th>
+<th>Decision based on</th>
+<th>Good for</th>
+<th>Weakness</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>ACL</strong> (access control list)</td>
+<td>A list of users on each resource</td>
+<td>Sharing documents</td>
+<td>Doesn&#39;t scale to many resources</td>
+</tr>
+<tr>
+<td><strong>RBAC</strong> (role-based)</td>
+<td>The user&#39;s role</td>
+<td>&quot;Admins can refund&quot;</td>
+<td>Role explosion; can&#39;t express ownership alone</td>
+</tr>
+<tr>
+<td><strong>ABAC</strong> (attribute-based)</td>
+<td>Attributes of user, resource, context (owner, status, time, tenant)</td>
+<td>Rich rules: &quot;owner can cancel while <code>pending</code>&quot;</td>
+<td>Rules scattered unless centralised</td>
+</tr>
+<tr>
+<td><strong>ReBAC</strong> (relationship-based)</td>
+<td>Graph of relationships (member-of, owner-of, parent-of)</td>
+<td>Google-Docs-style sharing</td>
+<td>Needs a relationship store (OpenFGA, SpiceDB) <em>(not run)</em></td>
+</tr>
+</tbody></table></div>
+<p>Real systems combine them: <strong>RBAC for coarse permissions, ABAC/ownership for the object.</strong> Our API uses exactly that.</p>
+<hr>
+
+<h2 id="22-2-the-test-bed">22.2 The Test Bed</h2>
+<p>Five users in two tenants (shops) and four orders:</p>
+<pre class="is-plain"><code>users:  1 Asha (customer, tenant 1)   2 Ravi (customer, t1)   3 Meera (customer, tenant 2)
+        4 Root (admin, t1)            5 Sam (support, t1)
+orders: 101 Asha paid 31500   102 Ravi paid 99900   103 Meera shipped 5000 (tenant 2)   104 Asha pending 1500</code></pre>
+<p>Authentication is a JWT with <code>sub</code>, <code>role</code>, <code>tenant</code> (<a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a>); a middleware sets <code>req.user = { id, role, tenant }</code>. Each vulnerability has a <code>/v1/...</code> (bad) and <code>/v2/...</code> (fixed) version.</p>
+<hr>
+
+<h2 id="22-3-attack-1-bola-idor-broken-object-level-authorization">22.3 Attack 1: BOLA / IDOR (Broken Object Level Authorization)</h2>
+<p><strong>IDOR</strong> = <em>Insecure Direct Object Reference</em>; <strong>BOLA</strong> is the API-era name. The vulnerable handler:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/v1/orders/:id&#x27;</span>, authn, <span class="hljs-keyword">async</span> (req, res) =&gt; {          <span class="hljs-comment">// authenticated... but whose order?</span>
+  <span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [o] } = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT * FROM orders WHERE id = $1&#x27;</span>, [req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>]);
+  o ? res.<span class="hljs-title function_">json</span>(o) : res.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">title</span>: <span class="hljs-string">&#x27;not found&#x27;</span> });
+});</code></pre></div>
+<p>Asha (user 1, tenant 1) asks for Ravi&#39;s order and for Meera&#39;s order in a <em>different shop</em>:</p>
+<pre class="is-plain"><code>v1 (no ownership check)  GET /v1/orders/102   200 {&quot;id&quot;:102,&quot;user_id&quot;:2,&quot;tenant_id&quot;:1,&quot;status&quot;:&quot;paid&quot;,&quot;total_minor&quot;:99900,&quot;shipping_address&quot;:&quot;7 Nehru St, Delhi&quot;
+v1                       GET /v1/orders/103   200 {&quot;id&quot;:103,&quot;user_id&quot;:3,&quot;tenant_id&quot;:2,&quot;status&quot;:&quot;shipped&quot;,&quot;total_minor&quot;:5000,&quot;shipping_address&quot;:&quot;9 Park Ave, Mumbai</code></pre>
+<p>Both returned <strong>names, addresses and amounts of strangers</strong>. And because ids are sequential, an attacker needs only a loop:</p>
+<pre class="is-plain"><code>enumerating ids 100..109 on v1 leaked 4 of 4 orders in the table (sequential ids make this trivial)</code></pre>
+<h3 id="the-fix-ownership-is-part-of-the-query">The fix: ownership is part of the <em>query</em></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/v2/orders/:id&#x27;</span>, authn, <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [o] } = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(
+    <span class="hljs-string">&#x27;SELECT * FROM orders WHERE id = $1 AND user_id = $2 AND tenant_id = $3&#x27;</span>,
+    [req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>, req.<span class="hljs-property">user</span>.<span class="hljs-property">id</span>, req.<span class="hljs-property">user</span>.<span class="hljs-property">tenant</span>]);
+  o ? res.<span class="hljs-title function_">json</span>(o) : res.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">title</span>: <span class="hljs-string">&#x27;not found&#x27;</span> });   <span class="hljs-comment">// 404, not 403</span>
+});</code></pre></div>
+<pre class="is-plain"><code>v2 (scoped query)  GET /v2/orders/102   404 {&quot;title&quot;:&quot;not found&quot;}
+v2                 GET /v2/orders/103   404 {&quot;title&quot;:&quot;not found&quot;}
+v2 her own order   GET /v2/orders/101   200 {...}</code></pre>
+<p>Three design points:</p>
+<ol>
+<li><strong>Put the check in the query</strong>, not &quot;fetch then <code>if</code>&quot;. It cannot be forgotten <em>after</em> the fetch, and the database never even returns the row.</li>
+<li><strong>Return <code>404</code>, not <code>403</code></strong>, for objects the caller may not see: <code>403</code> confirms &quot;that order exists&quot; (an enumeration oracle, Chapter 21&#39;s theme).</li>
+<li><strong>Unguessable ids (UUIDs) are <em>not</em> a fix.</strong> They make enumeration harder, which is good <em>defence in depth</em>, but ids leak (logs, emails, referrers, shared links). The check is the fix; the UUID is a seatbelt, not the brakes.</li>
+</ol>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>Every handler that takes an id must answer &quot;whose is this?&quot;</strong> Whenever you write <code>WHERE id = $1</code>, ask what the <em>second</em> condition is. If the answer is &quot;none,&quot; you probably have a BOLA.</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;What&#39;s the most common API vulnerability?&quot;</em> → <strong>BOLA/IDOR</strong>: the server trusts an object id from the client and returns it without checking the caller&#39;s rights. Fix: authorise at the object level on every access (ownership in the query or a central policy), return 404 for foreign objects, and add automated tests that call each endpoint as <em>another user</em>.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="22-4-attack-2-function-level-authorization-bfla">22.4 Attack 2: Function-Level Authorization (BFLA)</h2>
+<p>A different gap: an <em>entire endpoint</em> meant for admins that nobody protected.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/v1/admin/users&#x27;</span>, authn, <span class="hljs-keyword">async</span> (req, res) =&gt; res.<span class="hljs-title function_">json</span>((<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id, email, role FROM users&#x27;</span>)).<span class="hljs-property">rows</span>));   <span class="hljs-comment">// forgot the role check</span></code></pre></div>
+<pre class="is-plain"><code>v1 (forgot the role check) Asha GET /v1/admin/users   200 [{&quot;id&quot;:1,&quot;email&quot;:&quot;asha@a.com&quot;,&quot;role&quot;:&quot;customer&quot;},{&quot;id&quot;:2,...
+v2 Asha GET /v2/admin/users                           403 {&quot;title&quot;:&quot;forbidden&quot;}
+v2 Root GET /v2/admin/users (own tenant only)         200 [...tenant 1 users only]</code></pre>
+<p>The fix is a role gate <strong>plus tenant scoping in the query</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-title function_">requireRole</span> = (<span class="hljs-params">...roles</span>) =&gt; <span class="hljs-function">(<span class="hljs-params">req, res, next</span>) =&gt;</span> (roles.<span class="hljs-title function_">includes</span>(req.<span class="hljs-property">user</span>.<span class="hljs-property">role</span>) ? <span class="hljs-title function_">next</span>() : res.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">title</span>: <span class="hljs-string">&#x27;forbidden&#x27;</span> }));
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/v2/admin/users&#x27;</span>, authn, requireRole(<span class="hljs-string">&#x27;admin&#x27;</span>), <span class="hljs-keyword">async</span> (req, res) =&gt;
+  res.<span class="hljs-title function_">json</span>((<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id, email, role FROM users WHERE tenant_id = $1&#x27;</span>, [req.<span class="hljs-property">user</span>.<span class="hljs-property">tenant</span>])).<span class="hljs-property">rows</span>));</code></pre></div>
+<p>Note that &quot;admin&quot; here means admin <strong>of their tenant</strong>: Root saw only tenant 1&#39;s users, not Meera. A frequent, serious mistake is a <em>global</em> admin role in a multi-tenant system.</p>
+<p><strong>Make &quot;forgot to protect it&quot; structurally hard:</strong> apply authentication <strong>by default at the router level</strong> (<code>app.use(&#39;/api&#39;, authn)</code>), with a short, explicit allow-list of public routes, rather than adding <code>authn</code> to each route. Admin routes live under a router that has <code>requireRole(&#39;admin&#39;)</code> applied once. The safe path should be the lazy path.</p>
+<hr>
+
+<h2 id="22-5-attack-3-mass-assignment">22.5 Attack 3: Mass Assignment</h2>
+<p>The handler for &quot;update my profile&quot;:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">patch</span>(<span class="hljs-string">&#x27;/v1/me&#x27;</span>, authn, <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> cols = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(req.<span class="hljs-property">body</span>); <span class="hljs-keyword">const</span> vals = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">values</span>(req.<span class="hljs-property">body</span>);
+  <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">`UPDATE users SET <span class="hljs-subst">${cols.map((c, i) =&gt; <span class="hljs-string">`&quot;<span class="hljs-subst">${c}</span>&quot; = $<span class="hljs-subst">${i + <span class="hljs-number">2</span>}</span>`</span>).join(<span class="hljs-string">&#x27;, &#x27;</span>)}</span> WHERE id = $1 RETURNING id, name, role`</span>, [req.<span class="hljs-property">user</span>.<span class="hljs-property">id</span>, ...vals]);</code></pre></div>
+<p>The honest client sends <code>{&quot;name&quot;: &quot;Ravi K&quot;}</code>. The attacker sends one extra field:</p>
+<pre class="is-plain"><code>PATCH /v1/me {&quot;name&quot;:&quot;Ravi K&quot;,&quot;role&quot;:&quot;admin&quot;}      200 {&quot;id&quot;:2,&quot;name&quot;:&quot;Ravi K&quot;,&quot;role&quot;:&quot;admin&quot;}
+   Ravi is now: admin   &lt;- privilege escalation by adding one JSON field</code></pre>
+<p>The client decided <strong>which columns get written</strong>. The same flaw has hit ORMs that bind a whole request body to a model (<code>User.update(req.body)</code>), famously on GitHub in 2012.</p>
+<p>It&#39;s <strong>worse</strong> here: the code interpolates the <em>key names</em> into SQL. A key crafted as <code>name&quot; = &#39;x&#39;, &quot;role</code> rewrote the query itself:</p>
+<pre class="is-plain"><code>v1 column-name injection {&quot;name\&quot; = 'x', \&quot;role&quot;: &quot;admin&quot;}   200 {&quot;id&quot;:2,&quot;name&quot;:&quot;x&quot;,&quot;role&quot;:&quot;admin&quot;}</code></pre>
+<p>That is <strong>SQL injection through JSON keys</strong>, the identifier-injection warning from <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a> made real.</p>
+<h3 id="the-fix-an-allow-list-of-fields-and-typed-values">The fix: an allow-list of fields, and typed values</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">EDITABLE</span> = [<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;email&#x27;</span>];
+<span class="hljs-keyword">const</span> body = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(req.<span class="hljs-property">body</span>).<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">[k, v]</span>) =&gt;</span> <span class="hljs-variable constant_">EDITABLE</span>.<span class="hljs-title function_">includes</span>(k) &amp;&amp; <span class="hljs-keyword">typeof</span> v === <span class="hljs-string">&#x27;string&#x27;</span>));
+<span class="hljs-keyword">if</span> (!<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(body).<span class="hljs-property">length</span>) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">title</span>: <span class="hljs-string">&#x27;nothing editable supplied&#x27;</span> });
+<span class="hljs-keyword">const</span> cols = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(body);      <span class="hljs-comment">// now guaranteed to be from OUR list, so safe to place in SQL</span></code></pre></div>
+<pre class="is-plain"><code>v2 (allow-list)  200 {&quot;id&quot;:2,&quot;name&quot;:&quot;Ravi K&quot;,&quot;role&quot;:&quot;customer&quot;}      ← name changed, role ignored</code></pre>
+<p>Best practice: validate input with <strong>Zod</strong> (<a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>) using a <em>strict</em> schema (<code>.strict()</code> rejects unknown keys, <code>.pick()</code> for editable fields) so extra fields produce a <code>400</code> instead of being silently dropped, and keep <strong>separate input schemas for separate roles</strong> (a customer can&#39;t send <code>role</code>; an admin endpoint can).</p>
+<hr>
+
+<h2 id="22-6-a-central-policy-one-place-for-every-decision">22.6 A Central Policy: One Place for Every Decision</h2>
+<p>Scattering <code>if (order.user_id === req.user.id)</code> across fifty handlers guarantees one will be wrong. Put the rules in <strong>one pure function</strong> that&#39;s easy to read, review and unit-test:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">POLICY</span> = {
+  <span class="hljs-string">&#x27;order:read&#x27;</span>:   <span class="hljs-function">(<span class="hljs-params">u, o</span>) =&gt;</span> o.<span class="hljs-property">tenant_id</span> === u.<span class="hljs-property">tenant</span> &amp;&amp; (o.<span class="hljs-property">user_id</span> === u.<span class="hljs-property">id</span> || [<span class="hljs-string">&#x27;admin&#x27;</span>, <span class="hljs-string">&#x27;support&#x27;</span>].<span class="hljs-title function_">includes</span>(u.<span class="hljs-property">role</span>)),
+  <span class="hljs-string">&#x27;order:cancel&#x27;</span>: <span class="hljs-function">(<span class="hljs-params">u, o</span>) =&gt;</span> o.<span class="hljs-property">tenant_id</span> === u.<span class="hljs-property">tenant</span> &amp;&amp; o.<span class="hljs-property">status</span> === <span class="hljs-string">&#x27;pending&#x27;</span> &amp;&amp; (o.<span class="hljs-property">user_id</span> === u.<span class="hljs-property">id</span> || u.<span class="hljs-property">role</span> === <span class="hljs-string">&#x27;admin&#x27;</span>),
+  <span class="hljs-string">&#x27;order:refund&#x27;</span>: <span class="hljs-function">(<span class="hljs-params">u, o</span>) =&gt;</span> o.<span class="hljs-property">tenant_id</span> === u.<span class="hljs-property">tenant</span> &amp;&amp; u.<span class="hljs-property">role</span> === <span class="hljs-string">&#x27;admin&#x27;</span>,
+};
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">can</span> = (<span class="hljs-params">u, action, resource</span>) =&gt; (<span class="hljs-variable constant_">POLICY</span>[action]?.(u, resource) ?? <span class="hljs-literal">false</span>);      <span class="hljs-comment">// unknown action =&gt; false (default deny)</span></code></pre></div>
+<p>And a handler that <strong>loads, then asks the policy</strong>, using two different failure codes on purpose:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (!o || !<span class="hljs-title function_">can</span>(req.<span class="hljs-property">user</span>, <span class="hljs-string">&#x27;order:read&#x27;</span>, o)) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">404</span>)...      <span class="hljs-comment">// can&#x27;t even see it → pretend it doesn&#x27;t exist</span>
+<span class="hljs-keyword">if</span> (!<span class="hljs-title function_">can</span>(req.<span class="hljs-property">user</span>, action, o))             <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>)...      <span class="hljs-comment">// can see it but not do that → 403</span></code></pre></div>
+<p>Test output (RBAC + ownership + state + tenant, all in one place):</p>
+<pre class="is-plain"><code>Asha cancels her pending order 104                   200
+Asha cancels her PAID order 101                      403   ← ownership OK, but state forbids it (ABAC)
+Asha refunds her own order 101 (admin only)          403   ← ownership isn't enough; role needed (RBAC)
+Sam (support) reads Asha's order 101                 200   ← role grants read
+Sam (support) refunds order 101                      403
+Root (admin) refunds order 101                       200
+Root (tenant 1) touches Meera's order 103            404   ← admin of tenant 1 can't see tenant 2 at all
+unknown action &quot;delete&quot; (not in policy)              403   ← default deny
+anonymous call                                       401</code></pre>
+<p>The two-step response is subtle and valuable: <code>404</code> when you shouldn&#39;t know the object exists (Root vs Meera&#39;s order), <code>403</code> when you can see it but lack the right (Sam refunding).</p>
+<h3 id="where-policy-code-lives">Where policy code lives</h3>
+<ul>
+<li><strong>Simple apps</strong>: a <code>can()</code> function like the above, unit-tested exhaustively (a table of user × action × resource → expected result).</li>
+<li><strong>Larger apps</strong>: a policy library: <strong>CASL</strong> (JS), <strong>Casbin</strong> (many languages), or a policy engine: <strong>OPA/Rego</strong>, <strong>AWS Cedar</strong>; relationship-heavy products: <strong>OpenFGA / SpiceDB</strong> (Google Zanzibar model). <em>(None run here.)</em></li>
+<li><strong>List endpoints</strong> (&quot;all my orders&quot;) need the same rules <em>as a filter</em>, not a per-row check (<code>WHERE user_id = $1 AND tenant_id = $2</code>), or you&#39;ll fetch everything and filter in memory (slow, and one bug from a leak). Policy libraries that compile rules to query conditions help.</li>
+</ul>
+<h3 id="authorization-and-the-layers-chapter-11">Authorization and the layers (Chapter 11)</h3>
+<p>The policy belongs in the <strong>service layer</strong> (so every entry point, HTTP, a queue worker, an admin script, gets it), taking the <em>acting user</em> as an explicit argument: <code>orderService.cancel(actor, orderId)</code>. Never rely on the controller alone, and never let a service method that mutates data run without an <code>actor</code>.</p>
+<hr>
+
+<h2 id="22-7-roles-tokens-and-stale-permissions">22.7 Roles, Tokens, and Stale Permissions</h2>
+<p>Our JWT carries <code>role</code> and <code>tenant</code>, so the server needs no database call to authorise. The cost, from Chapter 21: <strong>a token&#39;s claims are frozen until it expires.</strong></p>
+<ul>
+<li>If Root is demoted at 10:00 but holds a token issued at 09:55 (10-minute expiry), they remain <code>admin</code> until 10:05.</li>
+<li>Keep access tokens <strong>short-lived</strong>, and for <em>sensitive</em> actions (refunds, role changes) <strong>re-check the current role in the database</strong>, don&#39;t trust the claim alone.</li>
+<li><strong>Scopes</strong> (<code>orders:read orders:write</code>) in tokens limit what a <em>token</em> can do, useful for third-party apps and API keys (&quot;this key can read orders but not refund&quot;); the user&#39;s rights and the token&#39;s scopes must <strong>both</strong> allow the action (the <em>intersection</em>).</li>
+<li><strong>Never put authorization decisions on client-supplied data</strong> (a <code>role</code> in the request body, a hidden form field, an unsigned cookie, a header like <code>X-Is-Admin</code>).</li>
+</ul>
+<h3 id="privilege-escalation-checkpoints">Privilege-escalation checkpoints</h3>
+<p>Changing roles/permissions is itself a protected action; require a higher role, <strong>re-authentication / MFA</strong> (Chapter 21), and an <strong>audit log</strong> entry (&quot;Root granted admin to Sam&quot;). Make sure nobody can grant a role higher than their own.</p>
+<hr>
+
+<h2 id="22-8-multi-tenancy-one-missed-where-away-from-a-breach">22.8 Multi-Tenancy: One Missed <code>WHERE</code> Away From a Breach</h2>
+<p>If several customers (tenants) share the same tables, <strong>every query must be scoped by tenant</strong>. Application-level scoping (<code>AND tenant_id = $3</code>) works, until someone forgets it once. <strong>Defence in depth: let the database enforce it too.</strong> PostgreSQL <strong>Row-Level Security (RLS)</strong> attaches a filter to the table itself.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> orders ENABLE <span class="hljs-type">ROW</span> LEVEL SECURITY;
+<span class="hljs-keyword">CREATE</span> POLICY tenant_isolation <span class="hljs-keyword">ON</span> orders
+  <span class="hljs-keyword">USING</span>      (tenant_id <span class="hljs-operator">=</span> <span class="hljs-built_in">NULLIF</span>(current_setting(<span class="hljs-string">&#x27;app.tenant_id&#x27;</span>, <span class="hljs-literal">true</span>), <span class="hljs-string">&#x27;&#x27;</span>)::<span class="hljs-type">int</span>)     <span class="hljs-comment">-- which rows are visible/updatable</span>
+  <span class="hljs-keyword">WITH</span> <span class="hljs-keyword">CHECK</span> (tenant_id <span class="hljs-operator">=</span> <span class="hljs-built_in">NULLIF</span>(current_setting(<span class="hljs-string">&#x27;app.tenant_id&#x27;</span>, <span class="hljs-literal">true</span>), <span class="hljs-string">&#x27;&#x27;</span>)::<span class="hljs-type">int</span>);    <span class="hljs-comment">-- which rows may be written</span></code></pre></div>
+<p>The application sets the tenant <em>per transaction</em> right after checking out a connection:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>);
+<span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">`SELECT set_config(&#x27;app.tenant_id&#x27;, $1, true)`</span>, [<span class="hljs-title class_">String</span>(tenant)]);   <span class="hljs-comment">// true = local to this transaction</span>
+<span class="hljs-comment">/* ... queries run here are filtered by the policy ... */</span>
+<span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>);</code></pre></div>
+<h3 id="what-the-tests-showed">What the tests showed</h3>
+<pre class="is-plain"><code>superuser (bypasses RLS entirely!)                         101(t1) 102(t1) 103(t2) 104(t1)
+app_user, tenant NOT set (fails closed)                    (no rows)
+app_user, tenant 1 (set locally in the transaction)        101(t1) 102(t1) 104(t1)
+app_user, tenant 2                                         103(t2)
+tenant 1 inserting a row for tenant 2 -&gt; 42501 new row violates row-level security policy for table &quot;orders&quot;
+tenant 1 UPDATE on tenant 2 order 103 -&gt; rowCount 0 (row invisible, so nothing matched)
+even a forgotten-WHERE / injected &quot;OR 1=1&quot; only sees tenant 1: 3 rows</code></pre>
+<ul>
+<li>With the setting <strong>absent</strong>, the policy compares to <code>NULL</code>, so <em>no rows</em> are visible: it <strong>fails closed</strong>. (That&#39;s why the policy uses <code>current_setting(..., true)</code>, which returns NULL instead of erroring, plus <code>NULLIF</code>.)</li>
+<li>A <strong>forgotten <code>WHERE</code></strong> or even an injected <code>OR 1=1</code> can only reach the caller&#39;s tenant. The database is the last line of defence.</li>
+<li><code>WITH CHECK</code> stopped tenant 1 from <em>writing</em> a row into tenant 2 (<code>42501</code>).</li>
+</ul>
+<h3 id="the-three-rls-traps-all-demonstrated">The three RLS traps (all demonstrated)</h3>
+<p><strong>1. Superusers and <code>BYPASSRLS</code> roles ignore RLS.</strong> The first line of output: connecting as <code>postgres</code> shows every row. <strong>Your application must connect as an ordinary, non-owner role</strong> (<code>NOSUPERUSER NOBYPASSRLS</code>), with only the grants it needs. A test suite that connects as the superuser will never notice a missing policy.</p>
+<p><strong>2. Table owners bypass RLS unless it is <code>FORCE</code>d.</strong></p>
+<pre class="is-plain"><code>as table OWNER, no tenant set sees 4 rows         ← RLS silently not applied
+after FORCE ROW LEVEL SECURITY               sees 0 rows</code></pre>
+<p>If your app role <em>owns</em> the table (common when migrations and the app share one role), RLS does nothing until <code>ALTER TABLE … FORCE ROW LEVEL SECURITY</code>. Best practice: migrations run as an owner role; the app uses a separate, limited role.</p>
+<p><strong>3. A pooled connection leaks a session-level setting.</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">`SELECT set_config(&#x27;app.tenant_id&#x27;, &#x27;2&#x27;, false)`</span>);   <span class="hljs-comment">// false = SESSION-level: persists on the connection</span>
+c.<span class="hljs-title function_">release</span>();                                                       <span class="hljs-comment">// returned to the pool still carrying tenant 2</span>
+<span class="hljs-comment">// the next request, which forgot to set a tenant, gets the same connection:</span>
+request B never set a tenant but sees tenant <span class="hljs-number">2</span> <span class="hljs-attr">rows</span>: <span class="hljs-number">1</span>   &lt;- session-level setting leaked through the pool</code></pre></div>
+<p>With <code>is_local = true</code> inside a transaction (as in the code above), the setting vanishes at <code>COMMIT</code>/<code>ROLLBACK</code>. <strong>Always set tenant context transaction-locally</strong>, or reset it on release. This is the exact <code>pool.query(&#39;BEGIN&#39;)</code> hazard of <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a> in another costume.</p>
+<h3 id="rls-in-practice">RLS in practice</h3>
+<p>RLS is excellent for <strong>tenant isolation</strong> and a safety net for &quot;users see only their rows.&quot; It adds a small planning overhead <em>(not measured here)</em>; put an index on <code>tenant_id</code> (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>) and keep policies simple. It does <strong>not</strong> replace function-level checks or business rules, which still live in the policy function. Debugging gets harder (queries &quot;mysteriously&quot; return fewer rows), so keep policies documented and tested. Alternatives: <strong>schema-per-tenant</strong> or <strong>database-per-tenant</strong> (stronger isolation, much more operational work).</p>
+<hr>
+
+<h2 id="22-9-testing-authorization">22.9 Testing Authorization</h2>
+<p>Authorization bugs hide because normal tests log in as <em>the right user</em>. Write tests as the <strong>wrong user</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-comment">// a matrix: every endpoint × every actor → expected status</span>
+<span class="hljs-keyword">const</span> cases = [
+  [<span class="hljs-string">&#x27;GET&#x27;</span>,  <span class="hljs-string">&#x27;/v2/orders/101&#x27;</span>, <span class="hljs-string">&#x27;Asha&#x27;</span>,  <span class="hljs-number">200</span>],
+  [<span class="hljs-string">&#x27;GET&#x27;</span>,  <span class="hljs-string">&#x27;/v2/orders/101&#x27;</span>, <span class="hljs-string">&#x27;Ravi&#x27;</span>,  <span class="hljs-number">404</span>],   <span class="hljs-comment">// another customer</span>
+  [<span class="hljs-string">&#x27;GET&#x27;</span>,  <span class="hljs-string">&#x27;/v2/orders/101&#x27;</span>, <span class="hljs-string">&#x27;Meera&#x27;</span>, <span class="hljs-number">404</span>],   <span class="hljs-comment">// another tenant</span>
+  [<span class="hljs-string">&#x27;GET&#x27;</span>,  <span class="hljs-string">&#x27;/v2/admin/users&#x27;</span>, <span class="hljs-string">&#x27;Asha&#x27;</span>, <span class="hljs-number">403</span>],
+  [<span class="hljs-string">&#x27;GET&#x27;</span>,  <span class="hljs-string">&#x27;/v2/admin/users&#x27;</span>, <span class="hljs-string">&#x27;Root&#x27;</span>, <span class="hljs-number">200</span>],
+  [<span class="hljs-string">&#x27;GET&#x27;</span>,  <span class="hljs-string">&#x27;/v2/orders/101&#x27;</span>, <span class="hljs-literal">null</span>,    <span class="hljs-number">401</span>],   <span class="hljs-comment">// anonymous</span>
+];</code></pre></div>
+<p>Also: a test that <strong>walks every registered route</strong> and fails if any lacks an auth middleware or an explicit <code>public</code> annotation; fuzzing of id parameters with another user&#39;s token; and <em>negative</em> tests for mass assignment (send <code>role</code>, <code>tenantId</code>, <code>userId</code>, <code>isAdmin</code>, <code>id</code>). Run them in CI (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>).</p>
+<hr>
+
+<h2 id="22-10-edge-cases-and-gotchas-checklist">22.10 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>WHERE id = $1</code> with no ownership/tenant condition (BOLA).</li>
+<li><input disabled="" type="checkbox"> Authorization only in the UI or only in the controller (the service/jobs/scripts bypass it).</li>
+<li><input disabled="" type="checkbox"> <code>authn</code> added per route, so a new route ships public; no default-deny router.</li>
+<li><input disabled="" type="checkbox"> Admin endpoints without a role gate; a <em>global</em> admin in a multi-tenant system.</li>
+<li><input disabled="" type="checkbox"> <code>403</code> revealing that a foreign object exists (prefer <code>404</code>).</li>
+<li><input disabled="" type="checkbox"> Binding request bodies directly to models/columns (mass assignment); key names placed in SQL.</li>
+<li><input disabled="" type="checkbox"> Trusting client-supplied <code>role</code>, <code>userId</code>, <code>tenantId</code>, <code>isAdmin</code>.</li>
+<li><input disabled="" type="checkbox"> List/search/export endpoints that forget the filter the detail endpoint has.</li>
+<li><input disabled="" type="checkbox"> Bulk endpoints (<code>/orders?ids=1,2,3</code>) authorising only the first id.</li>
+<li><input disabled="" type="checkbox"> Authorization checked at <em>read</em> but not at <em>write/delete</em>; or checked once at the start of a multi-step flow but not at each step.</li>
+<li><input disabled="" type="checkbox"> Stale roles in long-lived tokens; no re-check for sensitive actions.</li>
+<li><input disabled="" type="checkbox"> Unguessable ids treated as the access control.</li>
+<li><input disabled="" type="checkbox"> Nested resources: <code>/shops/1/orders/102</code> authorising shop 1 but not that order 102 belongs to shop 1.</li>
+<li><input disabled="" type="checkbox"> RLS: app connects as superuser/owner; session-level <code>set_config</code> leaking across pooled connections; policy lacking <code>WITH CHECK</code>.</li>
+<li><input disabled="" type="checkbox"> No tests that act as the <em>wrong</em> user.</li>
+<li><input disabled="" type="checkbox"> Authorization failures not logged (you&#39;ll never see the probing).</li>
+</ul>
+<hr>
+
+<h2 id="22-11-chapter-summary">22.11 Chapter Summary</h2>
+<ul>
+<li><strong>AuthZ</strong> answers &quot;may <em>this</em> subject do <em>this</em> action on <em>this</em> resource?&quot; Rules: <strong>default deny</strong>; <strong>server-side, at the resource, every time</strong>.</li>
+<li>Models: ACL, <strong>RBAC</strong> (roles), <strong>ABAC</strong> (attributes/ownership/state), ReBAC (relationships). Real systems mix RBAC for coarse + ABAC for object-level.</li>
+<li><strong>BOLA/IDOR</strong> (OWASP API #1): the v1 endpoint returned other users&#39; <em>and other tenants&#39;</em> orders; sequential ids leaked 4 of 4. Fix: put <strong>ownership + tenant in the query</strong>, return <strong>404</strong> for foreign objects; UUIDs are only defence in depth.</li>
+<li><strong>Function-level</strong>: an unguarded admin route exposed all users; fix with a router-level default plus <code>requireRole</code>, scoped to the admin&#39;s own tenant.</li>
+<li><strong>Mass assignment</strong>: adding <code>&quot;role&quot;:&quot;admin&quot;</code> to a PATCH promoted a customer, and unvalidated key names enabled <strong>SQL injection via JSON keys</strong>. Fix: <strong>allow-list</strong> fields and validate types (strict Zod schemas).</li>
+<li>A <strong>central <code>can(user, action, resource)</code></strong> policy (default deny, <code>404</code> vs <code>403</code> by visibility) made RBAC + ownership + status + tenant rules reviewable and testable; services take an explicit <code>actor</code>.</li>
+<li>Token claims go <strong>stale</strong>; re-check sensitive actions; scopes intersect with user rights.</li>
+<li><strong>Row-level security</strong> gives DB-enforced tenant isolation: fails closed, blocks cross-tenant writes (<code>42501</code>), neutralises forgotten <code>WHERE</code>s, <strong>but</strong> superusers/owners bypass it, and session-level settings <strong>leak through connection pools</strong>: use <code>set_config(..., true)</code> in a transaction, a non-owner app role, and <code>FORCE ROW LEVEL SECURITY</code>.</li>
+<li>Test as the <strong>wrong user</strong>: a user × endpoint × expected-status matrix.</li>
+</ul>
+<hr>
+
+<h2 id="22-12-revision-notes">22.12 Revision Notes</h2>
+<ul>
+<li><code>WHERE id = $1 AND user_id = $2 AND tenant_id = $3</code>; foreign object → 404.</li>
+<li>Missing role → 403; missing/invalid token → 401.</li>
+<li>Allow-list editable fields; strict schemas; never put keys in SQL.</li>
+<li>One <code>can()</code> function; unknown action = deny; services take <code>actor</code>.</li>
+<li>RLS: <code>ENABLE</code> (+ <code>FORCE</code> for owners), <code>USING</code> + <code>WITH CHECK</code>, <code>set_config(&#39;app.tenant_id&#39;, $1, true)</code>, non-superuser app role.</li>
+<li>Short access tokens; re-check sensitive actions; audit privilege changes.</li>
+<li>Test matrix as the wrong user; walk routes for missing auth.</li>
+</ul>
+<hr>
+
+<h2 id="22-13-mind-map-ascii">22.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                        AUTHORIZATION
+                              │
+     ┌──────────┬─────────────┼──────────────┬────────────────┐
+  MODELS     ATTACKS       DEFENCES       MULTI-TENANT       TESTING
+     │           │             │               │                │
+   RBAC       BOLA/IDOR    ownership in     tenant_id         wrong-user
+   ABAC       BFLA         the query        scoped queries    matrix
+   ReBAC      mass         allow-lists      RLS (DB-enforced) route walker
+   ACL        assignment   can() default    FORCE RLS, no     mass-assign
+              stale roles  deny, 404/403    superuser         negative tests
+              key injection actor in service set_config local</code></pre>
+<hr>
+
+<h2 id="22-14-cheat-sheet">22.14 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-comment">// object level:    SELECT … WHERE id = $1 AND user_id = $2 AND tenant_id = $3   → 0 rows ⇒ 404</span>
+<span class="hljs-comment">// function level:  router.use(&#x27;/admin&#x27;, authn, requireRole(&#x27;admin&#x27;))</span>
+<span class="hljs-comment">// mass assignment: pick(body, [&#x27;name&#x27;,&#x27;email&#x27;]) + typeof checks, or z.object({...}).strict()</span>
+<span class="hljs-comment">// policy:          can(actor, &#x27;order:cancel&#x27;, order) — unknown action ⇒ false</span></code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> orders ENABLE <span class="hljs-type">ROW</span> LEVEL SECURITY;  <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> orders FORCE <span class="hljs-type">ROW</span> LEVEL SECURITY;
+<span class="hljs-keyword">CREATE</span> POLICY tenant_isolation <span class="hljs-keyword">ON</span> orders
+  <span class="hljs-keyword">USING</span> (tenant_id <span class="hljs-operator">=</span> <span class="hljs-built_in">NULLIF</span>(current_setting(<span class="hljs-string">&#x27;app.tenant_id&#x27;</span>, <span class="hljs-literal">true</span>), <span class="hljs-string">&#x27;&#x27;</span>)::<span class="hljs-type">int</span>)
+  <span class="hljs-keyword">WITH</span> <span class="hljs-keyword">CHECK</span> (tenant_id <span class="hljs-operator">=</span> <span class="hljs-built_in">NULLIF</span>(current_setting(<span class="hljs-string">&#x27;app.tenant_id&#x27;</span>, <span class="hljs-literal">true</span>), <span class="hljs-string">&#x27;&#x27;</span>)::<span class="hljs-type">int</span>);
+<span class="hljs-keyword">CREATE</span> ROLE app LOGIN NOSUPERUSER NOBYPASSRLS;    <span class="hljs-comment">-- the app connects as THIS</span>
+<span class="hljs-comment">-- per request, inside BEGIN:  SELECT set_config(&#x27;app.tenant_id&#x27;, $1, true);</span></code></pre></div>
+<hr>
+
+<h2 id="22-15-key-takeaways">22.15 Key Takeaways</h2>
+<ol>
+<li><strong>Authenticated ≠ authorised.</strong> Ask &quot;whose is this?&quot; on every id.</li>
+<li><strong>Default deny; check on the server; put the check in the query/policy</strong>, not in the UI.</li>
+<li><strong>Never let the client choose which fields or which identity</strong>: allow-list fields, take identity from the token.</li>
+<li><strong>One policy function</strong>, called from the service layer with an explicit actor.</li>
+<li><strong>Defence in depth for tenants</strong>: RLS, with a non-owner role, transaction-local settings.</li>
+<li><strong>Test as the wrong user.</strong></li>
+</ol>
+<hr>
+
+<h2 id="22-16-20-multiple-choice-questions">22.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="a" data-why="OWASP API #1."><p class="quiz-text">BOLA stands for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Broken Object Level Authorization</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Basic Object Login Auth</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Binary Object Load Attack</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Bad OAuth Link Abuse</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No ownership condition."><p class="quiz-text">The v1 order endpoint was vulnerable because it:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Used HTTP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Fetched by id without checking the caller&#39;s ownership/tenant</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Lacked a JWT</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Used PostgreSQL</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="At the resource."><p class="quiz-text">Where is the best place for the ownership check?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">In the UI</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">In the SQL query/policy at the resource</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">In a comment</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only in a front-end route guard</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Avoid an existence oracle."><p class="quiz-text">Returning <code>404</code> for another user&#39;s order (instead of <code>403</code>):</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is wrong</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Avoids confirming the object exists</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Is slower</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Violates HTTP</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Not access control."><p class="quiz-text">UUID ids as a BOLA fix are:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sufficient</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Defence in depth only; the check is still required</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Harmful</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Required by REST</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Function-level."><p class="quiz-text">BFLA is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A missing check on an entire function/endpoint (e.g., admin routes)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A cookie flag</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A database lock</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A CSS issue</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Client picks columns."><p class="quiz-text">Mass assignment happens when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The server assigns many rows</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The client controls which fields get written</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Many users share a role</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A transaction is large</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Allow-list + types."><p class="quiz-text">Which fix stops <code>{&quot;role&quot;:&quot;admin&quot;}</code> in a PATCH?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Hide the field in the UI</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An allow-list of editable fields (and type checks)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Longer passwords</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Rate limiting</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Identifier injection (shown)."><p class="quiz-text">Interpolating JSON <em>keys</em> into SQL leads to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Faster queries</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">SQL injection through identifiers</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Better caching</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Default deny."><p class="quiz-text"><code>can(user, &#39;order:delete&#39;, o)</code> for an action not in the policy returns:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">true</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">false (default deny)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">throws</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">undefined behaviour</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Visibility vs rights."><p class="quiz-text">Why return <code>404</code> for read-denied but <code>403</code> for action-denied?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Random</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Hide objects the caller can&#39;t see; admit rights are missing for visible ones</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">HTTP requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Caching</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Service layer + actor."><p class="quiz-text">Authorization logic belongs primarily in:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The browser</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The service layer, with an explicit actor</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">CSS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The load balancer only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Frozen claims."><p class="quiz-text">A JWT <code>role</code> claim can be stale because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Tokens are encrypted</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Claims are frozen until expiry</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Roles expire hourly</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Redis evicts them</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="NULL matches nothing."><p class="quiz-text">RLS fails closed when the tenant setting is unset because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Postgres errors</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The policy compares tenant_id to NULL, matching no rows</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It defaults to tenant 1</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It disables the table</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Superuser/owner bypass."><p class="quiz-text">Which role ignores RLS by default?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A normal app role</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Superusers (and <code>BYPASSRLS</code> roles) and table owners</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Read-only roles</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">None</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Session-level leak (shown)."><p class="quiz-text"><code>set_config(&#39;app.tenant_id&#39;, &#39;2&#39;, false)</code> on a pooled connection:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is transaction-local</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Persists for the session and can leak to the next request</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Is invalid</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Resets automatically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Governs writes."><p class="quiz-text"><code>WITH CHECK</code> in a policy:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Filters reads</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Restricts which rows may be inserted/updated</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Adds an index</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Logs queries</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Tenant-scoped admin."><p class="quiz-text">An admin in a multi-tenant app should usually be:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Global across tenants</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Admin within their own tenant</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Unrestricted</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Anonymous</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Wrong-user tests."><p class="quiz-text">The most effective <em>test</em> for access control bugs is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Logging in as the correct user only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Calling endpoints as the wrong user / other tenant and expecting 404/403</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Unit-testing CSS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Load tests</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Intersection."><p class="quiz-text">Which statement about scopes is true?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They replace user permissions</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The action must be allowed by both the user&#39;s rights and the token&#39;s scopes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They are only for browsers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They&#39;re encrypted</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-a, 2-b, 3-b, 4-b, 5-b, 6-a, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="22-17-20-hands-on-exercises">22.17 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch22/README.txt">resources/ch22/</a>; read its README first.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Reproduce the v1 IDOR; then fix it with an ownership condition and confirm <code>404</code>.</li>
+<li>Loop over ids 1–200 with another user&#39;s token and count leaked records.</li>
+<li>Add <code>authn</code> as router-level middleware with an explicit public allow-list.</li>
+<li>Send <code>{&quot;role&quot;:&quot;admin&quot;}</code> to the vulnerable PATCH and observe the escalation.</li>
+<li>Implement an <code>EDITABLE</code> allow-list and confirm the role is ignored.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Replace the allow-list with a strict Zod schema that returns <code>400</code> on unknown keys.</li>
+<li>Write the user × endpoint × expected-status test matrix and run it in CI.</li>
+<li>Implement <code>can()</code> for <code>product:update</code>, <code>product:delete</code>, <code>review:delete</code> (author, moderator, admin) with unit tests for every combination.</li>
+<li>Make a list endpoint (<code>GET /orders</code>) enforce the same rules as the detail endpoint via a filter.</li>
+<li>Add a route-walker test failing when any route lacks auth middleware or a <code>public</code> marker.</li>
+<li>Implement scoped API keys (<code>orders:read</code>) and enforce the intersection with the key owner&#39;s rights.</li>
+<li>Re-check the current role in the database for refunds and show a demoted admin is blocked immediately despite a valid token.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Enable RLS on <code>orders</code> and <code>order_items</code>; verify with a non-owner role; reproduce all three traps.</li>
+<li>Build a <code>withTenant(tenantId, fn)</code> helper (transaction-local) used by every repository; add a lint/test forbidding raw <code>pool.query</code> in modules.</li>
+<li>Measure RLS overhead with <code>EXPLAIN ANALYZE</code> on 1M rows with/without an index on <code>tenant_id</code>.</li>
+<li>Implement hierarchical roles and delegation (support manager can grant <code>support</code>, never <code>admin</code>); prevent escalation loops.</li>
+<li>Add an audit log for every denied decision and every role change; build a &quot;suspicious probing&quot; report.</li>
+<li>Model shared documents with ReBAC (owner/editor/viewer + folders) in SQL, then evaluate OpenFGA/SpiceDB for comparison.</li>
+<li>Fuzz every <code>:id</code> route with identifiers from other tenants using a property-based test.</li>
+<li>Threat-model ShopLine&#39;s checkout and refund flows (STRIDE), listing each authorization assumption and the test that guards it.</li>
+</ol>
+<hr>
+
+<h2 id="22-18-5-interview-questions">22.18 5 Interview Questions</h2>
+<p><strong>1. What is IDOR/BOLA and how do you prevent it?</strong>
+<em>Model answer:</em> The server accepts an object identifier from the client and returns or modifies the object without verifying the caller may access <em>that object</em>. Prevent by authorising at the object level on every access: include ownership/tenant in the query or call a central policy, return 404 for foreign objects, apply the same rules to lists and bulk operations, use unguessable ids as defence in depth only, and test with a second user.</p>
+<p><strong>2. Authentication vs authorization, and 401 vs 403?</strong>
+<em>Model answer:</em> Authentication verifies identity; authorization decides permission. <code>401</code> means not (validly) authenticated; <code>403</code> means authenticated but not permitted. For objects the caller shouldn&#39;t know exist, return <code>404</code> to avoid an existence oracle.</p>
+<p><strong>3. What is mass assignment and how do you stop it?</strong>
+<em>Model answer:</em> Binding client-supplied fields straight onto a model/columns so attackers set fields they shouldn&#39;t (<code>role</code>, <code>tenantId</code>, <code>isAdmin</code>). Use allow-lists or strict schemas per endpoint/role, never derive column names from request keys, take identity from the token, and add negative tests.</p>
+<p><strong>4. RBAC vs ABAC, and how would you implement them?</strong>
+<em>Model answer:</em> RBAC grants permissions by role (coarse, simple); ABAC evaluates attributes of the subject, resource and context (ownership, status, tenant, time). Real systems combine them in a central default-deny policy function (or a library/engine such as CASL, Casbin, OPA) called from the service layer with an explicit actor, plus query filters for lists.</p>
+<p><strong>5. How would you enforce multi-tenant isolation?</strong>
+<em>Model answer:</em> Every tenant-owned table carries <code>tenant_id</code>, all queries scope by it, and uniqueness/FKs include it. Add PostgreSQL RLS as a safety net: policies with <code>USING</code> and <code>WITH CHECK</code>, an app role that is neither superuser nor owner (or <code>FORCE RLS</code>), and the tenant set with a transaction-local <code>set_config</code> to avoid leaking through the connection pool. Index <code>tenant_id</code> and test cross-tenant access explicitly.</p>
+<hr>
+
+<h2 id="22-19-3-real-projects">22.19 3 Real Projects</h2>
+<p><strong>Project 1: Authorization Audit of an API (intermediate, ~8 hours).</strong>
+Take an open-source or your own API; map every endpoint; build the user × endpoint matrix; find at least five BOLA/BFLA/mass-assignment issues (in a deliberately vulnerable app such as OWASP Juice Shop or crAPI, with permission); write fixes and regression tests.</p>
+<p><strong>Project 2: Policy Engine Module (intermediate–advanced, ~12 hours).</strong>
+Implement a reusable policy module (RBAC + ABAC conditions, default deny, explanations for decisions, list-filter generation to SQL), integrate it into ShopLine&#39;s services, and prove parity between the per-object check and the list filter with property tests.</p>
+<p><strong>Project 3: Multi-Tenant ShopLine with RLS (advanced, ~14 hours).</strong>
+Convert ShopLine to multi-tenant with composite keys and RLS, a <code>withTenant</code> unit of work, per-tenant admin roles, cross-tenant attack tests, and benchmarks for RLS overhead and indexing.</p>
+<hr>
+
+<h2 id="22-20-further-reading">22.20 Further Reading</h2>
+<ul>
+<li><strong>OWASP API Security Top 10 (2023)</strong>, especially API1 (BOLA), API3 (Broken Object Property Level Authorization, which includes mass assignment), API5 (Broken Function Level Authorization).</li>
+<li><strong>OWASP Cheat Sheets</strong>: <em>Authorization</em>, <em>Insecure Direct Object Reference Prevention</em>, <em>Mass Assignment</em>, <em>Multi-Tenant Architecture</em>.</li>
+<li>PostgreSQL documentation: <em>Row Security Policies</em>; Supabase&#39;s RLS guides (good practical patterns).</li>
+<li>Google&#39;s <strong>Zanzibar</strong> paper; OpenFGA, SpiceDB docs; CASL and Casbin docs; Open Policy Agent (Rego) and AWS Cedar.</li>
+<li><em>Web Application Security</em> (Andrew Hoffman) and PortSwigger Web Security Academy (free labs on access control).</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-23-web-and-api-security">Up next → Chapter 23: Web and API Security</h3>
+<p>Beyond <em>who</em> and <em>what</em>: the attacks aimed at the <em>transport and the browser</em>: XSS, CSRF, CORS misconfiguration, injection in all its forms, SSRF, file-upload and path-traversal bugs, security headers (and Helmet), secrets management, dependency risk, and the OWASP checklist, with each attack reproduced against vulnerable code and then defeated.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Authorization: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is IDOR or BOLA?</h3></summary><p>An endpoint returns an object by id without checking the caller may access it, so changing the id exposes other users' data. Put ownership and tenant in the query and return 404 for foreign objects.</p></details>
+<details class="learn-faq-item"><summary><h3>What is mass assignment?</h3></summary><p>Writing client-supplied fields straight onto a record, letting users set fields such as role. Use an allow-list of editable fields and strict schemas.</p></details>
+<details class="learn-faq-item"><summary><h3>Should I return 403 or 404 for someone else's object?</h3></summary><p>Return 404 so you do not confirm the object exists. Use 403 when the user can see the object but lacks the right to perform the action.</p></details>
+<details class="learn-faq-item"><summary><h3>What are the pitfalls of row-level security?</h3></summary><p>Superusers and table owners bypass it unless forced, and session-level settings can leak across pooled connections. Use a non-owner app role and set_config(..., true) inside transactions.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span>&larr; Previous &middot; Chapter 21</span><strong>Authentication: Passwords, JWT, OAuth, MFA</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span>Next &middot; Chapter 23 &rarr;</span><strong>Web &amp; API Security: XSS, CSRF, SSRF, CORS</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#22-0-why-this-chapter-matters">22.0 Why This Chapter Matters</a></li><li><a href="#22-1-the-vocabulary">22.1 The Vocabulary</a></li><li><a href="#22-2-the-test-bed">22.2 The Test Bed</a></li><li><a href="#22-3-attack-1-bola-idor-broken-object-level-authorization">22.3 Attack 1: BOLA / IDOR (Broken Object Level Authorization)</a></li><li><a href="#22-4-attack-2-function-level-authorization-bfla">22.4 Attack 2: Function-Level Authorization (BFLA)</a></li><li><a href="#22-5-attack-3-mass-assignment">22.5 Attack 3: Mass Assignment</a></li><li><a href="#22-6-a-central-policy-one-place-for-every-decision">22.6 A Central Policy: One Place for Every Decision</a></li><li><a href="#22-7-roles-tokens-and-stale-permissions">22.7 Roles, Tokens, and Stale Permissions</a></li><li><a href="#22-8-multi-tenancy-one-missed-where-away-from-a-breach">22.8 Multi-Tenancy: One Missed WHERE Away From a Breach</a></li><li><a href="#22-9-testing-authorization">22.9 Testing Authorization</a></li><li><a href="#22-10-edge-cases-and-gotchas-checklist">22.10 Edge Cases and Gotchas Checklist</a></li><li><a href="#22-11-chapter-summary">22.11 Chapter Summary</a></li><li><a href="#22-12-revision-notes">22.12 Revision Notes</a></li><li><a href="#22-13-mind-map-ascii">22.13 Mind Map (ASCII)</a></li><li><a href="#22-14-cheat-sheet">22.14 Cheat Sheet</a></li><li><a href="#22-15-key-takeaways">22.15 Key Takeaways</a></li><li><a href="#22-16-20-multiple-choice-questions">22.16 20 Multiple Choice Questions</a></li><li><a href="#22-17-20-hands-on-exercises">22.17 20 Hands-on Exercises</a></li><li><a href="#22-18-5-interview-questions">22.18 5 Interview Questions</a></li><li><a href="#22-19-3-real-projects">22.19 3 Real Projects</a></li><li><a href="#22-20-further-reading">22.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "authorization-rbac-idor-row-level-security"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

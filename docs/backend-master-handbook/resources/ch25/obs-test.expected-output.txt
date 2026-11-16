@@ -1,0 +1,41 @@
+=== 1. structured access log + correlation id (same id on every line of one request) ===
+{"level":30,"time":"2026-11-16T10:17:46.015Z","service":"shopline-api","env":"test","requestId":"req-abc-123","traceId":"25af4decb53692c1c97172a5945f4b7d","req":{"method":"GET","url":"/products/42","headers":{"authorization":"[REDACTED]"}},"route":"/products/:id","status":200,"duration_ms":9,"msg":"request completed"}
+
+=== 2. redaction of secrets ===
+{"level":30,"time":"2026-11-16T10:17:46.090Z","service":"shopline-api","env":"test","requestId":"450b3d3f-d255-421d-9b57-118ffd534f51","traceId":"33546f5d55694eb7877f8053515e1302","body":{"email":"a@b.com","password":"[REDACTED]"},"msg":"login attempt"}
+"hunter2" or "SECRET-TOKEN" anywhere in the logs? false
+
+=== 3. error: full detail in the log, generic body + request id for the client ===
+client sees: 500 {"title":"Internal error","requestId":"req-boom-1"}
+log has  : {"level":50,"requestId":"req-boom-1","errType":"Error","errMessage":"database exploded: password=hunter2 at 10.0.0.5","stack0":"at file:///C:/Users/user/AppData/Local/Temp/claude/e0e6de141"}
+access-log line status/level: 500/50
+
+=== 4. trace context in: W3C traceparent is honoured ===
+log traceId: 4bf92f3577b34da6a3ce929d0e0e4736
+
+=== 5. metrics: RED + business counter; route template not raw URL ===
+http_request_duration_seconds_count{method="GET",route="/products/:id",status="200"} 32
+http_request_duration_seconds_count{method="POST",route="/login",status="200"} 1
+http_request_duration_seconds_count{method="GET",route="/boom",status="500"} 2
+http_request_duration_seconds_count{method="GET",route="/slow",status="200"} 12
+http_request_duration_seconds_count{method="POST",route="/orders",status="201"} 2
+http_request_duration_seconds_count{method="GET",route="unmatched",status="404"} 1
+http_request_duration_seconds_bucket{le="0.05",method="GET",route="/slow",status="200"} 0
+http_request_duration_seconds_bucket{le="0.1",method="GET",route="/slow",status="200"} 3
+http_request_duration_seconds_bucket{le="0.25",method="GET",route="/slow",status="200"} 12
+http_request_duration_seconds_bucket{le="0.5",method="GET",route="/slow",status="200"} 12
+http_request_duration_seconds_bucket{le="+Inf",method="GET",route="/slow",status="200"} 12
+shopline_orders_created_total{payment_method="upi"} 1
+shopline_orders_created_total{payment_method="card"} 1
+default process metrics present: process_cpu_seconds_total=true nodejs_eventloop_lag_seconds=true nodejs_heap_size_used_bytes=true process_resident_memory_bytes=true
+
+=== 6. label cardinality explosion ===
+series lines for bad_latency : 12000 (2000 distinct label sets × (3 buckets + Inf + sum + count))
+series lines for good_latency: 6
+exposition size grew from 250 to 12256 lines | heap + 0.0 MB in this process
+
+=== 7. liveness vs readiness ===
+/livez  200 {"status":"alive"}
+/readyz 200 {"status":"ready","checks":{"postgres":{"ok":true,"ms":105},"redis":{"ok":true,"ms":12}}}
+/readyz with Postgres "down": 503 {"status":"not ready","checks":{"postgres":{"ok":false,"error":"connection refused"},"redis":{"ok":true,"ms":9}}}
+/livez  with Postgres "down": 200 (must stay alive: restarting the app would not fix the database)

@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>REST API Design: Pagination &amp; Idempotency | Backend Master</title>
+    <meta name="description" content="Design REST APIs that last: resource naming, cursor pagination, idempotency keys, ETags, versioning, RFC 9457 error format and OpenAPI contracts.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="rest api design, api pagination cursor, idempotency key, api versioning, etag if-match, problem json rfc 9457, openapi, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/express-5-fastify-validation-zod-security-middleware">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/graphql-api-nodejs-dataloader-security">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="rest api design">
+    <meta property="article:tag" content="api pagination cursor">
+    <meta property="article:tag" content="idempotency key">
+    <meta property="article:tag" content="api versioning">
+    <meta property="article:tag" content="etag if-match">
+    <meta property="article:tag" content="problem json rfc 9457">
+    <meta property="article:tag" content="openapi">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="REST API Design: Pagination &amp; Idempotency">
+    <meta property="og:description" content="Design REST APIs that last: resource naming, cursor pagination, idempotency keys, ETags, versioning, RFC 9457 error format and OpenAPI contracts.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/rest-api-design-pagination-idempotency-versioning.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="REST API Design: Resources, Pagination, Idempotency, Versioning and OpenAPI: Backend Master chapter 8">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="REST API Design: Pagination &amp; Idempotency">
+    <meta name="twitter:description" content="Design REST APIs that last: resource naming, cursor pagination, idempotency keys, ETags, versioning, RFC 9457 error format and OpenAPI contracts.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/rest-api-design-pagination-idempotency-versioning.png">
+    <meta name="twitter:image:alt" content="REST API Design: Resources, Pagination, Idempotency, Versioning and OpenAPI: Backend Master chapter 8">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning",
+          "name": "REST API Design: Pagination & Idempotency | Backend Master",
+          "description": "Design REST APIs that last: resource naming, cursor pagination, idempotency keys, ETags, versioning, RFC 9457 error format and OpenAPI contracts.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/rest-api-design-pagination-idempotency-versioning.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "REST API Design: Resources, Pagination, Idempotency, Versioning and OpenAPI"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#webpage"
+          },
+          "headline": "REST API Design: Resources, Pagination, Idempotency, Versioning and OpenAPI",
+          "alternativeHeadline": "REST API Design — Resources, Pagination, Idempotency, Versioning and Contracts",
+          "description": "Design REST APIs that last: resource naming, cursor pagination, idempotency keys, ETags, versioning, RFC 9457 error format and OpenAPI contracts.",
+          "abstract": "A good REST API is predictable, safe to retry and easy to evolve. This chapter covers resource naming, cursor pagination, filtering, idempotency keys, optimistic concurrency with ETags, versioning, consistent problem+json errors and documenting the contract with OpenAPI.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/rest-api-design-pagination-idempotency-versioning.png",
+          "url": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 7737,
+          "timeRequired": "PT35M",
+          "articleSection": "Backend Development",
+          "keywords": "rest api design, api pagination cursor, idempotency key, api versioning, etag if-match, problem json rfc 9457, openapi",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Naming resources and choosing methods and status codes",
+            "Cursor pagination instead of offset",
+            "Idempotency keys for safe retries",
+            "ETag and If-Match for optimistic concurrency",
+            "Versioning and OpenAPI contracts"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "rest api design"
+          },
+          "isAccessibleForFree": true,
+          "position": 8,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/express-5-fastify-validation-zod-security-middleware#article",
+            "name": "Express 5 and Fastify: Zod Validation, Security Middleware and Uploads",
+            "url": "https://shivamthakur.me/learn/backend-master/express-5-fastify-validation-zod-security-middleware"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "REST API Design: Pagination & Idempotency",
+              "item": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is cursor pagination and why use it?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cursor (keyset) pagination asks for the next page after the last item you saw. Its cost stays constant at any depth, unlike offset pagination, which reads and discards every earlier row."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is an idempotency key?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A unique value a client sends with a POST so the server can detect a retry and return the original result instead of repeating the action, which prevents duplicate orders or charges."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How should an API report errors?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use a consistent body such as application/problem+json (RFC 9457) with a stable code, a human title, the HTTP status and a request id, and never leak stack traces."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I version an API?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Put a version in the URL or a header, evolve additively (add fields, do not remove or rename), and deprecate old versions with a clear timeline."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#quiz",
+          "name": "REST API Design: Pagination & Idempotency: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "rest api design"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/rest-api-design-pagination-idempotency-versioning#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which URL follows REST naming conventions?",
+              "text": "Which URL follows REST naming conventions?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "/products"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "/getProducts"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "/product/getAll"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "/Products.json"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which status should a successful resource creation return?",
+              "text": "Which status should a successful resource creation return?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "201"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "200"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "204"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "202"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is OFFSET pagination slow for deep pages?",
+              "text": "Why is OFFSET pagination slow for deep pages?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The database reads and discards all skipped rows"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Network latency"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JSON size"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It isn't slow"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a cursor in cursor-based pagination?",
+              "text": "What is a cursor in cursor-based pagination?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An opaque token marking where the previous page ended"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A SQL keyword"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A page number"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A cache key"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "When sorting by a non-unique column such as price, the cursor must also include:",
+              "text": "When sorting by a non-unique column such as price, the cursor must also include:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A unique tie-breaker such as id"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The timestamp"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The total count"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How should money be represented in JSON?",
+              "text": "How should money be represented in JSON?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Integer minor units plus currency: {amount: 89999, currency: \"INR\"}"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A float: 899.99"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A formatted string \"₹899.99\""
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why return IDs as strings?",
+              "text": "Why return IDs as strings?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Large integers lose precision as JavaScript numbers and strings are future-proof"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Prettier"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Required by HTTP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Faster"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The idempotency middleware receives the same key with a different body. Best response?",
+              "text": "The idempotency middleware receives the same key with a different body. Best response?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "422: key reuse with a different request"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Replay the old response"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Process it again"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "500"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why must the idempotency \"claim\" be atomic in production?",
+              "text": "Why must the idempotency \"claim\" be atomic in production?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Two instances could both see \"not seen\" and both process the request"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Style"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To save memory"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which status indicates a failed If-Match precondition?",
+              "text": "Which status indicates a failed If-Match precondition?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "412"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "400"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "409"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "304"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the problem ETag + If-Match solves?",
+              "text": "What is the problem ETag + If-Match solves?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Lost updates from concurrent edits"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Slow queries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CORS errors"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Pagination"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A report will take 3 minutes to generate. Best HTTP design?",
+              "text": "A report will take 3 minutes to generate. Best HTTP design?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "202 Accepted with a Location to poll a status resource"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Keep the request open"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Return 500"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use GET"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a breaking change?",
+              "text": "Which is a breaking change?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Renaming a response field"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Adding an optional response field"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Adding a new endpoint"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Adding an optional query parameter"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the most common API versioning approach for public REST APIs?",
+              "text": "What is the most common API versioning approach for public REST APIs?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "URL path (/v1)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Cookie"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Random"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Subdomain per user"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What do Deprecation and Sunset headers communicate?",
+              "text": "What do Deprecation and Sunset headers communicate?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "That an endpoint is deprecated and when it will be removed"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Cache policy"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rate limits"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Authentication"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does RFC 9457 standardize?",
+              "text": "What does RFC 9457 standardize?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A machine-readable error format (application/problem+json)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "JWT format"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Pagination"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CORS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a good practice for collections in JSON?",
+              "text": "Which is a good practice for collections in JSON?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Return [] when empty"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Return null when empty"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Omit the field"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Return \"none\""
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Where should filter/sort fields come from?",
+              "text": "Where should filter/sort fields come from?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A whitelist mapped to indexed columns"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Passed directly into SQL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Any string the client sends"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cookies"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which nesting is preferable?",
+              "text": "Which nesting is preferable?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "/orders/2/items plus top-level /shipments/4"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "/users/1/orders/2/items/3/shipments/4"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "/a/b/c/d/e"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Always flat query strings"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is full HATEOAS often skipped in practice?",
+              "text": "Why is full HATEOAS often skipped in practice?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Few clients are built to be link-driven, so it adds payload with limited benefit"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's illegal"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HTTP forbids links"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's slower than gRPC"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">REST API Design: Pagination &amp; Idempotency</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:22.2%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item active" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" aria-current="page"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 8 of 36 &middot; Intermediate</p>
+                        <h1>REST API Design: Resources, Pagination, Idempotency, Versioning and OpenAPI</h1>
+                        <p class="learn-book-title">REST API Design — Resources, Pagination, Idempotency, Versioning and Contracts</p>
+                        <ul class="learn-meta text-caption">
+                            <li>35 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/rest-api-design-pagination-idempotency-versioning.webp"><img src="../../assets/images/learn/backend-master/rest-api-design-pagination-idempotency-versioning.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="REST API Design: Resources, Pagination, Idempotency, Versioning and OpenAPI: Backend Master chapter 8 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>A good REST API is predictable, safe to retry and easy to evolve. This chapter covers resource naming, cursor pagination, filtering, idempotency keys, optimistic concurrency with ETags, versioning, consistent problem+json errors and documenting the contract with OpenAPI.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Naming resources and choosing methods and status codes</li><li>Cursor pagination instead of offset</li><li>Idempotency keys for safe retries</li><li>ETag and If-Match for optimistic concurrency</li><li>Versioning and OpenAPI contracts</li></ul>
+                        </section>
+<hr>
+
+<h2 id="8-0-why-this-chapter-matters">8.0 Why This Chapter Matters</h2>
+<p>Anyone can make an endpoint that works. Designing an API that <strong>other people can use correctly without asking you questions, that survives years of change without breaking customers, and that stays safe when networks misbehave</strong> is a craft.</p>
+<p>An API is a <strong>product</strong>. Its users are developers (including future you). Once a mobile app ships with your API baked in, you cannot recall it: old app versions keep calling you for years. A careless rename today is an outage for a million phones tomorrow.</p>
+<p>This chapter teaches the decisions that separate a tidy API from a painful one:</p>
+<ul>
+<li>How to name and shape <strong>resources</strong> and URLs.</li>
+<li>How to design <strong>JSON</strong> that ages well (dates, money, IDs, nulls).</li>
+<li>A single, machine-readable <strong>error format</strong> (RFC 9457).</li>
+<li><strong>Pagination</strong> that works on a billion rows (cursor/keyset, not <code>OFFSET</code>).</li>
+<li><strong>Idempotency keys</strong> so retries never double-charge.</li>
+<li><strong>Optimistic concurrency</strong> with <code>ETag</code> + <code>If-Match</code>.</li>
+<li><strong>Versioning</strong> and deprecation without breaking clients.</li>
+<li><strong>OpenAPI</strong> documentation as a contract.</li>
+</ul>
+<p>Every pattern in the sections marked <em>tested</em> was run against a real server while this chapter was written; the outputs you see are real.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>&quot;REST&quot; comes from the 2000 PhD dissertation of <strong>Roy Fielding</strong>, one of the authors of HTTP. He described an <em>architectural style</em> for the web, not a spec. Most APIs called &quot;REST&quot; today are really &quot;HTTP + JSON + resource URLs,&quot; and Fielding himself has criticized that. That&#39;s fine: we&#39;re after pragmatic, predictable design, not purity.</p>
+</aside>
+<hr>
+
+<h2 id="8-1-what-rest-means-in-practice">8.1 What &quot;REST&quot; Means in Practice</h2>
+<p>REST describes a style built from constraints. The ones that matter for you day to day:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Constraint</th>
+<th>Meaning</th>
+<th>Why you care</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Client-server</strong></td>
+<td>UI and data/logic are separate</td>
+<td>Frontend and backend evolve independently</td>
+</tr>
+<tr>
+<td><strong>Stateless</strong></td>
+<td>Each request carries everything needed; the server keeps no session memory between requests</td>
+<td>Any server instance can handle any request → scale horizontally (<a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>)</td>
+</tr>
+<tr>
+<td><strong>Cacheable</strong></td>
+<td>Responses say whether they may be cached</td>
+<td>Free performance (<a href="/learn/backend-master/http-explained-methods-status-codes-headers" title="HTTP Explained: Methods, Status &amp; Headers">Chapter 3</a>)</td>
+</tr>
+<tr>
+<td><strong>Uniform interface</strong></td>
+<td>Same few methods, resource URLs, standard status codes</td>
+<td>Predictability; tooling works everywhere</td>
+</tr>
+<tr>
+<td><strong>Layered system</strong></td>
+<td>Clients can&#39;t tell if they hit a proxy/CDN/gateway</td>
+<td>You can add infrastructure transparently</td>
+</tr>
+</tbody></table></div>
+<h3 id="richardson-maturity-model-a-useful-ladder">Richardson Maturity Model: a useful ladder</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Level</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td>0</td>
+<td>One endpoint, one method; everything is RPC over POST</td>
+<td><code>POST /api {&quot;action&quot;:&quot;getProduct&quot;}</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td><strong>Resources</strong>: many URLs</td>
+<td><code>POST /products/42</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>HTTP verbs + status codes</strong></td>
+<td><code>GET /products/42</code> → 200/404</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Hypermedia</strong>: responses include links to next actions</td>
+<td><code>{&quot;_links&quot;: {&quot;buy&quot;: &quot;/orders&quot;}}</code></td>
+</tr>
+</tbody></table></div>
+<p>Most good production APIs live at <strong>Level 2</strong>. Level 3 (HATEOAS) is elegant but rarely worth it for typical product APIs (see §8.14). <strong>Target Level 2 and do it well.</strong></p>
+<hr>
+
+<h2 id="8-2-designing-resources-and-urls">8.2 Designing Resources and URLs</h2>
+<h3 id="the-mindset-shift-nouns-not-verbs">The mindset shift: nouns, not verbs</h3>
+<p>A <strong>resource</strong> is a <em>thing</em> your system knows about: a product, an order, a user, a review. The URL names the thing; the HTTP method says what to do with it.</p>
+<pre class="is-plain"><code> ❌ GET  /getAllProducts              ✅ GET    /products
+ ❌ POST /createProduct               ✅ POST   /products
+ ❌ POST /deleteProduct?id=5          ✅ DELETE /products/5
+ ❌ GET  /product/5/getReviews        ✅ GET    /products/5/reviews</code></pre>
+<h3 id="naming-rules-that-prevent-arguments">Naming rules that prevent arguments</h3>
+<ol>
+<li><strong>Plural nouns</strong> for collections: <code>/products</code>, <code>/orders</code>. A single item is <code>/products/42</code>. (Pick plural everywhere; consistency beats any theory.)</li>
+<li><strong>Lowercase, hyphen-separated</strong> for multi-word paths: <code>/order-items</code>, not <code>/orderItems</code> or <code>/Order_Items</code>. (URLs are case-sensitive; hyphens read well and are SEO/URL friendly.)</li>
+<li><strong>No verbs, no file extensions</strong> (<code>/products.json</code>; use <code>Accept</code> instead).</li>
+<li><strong>No trailing slash</strong> differences: choose one and redirect/normalize the other.</li>
+<li><strong>IDs in the path identify; query strings filter.</strong> <code>/products/42</code> vs <code>/products?category=pens</code>.</li>
+<li><strong>Identifiers are opaque to clients.</strong> Don&#39;t promise they&#39;re sequential integers; a UUID or prefixed string (<code>ord_8fK2x</code>) leaks less and survives sharding.</li>
+</ol>
+<h3 id="relationships-and-nesting">Relationships and nesting</h3>
+<pre class="is-plain"><code> GET  /products/42/reviews           reviews belonging to product 42
+ POST /products/42/reviews           add a review to product 42
+ GET  /users/7/orders                orders of user 7</code></pre>
+<p><strong>Keep nesting shallow, at most two levels.</strong> <code>/users/7/orders/9/items/3/shipments/2</code> is brittle and unreadable. Once a child has its own identity, expose it at the top level too:</p>
+<pre class="is-plain"><code> GET /orders/9           ← the order is addressable directly
+ GET /orders/9/items     ← one level of nesting is fine</code></pre>
+<h3 id="but-what-about-actions-non-crud-operations">&quot;But what about actions?&quot; (non-CRUD operations)</h3>
+<p>Real systems have operations that aren&#39;t plain create/read/update/delete: <em>cancel an order</em>, <em>publish a post</em>, <em>reset a password</em>, <em>refund a payment</em>. Three accepted styles:</p>
+<p><strong>1. Model the action as a sub-resource you create</strong> (preferred; very RESTful):</p>
+<pre class="is-plain"><code> POST /orders/9/cancellation        → 201 Created  (a cancellation record now exists)
+ POST /payments/55/refunds          → 201 Created  (and you can GET /payments/55/refunds)</code></pre>
+<p><strong>2. State change via PATCH:</strong></p>
+<pre class="is-plain"><code> PATCH /orders/9   { &quot;status&quot;: &quot;cancelled&quot; }     (server validates the transition)</code></pre>
+<p><strong>3. A verb sub-path for true commands</strong> (pragmatic; used by Stripe, GitHub and others):</p>
+<pre class="is-plain"><code> POST /orders/9/cancel
+ POST /users/7/reset-password</code></pre>
+<p>All three are acceptable. Choose one convention per API, document it, and use it consistently. The mistake is mixing <code>POST /cancelOrder</code>, <code>PUT /orders/9/cancelled</code>, and <code>PATCH /orders/9/status</code> in the same API.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Nouns in the URL, verbs in the method.&quot;</strong> If your path contains <code>get</code>, <code>create</code>, <code>update</code>, <code>delete</code>, or <code>do</code>, stop and rethink (except true command endpoints like <code>/cancel</code>).</p>
+</aside>
+<hr>
+
+<h2 id="8-3-mapping-operations-to-methods-and-status-codes">8.3 Mapping Operations to Methods and Status Codes</h2>
+<p>The standard CRUD table for a <code>products</code> collection, each result tested in this chapter&#39;s server:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Operation</th>
+<th>Request</th>
+<th>Success</th>
+<th>Common failures</th>
+</tr>
+</thead><tbody><tr>
+<td>List</td>
+<td><code>GET /products</code></td>
+<td><code>200</code> + page of items</td>
+<td><code>400</code> bad query</td>
+</tr>
+<tr>
+<td>Read one</td>
+<td><code>GET /products/42</code></td>
+<td><code>200</code> (+<code>ETag</code>)</td>
+<td><code>404</code></td>
+</tr>
+<tr>
+<td>Create</td>
+<td><code>POST /products</code></td>
+<td><code>201</code> + <code>Location: /products/43</code> + body</td>
+<td><code>422</code> invalid, <code>409</code> duplicate</td>
+</tr>
+<tr>
+<td>Replace</td>
+<td><code>PUT /products/42</code></td>
+<td><code>200</code> (or <code>204</code>)</td>
+<td><code>404</code>, <code>412</code>, <code>422</code></td>
+</tr>
+<tr>
+<td>Partial update</td>
+<td><code>PATCH /products/42</code></td>
+<td><code>200</code> + updated body</td>
+<td><code>404</code>, <code>412</code>, <code>422</code></td>
+</tr>
+<tr>
+<td>Delete</td>
+<td><code>DELETE /products/42</code></td>
+<td><code>204</code></td>
+<td><code>404</code> (or <code>204</code> again; see below)</td>
+</tr>
+<tr>
+<td>Action</td>
+<td><code>POST /orders/9/cancel</code></td>
+<td><code>200</code>/<code>202</code></td>
+<td><code>409</code> wrong state</td>
+</tr>
+</tbody></table></div>
+<h3 id="decisions-people-argue-about-here-are-good-defaults">Decisions people argue about (here are good defaults)</h3>
+<ul>
+<li><strong>DELETE of something already deleted:</strong> <code>404</code> is honest; <code>204</code> is &quot;idempotent-friendly&quot; (the end state is the same). Either is fine; pick one.</li>
+<li><strong>PUT creating if missing:</strong> allowed by HTTP (returns <code>201</code>), but most APIs make <code>PUT</code> update-only to avoid accidental creation.</li>
+<li><strong>Return the body after POST/PATCH?</strong> Yes. It saves clients a second request and shows server-assigned fields (id, timestamps, defaults).</li>
+<li><strong><code>202 Accepted</code></strong> for work that continues in the background (§8.11).</li>
+<li><strong><code>409 Conflict</code></strong> for state conflicts (duplicate email, cancelling a shipped order); <strong><code>422</code></strong> for invalid data.</li>
+</ul>
+<hr>
+
+<h2 id="8-4-designing-good-json">8.4 Designing Good JSON</h2>
+<p>The shape of your JSON is a long-term promise. Decide these once.</p>
+<h3 id="conventions">Conventions</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Topic</th>
+<th>Recommendation</th>
+<th>Why</th>
+</tr>
+</thead><tbody><tr>
+<td>Field names</td>
+<td><code>camelCase</code> (JS-friendly) or <code>snake_case</code> (if your ecosystem prefers); <strong>never mix</strong></td>
+<td>Consistency</td>
+</tr>
+<tr>
+<td>IDs</td>
+<td><strong>Strings</strong> (<code>&quot;id&quot;: &quot;ord_8fK2x&quot;</code> or UUID)</td>
+<td>JS can&#39;t safely hold 64-bit integers (<code>Number.MAX_SAFE_INTEGER</code> is 2⁵³−1); strings are future-proof</td>
+</tr>
+<tr>
+<td>Dates &amp; times</td>
+<td><strong>ISO 8601 in UTC</strong>: <code>&quot;2026-11-03T09:30:00Z&quot;</code></td>
+<td>Unambiguous, sortable, every language parses it. Never <code>&quot;03/11/26&quot;</code> (is that March 11?)</td>
+</tr>
+<tr>
+<td>Money</td>
+<td><strong>Integer in the smallest unit + currency</strong>: <code>{ &quot;amount&quot;: 89900, &quot;currency&quot;: &quot;INR&quot; }</code></td>
+<td>Floating point can&#39;t represent 0.1 + 0.2 exactly. Never store money as floats</td>
+</tr>
+<tr>
+<td>Booleans</td>
+<td><code>true/false</code>; name positively (<code>isActive</code>)</td>
+<td>Avoid <code>&quot;yes&quot;</code>/<code>1</code></td>
+</tr>
+<tr>
+<td>Enums</td>
+<td>Lowercase strings: <code>&quot;status&quot;: &quot;shipped&quot;</code></td>
+<td>Readable, extensible</td>
+</tr>
+<tr>
+<td>Absent vs null</td>
+<td>Define: omit unknown fields <strong>or</strong> send <code>null</code>; document which</td>
+<td><code>undefined</code> isn&#39;t JSON</td>
+</tr>
+<tr>
+<td>Collections</td>
+<td>Always an array (<code>[]</code> when empty), never <code>null</code></td>
+<td>Clients can <code>.map</code> safely</td>
+</tr>
+<tr>
+<td>Envelope</td>
+<td>Collections wrapped: <code>{ &quot;data&quot;: [...], &quot;page&quot;: {...} }</code>; single resources returned bare</td>
+<td>Room for metadata without breaking clients</td>
+</tr>
+<tr>
+<td>Extensibility</td>
+<td>Clients must <strong>ignore unknown fields</strong></td>
+<td>Lets you add fields without versioning</td>
+</tr>
+</tbody></table></div>
+<h3 id="the-money-bug-everyone-writes-once">The money bug everyone writes once</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-number">0.1</span> + <span class="hljs-number">0.2</span>            <span class="hljs-comment">// 0.30000000000000004</span>
+<span class="hljs-number">19.99</span> * <span class="hljs-number">100</span>          <span class="hljs-comment">// 1998.9999999999998</span></code></pre></div>
+<p>Represent ₹899.00 as <code>89900</code> (paise) and format only at display time. A million small rounding errors in a payments system become an audit finding.</p>
+<h3 id="representation-example">Representation example</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JSON</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;prd_3kLm9&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Backpack&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;price&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;amount&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">89900</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;currency&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;INR&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;stock&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">12</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;active&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;createdAt&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-11-03T09:30:00Z&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;updatedAt&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2026-11-03T09:45:12Z&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h3 id="what-not-to-expose">What NOT to expose</h3>
+<p>Only return what clients need. Never leak internal columns (<code>passwordHash</code>, <code>costPrice</code>, <code>internalNotes</code>, <code>isAdmin</code>). Map database rows to response objects explicitly (or use response schemas; <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>).</p>
+<h3 id="postel-s-law-reversed-for-security">Postel&#39;s Law, reversed for security</h3>
+<p>&quot;Be liberal in what you accept&quot; is dangerous for APIs. Prefer: <strong>accept only what you document</strong> (strict validation), <strong>return exactly what you document</strong>. Tolerance belongs in <em>clients</em> (ignoring unknown response fields).</p>
+<hr>
+
+<h2 id="8-5-one-error-format-problem-details-rfc-9457">8.5 One Error Format: Problem Details (RFC 9457)</h2>
+<p><a href="/learn/backend-master/nodejs-http-server-routing-middleware-express" title="Build a Node.js Server: Routing &amp; Middleware">Chapter 6</a> gave us a consistent <code>{ error: { message, details, requestId } }</code>. There&#39;s an actual internet standard for this: <strong>Problem Details for HTTP APIs</strong>, now <strong>RFC 9457</strong> (which replaced RFC 7807). Using a standard means clients and tools already know how to read your errors.</p>
+<pre class="is-plain"><code>HTTP/1.1 422 Unprocessable Content
+Content-Type: application/problem+json
+
+{
+  &quot;type&quot;: &quot;https://api.shopline.com/problems/validation&quot;,
+  &quot;title&quot;: &quot;Validation failed&quot;,
+  &quot;status&quot;: 422,
+  &quot;detail&quot;: &quot;price must be &gt;= 0&quot;,
+  &quot;instance&quot;: &quot;/v1/products&quot;,
+  &quot;errors&quot;: [ { &quot;field&quot;: &quot;price&quot;, &quot;message&quot;: &quot;must be &gt;= 0&quot; } ]
+}</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Member</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><code>type</code></td>
+<td>A URI identifying the <em>kind</em> of problem (can point to docs). <code>about:blank</code> if nothing more specific</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>Short, human-readable summary of the problem type (stable)</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>The HTTP status (repeated for convenience)</td>
+</tr>
+<tr>
+<td><code>detail</code></td>
+<td>Explanation of <em>this</em> occurrence</td>
+</tr>
+<tr>
+<td><code>instance</code></td>
+<td>Identifies this specific occurrence (the request URL or an ID)</td>
+</tr>
+<tr>
+<td><em>extensions</em></td>
+<td>Any extra members you need (<code>errors</code>, <code>requestId</code>, <code>retryAfter</code>...)</td>
+</tr>
+</tbody></table></div>
+<h3 id="implementation-tested">Implementation (tested)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ApiError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">status, title, detail, extra = {}</span>) {
+    <span class="hljs-variable language_">super</span>(title);
+    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(<span class="hljs-variable language_">this</span>, { status, title, detail, extra });
+  }
+}
+
+app.<span class="hljs-title function_">use</span>(<span class="hljs-function">(<span class="hljs-params">err, req, res, _next</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> status = err.<span class="hljs-property">status</span> ?? err.<span class="hljs-property">statusCode</span> ?? <span class="hljs-number">500</span>;
+  res.<span class="hljs-title function_">status</span>(status).<span class="hljs-title function_">type</span>(<span class="hljs-string">&#x27;application/problem+json&#x27;</span>).<span class="hljs-title function_">json</span>({
+    <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;about:blank&#x27;</span>,
+    <span class="hljs-attr">title</span>: err.<span class="hljs-property">title</span> ?? err.<span class="hljs-property">message</span>,
+    status,
+    <span class="hljs-attr">detail</span>: status &gt;= <span class="hljs-number">500</span> ? <span class="hljs-literal">undefined</span> : err.<span class="hljs-property">detail</span> ?? err.<span class="hljs-property">message</span>,   <span class="hljs-comment">// hide 5xx internals</span>
+    <span class="hljs-attr">instance</span>: req.<span class="hljs-property">originalUrl</span>,
+    ...err.<span class="hljs-property">extra</span>,
+  });
+});</code></pre></div>
+<p>Real response from the test server:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -si <span class="hljs-string">&quot;localhost:3000/v1/products?after=zzz&quot;</span>
+<span class="hljs-comment"># HTTP/1.1 400 Bad Request</span>
+<span class="hljs-comment"># Content-Type: application/problem+json; charset=utf-8</span>
+<span class="hljs-comment"># {&quot;type&quot;:&quot;about:blank&quot;,&quot;title&quot;:&quot;Invalid cursor&quot;,&quot;status&quot;:400,</span>
+<span class="hljs-comment">#  &quot;detail&quot;:&quot;The cursor is malformed or expired&quot;,&quot;instance&quot;:&quot;/v1/products?after=zzz&quot;}</span></code></pre></div>
+<p>Whether you adopt RFC 9457 exactly or keep your own shape, the principles hold: <strong>one shape for every error, a stable machine-readable identifier clients can switch on (not just a message string), a human message, and enough context to debug.</strong></p>
+<h3 id="design-errors-for-the-programmer-who-will-read-them">Design errors for the programmer who will read them</h3>
+<p>Bad: <code>{ &quot;error&quot;: &quot;Invalid&quot; }</code>
+Good: tells <em>what</em> is invalid, <em>where</em>, and <em>how to fix it</em>, without leaking internals.</p>
+<hr>
+
+<h2 id="8-6-pagination-the-one-that-bites-at-scale">8.6 Pagination (the one that bites at scale)</h2>
+<p>Never return an unbounded list. Millions of rows in one response kills your server and the client. There are three techniques.</p>
+<h3 id="8-6-1-offset-pagination-page-3limit-20">8.6.1 Offset pagination: <code>?page=3&amp;limit=20</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> products <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> id LIMIT <span class="hljs-number">20</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">40</span>;</code></pre></div>
+<ul>
+<li>✅ Simple; supports &quot;jump to page 50&quot;; easy to show page numbers.</li>
+<li>❌ <strong>Slow on deep pages:</strong> the database must read and discard all the skipped rows. <code>OFFSET 1000000</code> reads a million rows to return 20. Cost grows with the page number (O(offset)).</li>
+<li>❌ <strong>Unstable under change:</strong> if a row is inserted while the user pages, items shift: they see a duplicate on page 2 or miss one entirely.</li>
+</ul>
+<p>Use it for small, mostly static datasets and admin tables.</p>
+<h3 id="8-6-2-cursor-keyset-pagination-limit-20after-cursor">8.6.2 Cursor (keyset) pagination: <code>?limit=20&amp;after=&lt;cursor&gt;</code></h3>
+<p>Instead of &quot;skip N rows,&quot; say &quot;give me the rows <strong>after this one</strong>&quot;:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> products <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">&gt;</span> $lastSeenId <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> id LIMIT <span class="hljs-number">21</span>;   <span class="hljs-comment">-- fetch 1 extra</span></code></pre></div>
+<p>With an index on <code>id</code>, the database jumps straight to the right spot (O(log n) + page size) regardless of how deep you are. And it&#39;s <strong>stable</strong>: inserts elsewhere don&#39;t shift your position.</p>
+<p>The <strong>cursor</strong> is an opaque token encoding where you stopped. Clients must treat it as a black box; you can change its contents later without breaking anyone.</p>
+<p><strong>Tested implementation:</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">encode</span> = (<span class="hljs-params">o</span>) =&gt; <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(o)).<span class="hljs-title function_">toString</span>(<span class="hljs-string">&#x27;base64url&#x27;</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">decode</span> = (<span class="hljs-params">s</span>) =&gt; {
+  <span class="hljs-keyword">try</span> { <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(s, <span class="hljs-string">&#x27;base64url&#x27;</span>).<span class="hljs-title function_">toString</span>()); }
+  <span class="hljs-keyword">catch</span> { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">400</span>, <span class="hljs-string">&#x27;Invalid cursor&#x27;</span>, <span class="hljs-string">&#x27;The cursor is malformed or expired&#x27;</span>); }
+};
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">pageOf</span>(<span class="hljs-params">list, { limit, after }</span>) {            <span class="hljs-comment">// list is sorted by id ascending</span>
+  <span class="hljs-keyword">let</span> start = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">if</span> (after) {
+    <span class="hljs-keyword">const</span> { id } = <span class="hljs-title function_">decode</span>(after);
+    start = list.<span class="hljs-title function_">findIndex</span>(<span class="hljs-function">(<span class="hljs-params">p</span>) =&gt;</span> p.<span class="hljs-property">id</span> &gt; id);
+    <span class="hljs-keyword">if</span> (start === -<span class="hljs-number">1</span>) start = list.<span class="hljs-property">length</span>;
+  }
+  <span class="hljs-keyword">const</span> slice = list.<span class="hljs-title function_">slice</span>(start, start + limit + <span class="hljs-number">1</span>); <span class="hljs-comment">// fetch ONE extra to learn if more exist</span>
+  <span class="hljs-keyword">const</span> hasMore = slice.<span class="hljs-property">length</span> &gt; limit;
+  <span class="hljs-keyword">const</span> data = slice.<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, limit);
+  <span class="hljs-keyword">return</span> { data, <span class="hljs-attr">page</span>: { limit, hasMore, <span class="hljs-attr">nextCursor</span>: hasMore ? <span class="hljs-title function_">encode</span>({ <span class="hljs-attr">id</span>: data.<span class="hljs-title function_">at</span>(-<span class="hljs-number">1</span>).<span class="hljs-property">id</span> }) : <span class="hljs-literal">null</span> } };
+}</code></pre></div>
+<p>Walking all 7 items, 3 per page (real output, trimmed):</p>
+<pre class="is-plain"><code>GET /v1/products?limit=3
+ → data: [1,2,3]  page: { limit:3, hasMore:true,  nextCursor:&quot;eyJpZCI6M30&quot; }
+
+GET /v1/products?limit=3&amp;after=eyJpZCI6M30
+ → data: [4,5,6]  page: { limit:3, hasMore:true,  nextCursor:&quot;eyJpZCI6Nn0&quot; }
+
+GET /v1/products?limit=3&amp;after=eyJpZCI6Nn0
+ → data: [7]      page: { limit:3, hasMore:false, nextCursor:null }</code></pre>
+<p>(<code>eyJpZCI6M30</code> is just <code>{&quot;id&quot;:3}</code> in base64url. Encoding it makes it <em>opaque</em>, though it&#39;s not secret. If tampering matters, sign or encrypt the cursor.)</p>
+<p><strong>Sorting by something non-unique</strong> (price, created time): the cursor must carry a <strong>tie-breaker</strong>. Sort by <code>(price, id)</code> and encode both: <code>WHERE (price, id) &gt; ($p, $i) ORDER BY price, id</code>. Without the unique tie-breaker, rows with equal prices can be skipped or repeated.</p>
+<h3 id="8-6-3-link-header-next-url-style">8.6.3 Link-header / &quot;next&quot; URL style</h3>
+<p>Instead of <code>nextCursor</code>, return the full next URL: <code>&quot;next&quot;: &quot;/v1/products?limit=3&amp;after=eyJ...&quot;</code>. Clients just follow it, even simpler. (GitHub&#39;s API uses <code>Link</code> headers for this.)</p>
+<h3 id="comparison">Comparison</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Offset</th>
+<th>Cursor/Keyset</th>
+</tr>
+</thead><tbody><tr>
+<td>Jump to page N</td>
+<td>✅</td>
+<td>❌ (sequential only)</td>
+</tr>
+<tr>
+<td>Performance deep in the list</td>
+<td>❌ O(offset)</td>
+<td>✅ O(log n)</td>
+</tr>
+<tr>
+<td>Stable under inserts/deletes</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Total count</td>
+<td>Easy (but <code>COUNT(*)</code> can be slow)</td>
+<td>Usually omitted</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Small/admin lists</td>
+<td>Feeds, infinite scroll, large tables, public APIs</td>
+</tr>
+</tbody></table></div>
+<h3 id="rules-for-every-paginated-endpoint">Rules for every paginated endpoint</h3>
+<ol>
+<li><strong>Default</strong> and <strong>maximum</strong> <code>limit</code> (e.g., default 20, max 100); validate it (<a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>).</li>
+<li>Always apply a <strong>deterministic ORDER BY</strong>. Without one, pages are arbitrary.</li>
+<li>Return <code>hasMore</code> / <code>nextCursor</code>, not just data.</li>
+<li>Total counts are expensive on large tables; provide them only if truly needed (or approximate).</li>
+</ol>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;How would you paginate a feed with millions of items?&quot; → cursor/keyset on an indexed, unique ordering; explain why <code>OFFSET</code> degrades (reads &amp; discards rows) and why it&#39;s unstable under inserts; mention opaque cursors and a tie-breaker column.</p>
+</aside>
+<hr>
+
+<h2 id="8-7-filtering-sorting-searching-and-field-selection">8.7 Filtering, Sorting, Searching and Field Selection</h2>
+<pre class="is-plain"><code> GET /products?category=pens&amp;maxPrice=5000&amp;inStock=true     filter
+ GET /products?sort=-price,name                             sort: price descending, then name
+ GET /products?q=notebook                                   free-text search
+ GET /products?fields=id,name,price                         sparse fieldsets (smaller payloads)
+ GET /orders?createdAfter=2026-11-01T00:00:00Z              date range</code></pre>
+<p>Guidance:</p>
+<ul>
+<li><strong>Whitelist</strong> filterable and sortable fields; map them to indexed columns. Never pass <code>?sort=</code> straight into SQL (injection!). <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>.</li>
+<li>Prefix <code>-</code> for descending is a common convention; document it.</li>
+<li>Multiple values: <code>?status=paid,shipped</code> (comma) or repeated params (<code>?status=paid&amp;status=shipped</code>). Choose one.</li>
+<li>Complex filters (nested AND/OR) are where REST gets awkward; consider a <code>POST /products/search</code> with a JSON body, or GraphQL (<a href="/learn/backend-master/graphql-api-nodejs-dataloader-security" title="GraphQL with Node.js: DataLoader &amp; Limits">Chapter 9</a>).</li>
+<li>Search (<code>q</code>) on large text belongs in a search engine (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>), not <code>LIKE &#39;%x%&#39;</code>.</li>
+</ul>
+<hr>
+
+<h2 id="8-8-idempotency-keys-making-retries-safe">8.8 Idempotency Keys: Making Retries Safe</h2>
+<h3 id="the-problem-from-chapter-3-now-solved">The problem (from Chapter 3, now solved)</h3>
+<pre class="is-plain"><code> client ── POST /orders ──▶ server charges card, creates order
+          ✕  response lost (timeout / dropped connection)
+ client doesn't know what happened → retries → ORDER #2, CHARGED TWICE</code></pre>
+<p><code>GET</code>, <code>PUT</code>, <code>DELETE</code> are naturally idempotent. <code>POST</code> is not. The fix is an <strong>Idempotency-Key</strong>: a unique token (UUID) the <em>client</em> generates per logical operation and sends in a header. The server remembers the result for that key.</p>
+<h3 id="the-server-s-rules">The server&#39;s rules</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Situation</th>
+<th>Server response</th>
+</tr>
+</thead><tbody><tr>
+<td>First time seeing this key</td>
+<td>Process normally; <strong>store the response</strong> under the key</td>
+</tr>
+<tr>
+<td>Same key, <strong>same body</strong>, original finished</td>
+<td><strong>Replay</strong> the stored response (and mark it <code>Idempotent-Replayed: true</code>)</td>
+</tr>
+<tr>
+<td>Same key, <strong>different body</strong></td>
+<td><code>422</code>: the client is misusing keys</td>
+</tr>
+<tr>
+<td>Same key, original <strong>still running</strong></td>
+<td><code>409</code>: try again shortly</td>
+</tr>
+<tr>
+<td>No key on an endpoint that requires it</td>
+<td><code>400</code></td>
+</tr>
+</tbody></table></div>
+<h3 id="tested-implementation">Tested implementation</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { createHash } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:crypto&#x27;</span>;
+
+<span class="hljs-keyword">const</span> idem = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();   <span class="hljs-comment">// key → { fingerprint, state, status, body }   (Redis in production!)</span>
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">idempotency</span>(<span class="hljs-params">req, res, next</span>) {
+  <span class="hljs-keyword">const</span> key = req.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;Idempotency-Key&#x27;</span>);
+  <span class="hljs-keyword">if</span> (!key) <span class="hljs-keyword">return</span> <span class="hljs-title function_">next</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">400</span>, <span class="hljs-string">&#x27;Idempotency-Key required&#x27;</span>,
+    <span class="hljs-string">&#x27;Send an Idempotency-Key header on POST /orders&#x27;</span>));
+
+  <span class="hljs-keyword">const</span> fingerprint = <span class="hljs-title function_">createHash</span>(<span class="hljs-string">&#x27;sha256&#x27;</span>).<span class="hljs-title function_">update</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(req.<span class="hljs-property">body</span> ?? {})).<span class="hljs-title function_">digest</span>(<span class="hljs-string">&#x27;hex&#x27;</span>);
+  <span class="hljs-keyword">const</span> seen = idem.<span class="hljs-title function_">get</span>(key);
+
+  <span class="hljs-keyword">if</span> (seen) {
+    <span class="hljs-keyword">if</span> (seen.<span class="hljs-property">fingerprint</span> !== fingerprint)
+      <span class="hljs-keyword">return</span> <span class="hljs-title function_">next</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">422</span>, <span class="hljs-string">&#x27;Idempotency-Key reuse&#x27;</span>, <span class="hljs-string">&#x27;This key was already used with a different request body&#x27;</span>));
+    <span class="hljs-keyword">if</span> (seen.<span class="hljs-property">state</span> === <span class="hljs-string">&#x27;processing&#x27;</span>)
+      <span class="hljs-keyword">return</span> <span class="hljs-title function_">next</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">409</span>, <span class="hljs-string">&#x27;Request in progress&#x27;</span>, <span class="hljs-string">&#x27;The original request is still being processed&#x27;</span>));
+    res.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;Idempotent-Replayed&#x27;</span>, <span class="hljs-string">&#x27;true&#x27;</span>);
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(seen.<span class="hljs-property">status</span>).<span class="hljs-title function_">json</span>(seen.<span class="hljs-property">body</span>);          <span class="hljs-comment">// replay</span>
+  }
+
+  idem.<span class="hljs-title function_">set</span>(key, { fingerprint, <span class="hljs-attr">state</span>: <span class="hljs-string">&#x27;processing&#x27;</span> });       <span class="hljs-comment">// claim the key BEFORE doing work</span>
+  <span class="hljs-keyword">const</span> send = res.<span class="hljs-property">json</span>.<span class="hljs-title function_">bind</span>(res);
+  res.<span class="hljs-property">json</span> = <span class="hljs-function">(<span class="hljs-params">body</span>) =&gt;</span> {                                      <span class="hljs-comment">// capture the response once produced</span>
+    idem.<span class="hljs-title function_">set</span>(key, { fingerprint, <span class="hljs-attr">state</span>: <span class="hljs-string">&#x27;done&#x27;</span>, <span class="hljs-attr">status</span>: res.<span class="hljs-property">statusCode</span>, body });
+    <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(body);
+  };
+  <span class="hljs-title function_">next</span>();
+}
+
+v1.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/orders&#x27;</span>, idempotency, <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">chargeCardAndSaveOrder</span>(req.<span class="hljs-property">body</span>);      <span class="hljs-comment">// runs ONCE per key</span>
+  res.<span class="hljs-title function_">status</span>(<span class="hljs-number">201</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">id</span>: ++orderSeq, <span class="hljs-attr">items</span>: req.<span class="hljs-property">body</span>.<span class="hljs-property">items</span> });
+});</code></pre></div>
+<p>Real results:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -si -H <span class="hljs-string">&#x27;Idempotency-Key: k1&#x27;</span> --json <span class="hljs-string">&#x27;{&quot;items&quot;:[1,2]}&#x27;</span> localhost:3000/v1/orders
+<span class="hljs-comment"># HTTP/1.1 201 Created        {&quot;id&quot;:101,&quot;items&quot;:[1,2]}</span>
+
+curl -si -H <span class="hljs-string">&#x27;Idempotency-Key: k1&#x27;</span> --json <span class="hljs-string">&#x27;{&quot;items&quot;:[1,2]}&#x27;</span> localhost:3000/v1/orders
+<span class="hljs-comment"># HTTP/1.1 201 Created        Idempotent-Replayed: true     {&quot;id&quot;:101,&quot;items&quot;:[1,2]}   ← same order id, NOT 102</span>
+
+curl -s  -H <span class="hljs-string">&#x27;Idempotency-Key: k1&#x27;</span> --json <span class="hljs-string">&#x27;{&quot;items&quot;:[9]}&#x27;</span> localhost:3000/v1/orders
+<span class="hljs-comment"># 422 Idempotency-Key reuse</span>
+
+<span class="hljs-comment"># two identical requests fired at the same instant:</span>
+<span class="hljs-comment"># 409 Request in progress   |   201 {&quot;id&quot;:101,...}</span></code></pre></div>
+<p>The last line is the interesting one: two concurrent identical requests produced <strong>one</strong> order, not two, because the first request <em>claimed</em> the key before doing any work.</p>
+<h3 id="production-caveats-important">Production caveats (important)</h3>
+<ol>
+<li><strong>The store must be shared and durable</strong> (Redis or the database) not an in-memory <code>Map</code>. Otherwise a restart, or a second server instance, forgets keys.</li>
+<li><strong>The claim must be atomic.</strong> In a real store, use an atomic &quot;set if not exists&quot; (<code>SET key value NX</code> in Redis, <code>INSERT ... ON CONFLICT DO NOTHING</code> in SQL). Two instances checking-then-writing separately can both &quot;win&quot; (a race condition; <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>).</li>
+<li><strong>Expire keys</strong> (e.g., after 24 hours).</li>
+<li><strong>Scope keys per user/account</strong> so one customer can&#39;t collide with, or replay, another&#39;s.</li>
+<li><strong>Best of all: make the business operation itself idempotent</strong> with a database unique constraint (e.g., <code>UNIQUE(user_id, idempotency_key)</code> on the orders table). The constraint is the real guard; the middleware is a convenience.</li>
+<li>Failures: decide whether to store <em>error</em> responses. Commonly, store deterministic results (success and 4xx) but not transient 5xx so clients can retry for real.</li>
+</ol>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-2" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Claim, work, record, replay.&quot;</strong> Claim the key first, do the work once, record the response, replay it for repeats.</p>
+<p>Stripe popularized this pattern for payments; an IETF draft (&quot;The Idempotency-Key HTTP Header Field&quot;) is standardizing it.</p>
+</aside>
+<hr>
+
+<h2 id="8-9-optimistic-concurrency-etag-if-match">8.9 Optimistic Concurrency: <code>ETag</code> + <code>If-Match</code></h2>
+<p>Two staff members open the same product in an admin panel. Both change it and save. Without protection, the second save silently <strong>overwrites</strong> the first (the &quot;lost update&quot;).</p>
+<p>Solution: attach a <strong>version</strong> to each representation, and require clients to say which version they&#39;re updating.</p>
+<pre class="is-plain"><code> GET /products/1
+ ◀── 200   ETag: &quot;1&quot;    { &quot;id&quot;:1, &quot;price&quot;:10 }
+
+ PATCH /products/1       If-Match: &quot;1&quot;       { &quot;price&quot;: 99 }
+ ◀── 200   ETag: &quot;2&quot;    ← succeeded; version bumped
+
+ PATCH /products/1       If-Match: &quot;1&quot;       { &quot;price&quot;: 5 }      (a second editor with stale data)
+ ◀── 412 Precondition Failed                 ← &quot;it changed since you read it&quot;</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Situation</th>
+<th>Status</th>
+</tr>
+</thead><tbody><tr>
+<td><code>If-Match</code> matches the current version</td>
+<td><code>200</code> and a new <code>ETag</code></td>
+</tr>
+<tr>
+<td><code>If-Match</code> doesn&#39;t match</td>
+<td><strong><code>412 Precondition Failed</code></strong></td>
+</tr>
+<tr>
+<td><code>If-Match</code> missing but required</td>
+<td><strong><code>428 Precondition Required</code></strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>Tested implementation:</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">v1.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/products/:id&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> p = <span class="hljs-title function_">find</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>);
+  res.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;ETag&#x27;</span>, <span class="hljs-string">`&quot;<span class="hljs-subst">${p.version}</span>&quot;`</span>).<span class="hljs-title function_">json</span>(p);
+});
+
+v1.<span class="hljs-title function_">patch</span>(<span class="hljs-string">&#x27;/products/:id&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> p = <span class="hljs-title function_">find</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>);
+  <span class="hljs-keyword">const</span> ifMatch = req.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;If-Match&#x27;</span>);
+  <span class="hljs-keyword">if</span> (!ifMatch) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">428</span>, <span class="hljs-string">&#x27;Precondition required&#x27;</span>, <span class="hljs-string">&#x27;Send If-Match with the ETag you last read&#x27;</span>);
+  <span class="hljs-keyword">if</span> (ifMatch !== <span class="hljs-string">`&quot;<span class="hljs-subst">${p.version}</span>&quot;`</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ApiError</span>(<span class="hljs-number">412</span>, <span class="hljs-string">&#x27;Precondition failed&#x27;</span>,
+    <span class="hljs-string">&#x27;The product changed since you read it. Re-fetch and retry.&#x27;</span>);
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">assign</span>(p, req.<span class="hljs-property">body</span>, { <span class="hljs-attr">version</span>: p.<span class="hljs-property">version</span> + <span class="hljs-number">1</span> });
+  res.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;ETag&#x27;</span>, <span class="hljs-string">`&quot;<span class="hljs-subst">${p.version}</span>&quot;`</span>).<span class="hljs-title function_">json</span>(p);
+});</code></pre></div>
+<p>Real output:</p>
+<pre class="is-plain"><code>PATCH (no If-Match)         → 428 Precondition required
+PATCH If-Match &quot;1&quot;          → {&quot;id&quot;:1,&quot;name&quot;:&quot;Item 1&quot;,&quot;price&quot;:99,&quot;version&quot;:2}
+PATCH If-Match &quot;1&quot; (stale)  → 412 Precondition failed</code></pre>
+<p>In the database this is a single atomic statement (<a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">UPDATE</span> products <span class="hljs-keyword">SET</span> price <span class="hljs-operator">=</span> $<span class="hljs-number">1</span>, version <span class="hljs-operator">=</span> version <span class="hljs-operator">+</span> <span class="hljs-number">1</span>
+<span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> $<span class="hljs-number">2</span> <span class="hljs-keyword">AND</span> version <span class="hljs-operator">=</span> $<span class="hljs-number">3</span>;     <span class="hljs-comment">-- 0 rows updated ⇒ someone else got there first</span></code></pre></div>
+<p>This is called <strong>optimistic locking</strong>: assume conflicts are rare, detect them cheaply, no locks held while the user thinks.</p>
+<hr>
+
+<h2 id="8-10-long-running-operations-202-accepted">8.10 Long-Running Operations: <code>202 Accepted</code></h2>
+<p>Some work takes too long for one request: generating a 10,000-row report, processing a video, bulk import. Don&#39;t make the client wait with a connection open (timeouts, load balancers cut at 30–60 s).</p>
+<pre class="is-plain"><code> POST /reports                       { &quot;type&quot;: &quot;sales&quot;, &quot;month&quot;: &quot;2026-10&quot; }
+ ◀── 202 Accepted
+     Location: /reports/rpt_77       ← where to check
+     { &quot;id&quot;: &quot;rpt_77&quot;, &quot;status&quot;: &quot;queued&quot; }
+
+ GET /reports/rpt_77                 (client polls, ideally honoring Retry-After)
+ ◀── 200 { &quot;status&quot;: &quot;running&quot;, &quot;progress&quot;: 40 }
+ ...
+ GET /reports/rpt_77
+ ◀── 200 { &quot;status&quot;: &quot;done&quot;, &quot;downloadUrl&quot;: &quot;https://files.shopline.com/rpt_77.csv&quot; }</code></pre>
+<p>The job runs on a <strong>worker</strong> consuming a <strong>queue</strong> (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>). Alternatives to polling: <strong>webhooks</strong> (the server calls the client when done; <a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a>) or Server-Sent Events. The status resource, with <code>queued → running → done | failed</code>, is the key idea.</p>
+<hr>
+
+<h2 id="8-11-versioning-and-evolving-without-breaking-anyone">8.11 Versioning and Evolving Without Breaking Anyone</h2>
+<h3 id="what-counts-as-a-breaking-change">What counts as a breaking change?</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Breaking (needs a new version)</th>
+<th>Non-breaking (safe to ship)</th>
+</tr>
+</thead><tbody><tr>
+<td>Removing or renaming a field</td>
+<td><strong>Adding</strong> a new optional response field</td>
+</tr>
+<tr>
+<td>Changing a field&#39;s type or meaning</td>
+<td>Adding a new endpoint</td>
+</tr>
+<tr>
+<td>Making an optional request field required</td>
+<td>Adding an optional request parameter</td>
+</tr>
+<tr>
+<td>Changing URL structure or status-code semantics</td>
+<td>Adding a new enum value <em>(only if clients were told to tolerate unknown values)</em></td>
+</tr>
+<tr>
+<td>Tightening validation that used to pass</td>
+<td>Loosening validation</td>
+</tr>
+<tr>
+<td>Changing default sort/pagination behavior</td>
+<td>Adding new error codes (in documented categories)</td>
+</tr>
+</tbody></table></div>
+<p>The cheapest versioning strategy is <strong>never breaking</strong>. Add fields, don&#39;t change them; be conservative in what you promise. Clients that ignore unknown fields keep working.</p>
+<h3 id="where-to-put-the-version">Where to put the version</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Style</th>
+<th>Example</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>URL path</strong></td>
+<td><code>/v1/products</code></td>
+<td>Visible, trivial to route &amp; cache &amp; test in a browser</td>
+<td>&quot;Pollutes&quot; URLs; whole-API versions</td>
+</tr>
+<tr>
+<td><strong>Header</strong></td>
+<td><code>API-Version: 2026-11-01</code></td>
+<td>Clean URLs; date-based versions per account (Stripe)</td>
+<td>Hidden; harder to test casually</td>
+</tr>
+<tr>
+<td><strong>Media type</strong></td>
+<td><code>Accept: application/vnd.shopline.v2+json</code></td>
+<td>Pure-REST approach</td>
+<td>Clunky; poor tooling</td>
+</tr>
+<tr>
+<td><strong>Query</strong></td>
+<td><code>/products?version=2</code></td>
+<td>Easy</td>
+<td>Messy with caching</td>
+</tr>
+</tbody></table></div>
+<p><strong>Recommendation for most teams: URL path versioning (<code>/v1</code>)</strong>, bumped rarely (only for breaking changes), with additive changes made in place. In Express it&#39;s one line, and it&#39;s what we tested:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> v1 = express.<span class="hljs-title class_">Router</span>();
+v1.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/products&#x27;</span>, listProducts);
+app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/v1&#x27;</span>, v1);
+<span class="hljs-comment">// later: app.use(&#x27;/v2&#x27;, v2Router)   ← v1 keeps working, unchanged</span></code></pre></div>
+<h3 id="deprecation-done-kindly">Deprecation done kindly</h3>
+<ol>
+<li>Announce in docs and changelog, with dates.</li>
+<li>Send headers on deprecated endpoints: <code>Deprecation: true</code> (standardized as RFC 9745) and <code>Sunset: Wed, 01 Jul 2027 00:00:00 GMT</code> (RFC 8594), plus a <code>Link: &lt;https://docs.shopline.com/migrate-v2&gt;; rel=&quot;sunset&quot;</code>.</li>
+<li><strong>Measure usage per version &amp; client</strong> (logs/metrics) so you know who still depends on it before turning it off.</li>
+<li>Contact the biggest stragglers directly. Then sunset.</li>
+</ol>
+<p>Mobile apps make this hard: old versions linger for years. Plan to support old API versions for a <em>long</em> time, or force-update the app.</p>
+<hr>
+
+<h2 id="8-12-rate-limits-caching-and-other-headers">8.12 Rate Limits, Caching and Other Headers</h2>
+<p>Communicate limits so clients can behave:</p>
+<pre class="is-plain"><code> RateLimit: limit=100, remaining=87, reset=34         (draft IETF standard; we saw this in Chapter 7)
+ Retry-After: 59                                        (on 429 and 503)</code></pre>
+<p>Caching (<a href="/learn/backend-master/http-explained-methods-status-codes-headers" title="HTTP Explained: Methods, Status &amp; Headers">Chapter 3</a> applied): <code>GET</code> collections and resources can carry <code>Cache-Control</code>/<code>ETag</code>. Personalized responses → <code>private</code> or <code>no-store</code>. Add <code>Vary</code> for headers that change the response (<code>Accept-Language</code>, <code>Authorization</code>).</p>
+<p>Always also return the <strong><code>X-Request-Id</code></strong> (<a href="/learn/backend-master/nodejs-http-server-routing-middleware-express" title="Build a Node.js Server: Routing &amp; Middleware">Chapter 6</a>/7) so support can trace any call.</p>
+<hr>
+
+<h2 id="8-13-bulk-operations-and-batching">8.13 Bulk Operations and Batching</h2>
+<p>Network round trips are the enemy (<a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a>). If clients commonly need 50 things, don&#39;t make them call 50 times.</p>
+<ul>
+<li><strong>Bulk read:</strong> <code>GET /products?ids=1,2,3</code> (bounded list).</li>
+<li><strong>Bulk write:</strong> <code>POST /products/bulk</code> with an array. Decide semantics: all-or-nothing (transaction) or per-item results. Per-item is common: <code>207 Multi-Status</code> style, or <code>200</code> with <code>{ results: [{ index, status, error? }] }</code>.</li>
+<li><strong>Batch endpoint</strong> (<code>POST /batch</code>) lets a client bundle independent calls.</li>
+<li><strong>Always cap batch size</strong> (e.g., 100) and total body size.</li>
+</ul>
+<hr>
+
+<h2 id="8-14-hypermedia-hateoas-know-it-use-it-selectively">8.14 Hypermedia (HATEOAS): Know It, Use It Selectively</h2>
+<p><strong>HATEOAS</strong> (Hypermedia As The Engine Of Application State) means responses tell the client what it can do next via links:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JSON</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;ord_9&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;pending&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;_links&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;self&quot;</span><span class="hljs-punctuation">:</span>   <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;href&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/orders/ord_9&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;cancel&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;href&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/orders/ord_9/cancel&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;method&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;POST&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;pay&quot;</span><span class="hljs-punctuation">:</span>    <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;href&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/orders/ord_9/payments&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;method&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;POST&quot;</span> <span class="hljs-punctuation">}</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>Appeal: the server controls which actions are available (the <code>cancel</code> link disappears once the order ships), clients don&#39;t hard-code URLs, and the API can evolve. Reality: very few client teams build truly link-driven clients, so it often adds payload with little payoff.</p>
+<p><strong>Pragmatic middle ground:</strong> include <strong><code>next</code>/<code>self</code> links for pagination</strong> and a small <code>allowedActions: [&quot;cancel&quot;, &quot;pay&quot;]</code> array when the UI needs to know what to show. Full HATEOAS only if you genuinely have many independent clients that benefit from discoverability.</p>
+<hr>
+
+<h2 id="8-15-openapi-the-contract">8.15 OpenAPI: The Contract</h2>
+<p><strong>OpenAPI</strong> (formerly Swagger) is the standard, machine-readable description of an HTTP API. One YAML file can generate:</p>
+<ul>
+<li>Interactive documentation (Swagger UI, Redoc, Scalar).</li>
+<li>Client SDKs in many languages.</li>
+<li>Server stubs and request/response validation.</li>
+<li>Mock servers for frontend teams to build against before the backend exists.</li>
+<li>Contract tests that prevent drift.</li>
+</ul>
+<p>A compact, real spec for part of ShopLine:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">YAML</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-yaml"><span class="hljs-attr">openapi:</span> <span class="hljs-number">3.1</span><span class="hljs-number">.0</span>
+<span class="hljs-attr">info:</span>
+  <span class="hljs-attr">title:</span> <span class="hljs-string">ShopLine</span> <span class="hljs-string">API</span>
+  <span class="hljs-attr">version:</span> <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
+<span class="hljs-attr">servers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">url:</span> <span class="hljs-string">https://api.shopline.com/v1</span>
+<span class="hljs-attr">paths:</span>
+  <span class="hljs-string">/products:</span>
+    <span class="hljs-attr">get:</span>
+      <span class="hljs-attr">summary:</span> <span class="hljs-string">List</span> <span class="hljs-string">products</span> <span class="hljs-string">(cursor-paginated)</span>
+      <span class="hljs-attr">parameters:</span>
+        <span class="hljs-bullet">-</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">limit</span>, <span class="hljs-attr">in:</span> <span class="hljs-string">query</span>, <span class="hljs-attr">schema:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">integer</span>, <span class="hljs-attr">minimum:</span> <span class="hljs-number">1</span>, <span class="hljs-attr">maximum:</span> <span class="hljs-number">100</span>, <span class="hljs-attr">default:</span> <span class="hljs-number">20</span> } }
+        <span class="hljs-bullet">-</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">after</span>, <span class="hljs-attr">in:</span> <span class="hljs-string">query</span>, <span class="hljs-attr">schema:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">string</span> }, <span class="hljs-attr">description:</span> <span class="hljs-string">Opaque</span> <span class="hljs-string">cursor</span> <span class="hljs-string">from</span> <span class="hljs-string">a</span> <span class="hljs-string">previous</span> <span class="hljs-string">page</span> }
+      <span class="hljs-attr">responses:</span>
+        <span class="hljs-attr">&#x27;200&#x27;:</span>
+          <span class="hljs-attr">description:</span> <span class="hljs-string">A</span> <span class="hljs-string">page</span> <span class="hljs-string">of</span> <span class="hljs-string">products</span>
+          <span class="hljs-attr">content:</span>
+            <span class="hljs-attr">application/json:</span>
+              <span class="hljs-attr">schema:</span>
+                <span class="hljs-attr">type:</span> <span class="hljs-string">object</span>
+                <span class="hljs-attr">required:</span> [<span class="hljs-string">data</span>, <span class="hljs-string">page</span>]
+                <span class="hljs-attr">properties:</span>
+                  <span class="hljs-attr">data:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">array</span>, <span class="hljs-attr">items:</span> { <span class="hljs-string">$ref:</span> <span class="hljs-string">&#x27;#/components/schemas/Product&#x27;</span> } }
+                  <span class="hljs-attr">page:</span>
+                    <span class="hljs-attr">type:</span> <span class="hljs-string">object</span>
+                    <span class="hljs-attr">properties:</span>
+                      <span class="hljs-attr">limit:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">integer</span> }
+                      <span class="hljs-attr">hasMore:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">boolean</span> }
+                      <span class="hljs-attr">nextCursor:</span> { <span class="hljs-attr">type:</span> [<span class="hljs-string">string</span>, <span class="hljs-string">&#x27;null&#x27;</span>] }
+        <span class="hljs-attr">&#x27;400&#x27;:</span> { <span class="hljs-string">$ref:</span> <span class="hljs-string">&#x27;#/components/responses/Problem&#x27;</span> }
+    <span class="hljs-attr">post:</span>
+      <span class="hljs-attr">summary:</span> <span class="hljs-string">Create</span> <span class="hljs-string">a</span> <span class="hljs-string">product</span>
+      <span class="hljs-attr">requestBody:</span>
+        <span class="hljs-attr">required:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">content:</span>
+          <span class="hljs-attr">application/json:</span>
+            <span class="hljs-attr">schema:</span> { <span class="hljs-string">$ref:</span> <span class="hljs-string">&#x27;#/components/schemas/NewProduct&#x27;</span> }
+      <span class="hljs-attr">responses:</span>
+        <span class="hljs-attr">&#x27;201&#x27;:</span>
+          <span class="hljs-attr">description:</span> <span class="hljs-string">Created</span>
+          <span class="hljs-attr">headers:</span>
+            <span class="hljs-attr">Location:</span> { <span class="hljs-attr">schema:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">string</span> } }
+          <span class="hljs-attr">content:</span>
+            <span class="hljs-attr">application/json:</span>
+              <span class="hljs-attr">schema:</span> { <span class="hljs-string">$ref:</span> <span class="hljs-string">&#x27;#/components/schemas/Product&#x27;</span> }
+        <span class="hljs-attr">&#x27;422&#x27;:</span> { <span class="hljs-string">$ref:</span> <span class="hljs-string">&#x27;#/components/responses/Problem&#x27;</span> }
+<span class="hljs-attr">components:</span>
+  <span class="hljs-attr">schemas:</span>
+    <span class="hljs-attr">NewProduct:</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">object</span>
+      <span class="hljs-attr">required:</span> [<span class="hljs-string">name</span>, <span class="hljs-string">price</span>]
+      <span class="hljs-attr">additionalProperties:</span> <span class="hljs-literal">false</span>
+      <span class="hljs-attr">properties:</span>
+        <span class="hljs-attr">name:</span>  { <span class="hljs-attr">type:</span> <span class="hljs-string">string</span>, <span class="hljs-attr">minLength:</span> <span class="hljs-number">1</span>, <span class="hljs-attr">maxLength:</span> <span class="hljs-number">100</span> }
+        <span class="hljs-attr">price:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">integer</span>, <span class="hljs-attr">minimum:</span> <span class="hljs-number">0</span>, <span class="hljs-attr">description:</span> <span class="hljs-string">Minor</span> <span class="hljs-string">units</span> <span class="hljs-string">(paise)</span> }
+    <span class="hljs-attr">Product:</span>
+      <span class="hljs-attr">allOf:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">$ref:</span> <span class="hljs-string">&#x27;#/components/schemas/NewProduct&#x27;</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">object</span>
+          <span class="hljs-attr">required:</span> [<span class="hljs-string">id</span>]
+          <span class="hljs-attr">properties:</span> { <span class="hljs-attr">id:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">string</span> }, <span class="hljs-attr">version:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">integer</span> } }
+  <span class="hljs-attr">responses:</span>
+    <span class="hljs-attr">Problem:</span>
+      <span class="hljs-attr">description:</span> <span class="hljs-string">Error</span> <span class="hljs-string">(RFC</span> <span class="hljs-number">9457</span><span class="hljs-string">)</span>
+      <span class="hljs-attr">content:</span>
+        <span class="hljs-string">application/problem+json:</span>
+          <span class="hljs-attr">schema:</span>
+            <span class="hljs-attr">type:</span> <span class="hljs-string">object</span>
+            <span class="hljs-attr">properties:</span>
+              <span class="hljs-attr">type:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">string</span> }
+              <span class="hljs-attr">title:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">string</span> }
+              <span class="hljs-attr">status:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">integer</span> }
+              <span class="hljs-attr">detail:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">string</span> }</code></pre></div>
+<h3 id="code-first-or-contract-first">Code-first or contract-first?</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Approach</th>
+<th>Flow</th>
+<th>Good when</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Contract-first</strong></td>
+<td>Write the OpenAPI → generate stubs/validators/docs → implement</td>
+<td>Many teams/consumers; public APIs; frontend builds in parallel</td>
+</tr>
+<tr>
+<td><strong>Code-first</strong></td>
+<td>Write routes with schemas → generate OpenAPI from code</td>
+<td>Small teams; Fastify (<code>@fastify/swagger</code>) or Zod-based generators</td>
+</tr>
+</tbody></table></div>
+<p>Either works. The cardinal sin is <strong>docs that are hand-written and drift from reality</strong>. Generate one from the other, and validate in CI.</p>
+<h3 id="documentation-that-developers-love">Documentation that developers love</h3>
+<p>Besides the reference: a <strong>quick start</strong> (first call in 5 minutes), authentication guide, error catalog, pagination/idempotency guides, rate limits, changelog, and copy-paste examples in curl and your SDK language.</p>
+<hr>
+
+<h2 id="8-16-shopline-api-v1-the-design-we-ll-build-toward">8.16 ShopLine API v1: The Design We&#39;ll Build Toward</h2>
+<p>We&#39;ll implement this surface across the coming chapters, so keep it handy.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Method &amp; path</th>
+<th>Purpose</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td><code>GET /v1/products</code></td>
+<td>List (cursor pagination, filters, sort)</td>
+<td><code>limit</code>, <code>after</code>, <code>category</code>, <code>maxPrice</code>, <code>sort</code></td>
+</tr>
+<tr>
+<td><code>GET /v1/products/{id}</code></td>
+<td>One product</td>
+<td>returns <code>ETag</code></td>
+</tr>
+<tr>
+<td><code>POST /v1/products</code></td>
+<td>Create (admin)</td>
+<td><code>201</code> + <code>Location</code></td>
+</tr>
+<tr>
+<td><code>PATCH /v1/products/{id}</code></td>
+<td>Update (admin)</td>
+<td>requires <code>If-Match</code></td>
+</tr>
+<tr>
+<td><code>DELETE /v1/products/{id}</code></td>
+<td>Delete (admin)</td>
+<td><code>204</code></td>
+</tr>
+<tr>
+<td><code>GET /v1/products/{id}/reviews</code></td>
+<td>Reviews of a product</td>
+<td>cursor-paginated</td>
+</tr>
+<tr>
+<td><code>POST /v1/products/{id}/reviews</code></td>
+<td>Add review (customer)</td>
+<td>one per user</td>
+</tr>
+<tr>
+<td><code>POST /v1/auth/register</code>, <code>/login</code>, <code>/refresh</code>, <code>/logout</code></td>
+<td>Auth (Ch. 21)</td>
+<td>rate-limited</td>
+</tr>
+<tr>
+<td><code>GET /v1/me</code></td>
+<td>Current user</td>
+<td></td>
+</tr>
+<tr>
+<td><code>GET /v1/orders</code></td>
+<td>My orders</td>
+<td>cursor-paginated</td>
+</tr>
+<tr>
+<td><code>POST /v1/orders</code></td>
+<td>Place order</td>
+<td><strong>requires <code>Idempotency-Key</code></strong></td>
+</tr>
+<tr>
+<td><code>GET /v1/orders/{id}</code></td>
+<td>One order</td>
+<td>owner or admin only</td>
+</tr>
+<tr>
+<td><code>POST /v1/orders/{id}/cancel</code></td>
+<td>Cancel</td>
+<td><code>409</code> if shipped</td>
+</tr>
+<tr>
+<td><code>POST /v1/reports</code> → <code>GET /v1/reports/{id}</code></td>
+<td>Async report</td>
+<td><code>202</code> + polling (Ch. 28)</td>
+</tr>
+</tbody></table></div>
+<p>Conventions fixed for the whole project: plural nouns, <code>/v1</code> prefix, string IDs, ISO-8601 UTC timestamps, money as integer minor units + currency, RFC 9457 errors, cursor pagination with <code>limit</code> (default 20, max 100), <code>X-Request-Id</code> on all responses, <code>Idempotency-Key</code> on money-moving POSTs.</p>
+<hr>
+
+<h2 id="8-17-the-api-design-review-checklist">8.17 The API Design Review Checklist</h2>
+<p>Use this on every endpoint before merging:</p>
+<p><strong>Resources &amp; methods</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Nouns, plural, lowercase-hyphenated; nesting ≤ 2 levels.</li>
+<li><input disabled="" type="checkbox"> Correct method &amp; status code for each outcome (201 + <code>Location</code>, 204, 404, 409, 422).</li>
+<li><input disabled="" type="checkbox"> Non-CRUD actions follow the one chosen convention.</li>
+</ul>
+<p><strong>Data</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> IDs are strings; timestamps ISO-8601 UTC; money in minor units + currency.</li>
+<li><input disabled="" type="checkbox"> Empty collections are <code>[]</code>; no leaked internal fields.</li>
+<li><input disabled="" type="checkbox"> All inputs validated strictly; limits on string lengths and array sizes.</li>
+</ul>
+<p><strong>Scale &amp; safety</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Every collection endpoint paginated, with max <code>limit</code> and deterministic order.</li>
+<li><input disabled="" type="checkbox"> Filter/sort fields whitelisted and indexed.</li>
+<li><input disabled="" type="checkbox"> Retries safe: idempotent method, or <code>Idempotency-Key</code>.</li>
+<li><input disabled="" type="checkbox"> Concurrent edits protected (<code>ETag</code>/<code>If-Match</code> or version field).</li>
+<li><input disabled="" type="checkbox"> Long work returns <code>202</code> + a status resource.</li>
+</ul>
+<p><strong>Evolution &amp; operations</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Versioned (<code>/v1</code>); changes are additive; deprecations announced with headers.</li>
+<li><input disabled="" type="checkbox"> One error format everywhere (RFC 9457 or equivalent); stable error <code>type</code>/<code>code</code>.</li>
+<li><input disabled="" type="checkbox"> Rate-limit headers; <code>X-Request-Id</code>; documented in OpenAPI; examples included.</li>
+</ul>
+<hr>
+
+<h2 id="8-18-edge-cases-and-gotchas-checklist">8.18 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>OFFSET</code> pagination on a huge or fast-changing table → slow and duplicated/missing rows.</li>
+<li><input disabled="" type="checkbox"> Cursor sort key not unique → rows skipped/repeated (add a tie-breaker).</li>
+<li><input disabled="" type="checkbox"> Cursor treated as meaningful by clients → you can never change it. Keep it opaque.</li>
+<li><input disabled="" type="checkbox"> Returning huge lists with no cap on <code>limit</code>.</li>
+<li><input disabled="" type="checkbox"> Money stored/returned as floats.</li>
+<li><input disabled="" type="checkbox"> 64-bit integer IDs as JSON numbers (precision loss in JavaScript clients).</li>
+<li><input disabled="" type="checkbox"> Timestamps without timezone, or in local time.</li>
+<li><input disabled="" type="checkbox"> Inconsistent field naming (<code>userId</code> vs <code>user_id</code>) across endpoints.</li>
+<li><input disabled="" type="checkbox"> <code>POST</code> retried by clients/proxies/mobile SDKs → duplicates without idempotency.</li>
+<li><input disabled="" type="checkbox"> Idempotency store not shared across instances, or check-then-set race (non-atomic).</li>
+<li><input disabled="" type="checkbox"> Reusing an idempotency key with a different body silently accepted.</li>
+<li><input disabled="" type="checkbox"> Lost updates from concurrent edits (no version check).</li>
+<li><input disabled="" type="checkbox"> Renaming a field &quot;because it&#39;s cleaner&quot; (breaking change).</li>
+<li><input disabled="" type="checkbox"> Changing validation to stricter rules in-place.</li>
+<li><input disabled="" type="checkbox"> Verb URLs creeping in (<code>/getUser</code>, <code>/doPayment</code>).</li>
+<li><input disabled="" type="checkbox"> Mixed error shapes: some <code>{error}</code>, some <code>{message}</code>, some HTML from a proxy.</li>
+<li><input disabled="" type="checkbox"> Returning 200 with an error body.</li>
+<li><input disabled="" type="checkbox"> Docs drifting from implementation.</li>
+<li><input disabled="" type="checkbox"> Deprecating an endpoint without measuring who still uses it.</li>
+</ul>
+<hr>
+
+<h2 id="8-19-chapter-summary">8.19 Chapter Summary</h2>
+<ul>
+<li><strong>Resource-oriented design</strong>: nouns in URLs, verbs in methods, shallow nesting, consistent conventions. Level 2 REST done well beats Level 3 done halfway.</li>
+<li><strong>JSON is a long-term promise</strong>: string IDs, ISO-8601 UTC, <strong>money as integer minor units</strong>, arrays never null, clients ignore unknown fields.</li>
+<li><strong>One error format</strong> (RFC 9457 <code>application/problem+json</code>) with a stable machine-readable <code>type</code>.</li>
+<li><strong>Paginate everything</strong>; prefer <strong>cursor/keyset</strong> (opaque cursor, tie-breaker, fetch limit+1) for scale and stability; offset only for small lists.</li>
+<li><strong>Idempotency keys</strong> make <code>POST</code> retry-safe: claim, work, record, replay, with an atomic shared store and a database constraint as the real guard.</li>
+<li><strong><code>ETag</code> + <code>If-Match</code></strong> prevent lost updates (<code>412</code>/<code>428</code>), mirroring optimistic locking in SQL.</li>
+<li>Use <strong><code>202</code> + status resources</strong> for long-running operations.</li>
+<li><strong>Version in the URL</strong>, change additively, deprecate with <code>Deprecation</code>/<code>Sunset</code> headers after measuring usage.</li>
+<li><strong>OpenAPI</strong> is the contract that drives docs, SDKs, mocks and tests; keep it generated from, or validated against, the code.</li>
+</ul>
+<hr>
+
+<h2 id="8-20-revision-notes">8.20 Revision Notes</h2>
+<ul>
+<li>URL: <code>/v1/products</code>, <code>/v1/products/{id}</code>, <code>/v1/products/{id}/reviews</code>. Actions: sub-resource or <code>/cancel</code>.</li>
+<li>201 + <code>Location</code> on create; 204 on delete; 409 conflict; 422 invalid; 412/428 for If-Match; 202 for async.</li>
+<li>JSON: string ids; <code>2026-11-03T09:30:00Z</code>; <code>{ &quot;amount&quot;: 89900, &quot;currency&quot;: &quot;INR&quot; }</code>.</li>
+<li>Errors: <code>application/problem+json</code> → <code>type, title, status, detail, instance</code>.</li>
+<li>Cursor: <code>WHERE id &gt; :last ORDER BY id LIMIT n+1</code>; return <code>hasMore</code>, <code>nextCursor</code>; opaque base64url; add tie-breaker.</li>
+<li>Idempotency-Key: same key+same body → replay; different body → 422; in-flight → 409; claim atomically.</li>
+<li>Concurrency: <code>ETag: &quot;v&quot;</code> + <code>If-Match</code>; <code>UPDATE ... WHERE id=? AND version=?</code>.</li>
+<li>Versioning: <code>/v1</code>, additive; <code>Deprecation</code> + <code>Sunset</code> headers.</li>
+<li>OpenAPI 3.1: paths, parameters, requestBody, responses, components/schemas.</li>
+</ul>
+<hr>
+
+<h2 id="8-21-mind-map-ascii">8.21 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                               REST API DESIGN (Ch. 8)
+                                         │
+    ┌──────────┬────────────┬────────────┼─────────────┬──────────────┬───────────┐
+ RESOURCES    JSON        ERRORS     SCALE &amp; SAFETY   EVOLUTION      CONTRACT
+    │           │            │             │              │              │
+ nouns,      string ids   RFC 9457     cursor paging  /v1 versioning  OpenAPI 3.1
+ plural,     ISO dates    problem+json (opaque,       additive        docs, SDKs,
+ ≤2 levels   money=int    type/title/  tie-breaker)   changes         mocks, tests
+ actions as  [] not null  status/      idempotency    Deprecation +   code-first or
+ sub-res or  hide         detail       keys (claim →  Sunset headers  contract-first
+ /cancel     internals    instance     work → replay) measure usage
+ method +                              ETag/If-Match  202 + status
+ status map                            412 / 428      resource for
+                                                      long jobs</code></pre>
+<hr>
+
+<h2 id="8-22-cheat-sheet">8.22 Cheat Sheet</h2>
+<pre class="is-plain"><code>URLS         /v1/products | /v1/products/{id} | /v1/products/{id}/reviews | POST /v1/orders/{id}/cancel
+STATUS       200 ok | 201 created(+Location) | 202 accepted | 204 no content
+             400 bad syntax | 401 | 403 | 404 | 409 conflict | 412 precondition failed
+             422 invalid | 428 precondition required | 429 rate limit | 5xx ours
+JSON         ids: strings | dates: ISO-8601 UTC | money: {amount:int minor units, currency}
+             collections: { data:[], page:{limit,hasMore,nextCursor} }
+ERROR        Content-Type: application/problem+json
+             { type, title, status, detail, instance, ...extensions }
+CURSOR       WHERE id &gt; :last ORDER BY id LIMIT :n+1  → nextCursor = base64url({id})
+             non-unique sort → WHERE (sortcol,id) &gt; (:v,:id) ORDER BY sortcol,id
+IDEMPOTENCY  Idempotency-Key header | claim atomically | replay same body | 422 diff body | 409 in-flight
+CONCURRENCY  ETag: &quot;3&quot;  ⇄  If-Match: &quot;3&quot;   → 412 stale / 428 missing
+LONG JOBS    POST → 202 + Location: /reports/{id} → poll status → done + downloadUrl
+VERSIONING   /v1 in path; additive changes; Deprecation + Sunset headers; track usage
+OPENAPI      paths → operations → parameters/requestBody/responses → components/schemas
+NEVER        verbs in URLs | floats for money | OFFSET on big tables | unbounded lists | breaking v1</code></pre>
+<hr>
+
+<h2 id="8-23-key-takeaways">8.23 Key Takeaways</h2>
+<ol>
+<li>An API is a <strong>contract with strangers</strong>; design for the developer reading it and the client that will never be updated.</li>
+<li><strong>Consistency is the highest-value property.</strong> One way to name, paginate, error, and version.</li>
+<li>Assume <strong>networks fail and users double-click</strong>: build idempotency and concurrency control into write paths.</li>
+<li><strong>Scale-proof early</strong>: cursor pagination and whitelisted, indexed filters cost little now and are brutal to retrofit.</li>
+<li><strong>Never break v1.</strong> Add, don&#39;t change.</li>
+<li>Write the contract (OpenAPI) and let tools keep docs, SDKs and tests honest.</li>
+</ol>
+<hr>
+
+<h2 id="8-24-20-multiple-choice-questions">8.24 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Plural noun, no verbs/extensions."><p class="quiz-text">Which URL follows REST naming conventions?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>/getProducts</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>/products</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>/product/getAll</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>/Products.json</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="201 Created (+ Location)."><p class="quiz-text">Which status should a successful resource creation return?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">200</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">201</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">204</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">202</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Skipped rows are still read."><p class="quiz-text">Why is <code>OFFSET</code> pagination slow for deep pages?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Network latency</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The database reads and discards all skipped rows</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JSON size</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It isn&#39;t slow</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Opaque position marker."><p class="quiz-text">What is a cursor in cursor-based pagination?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A SQL keyword</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An opaque token marking where the previous page ended</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A page number</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A cache key</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Ensures deterministic, gap-free paging."><p class="quiz-text">When sorting by a non-unique column such as <code>price</code>, the cursor must also include:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The timestamp</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A unique tie-breaker such as <code>id</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The total count</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Avoids float rounding."><p class="quiz-text">How should money be represented in JSON?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A float: <code>899.99</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Integer minor units plus currency: <code>{amount: 89999, currency: &quot;INR&quot;}</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A formatted string <code>&quot;₹899.99&quot;</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Binary</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="JS safe integer limit is 2⁵³−1."><p class="quiz-text">Why return IDs as strings?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Prettier</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Large integers lose precision as JavaScript numbers and strings are future-proof</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Required by HTTP</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Faster</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Misuse of key; 422."><p class="quiz-text">The idempotency middleware receives the same key with a <em>different</em> body. Best response?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Replay the old response</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">422: key reuse with a different request</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Process it again</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">500</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Non-atomic check-then-set races."><p class="quiz-text">Why must the idempotency &quot;claim&quot; be atomic in production?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Style</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Two instances could both see &quot;not seen&quot; and both process the request</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Redis requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To save memory</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="412 Precondition Failed."><p class="quiz-text">Which status indicates a failed <code>If-Match</code> precondition?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">400</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">409</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">412</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">304</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Optimistic concurrency."><p class="quiz-text">What is the problem <code>ETag</code> + <code>If-Match</code> solves?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Slow queries</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Lost updates from concurrent edits</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">CORS errors</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Pagination</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Async job pattern."><p class="quiz-text">A report will take 3 minutes to generate. Best HTTP design?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Keep the request open</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">202 Accepted with a <code>Location</code> to poll a status resource</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Return 500</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Use GET</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Renaming removes the old name."><p class="quiz-text">Which is a <strong>breaking</strong> change?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Adding an optional response field</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Renaming a response field</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Adding a new endpoint</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Adding an optional query parameter</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Simple, visible, cache-friendly."><p class="quiz-text">What is the most common API versioning approach for public REST APIs?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Cookie</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">URL path (<code>/v1</code>)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Random</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Subdomain per user</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Lifecycle signaling."><p class="quiz-text">What do <code>Deprecation</code> and <code>Sunset</code> headers communicate?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Cache policy</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">That an endpoint is deprecated and when it will be removed</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Rate limits</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Authentication</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Problem Details for HTTP APIs."><p class="quiz-text">What does RFC 9457 standardize?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">JWT format</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A machine-readable error format (<code>application/problem+json</code>)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Pagination</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">CORS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Clients can iterate safely."><p class="quiz-text">Which is a good practice for collections in JSON?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Return <code>null</code> when empty</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Return <code>[]</code> when empty</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Omit the field</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Return <code>&quot;none&quot;</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Prevents injection and unindexed scans."><p class="quiz-text">Where should filter/sort fields come from?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Passed directly into SQL</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A whitelist mapped to indexed columns</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Any string the client sends</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cookies</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Shallow nesting; give children top-level identity."><p class="quiz-text">Which nesting is preferable?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>/users/1/orders/2/items/3/shipments/4</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>/orders/2/items</code> plus top-level <code>/shipments/4</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>/a/b/c/d/e</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Always flat query strings</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Cost/benefit rarely justifies it."><p class="quiz-text">Why is full HATEOAS often skipped in practice?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s illegal</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Few clients are built to be link-driven, so it adds payload with limited benefit</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">HTTP forbids links</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s slower than gRPC</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-c, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="8-25-20-hands-on-exercises">8.25 20 Hands-on Exercises</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Rewrite these URLs RESTfully: <code>/getUserOrders?id=5</code>, <code>/deleteReview</code>, <code>/product/updatePrice</code>, <code>/Users/5/Orders/9/Items/2/Notes</code>.</li>
+<li>For each of the 10 ShopLine endpoints in §8.16, write the success status and two failure statuses.</li>
+<li>Design the JSON for an <code>Order</code> with items, totals (money!), status, and timestamps. Justify each field type.</li>
+<li>Implement RFC 9457 error output in your Chapter 7 error handler; verify <code>Content-Type</code>.</li>
+<li>Take the cursor-pagination snippet and page through 25 items, 10 at a time. Print each <code>nextCursor</code> and decode it.</li>
+<li>Demonstrate float money bugs in Node (<code>0.1 + 0.2</code>, <code>19.99 * 100</code>) and fix with integers.</li>
+<li>List five changes to your API: mark each breaking or non-breaking.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="8">
+<li>Add the <code>/v1</code> router to ShopLine and move all routes under it. Keep a redirect from the old paths with <code>308</code>.</li>
+<li>Implement cursor pagination sorted by <code>price</code> (non-unique) with an <code>id</code> tie-breaker. Insert products with equal prices and prove no row is skipped or repeated.</li>
+<li>Implement <code>ETag</code>/<code>If-Match</code> on <code>PATCH /products/:id</code> and write tests for 200, 412 and 428.</li>
+<li>Build the idempotency middleware and test: first request, replay, different body, concurrent duplicate (use <code>Promise.all([fetch, fetch])</code>).</li>
+<li>Add <code>Deprecation</code> and <code>Sunset</code> headers to a legacy endpoint via middleware, plus a <code>Link</code> to docs.</li>
+<li>Add <code>GET /products?ids=1,2,3</code> bulk read with a cap of 50 ids and a 422 beyond it.</li>
+<li>Implement <code>POST /reports</code> returning <code>202</code> with <code>Location</code>, a <code>GET /reports/:id</code> status endpoint, and a <code>setTimeout</code> fake worker that moves the job through <code>queued → running → done</code>.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="15">
+<li>Write an OpenAPI 3.1 document for ShopLine&#39;s products and orders endpoints (including the <code>Problem</code> response and <code>Idempotency-Key</code> header). Render it with Swagger UI or Scalar.</li>
+<li>Add automated contract tests: a script that reads your OpenAPI file and validates real responses against it (e.g., with Ajv or <code>openapi-response-validator</code>).</li>
+<li>Move the idempotency store to Redis (or SQLite) using an atomic <code>SET NX</code>; run two server instances and fire concurrent duplicate requests at both. Prove exactly one order is created.</li>
+<li>Implement a signed cursor (HMAC) so tampering returns 400; explain when encryption would be preferable.</li>
+<li>Build a <code>POST /batch</code> endpoint that executes up to 20 sub-requests and returns per-item results; discuss authorization and error-handling pitfalls.</li>
+<li>Write an API design review of a public API you admire (Stripe, GitHub, Twilio): score it against the §8.17 checklist and list three things you&#39;d copy and one you&#39;d change.</li>
+</ol>
+<hr>
+
+<h2 id="8-26-5-interview-questions">8.26 5 Interview Questions</h2>
+<p><strong>1. How would you design pagination for a table with 100 million rows that&#39;s being updated constantly?</strong>
+<em>Model answer:</em> Keyset (cursor) pagination on an indexed, unique ordering (e.g., <code>(created_at, id)</code>), with <code>LIMIT n+1</code> to detect more pages, an opaque base64 cursor encoding the last key, a max page size, no <code>OFFSET</code>, and typically no exact total count (or an approximate one). It&#39;s O(log n) at any depth and stable under concurrent inserts, unlike offset pagination which scans skipped rows and shifts data.</p>
+<p><strong>2. A client retries a payment request after a timeout. How do you prevent double charging?</strong>
+<em>Model answer:</em> Require an <code>Idempotency-Key</code>, claim it atomically (Redis <code>SET NX</code> or a unique DB constraint) before charging, persist the final response, replay it for duplicates with the same payload, reject mismatched payloads (422) and in-flight duplicates (409). Scope keys per account, expire them, and pass an idempotency key to the payment provider too. The database unique constraint is the ultimate guard.</p>
+<p><strong>3. How do you handle breaking API changes for mobile apps you can&#39;t force-update?</strong>
+<em>Model answer:</em> Avoid them: evolve additively and tolerate unknown fields. When unavoidable, ship a new version (<code>/v2</code>) side by side, keep <code>/v1</code> running for a long, announced period, add <code>Deprecation</code>/<code>Sunset</code> headers, track per-version/per-client usage to know when it&#39;s safe, communicate with big consumers, and consider a minimum-supported-app-version gate.</p>
+<p><strong>4. REST vs RPC-style endpoints: how do you model &quot;cancel order&quot;?</strong>
+<em>Model answer:</em> Options: create a <code>cancellation</code> sub-resource (<code>POST /orders/9/cancellation</code>), <code>PATCH</code> the status with server-validated transitions, or a command endpoint <code>POST /orders/9/cancel</code>. I&#39;d pick one convention per API; return <code>409</code> if the state doesn&#39;t allow it, make it idempotent (cancelling an already cancelled order returns the same result), and emit an event for downstream systems.</p>
+<p><strong>5. What&#39;s optimistic concurrency and how would you expose it in an HTTP API?</strong>
+<em>Model answer:</em> Assume conflicts are rare; detect rather than lock. Each resource has a version; GET returns it as an <code>ETag</code>; updates must send <code>If-Match</code>; the server performs <code>UPDATE ... WHERE id=? AND version=?</code> atomically and returns <code>412</code> if 0 rows changed (and <code>428</code> if the header was missing). The client re-reads, merges and retries. It avoids long-held locks and lost updates.</p>
+<hr>
+
+<h2 id="8-27-3-real-projects">8.27 3 Real Projects</h2>
+<p><strong>Project 1: Design-First Library API (beginner, ~5 hours).</strong>
+Before writing any server code, produce a full OpenAPI spec for a library system (books, members, loans, reservations), including pagination, errors, idempotent <code>POST /loans</code>, and a non-CRUD <code>POST /loans/{id}/return</code>. Generate a mock server from the spec (Prism), let a classmate build a tiny frontend against the mock, then implement the real server and run contract tests against both.</p>
+<p><strong>Project 2: Payments-Grade Order API (intermediate–advanced, ~8 hours).</strong>
+<code>POST /orders</code> with Idempotency-Key backed by SQLite/Redis (atomic claims), stock reservation, <code>ETag</code>/<code>If-Match</code> on updates, cancellation with state-machine validation (<code>pending → paid → shipped → delivered | cancelled</code>, illegal transitions return <code>409</code>), cursor-paginated order history with a <code>(createdAt, id)</code> cursor, and a chaos test script that fires duplicates, concurrent edits and killed connections, then asserts the system&#39;s invariants (no double orders, stock never negative).</p>
+<p><strong>Project 3: API Versioning Lab (advanced, ~6 hours).</strong>
+Build v1 of a products API, publish a client script that depends on it, then introduce a breaking redesign as v2 (nested money object, renamed fields). Run both side by side behind one app, share the service layer, translate v1 requests/responses via adapter functions, add <code>Deprecation</code>/<code>Sunset</code> headers and a per-version usage metric, and write a migration guide. Prove the v1 client keeps working unchanged.</p>
+<hr>
+
+<h2 id="8-28-further-reading">8.28 Further Reading</h2>
+<ul>
+<li>Roy Fielding, <em>Architectural Styles and the Design of Network-based Software Architectures</em> (the dissertation; chapter 5 is REST).</li>
+<li>RFC 9457: <em>Problem Details for HTTP APIs</em>; RFC 9110: <em>HTTP Semantics</em>; RFC 8594 (<em>Sunset</em>) and RFC 9745 (<em>Deprecation</em>).</li>
+<li>IETF draft: <em>The Idempotency-Key HTTP Header Field</em>.</li>
+<li>Stripe API documentation: widely regarded as the gold standard for idempotency, pagination and versioning.</li>
+<li>Microsoft REST API Guidelines and Google&#39;s <em>API Improvement Proposals</em> (aip.dev).</li>
+<li><em>Web API Design: The Missing Link</em> (Apigee e-book) and <em>API Design Patterns</em> by JJ Geewax.</li>
+<li>OpenAPI Specification 3.1 (spec.openapis.org); Swagger Editor; Redoc; Scalar; Prism (mock servers).</li>
+<li>Use The Index, Luke! (use-the-index-luke.com): &quot;Paging Through Results&quot; for the SQL behind keyset pagination.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-9-graphql">Up next → Chapter 9: GraphQL</h3>
+<p>REST gives each resource a URL. But what if a mobile screen needs a product, its three latest reviews, and each reviewer&#39;s name, and REST makes it call three endpoints and download fields it never shows? GraphQL lets the client ask for exactly the shape it needs in one request, at the cost of new problems (N+1 queries, query abuse, caching). Let&#39;s learn both the power and the traps.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">REST API Design: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is cursor pagination and why use it?</h3></summary><p>Cursor (keyset) pagination asks for the next page after the last item you saw. Its cost stays constant at any depth, unlike offset pagination, which reads and discards every earlier row.</p></details>
+<details class="learn-faq-item"><summary><h3>What is an idempotency key?</h3></summary><p>A unique value a client sends with a POST so the server can detect a retry and return the original result instead of repeating the action, which prevents duplicate orders or charges.</p></details>
+<details class="learn-faq-item"><summary><h3>How should an API report errors?</h3></summary><p>Use a consistent body such as application/problem+json (RFC 9457) with a stable code, a human title, the HTTP status and a request id, and never leak stack traces.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I version an API?</h3></summary><p>Put a version in the URL or a header, evolve additively (add fields, do not remove or rename), and deprecate old versions with a clear timeline.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span>&larr; Previous &middot; Chapter 7</span><strong>Express 5 &amp; Fastify: Validation &amp; Security</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span>Next &middot; Chapter 9 &rarr;</span><strong>GraphQL with Node.js: DataLoader &amp; Limits</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#8-0-why-this-chapter-matters">8.0 Why This Chapter Matters</a></li><li><a href="#8-1-what-rest-means-in-practice">8.1 What REST Means in Practice</a></li><li><a href="#8-2-designing-resources-and-urls">8.2 Designing Resources and URLs</a></li><li><a href="#8-3-mapping-operations-to-methods-and-status-codes">8.3 Mapping Operations to Methods and Status Codes</a></li><li><a href="#8-4-designing-good-json">8.4 Designing Good JSON</a></li><li><a href="#8-5-one-error-format-problem-details-rfc-9457">8.5 One Error Format: Problem Details (RFC 9457)</a></li><li><a href="#8-6-pagination-the-one-that-bites-at-scale">8.6 Pagination (the one that bites at scale)</a></li><li><a href="#8-7-filtering-sorting-searching-and-field-selection">8.7 Filtering, Sorting, Searching and Field Selection</a></li><li><a href="#8-8-idempotency-keys-making-retries-safe">8.8 Idempotency Keys: Making Retries Safe</a></li><li><a href="#8-9-optimistic-concurrency-etag-if-match">8.9 Optimistic Concurrency: ETag + If-Match</a></li><li><a href="#8-10-long-running-operations-202-accepted">8.10 Long-Running Operations: 202 Accepted</a></li><li><a href="#8-11-versioning-and-evolving-without-breaking-anyone">8.11 Versioning and Evolving Without Breaking Anyone</a></li><li><a href="#8-12-rate-limits-caching-and-other-headers">8.12 Rate Limits, Caching and Other Headers</a></li><li><a href="#8-13-bulk-operations-and-batching">8.13 Bulk Operations and Batching</a></li><li><a href="#8-14-hypermedia-hateoas-know-it-use-it-selectively">8.14 Hypermedia (HATEOAS): Know It, Use It Selectively</a></li><li><a href="#8-15-openapi-the-contract">8.15 OpenAPI: The Contract</a></li><li><a href="#8-16-shopline-api-v1-the-design-we-ll-build-toward">8.16 ShopLine API v1: The Design We'll Build Toward</a></li><li><a href="#8-17-the-api-design-review-checklist">8.17 The API Design Review Checklist</a></li><li><a href="#8-18-edge-cases-and-gotchas-checklist">8.18 Edge Cases and Gotchas Checklist</a></li><li><a href="#8-19-chapter-summary">8.19 Chapter Summary</a></li><li><a href="#8-20-revision-notes">8.20 Revision Notes</a></li><li><a href="#8-21-mind-map-ascii">8.21 Mind Map (ASCII)</a></li><li><a href="#8-22-cheat-sheet">8.22 Cheat Sheet</a></li><li><a href="#8-23-key-takeaways">8.23 Key Takeaways</a></li><li><a href="#8-24-20-multiple-choice-questions">8.24 20 Multiple Choice Questions</a></li><li><a href="#8-25-20-hands-on-exercises">8.25 20 Hands-on Exercises</a></li><li><a href="#8-26-5-interview-questions">8.26 5 Interview Questions</a></li><li><a href="#8-27-3-real-projects">8.27 3 Real Projects</a></li><li><a href="#8-28-further-reading">8.28 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "rest-api-design-pagination-idempotency-versioning"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

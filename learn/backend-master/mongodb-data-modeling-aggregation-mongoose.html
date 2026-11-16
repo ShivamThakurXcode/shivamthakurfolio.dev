@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>MongoDB Data Modeling &amp; Aggregation | Backend Master</title>
+    <meta name="description" content="Learn MongoDB for backend work: BSON documents, embedding vs referencing, indexes and explain, the aggregation pipeline, transactions and NoSQL injection.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="mongodb tutorial, mongodb data modeling, embedding vs referencing, mongodb aggregation pipeline, mongoose, mongodb transactions, nosql injection, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="mongodb tutorial">
+    <meta property="article:tag" content="mongodb data modeling">
+    <meta property="article:tag" content="embedding vs referencing">
+    <meta property="article:tag" content="mongodb aggregation pipeline">
+    <meta property="article:tag" content="mongoose">
+    <meta property="article:tag" content="mongodb transactions">
+    <meta property="article:tag" content="nosql injection">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="MongoDB Data Modeling &amp; Aggregation">
+    <meta property="og:description" content="Learn MongoDB for backend work: BSON documents, embedding vs referencing, indexes and explain, the aggregation pipeline, transactions and NoSQL injection.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/mongodb-data-modeling-aggregation-mongoose.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MongoDB and Document Modeling: Embedding, Indexes, Aggregation and Mongoose: Backend Master chapter 18">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MongoDB Data Modeling &amp; Aggregation">
+    <meta name="twitter:description" content="Learn MongoDB for backend work: BSON documents, embedding vs referencing, indexes and explain, the aggregation pipeline, transactions and NoSQL injection.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/mongodb-data-modeling-aggregation-mongoose.png">
+    <meta name="twitter:image:alt" content="MongoDB and Document Modeling: Embedding, Indexes, Aggregation and Mongoose: Backend Master chapter 18">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose",
+          "name": "MongoDB Data Modeling & Aggregation | Backend Master",
+          "description": "Learn MongoDB for backend work: BSON documents, embedding vs referencing, indexes and explain, the aggregation pipeline, transactions and NoSQL injection.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/mongodb-data-modeling-aggregation-mongoose.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "MongoDB and Document Modeling: Embedding, Indexes, Aggregation and Mongoose"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#webpage"
+          },
+          "headline": "MongoDB and Document Modeling: Embedding, Indexes, Aggregation and Mongoose",
+          "alternativeHeadline": "MongoDB and Document Modeling — When Documents Beat Tables (and When They Don't)",
+          "description": "Learn MongoDB for backend work: BSON documents, embedding vs referencing, indexes and explain, the aggregation pipeline, transactions and NoSQL injection.",
+          "abstract": "MongoDB stores flexible JSON-like documents but still needs careful design. This chapter covers BSON, embedding versus referencing, compound and TTL indexes with explain output on 200,000 documents, the aggregation pipeline, atomic updates and transactions, schema validation, Mongoose, and the traps: operator injection and the 16 MB limit.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/mongodb-data-modeling-aggregation-mongoose.png",
+          "url": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6554,
+          "timeRequired": "PT30M",
+          "articleSection": "Backend Development",
+          "keywords": "mongodb tutorial, mongodb data modeling, embedding vs referencing, mongodb aggregation pipeline, mongoose, mongodb transactions, nosql injection",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Embedding versus referencing",
+            "Indexes and reading explain()",
+            "The aggregation pipeline",
+            "Atomic updates and multi-document transactions",
+            "NoSQL injection and when to choose PostgreSQL instead"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "mongodb tutorial"
+          },
+          "isAccessibleForFree": true,
+          "position": 18,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#article",
+            "name": "ORMs and Query Builders: Knex, Kysely, Drizzle and Prisma Compared",
+            "url": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "MongoDB Data Modeling & Aggregation",
+              "item": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "When should I embed documents in MongoDB?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Embed data that is bounded, read together and owned by one parent, such as an order's line items. Reference data that is shared, unbounded or changes independently, such as a product's reviews."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does MongoDB support transactions?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, multi-document transactions work on replica sets and sharded clusters. Single-document operations are already atomic, so good modeling avoids needing them often."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is NoSQL injection?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "If a request body is passed into a query, an attacker can send an operator object such as {\"$ne\": null} instead of a string. Validate input types at the boundary."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is schemaless the same as no schema design?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The database does not enforce structure by default, so you must design it and validate it yourself, with a $jsonSchema validator and application-level checks."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#quiz",
+          "name": "MongoDB Data Modeling & Aggregation: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "mongodb tutorial"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The \"schemaless\" claim about MongoDB is best understood as:",
+              "text": "The \"schemaless\" claim about MongoDB is best understood as:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The database doesn't enforce structure by default, so you must"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "No design needed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Data has no types"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Indexes aren't needed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does an ObjectId contain besides randomness?",
+              "text": "What does an ObjectId contain besides randomness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A creation timestamp"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A checksum only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The collection name"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The user id"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "find({ pricee_minor: { $lt: 20000 } }) (typo) returns:",
+              "text": "find({ pricee_minor: { $lt: 20000 } }) (typo) returns:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An empty result, silently"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "An error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "All documents"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A warning"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is the best candidate for embedding in an order document?",
+              "text": "Which is the best candidate for embedding in an order document?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The order's line items (bounded)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "All the customer's past orders"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The product's 50,000 reviews"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The whole product catalogue"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why are the name and unit_price_minor copied into each order line?",
+              "text": "Why are the name and unit_price_minor copied into each order line?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A snapshot of what was true at sale time"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Laziness"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "MongoDB requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "For indexing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "MongoDB's referential integrity is provided by:",
+              "text": "MongoDB's referential integrity is provided by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Nothing built in: the application"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Foreign keys"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "$lookup"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "ObjectIds"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "docsExamined: 200000, nReturned: 10 indicates:",
+              "text": "docsExamined: 200000, nReturned: 10 indicates:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A collection scan: a missing/unusable index"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A great plan"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A covered query"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A sharded query"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A compound index { userId: 1, createdAt: -1 } can answer \"latest 5 orders of user X\" because:",
+              "text": "A compound index { userId: 1, createdAt: -1 } can answer \"latest 5 orders of user X\" because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Equality on the prefix plus index order gives sorted results without a sort stage"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's unique"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's partial"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "TTL"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "PROJECTION_COVERED means:",
+              "text": "PROJECTION_COVERED means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The index contained all projected fields, so no documents were read"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The query used a transaction"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The projection failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sharding"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In aggregation, $unwind on items before $group can cause:",
+              "text": "In aggregation, $unwind on items before $group can cause:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Fan-out: counting orders needs distinct ids"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Data loss"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Index loss"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our oversell test, \"naive read-then-write\" gave:",
+              "text": "In our oversell test, \"naive read-then-write\" gave:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "50 confirmed, stock 8"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "10 confirmed, stock 0"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0 confirmed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The correct atomic pattern is:",
+              "text": "The correct atomic pattern is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "updateOne({ stock: { $gte: 1 } }, { $inc: { stock: -1 } }) and check modifiedCount"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "findOne then updateOne"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use $where"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Lock the collection"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Multi-document transactions in MongoDB require:",
+              "text": "Multi-document transactions in MongoDB require:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A replica set (or sharded cluster)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A standalone server"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The Atlas cloud"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Mongoose"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What's the classic mistake inside withTransaction?",
+              "text": "What's the classic mistake inside withTransaction?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Forgetting to pass { session } to an operation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Using await"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retrying"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using $inc"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Error code 121 means:",
+              "text": "Error code 121 means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Document validation failure"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Duplicate key"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Network error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Auth failure"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Mongoose's required/min validators are enforced:",
+              "text": "Mongoose's required/min validators are enforced:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Only for writes going through the Mongoose model"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "By the database for all writers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By the replica set"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "populate() is best described as:",
+              "text": "populate() is best described as:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Extra queries that Mongoose stitches together"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A server-side join"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An index"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A cache"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The {\"password\": {\"$ne\": null}} attack works because:",
+              "text": "The {\"password\": {\"$ne\": null}} attack works because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An object from the request body was used as a query operator"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "MongoDB has a bug"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Passwords are hashed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "TTL"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best fix for operator injection is:",
+              "text": "The best fix for operator injection is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Validate that inputs have the expected primitive types at the boundary"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Escape quotes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Disable $ne"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use lean()"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a natural reason to choose PostgreSQL over MongoDB?",
+              "text": "Which is a natural reason to choose PostgreSQL over MongoDB?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Strong relationships, money, multi-entity transactions and reporting"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Highly variable document shapes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "You want built-in sharding"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Tiny prototypes"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">MongoDB Data Modeling &amp; Aggregation</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:50.0%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item active" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose" aria-current="page"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 18 of 36 &middot; Intermediate</p>
+                        <h1>MongoDB and Document Modeling: Embedding, Indexes, Aggregation and Mongoose</h1>
+                        <p class="learn-book-title">MongoDB and Document Modeling — When Documents Beat Tables (and When They Don't)</p>
+                        <ul class="learn-meta text-caption">
+                            <li>30 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/mongodb-data-modeling-aggregation-mongoose.webp"><img src="../../assets/images/learn/backend-master/mongodb-data-modeling-aggregation-mongoose.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="MongoDB and Document Modeling: Embedding, Indexes, Aggregation and Mongoose: Backend Master chapter 18 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>MongoDB stores flexible JSON-like documents but still needs careful design. This chapter covers BSON, embedding versus referencing, compound and TTL indexes with explain output on 200,000 documents, the aggregation pipeline, atomic updates and transactions, schema validation, Mongoose, and the traps: operator injection and the 16 MB limit.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Embedding versus referencing</li><li>Indexes and reading explain()</li><li>The aggregation pipeline</li><li>Atomic updates and multi-document transactions</li><li>NoSQL injection and when to choose PostgreSQL instead</li></ul>
+                        </section>
+<hr>
+
+<h2 id="18-0-why-this-chapter-matters">18.0 Why This Chapter Matters</h2>
+<p>PostgreSQL is the book&#39;s default database, and for most business applications it is the right one. But <strong>MongoDB</strong> is one of the most widely deployed databases in the world, you will meet it in jobs and in existing systems, and it genuinely is the better tool for some problems. It is also routinely <strong>misused</strong>, usually by developers who were told &quot;it&#39;s schemaless, so you don&#39;t have to design anything.&quot;</p>
+<p>That claim is the single most expensive myth in this chapter. MongoDB doesn&#39;t remove schema design; it moves it from the database into your head and your code. You still must decide what the data looks like, what&#39;s unique, what&#39;s related, and how it will be queried, and now <em>nothing but you</em> enforces it.</p>
+<p>In this chapter we use a real <strong>MongoDB 8.0.12</strong> (single-node replica set in Docker) to learn:</p>
+<ul>
+<li>The <strong>document model</strong>: BSON, <code>_id</code>/<code>ObjectId</code>, flexible fields, nested data.</li>
+<li><strong>Embedding vs referencing</strong>, the central design decision, and how ShopLine&#39;s order becomes a single document.</li>
+<li><strong>Indexes</strong> and <code>explain()</code>: measured on 200,000 orders.</li>
+<li>The <strong>aggregation pipeline</strong> (MongoDB&#39;s <code>GROUP BY</code>/<code>JOIN</code>).</li>
+<li><strong>Atomicity</strong>: single-document operations, and <strong>multi-document transactions</strong> (which require a replica set).</li>
+<li><strong>Schema validation</strong> (<code>$jsonSchema</code>) and <strong>Mongoose</strong>.</li>
+<li><strong>NoSQL injection</strong>, and other classic traps (16 MB documents, unbounded arrays, no foreign keys).</li>
+<li>A <strong>decision guide</strong>: MongoDB vs PostgreSQL.</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>Everything marked as output was executed against MongoDB <strong>8.0.12</strong> with the Node driver <strong>mongodb 7.8.0</strong> and <strong>Mongoose 9.12.1</strong>. <strong>Not run:</strong> sharding, change streams, Atlas Search/Vector Search, time-series collections, and replica-set failover, which are described briefly from documentation and clearly marked. I ran a <em>single-node</em> replica set (the minimum for transactions), not a production topology.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The name &quot;MongoDB&quot; comes from <em>hu<strong>mongo</strong>us</em>, as in enormous data. The company (originally 10gen) built it in 2007 for web-scale applications. And the 12 bytes of an <code>ObjectId</code> contain a <strong>creation timestamp</strong>: our first test printed the date straight out of the id (<code>2026-11-12</code>) without storing a <code>createdAt</code> field.</p>
+</aside>
+<hr>
+
+<h2 id="18-1-the-document-model">18.1 The Document Model</h2>
+<p>A MongoDB <strong>database</strong> holds <strong>collections</strong> (like tables) of <strong>documents</strong> (like rows) stored as <strong>BSON</strong>, a binary superset of JSON.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>PostgreSQL</th>
+<th>MongoDB</th>
+</tr>
+</thead><tbody><tr>
+<td>database</td>
+<td>database</td>
+</tr>
+<tr>
+<td>table</td>
+<td>collection</td>
+</tr>
+<tr>
+<td>row</td>
+<td>document</td>
+</tr>
+<tr>
+<td>column</td>
+<td>field</td>
+</tr>
+<tr>
+<td>primary key</td>
+<td><code>_id</code> (auto-added <code>ObjectId</code> if you don&#39;t supply one)</td>
+</tr>
+<tr>
+<td><code>JOIN</code></td>
+<td>embedding, or <code>$lookup</code> in aggregation</td>
+</tr>
+<tr>
+<td><code>CREATE INDEX</code></td>
+<td><code>createIndex</code></td>
+</tr>
+<tr>
+<td>schema enforced by DB</td>
+<td><strong>optional</strong> validation</td>
+</tr>
+</tbody></table></div>
+<h3 id="bson-gives-you-more-types-than-json">BSON gives you more types than JSON</h3>
+<p><code>ObjectId</code>, <code>Date</code> (a real timestamp), <code>Decimal128</code> (exact decimals for money), <code>Int32</code>, <code>Int64</code>, <code>Double</code>, binary data. Inserting three products:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> products.<span class="hljs-title function_">insertMany</span>([
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Notebook A5&#x27;</span>, <span class="hljs-attr">price_minor</span>: <span class="hljs-number">12000</span>, <span class="hljs-attr">stock</span>: <span class="hljs-number">50</span>, <span class="hljs-attr">tags</span>: [<span class="hljs-string">&#x27;paper&#x27;</span>, <span class="hljs-string">&#x27;school&#x27;</span>], <span class="hljs-attr">attrs</span>: { <span class="hljs-attr">pages</span>: <span class="hljs-number">200</span>, <span class="hljs-attr">ruled</span>: <span class="hljs-literal">true</span> }, <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">&#x27;2026-08-01T10:00:00Z&#x27;</span>) },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Gel Pen&#x27;</span>,     <span class="hljs-attr">price_minor</span>: <span class="hljs-number">1500</span>,  <span class="hljs-attr">stock</span>: <span class="hljs-number">200</span>, <span class="hljs-attr">tags</span>: [<span class="hljs-string">&#x27;writing&#x27;</span>, <span class="hljs-string">&#x27;school&#x27;</span>], <span class="hljs-attr">attrs</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">&#x27;blue&#x27;</span> }, <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>() },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Backpack&#x27;</span>,    <span class="hljs-attr">price_minor</span>: <span class="hljs-number">59900</span>, <span class="hljs-attr">stock</span>: <span class="hljs-number">20</span>, <span class="hljs-attr">tags</span>: [<span class="hljs-string">&#x27;travel&#x27;</span>, <span class="hljs-string">&#x27;school&#x27;</span>], <span class="hljs-attr">attrs</span>: { <span class="hljs-attr">litres</span>: <span class="hljs-number">25</span> }, <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>() },
+]);</code></pre></div>
+<pre class="is-plain"><code>insertedIds: [ '6af5b099ecc2310930d3acf6', '6af5b099ecc2310930d3acf7', '6af5b099ecc2310930d3acf8' ]
+_id is ObjectId: true | timestamp embedded in id: 2026-11-12 | createdAt is Date: true
+flexible schema: attrs differ per product -&gt; {&quot;pages&quot;:200,&quot;ruled&quot;:true} | {&quot;color&quot;:&quot;blue&quot;} | {&quot;litres&quot;:25}</code></pre>
+<p>The <code>attrs</code> field has <strong>different shapes per document</strong>. This flexibility is MongoDB&#39;s best feature <em>for the right data</em> (product catalogues where a notebook has <code>pages</code> and a backpack has <code>litres</code>: the problem <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a> solved awkwardly with <code>jsonb</code> or EAV tables).</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Rows in tables&quot; → &quot;Documents in collections.&quot;</strong> A document is a <em>self-contained object you usually read and write as a whole</em>. If you find yourself constantly stitching ten collections together, you&#39;re thinking relationally in a document database.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-money-and-the-number-type" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: money and the number type</span></h3>
+<p>JavaScript numbers are doubles. Use <strong>integer minor units</strong> (as in <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>) or <code>Decimal128</code>, never floating-point prices. The Node driver stores whole JS numbers like <code>12000</code> as 32-bit ints and <code>1.5</code> as a double. That matters in §18.8 (validation).</p>
+</aside>
+<hr>
+
+<h2 id="18-2-queries-and-updates">18.2 Queries and Updates</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> products.<span class="hljs-title function_">find</span>({ <span class="hljs-attr">tags</span>: <span class="hljs-string">&#x27;school&#x27;</span>, <span class="hljs-attr">price_minor</span>: { <span class="hljs-attr">$lt</span>: <span class="hljs-number">20000</span> } })     <span class="hljs-comment">// array contains + comparison</span>
+<span class="hljs-keyword">await</span> products.<span class="hljs-title function_">find</span>({ <span class="hljs-string">&#x27;attrs.ruled&#x27;</span>: <span class="hljs-literal">true</span> })                              <span class="hljs-comment">// dot notation for nested fields</span>
+<span class="hljs-keyword">await</span> products.<span class="hljs-title function_">countDocuments</span>({ <span class="hljs-attr">tags</span>: { <span class="hljs-attr">$in</span>: [<span class="hljs-string">&#x27;travel&#x27;</span>, <span class="hljs-string">&#x27;writing&#x27;</span>] } })</code></pre></div>
+<pre class="is-plain"><code>tags has school AND price&lt;20000: [ 'Notebook A5', 'Gel Pen' ]
+nested attrs.ruled: [ 'Notebook A5' ]
+$in on array field: 2
+misspelled field silently matches nothing: 0</code></pre>
+<p>That last line is the first schemaless trap: <code>pricee_minor</code> (a typo) is <strong>not an error</strong>. There&#39;s no schema to say that field doesn&#39;t exist; the query simply matches nothing. In SQL the same typo is an immediate error.</p>
+<h3 id="update-operators-change-parts-of-a-document-atomically">Update operators change <em>parts</em> of a document, atomically</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> products.<span class="hljs-title function_">updateOne</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Gel Pen&#x27;</span> },
+  { <span class="hljs-attr">$inc</span>: { <span class="hljs-attr">stock</span>: -<span class="hljs-number">5</span> }, <span class="hljs-attr">$push</span>: { <span class="hljs-attr">tags</span>: <span class="hljs-string">&#x27;blue&#x27;</span> }, <span class="hljs-attr">$set</span>: { <span class="hljs-string">&#x27;attrs.refill&#x27;</span>: <span class="hljs-literal">true</span> } });</code></pre></div>
+<pre class="is-plain"><code>matched 1 modified 1 -&gt; { stock: 195, tags: [ 'writing', 'school', 'blue' ], attrs: { color: 'blue', refill: true } }</code></pre>
+<p><code>$set</code>, <code>$inc</code>, <code>$push</code>, <code>$pull</code>, <code>$addToSet</code>, <code>$unset</code>, <code>$min/$max</code>, <code>$setOnInsert</code> modify fields <strong>inside the database</strong>, with no read-modify-write in your code. The upsert pattern:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> products.<span class="hljs-title function_">updateOne</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Eraser&#x27;</span> }, { <span class="hljs-attr">$setOnInsert</span>: { <span class="hljs-attr">price_minor</span>: <span class="hljs-number">500</span>, <span class="hljs-attr">stock</span>: <span class="hljs-number">0</span> } }, { <span class="hljs-attr">upsert</span>: <span class="hljs-literal">true</span> });
+<span class="hljs-comment">// first call:  upsertedCount 1      second call: upsertedCount 0</span></code></pre></div>
+<p><code>findOneAndUpdate(..., { returnDocument: &#39;after&#39; })</code> returns the updated document in one round trip.</p>
+<hr>
+
+<h2 id="18-3-modeling-embed-or-reference-the-central-decision">18.3 Modeling: Embed or Reference? (The Central Decision)</h2>
+<p>In SQL you normalize first and join later. In MongoDB you <strong>model for your queries</strong>: &quot;What will I read together? What changes together?&quot; The two tools:</p>
+<ul>
+<li><strong>Embed</strong>: put related data <em>inside</em> the document (an order contains its line items).</li>
+<li><strong>Reference</strong>: store the <code>_id</code> of another document and look it up (an order stores <code>userId</code>).</li>
+</ul>
+<h3 id="the-shopline-order-as-one-document">The ShopLine order as one document</h3>
+<p>In Chapter 14 an order needed <code>orders</code> + <code>order_items</code> + snapshot columns, and <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>&#39;s checkout wrote across several tables in one transaction. In MongoDB, the natural unit is <strong>one document</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> orders.<span class="hljs-title function_">insertOne</span>({
+  <span class="hljs-attr">userId</span>: asha,                                   <span class="hljs-comment">// REFERENCE (users live on their own)</span>
+  <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;paid&#x27;</span>, <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">&#x27;2026-08-05T10:00:00Z&#x27;</span>),
+  <span class="hljs-attr">shippingAddress</span>: { <span class="hljs-attr">line1</span>: <span class="hljs-string">&#x27;12 MG Road&#x27;</span>, <span class="hljs-attr">city</span>: <span class="hljs-string">&#x27;Pune&#x27;</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">&#x27;IN&#x27;</span> },   <span class="hljs-comment">// EMBEDDED snapshot</span>
+  <span class="hljs-attr">items</span>: [                                                                  <span class="hljs-comment">// EMBEDDED array of line items</span>
+    { <span class="hljs-attr">productId</span>: nb.<span class="hljs-property">_id</span>,  <span class="hljs-attr">name</span>: nb.<span class="hljs-property">name</span>,  <span class="hljs-attr">qty</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">unit_price_minor</span>: nb.<span class="hljs-property">price_minor</span> },
+    { <span class="hljs-attr">productId</span>: pen.<span class="hljs-property">_id</span>, <span class="hljs-attr">name</span>: pen.<span class="hljs-property">name</span>, <span class="hljs-attr">qty</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">unit_price_minor</span>: pen.<span class="hljs-property">price_minor</span> },
+  ],
+});</code></pre></div>
+<p>We then renamed and re-priced the notebook in <code>products</code>:</p>
+<pre class="is-plain"><code>order read = ONE query, items inside: [ '2 x Notebook A5 @ 12000', '5 x Gel Pen @ 1500' ]
+product renamed/re-priced later -&gt; order still shows the sale-time snapshot (as it should)
+total computed from the same doc: 31500</code></pre>
+<p>Reading an order is <strong>one query</strong>, no join; its line items can&#39;t be orphaned (they only exist inside the order); and because a single-document write is <strong>atomic</strong> (§18.6), creating the whole order is atomic <em>without a transaction</em>. The <strong>snapshot</strong> idea (Ch 14) comes for free: <code>name</code> and <code>unit_price_minor</code> are copied into the line.</p>
+<h3 id="the-decision-guide">The decision guide</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Question</th>
+<th>Embed if…</th>
+<th>Reference if…</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Cardinality</strong></td>
+<td>One-to-few (an order&#39;s items: ≤ dozens)</td>
+<td>One-to-many/huge (a product&#39;s reviews: thousands) or many-to-many</td>
+</tr>
+<tr>
+<td><strong>Read together?</strong></td>
+<td>Always shown together</td>
+<td>Usually read independently</td>
+</tr>
+<tr>
+<td><strong>Changes together?</strong></td>
+<td>Written together; part-of relationship</td>
+<td>Updated independently and often</td>
+</tr>
+<tr>
+<td><strong>Growth</strong></td>
+<td>Bounded</td>
+<td><strong>Unbounded</strong> (would hit the 16 MB limit)</td>
+</tr>
+<tr>
+<td><strong>Shared?</strong></td>
+<td>Owned by one parent</td>
+<td>Shared across parents (a product is in many orders)</td>
+</tr>
+<tr>
+<td><strong>Snapshot needed?</strong></td>
+<td>Yes: copy what was true at the time</td>
+<td>No: want the <em>current</em> value</td>
+</tr>
+</tbody></table></div>
+<p>Rules of thumb: <em>&quot;Embed what you read together and what is bounded; reference what is shared, huge or independently changing.&quot;</em></p>
+<p><strong>ShopLine&#39;s final shape:</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Collection</th>
+<th>Contains</th>
+<th>Why</th>
+</tr>
+</thead><tbody><tr>
+<td><code>users</code></td>
+<td>profile (+ small embedded <code>addresses</code> array)</td>
+<td>Bounded, read together</td>
+</tr>
+<tr>
+<td><code>products</code></td>
+<td>product, <code>attrs</code>, <code>tags</code></td>
+<td>Flexible attributes</td>
+</tr>
+<tr>
+<td><code>orders</code></td>
+<td>embedded <code>items</code> + address snapshot; reference <code>userId</code></td>
+<td>Read/written as a unit</td>
+</tr>
+<tr>
+<td><code>reviews</code></td>
+<td>references <code>productId</code>, <code>userId</code></td>
+<td>Unbounded per product; queried independently</td>
+</tr>
+</tbody></table></div>
+<h3 id="the-price-of-embedding-duplication-and-no-foreign-keys">The price of embedding: duplication and no foreign keys</h3>
+<ul>
+<li><strong>Duplicated data</strong> can go stale. The line&#39;s <code>name</code> is deliberately a snapshot, but a duplicated <em>display name</em> you want to keep current (say, the user&#39;s name inside every comment) needs a plan: update many documents, or <strong>reference instead</strong>.</li>
+<li><strong>MongoDB has no foreign keys.</strong> The database will happily accept an order for a user that doesn&#39;t exist:</li>
+</ul>
+<pre class="is-plain"><code>order for a user that does not exist inserted fine; orders: 2</code></pre>
+<p>Referential integrity is <strong>your application&#39;s job</strong> (or you accept eventual cleanup). This is the single biggest philosophical difference from Chapter 14.</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;Design a blog/e-commerce schema in MongoDB.&quot;</em> Start with <strong>access patterns</strong>, not entities. State what you embed (bounded, read together) and what you reference (unbounded, shared), mention duplication/snapshots and the lack of FKs, and name the limits (16 MB document, unbounded arrays). Contrast with the relational design.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="18-4-indexes-and-explain">18.4 Indexes and <code>explain()</code></h2>
+<p>Indexes work like <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>&#39;s B-trees, and <code>explain(&#39;executionStats&#39;)</code> is MongoDB&#39;s <code>EXPLAIN ANALYZE</code>. We loaded <strong>200,000 orders</strong> (about 39.5 MB, average 197 bytes each, 20,000 users, 1–4 embedded items per order) and ran queries before and after indexes.</p>
+<pre class="is-plain"><code>userId = 1234 (no index)                      plan=COLLSCAN       docsExamined=200000 keysExamined=     0 returned=   10  132 ms
+userId = 1234 (index userId,createdAt)        plan=FETCH&gt;IXSCAN   docsExamined=    10 keysExamined=    10 returned=   10    7 ms
+latest 5 of user (sort via index)             plan=LIMIT&gt;FETCH&gt;IXSCAN docsExamined= 5 keysExamined=     5 returned=    5    0 ms
+status = cancelled (no index)                 plan=COLLSCAN       docsExamined=200000                       returned= 2000  154 ms
+only createdAt range (index not usable first) plan=COLLSCAN       docsExamined=200000                       returned=  550  198 ms
+createdAt range (own index)                   plan=FETCH&gt;IXSCAN   docsExamined=   550 keysExamined=   550 returned=  550    5 ms
+covered query (project only indexed fields)   plan=PROJECTION_COVERED&gt;IXSCAN docsExamined= 0 keysExamined= 10 returned=  10    4 ms
+deep skip(150000) sort createdAt              plan=LIMIT&gt;FETCH&gt;SKIP&gt;IXSCAN docsExamined= 20 keysExamined=150020 returned=   20  131 ms</code></pre>
+<p>The lessons are the <strong>same as <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a></strong>, in MongoDB&#39;s vocabulary:</p>
+<ul>
+<li><strong><code>COLLSCAN</code></strong> (collection scan) = a sequential scan: 200,000 documents examined to return 10. <strong><code>IXSCAN</code></strong> examined exactly the 10 it returned.</li>
+<li>A <strong>compound index</strong> <code>{ userId: 1, createdAt: -1 }</code> serves equality on <code>userId</code> <em>and</em> &quot;latest 5 for a user&quot; with <strong>no sort step</strong> (5 documents examined).</li>
+<li>The compound index <strong>can&#39;t help a query on <code>createdAt</code> alone</strong> (left-prefix rule), so that query needed its own index (198 ms → 5 ms).</li>
+<li><strong><code>PROJECTION_COVERED</code></strong>: if the index contains every field you project, MongoDB never touches the documents (<code>docsExamined: 0</code>).</li>
+<li><strong><code>skip(150000)</code></strong> examined 150,020 <em>index keys</em>: deep offset pagination is O(offset) here too. Use a &quot;seek&quot; filter on the last-seen value instead (Ch 8/15&#39;s keyset idea): <code>find({ createdAt: { $gt: lastSeen } })</code>.</li>
+</ul>
+<h3 id="more-index-types">More index types</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> orders.<span class="hljs-title function_">createIndex</span>({ <span class="hljs-attr">createdAt</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;pending_by_date&#x27;</span>, <span class="hljs-attr">partialFilterExpression</span>: { <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;pending&#x27;</span> } });  <span class="hljs-comment">// partial</span>
+<span class="hljs-keyword">await</span> sessions.<span class="hljs-title function_">createIndex</span>({ <span class="hljs-attr">createdAt</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">expireAfterSeconds</span>: <span class="hljs-number">1</span> });                                                  <span class="hljs-comment">// TTL</span>
+<span class="hljs-keyword">await</span> users.<span class="hljs-title function_">createIndex</span>({ <span class="hljs-attr">email</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">unique</span>: <span class="hljs-literal">true</span> });                                                                  <span class="hljs-comment">// unique</span></code></pre></div>
+<ul>
+<li><strong>Partial</strong>: the pending-orders index was <strong>132 KB</strong> vs <strong>2,192 KB</strong> for the full <code>createdAt</code> index (as in Chapter 15, indexing just the hot subset).</li>
+<li><strong>TTL</strong>: the database deletes expired documents automatically. We inserted a document already 5 s old into a collection with a 1 s TTL: right after insert <code>count = 1</code>; after waiting 65 s (the TTL monitor runs about every 60 s) <code>count = 0</code>. Perfect for sessions, one-time codes and caches; <em>not</em> a precise timer.</li>
+<li><strong>Unique</strong>: MongoDB has no <code>UNIQUE</code> column constraint; you create a unique <em>index</em>. (Our Mongoose duplicate-email test returned error code <code>11000</code> from it.)</li>
+<li>Also: text, geospatial (<code>2dsphere</code>), and wildcard indexes, not demonstrated here.</li>
+</ul>
+<h3 id="seeing-indexes-costs">Seeing indexes&#39; costs</h3>
+<p>Same trade-offs as PostgreSQL: each index costs RAM, disk and write speed. Our indexes: <code>_id_</code> 2,976 KB, <code>{userId,createdAt}</code> 2,536 KB, <code>{createdAt}</code> 2,192 KB.</p>
+<hr>
+
+<h2 id="18-5-the-aggregation-pipeline">18.5 The Aggregation Pipeline</h2>
+<p>MongoDB&#39;s analytics tool: documents flow through <strong>stages</strong>, each transforming the stream.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>SQL</th>
+<th>Pipeline stage</th>
+</tr>
+</thead><tbody><tr>
+<td><code>WHERE</code></td>
+<td><code>$match</code></td>
+</tr>
+<tr>
+<td><code>SELECT</code> / computed columns</td>
+<td><code>$project</code> / <code>$addFields</code></td>
+</tr>
+<tr>
+<td><code>GROUP BY</code></td>
+<td><code>$group</code></td>
+</tr>
+<tr>
+<td><code>ORDER BY</code> / <code>LIMIT</code></td>
+<td><code>$sort</code> / <code>$limit</code></td>
+</tr>
+<tr>
+<td><code>JOIN</code></td>
+<td><code>$lookup</code></td>
+</tr>
+<tr>
+<td>unnest an array</td>
+<td><code>$unwind</code></td>
+</tr>
+</tbody></table></div>
+<p><strong>Monthly revenue</strong> (<a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>&#39;s query 4/11), on embedded items:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> agg = <span class="hljs-keyword">await</span> orders.<span class="hljs-title function_">aggregate</span>([
+  { <span class="hljs-attr">$match</span>: { <span class="hljs-attr">status</span>: { <span class="hljs-attr">$ne</span>: <span class="hljs-string">&#x27;cancelled&#x27;</span> } } },
+  { <span class="hljs-attr">$unwind</span>: <span class="hljs-string">&#x27;$items&#x27;</span> },                                          <span class="hljs-comment">// one document per line item</span>
+  { <span class="hljs-attr">$group</span>: { <span class="hljs-attr">_id</span>: { <span class="hljs-attr">$dateToString</span>: { <span class="hljs-attr">format</span>: <span class="hljs-string">&#x27;%Y-%m&#x27;</span>, <span class="hljs-attr">date</span>: <span class="hljs-string">&#x27;$createdAt&#x27;</span> } },
+              <span class="hljs-attr">revenue_minor</span>: { <span class="hljs-attr">$sum</span>: { <span class="hljs-attr">$multiply</span>: [<span class="hljs-string">&#x27;$items.qty&#x27;</span>, <span class="hljs-string">&#x27;$items.price&#x27;</span>] } },
+              <span class="hljs-attr">orders</span>: { <span class="hljs-attr">$addToSet</span>: <span class="hljs-string">&#x27;$_id&#x27;</span> } } },                  <span class="hljs-comment">// distinct orders (fan-out lesson!)</span>
+  { <span class="hljs-attr">$project</span>: { <span class="hljs-attr">revenue_minor</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">orders</span>: { <span class="hljs-attr">$size</span>: <span class="hljs-string">&#x27;$orders&#x27;</span> } } },
+  { <span class="hljs-attr">$sort</span>: { <span class="hljs-attr">_id</span>: <span class="hljs-number">1</span> } },
+], { <span class="hljs-attr">allowDiskUse</span>: <span class="hljs-literal">true</span> }).<span class="hljs-title function_">toArray</span>();</code></pre></div>
+<pre class="is-plain"><code>{ _id: '2025-01', revenue_minor: 241639400, orders: 16890 }
+{ _id: '2025-02', revenue_minor: 218246700, orders: 15255 }
+{ _id: '2025-03', revenue_minor: 241619500, orders: 16889 }   ... 12 months</code></pre>
+<p>Notice <code>$unwind</code> creates the same <strong>fan-out</strong> as a SQL join (Ch 13 §10): one order becomes several documents, so counting orders needs <code>$addToSet</code> of ids (a <code>$sum: 1</code> would count line items). The same bug, a different syntax.</p>
+<p>A top-N pipeline:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">orders.<span class="hljs-title function_">aggregate</span>([{ <span class="hljs-attr">$unwind</span>: <span class="hljs-string">&#x27;$items&#x27;</span> }, { <span class="hljs-attr">$group</span>: { <span class="hljs-attr">_id</span>: <span class="hljs-string">&#x27;$items.sku&#x27;</span>, <span class="hljs-attr">units</span>: { <span class="hljs-attr">$sum</span>: <span class="hljs-string">&#x27;$items.qty&#x27;</span> } } },
+                  { <span class="hljs-attr">$sort</span>: { <span class="hljs-attr">units</span>: -<span class="hljs-number">1</span> } }, { <span class="hljs-attr">$limit</span>: <span class="hljs-number">3</span> }])
+<span class="hljs-comment">// [ { _id: &#x27;Backpack&#x27;, units: 150002 }, { _id: &#x27;Notebook&#x27;, units: 150001 }, { _id: &#x27;Compass&#x27;, units: 150000 } ]</span></code></pre></div>
+<p><strong><code>$lookup</code></strong> (the join) exists, but it is a <em>stage that does extra work per input document</em>; heavy reliance on it is a sign you&#39;ve modelled relationally in a document database. Put <code>$match</code> and <code>$project</code> <strong>early</strong> to shrink the stream, and remember pipelines can use indexes only in their leading <code>$match</code>/<code>$sort</code> stages. <em>(<code>$lookup</code> was not benchmarked here.)</em></p>
+<p><strong>When analytics get serious</strong> (multi-collection joins, window functions, ad-hoc BI), PostgreSQL&#39;s SQL is generally more expressive; MongoDB&#39;s pipeline is excellent for per-document-shaped analytics.</p>
+<hr>
+
+<h2 id="18-6-atomicity-concurrency-and-transactions">18.6 Atomicity, Concurrency and Transactions</h2>
+<h3 id="single-document-operations-are-atomic">Single-document operations are atomic</h3>
+<p>A write to <strong>one document</strong> (including its nested arrays) is atomic and isolated. This is why embedding is attractive: &quot;create an order with its items&quot; is one write. <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>&#39;s oversell test, in MongoDB, with 50 concurrent buyers and stock 10:</p>
+<pre class="is-plain"><code>naive read-then-write      confirmed = 50  final stock = 8      ← lost updates, exactly like Chapter 16
+atomic $inc with filter    confirmed = 10  final stock = 0      ← correct</code></pre>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> p.<span class="hljs-title function_">updateOne</span>({ <span class="hljs-attr">_id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">stock</span>: { <span class="hljs-attr">$gte</span>: <span class="hljs-number">1</span> } }, { <span class="hljs-attr">$inc</span>: { <span class="hljs-attr">stock</span>: -<span class="hljs-number">1</span> } });
+<span class="hljs-keyword">return</span> r.<span class="hljs-property">modifiedCount</span> === <span class="hljs-number">1</span>;                          <span class="hljs-comment">// the same &quot;atomic conditional update&quot; pattern</span></code></pre></div>
+<p><strong>The Chapter 16 lesson transfers unchanged:</strong> read-modify-write in application code is a race; push the condition into one atomic update operation.</p>
+<h3 id="multi-document-transactions-need-a-replica-set">Multi-document transactions (need a replica set)</h3>
+<p>If you must change several documents atomically (a transfer between accounts), MongoDB supports ACID transactions on <strong>replica sets and sharded clusters</strong> (not on a standalone server, which is why my test container runs as a single-node replica set).</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> session = client.<span class="hljs-title function_">startSession</span>();
+<span class="hljs-keyword">await</span> session.<span class="hljs-title function_">withTransaction</span>(<span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> accts.<span class="hljs-title function_">updateOne</span>({ <span class="hljs-attr">_id</span>: <span class="hljs-keyword">from</span>, <span class="hljs-attr">balance</span>: { <span class="hljs-attr">$gte</span>: amt } }, { <span class="hljs-attr">$inc</span>: { <span class="hljs-attr">balance</span>: -amt } }, { session });
+  <span class="hljs-keyword">if</span> (r.<span class="hljs-property">modifiedCount</span> !== <span class="hljs-number">1</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;insufficient funds&#x27;</span>);
+  <span class="hljs-keyword">await</span> accts.<span class="hljs-title function_">updateOne</span>({ <span class="hljs-attr">_id</span>: to }, { <span class="hljs-attr">$inc</span>: { <span class="hljs-attr">balance</span>: amt } }, { session });   <span class="hljs-comment">// every operation must pass { session }</span>
+});</code></pre></div>
+<pre class="is-plain"><code>transfer 30 A-&gt;B     : committed
+crash mid-transfer   : aborted: crash between debit and credit
+overdraft 500        : aborted: insufficient funds
+balances: A=70 B=130 (total must be 200)</code></pre>
+<p>The &quot;crash&quot; aborted after the debit; <strong>no money vanished</strong>. Notes:</p>
+<ul>
+<li>Pass <code>{ session }</code> on <strong>every</strong> operation (forgetting it is the MongoDB version of the <code>pool.query(&#39;BEGIN&#39;)</code> bug).</li>
+<li><code>withTransaction</code> automatically <strong>retries</strong> on transient errors (like Chapter 16&#39;s retry loop).</li>
+<li>Transactions are <strong>more expensive</strong> and have time/size limits; MongoDB&#39;s own guidance is that good modelling should make them the exception, not the rule. <em>(I did not measure the transaction overhead.)</em></li>
+</ul>
+<h3 id="write-concern-and-read-concern-the-durability-dials">Write concern and read concern (the durability dials)</h3>
+<p><code>writeConcern: { w: &#39;majority&#39; }</code> waits until most replica-set members have the write (survives a primary failure); <code>readConcern</code> controls what snapshot you read. Defaults are sensible in recent versions, but know they exist. <em>(Described from documentation; not tested here, since I ran a single node.)</em></p>
+<hr>
+
+<h2 id="18-7-schema-validation-putting-some-rules-back">18.7 Schema Validation: Putting Some Rules Back</h2>
+<p>MongoDB can enforce structure with a <strong><code>$jsonSchema</code> validator</strong> on a collection:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> db.<span class="hljs-title function_">createCollection</span>(<span class="hljs-string">&#x27;items&#x27;</span>, { <span class="hljs-attr">validator</span>: { <span class="hljs-attr">$jsonSchema</span>: {
+    <span class="hljs-attr">bsonType</span>: <span class="hljs-string">&#x27;object&#x27;</span>, <span class="hljs-attr">required</span>: [<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;price_minor&#x27;</span>],
+    <span class="hljs-attr">properties</span>: { <span class="hljs-attr">name</span>: { <span class="hljs-attr">bsonType</span>: <span class="hljs-string">&#x27;string&#x27;</span>, <span class="hljs-attr">minLength</span>: <span class="hljs-number">1</span> },
+                  <span class="hljs-attr">price_minor</span>: { <span class="hljs-attr">bsonType</span>: <span class="hljs-string">&#x27;int&#x27;</span>, <span class="hljs-attr">minimum</span>: <span class="hljs-number">0</span> },
+                  <span class="hljs-attr">stock</span>: { <span class="hljs-attr">bsonType</span>: <span class="hljs-string">&#x27;int&#x27;</span>, <span class="hljs-attr">minimum</span>: <span class="hljs-number">0</span> } } } },
+  <span class="hljs-attr">validationAction</span>: <span class="hljs-string">&#x27;error&#x27;</span> });</code></pre></div>
+<p>Results:</p>
+<pre class="is-plain"><code>valid doc inserted
+rejected {&quot;name&quot;:&quot;x&quot;,&quot;price_minor&quot;:-5}      -&gt; code 121     (below minimum)
+rejected {&quot;name&quot;:&quot;x&quot;}                       -&gt; code 121     (required field missing)
+rejected {&quot;name&quot;:&quot;x&quot;,&quot;price_minor&quot;:1.5}     -&gt; code 121     (a double, not an int)
+rejected {&quot;name&quot;:&quot;x&quot;,&quot;price_minor&quot;:&quot;100&quot;}   -&gt; code 121     (a string)</code></pre>
+<p>Code <strong>121</strong> is <code>DocumentValidationFailure</code>. Observe how the driver&#39;s number typing matters: the valid insert passed <code>price_minor: 100</code> and it was stored as an <code>int</code>; <code>1.5</code> is a double and was rejected by <code>bsonType: &#39;int&#39;</code>.</p>
+<p>The recommended practice for a mature system: <strong>flexible while prototyping, strict in production</strong>. Validate the invariants that matter (required fields, types, ranges, enums) in the database <em>and</em> in the app. Compared with SQL: no foreign keys, no cross-document <code>CHECK</code>, so the validator covers <strong>one document at a time</strong>.</p>
+<hr>
+
+<h2 id="18-8-mongoose-the-popular-odm">18.8 Mongoose (the Popular ODM)</h2>
+<p><strong>Mongoose</strong> is the standard Object-Document Mapper for Node: schemas, validation, middleware, population. Our test (<a href="/learn/backend-master/resources/ch18/04-mongoose.mjs">resources/ch18/04-mongoose.mjs</a>):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-title class_">User</span> = mongoose.<span class="hljs-title function_">model</span>(<span class="hljs-string">&#x27;User&#x27;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Schema</span>({
+  <span class="hljs-attr">email</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">unique</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">lowercase</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span> },
+  <span class="hljs-attr">name</span>:  { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> } }, { <span class="hljs-attr">timestamps</span>: <span class="hljs-literal">true</span> }));
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">Product</span> = mongoose.<span class="hljs-title function_">model</span>(<span class="hljs-string">&#x27;Product&#x27;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Schema</span>({
+  <span class="hljs-attr">name</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> },
+  <span class="hljs-attr">price_minor</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">min</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">validate</span>: { <span class="hljs-attr">validator</span>: <span class="hljs-title class_">Number</span>.<span class="hljs-property">isInteger</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;must be an integer&#x27;</span> } },
+  <span class="hljs-attr">stock</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">default</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">min</span>: <span class="hljs-number">0</span> } }));</code></pre></div>
+<pre class="is-plain"><code>ValidationError: name - Path `name` is required.
+created, email normalised -&gt; a@x.com                   ← lowercase + trim applied
+ValidationError: must be an integer                    ← custom validator for price 12.5
+duplicate -&gt; 11000 (from the unique INDEX, in the database)
+bypass: collection.insertOne skips Mongoose validation -&gt; true (negative price stored!)</code></pre>
+<p>Important truths:</p>
+<ol>
+<li><strong>Mongoose validation lives in your app</strong>, not the database. Anything that bypasses the model (a script, another service, <code>Model.collection.insertOne</code>) bypasses it. We stored a <strong>negative price</strong> that way. If invariants matter, also use <code>$jsonSchema</code>.</li>
+<li><strong><code>unique: true</code> is just an index</strong> declaration; the 11000 error comes from MongoDB. (Call <code>Model.init()</code> / ensure indexes are built before relying on it.)</li>
+<li>Mongoose casts and normalizes inputs (lowercase, trim, number coercion), which is helpful but can surprise you.</li>
+</ol>
+<h3 id="populate-convenient-and-n-1-shaped">Populate: convenient, and N+1-shaped</h3>
+<p><code>populate</code> is Mongoose&#39;s &quot;join&quot;: it runs <strong>additional queries</strong> and stitches the results. With debugging on:</p>
+<pre class="is-plain"><code>-- find + populate(&quot;user&quot;) + populate(&quot;items.product&quot;):
+   mongo&gt; orders.find   {&quot;user&quot;:&quot;6af5…&quot;}
+   mongo&gt; users.find    {&quot;_id&quot;:{&quot;$in&quot;:[&quot;6af5…&quot;]}}
+   mongo&gt; products.find {&quot;_id&quot;:{&quot;$in&quot;:[&quot;…&quot;,&quot;…&quot;]}}
+-- find only (embedded snapshot is enough):
+   mongo&gt; orders.find   {&quot;user&quot;:&quot;6af5…&quot;}</code></pre>
+<p>Three queries (batched with <code>$in</code>, so not literally N+1 per row, but one extra round trip per populated path) versus <strong>one</strong> when the data you need is embedded. This is the same lesson as <a href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely" title="ORMs vs Query Builders: Prisma, Drizzle">Chapter 17</a>&#39;s Prisma <code>include</code>: <strong>count queries.</strong> If you populate on every request, reconsider your model.</p>
+<h3 id="lean-skip-the-hydration"><code>lean()</code>: skip the hydration</h3>
+<p>By default Mongoose returns rich <em>documents</em> (getters, change tracking, methods). <code>.lean()</code> returns plain JS objects:</p>
+<pre class="is-plain"><code>300 finds x 5 docs: hydrated 7198 ms vs lean 1638 ms</code></pre>
+<p>About <strong>4.4× faster</strong> in this run (the hydrated loop ran first, so JIT warm-up and noise may inflate the gap; I&#39;d expect the direction, not the exact ratio, to hold). Use <code>lean()</code> for read-only endpoints.</p>
+<h3 id="atomic-updates-in-mongoose">Atomic updates in Mongoose</h3>
+<p>Same rule as the raw driver: prefer <code>Model.updateOne({ _id, stock: { $gte: 3 } }, { $inc: { stock: -3 } })</code> (we got <code>modified: 1</code>, stock 10 → 7) over <code>doc.stock -= 3; await doc.save()</code>, which is read-modify-write.</p>
+<hr>
+
+<h2 id="18-9-classic-mongodb-traps">18.9 Classic MongoDB Traps</h2>
+<h3 id="18-9-1-nosql-operator-injection">18.9.1 NoSQL (operator) injection</h3>
+<p>SQL injection has a MongoDB cousin. If a login handler passes the parsed request body straight into a query:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-title function_">login</span> = (<span class="hljs-params">body</span>) =&gt; users.<span class="hljs-title function_">findOne</span>({ <span class="hljs-attr">email</span>: body.<span class="hljs-property">email</span>, <span class="hljs-attr">password</span>: body.<span class="hljs-property">password</span> });</code></pre></div>
+<p>then an attacker sends JSON where <code>password</code> is <strong>an object, not a string</strong>:</p>
+<pre class="is-plain"><code>honest wrong password : null
+attack {&quot;$ne&quot;: null}  : true  &lt;- logged in without knowing the password</code></pre>
+<p><code>{&quot;password&quot;: {&quot;$ne&quot;: null}}</code> means &quot;password is not null&quot;, which every user satisfies. (Never store plain-text passwords as in my demo; <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a> covers hashing. The demo is about the query.) <strong>Defence:</strong> validate the <em>type</em> of every input (Zod, <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>): <code>typeof body.password === &#39;string&#39;</code> made the attack fail with <code>invalid types</code>. Mongoose&#39;s <code>strictQuery</code>/<code>sanitizeFilter</code> options and <code>express-mongo-sanitize</code> help, but <strong>type validation at the boundary is the real fix</strong>. Also never accept raw <code>$where</code> or JavaScript from users.</p>
+<h3 id="18-9-2-the-16-mb-document-limit-and-unbounded-arrays">18.9.2 The 16 MB document limit and unbounded arrays</h3>
+<p>A document may not exceed <strong>16 MB</strong>. If you <code>$push</code> into an array forever (comments on a post), it will, eventually, fail:</p>
+<pre class="is-plain"><code>failed at push #168: BSONObj size: 16804626 (0x1006B12) is invalid. Size must be between 0 and 16793600(16MB)
+comments stored before hitting the 16 MB document limit: 167</code></pre>
+<p>(Each fake comment was ~100 KB; real ones are smaller, but the principle holds, and large documents get slow long before 16 MB because every update rewrites more data.) <strong>Never embed unbounded arrays</strong>: reference instead, or use the &quot;bucket&quot; pattern (a document per day/page of N items).</p>
+<h3 id="18-9-3-silent-typos-and-missing-fields">18.9.3 Silent typos and missing fields</h3>
+<p>No schema means <code>pricee_minor</code> isn&#39;t an error (§18.2). Use Mongoose schemas (with <code>strict</code>), <code>$jsonSchema</code>, TypeScript types, and tests.</p>
+<h3 id="18-9-4-no-foreign-keys-no-joins-by-default">18.9.4 No foreign keys, no joins by default</h3>
+<p>Dangling references (§18.3) and expensive <code>$lookup</code>s. If your data is heavily relational, you are fighting the tool.</p>
+<h3 id="18-9-5-unindexed-queries">18.9.5 Unindexed queries</h3>
+<p><code>COLLSCAN</code> is as deadly as a Postgres seq scan: run <code>explain</code> on every important query (§18.4).</p>
+<h3 id="18-9-6-write-acknowledgement">18.9.6 Write acknowledgement</h3>
+<p>Fire-and-forget writes (<code>w: 0</code>) can silently lose data; keep acknowledged writes (default) for anything important.</p>
+<hr>
+
+<h2 id="18-10-mongodb-vs-postgresql-choosing">18.10 MongoDB vs PostgreSQL: Choosing</h2>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>PostgreSQL</strong></th>
+<th><strong>MongoDB</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Model</td>
+<td>Tables, rows, relations</td>
+<td>Collections, nested documents</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>Enforced, evolves through migrations</td>
+<td>Optional validation, flexible per document</td>
+</tr>
+<tr>
+<td>Integrity</td>
+<td>FKs, <code>CHECK</code>, <code>UNIQUE</code>, exclusion constraints</td>
+<td>Unique indexes + <code>$jsonSchema</code> (single-document only); no FKs</td>
+</tr>
+<tr>
+<td>Joins &amp; analytics</td>
+<td>Excellent (SQL, window functions, CTEs)</td>
+<td>Aggregation pipeline; <code>$lookup</code> is secondary</td>
+</tr>
+<tr>
+<td>Transactions</td>
+<td>Everywhere, cheap, mature</td>
+<td>Single-doc atomic; multi-doc on replica sets (costlier)</td>
+</tr>
+<tr>
+<td>Nested/variable data</td>
+<td><code>jsonb</code> (good)</td>
+<td>Native (excellent)</td>
+</tr>
+<tr>
+<td>Horizontal scaling</td>
+<td>Read replicas; sharding needs extensions/effort</td>
+<td>Built-in sharding</td>
+</tr>
+<tr>
+<td>Developer fit</td>
+<td>Strong with relational thinking</td>
+<td>Strong when the object <em>is</em> the unit of work</td>
+</tr>
+</tbody></table></div>
+<h3 id="choose-mongodb-when">Choose MongoDB when</h3>
+<ul>
+<li>Your data is naturally <strong>document-shaped</strong> and read/written as a unit (content, catalogs with variable attributes, user profiles, event/activity payloads).</li>
+<li>The schema <strong>varies per record</strong> or evolves very fast.</li>
+<li>You need <strong>built-in horizontal sharding</strong> for very large, partitionable data sets.</li>
+<li>Most access is <strong>by key or a few well-known queries</strong> (known access patterns).</li>
+</ul>
+<h3 id="choose-postgresql-when">Choose PostgreSQL when</h3>
+<ul>
+<li>You have <strong>relationships and integrity rules</strong> (orders ↔ customers ↔ payments), money, inventory.</li>
+<li>You need <strong>ad-hoc queries and reporting</strong>, joins, window functions.</li>
+<li>Strong <strong>transactions across entities</strong> are central.</li>
+<li>You&#39;re unsure (<strong>PostgreSQL&#39;s <code>jsonb</code> covers a surprising amount of &quot;flexible&quot; data</strong>, and you keep FKs and SQL).</li>
+</ul>
+<h3 id="the-honest-shopline-answer">The honest ShopLine answer</h3>
+<p>An e-commerce core (orders, payments, stock) wants <strong>PostgreSQL</strong>: money, FKs, transactions, reports. MongoDB could reasonably hold <strong>the product catalogue</strong> (variable attributes), <strong>activity/event logs</strong>, or <strong>sessions</strong>. Many real systems use both: <em>polyglot persistence</em> (Ch 20).</p>
+<blockquote>
+<p><strong>Warning:</strong> choosing MongoDB because &quot;it&#39;s schemaless and easy&quot; is how teams end up re-implementing foreign keys, validation and joins in application code, badly. Choose it because the <em>document model fits the data</em>, not because it feels lighter.</p>
+</blockquote>
+<hr>
+
+<h2 id="18-11-edge-cases-and-gotchas-checklist">18.11 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Believing &quot;schemaless&quot; means &quot;no design needed&quot;.</li>
+<li><input disabled="" type="checkbox"> Embedding unbounded arrays (16 MB limit; slow updates).</li>
+<li><input disabled="" type="checkbox"> Referencing <em>and</em> repeatedly <code>populate</code>/<code>$lookup</code>-ing: you wanted relational.</li>
+<li><input disabled="" type="checkbox"> Duplicated data without a staleness plan (or an intentional snapshot).</li>
+<li><input disabled="" type="checkbox"> Assuming foreign keys exist (they don&#39;t); orphaned references.</li>
+<li><input disabled="" type="checkbox"> Read-modify-write instead of <code>$inc</code>/<code>$set</code> with a filter.</li>
+<li><input disabled="" type="checkbox"> Forgetting <code>{ session }</code> on an operation inside a transaction.</li>
+<li><input disabled="" type="checkbox"> Transactions on a standalone server (they require a replica set).</li>
+<li><input disabled="" type="checkbox"> Passing request bodies straight into queries (operator injection); <code>$where</code> from users.</li>
+<li><input disabled="" type="checkbox"> Relying only on Mongoose validation when other writers exist.</li>
+<li><input disabled="" type="checkbox"> Money as doubles.</li>
+<li><input disabled="" type="checkbox"> Missing indexes; <code>COLLSCAN</code> on hot queries; <code>skip()</code> for deep pagination.</li>
+<li><input disabled="" type="checkbox"> Unique constraints not backed by a unique index.</li>
+<li><input disabled="" type="checkbox"> <code>lean()</code> forgotten on read-heavy endpoints; or relying on document methods after <code>lean()</code>.</li>
+<li><input disabled="" type="checkbox"> TTL treated as a precise timer (the monitor runs ~every 60 s).</li>
+<li><input disabled="" type="checkbox"> Typos in field names silently matching nothing.</li>
+<li><input disabled="" type="checkbox"> Running an unauthenticated MongoDB on a public port.</li>
+</ul>
+<hr>
+
+<h2 id="18-12-chapter-summary">18.12 Chapter Summary</h2>
+<ul>
+<li>MongoDB stores <strong>BSON documents</strong> in collections; <code>_id</code> is an <code>ObjectId</code> containing a timestamp. Flexible per-document shape is the key advantage; &quot;schemaless&quot; does <strong>not</strong> mean &quot;no schema design&quot;.</li>
+<li><strong>Model for your queries</strong>: embed what is read together and bounded (ShopLine&#39;s order with its items and address snapshot = one document, one query, one atomic write); reference what is shared, huge or independent. There are <strong>no foreign keys</strong>.</li>
+<li>Indexes and <code>explain()</code> behave like Chapter 15: <code>COLLSCAN</code> examined 200,000 docs for 10 results; a compound index <code>{userId, createdAt}</code> examined 10, and 5 for &quot;latest 5&quot;; covered queries examine 0 documents; partial indexes are ~16× smaller; TTL indexes expire data automatically.</li>
+<li>The <strong>aggregation pipeline</strong> (<code>$match</code>, <code>$unwind</code>, <code>$group</code>, <code>$sort</code>…) is MongoDB&#39;s analytics; <code>$unwind</code> fan-out is the same trap as SQL joins.</li>
+<li>Single-document writes are <strong>atomic</strong>: the Chapter 16 oversell race reproduced (50 confirmed, stock 8) and was fixed with <code>updateOne({stock:{$gte:1}}, {$inc:{stock:-1}})</code>. <strong>Multi-document transactions</strong> need a replica set and <code>{ session }</code> on every operation; the crash test rolled back cleanly.</li>
+<li><strong><code>$jsonSchema</code></strong> validation enforces types/ranges per document (error 121). <strong>Mongoose</strong> validation lives in the app and can be bypassed (negative price stored); <code>populate</code> = extra queries; <code>lean()</code> is much faster for reads.</li>
+<li>Traps: <strong>operator injection</strong> (<code>{&quot;$ne&quot;: null}</code> logged in), 16 MB limit (167 comments), silent typos, no FKs.</li>
+<li>Choose by data shape: documents read as a unit and flexible schemas → MongoDB; relationships, integrity, money and reporting → PostgreSQL (often <strong>both</strong>).</li>
+</ul>
+<hr>
+
+<h2 id="18-13-revision-notes">18.13 Revision Notes</h2>
+<ul>
+<li>Collections/documents/BSON; <code>_id</code> ObjectId (has a timestamp); dates are <code>Date</code>.</li>
+<li>Operators: <code>$set $inc $push $pull $addToSet $setOnInsert</code>; filters <code>$in $lt $gte $ne</code>; dot notation for nested.</li>
+<li>Embed = bounded + read together; reference = shared/huge/independent. Snapshot what must not change.</li>
+<li><code>explain(&#39;executionStats&#39;)</code>: COLLSCAN vs IXSCAN; docsExamined vs nReturned; covered = 0 docs.</li>
+<li>Compound index: equality, then sort/range; left prefix; TTL, partial, unique.</li>
+<li>Aggregation: <code>$match</code> early; <code>$unwind</code> fans out; <code>$lookup</code> sparingly.</li>
+<li>Atomic: single doc yes; multi-doc → replica set transaction, <code>{ session }</code> everywhere.</li>
+<li>Validate types at the boundary; <code>$jsonSchema</code> in the DB; Mongoose validation is app-only.</li>
+<li>Mongoose: <code>lean()</code> for reads; <code>populate</code> = more queries.</li>
+</ul>
+<hr>
+
+<h2 id="18-14-mind-map-ascii">18.14 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                               MONGODB
+                                  │
+      ┌─────────────┬─────────────┼──────────────┬───────────────────┐
+   MODEL         QUERY/INDEX    ATOMICITY      SAFETY              CHOOSING
+      │              │             │              │                    │
+  documents      find/update    single-doc     $jsonSchema         documents as unit
+  BSON/ObjectId  operators      atomic         Mongoose (app)      flexible schema
+  embed vs ref   explain        $inc+filter    type validation     sharding
+  snapshots      compound/TTL   transactions   operator injection  vs PostgreSQL:
+  no FKs         partial/unique (replica set)  16 MB limit         integrity, joins, money
+                 aggregation    {session}      unbounded arrays    ← often BOTH (polyglot)</code></pre>
+<hr>
+
+<h2 id="18-15-cheat-sheet">18.15 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">db.<span class="hljs-title function_">collection</span>(<span class="hljs-string">&#x27;orders&#x27;</span>).<span class="hljs-title function_">find</span>({ userId, <span class="hljs-attr">status</span>: { <span class="hljs-attr">$in</span>: [<span class="hljs-string">&#x27;paid&#x27;</span>,<span class="hljs-string">&#x27;shipped&#x27;</span>] } }).<span class="hljs-title function_">sort</span>({ <span class="hljs-attr">createdAt</span>: -<span class="hljs-number">1</span> }).<span class="hljs-title function_">limit</span>(<span class="hljs-number">20</span>);
+<span class="hljs-title function_">updateOne</span>({ _id, <span class="hljs-attr">stock</span>: { <span class="hljs-attr">$gte</span>: n } }, { <span class="hljs-attr">$inc</span>: { <span class="hljs-attr">stock</span>: -n } });          <span class="hljs-comment">// atomic check-and-write; check modifiedCount</span>
+<span class="hljs-title function_">updateOne</span>(filter, { <span class="hljs-attr">$setOnInsert</span>: {...} }, { <span class="hljs-attr">upsert</span>: <span class="hljs-literal">true</span> });
+<span class="hljs-title function_">createIndex</span>({ <span class="hljs-attr">userId</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">createdAt</span>: -<span class="hljs-number">1</span> });                                <span class="hljs-comment">// equality first, then sort</span>
+<span class="hljs-title function_">createIndex</span>({ <span class="hljs-attr">createdAt</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">expireAfterSeconds</span>: <span class="hljs-number">3600</span> });              <span class="hljs-comment">// TTL</span>
+<span class="hljs-title function_">createIndex</span>({ <span class="hljs-attr">email</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">unique</span>: <span class="hljs-literal">true</span> });
+<span class="hljs-title function_">find</span>(...).<span class="hljs-title function_">explain</span>(<span class="hljs-string">&#x27;executionStats&#x27;</span>);                                       <span class="hljs-comment">// COLLSCAN? docsExamined vs nReturned</span>
+<span class="hljs-title function_">aggregate</span>([{ $match }, { $unwind }, { $group }, { $sort }, { $limit }]);
+client.<span class="hljs-title function_">startSession</span>().<span class="hljs-title function_">withTransaction</span>(<span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-comment">/* every op gets { session } */</span> });
+<span class="hljs-title function_">createCollection</span>(<span class="hljs-string">&#x27;x&#x27;</span>, { <span class="hljs-attr">validator</span>: { <span class="hljs-attr">$jsonSchema</span>: {...} } });
+<span class="hljs-comment">// Mongoose: Model.find().lean();   populate() = extra queries;   validate types of req.body (Zod)!</span></code></pre></div>
+<hr>
+
+<h2 id="18-16-key-takeaways">18.16 Key Takeaways</h2>
+<ol>
+<li><strong>Schemaless ≠ designless.</strong> Model around your queries.</li>
+<li><strong>Embed bounded, co-read data; reference the rest.</strong> Never embed unbounded arrays.</li>
+<li><strong>No foreign keys</strong>: integrity is your job.</li>
+<li><strong>Atomic single-document updates</strong> replace most transactions; push conditions into the update.</li>
+<li><strong>Validate the <em>type</em> of every input</strong> (operator injection) and validate in the DB as well as the app.</li>
+<li><strong>PostgreSQL by default; MongoDB when documents truly fit the data.</strong></li>
+</ol>
+<hr>
+
+<h2 id="18-17-20-multiple-choice-questions">18.17 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="You enforce structure."><p class="quiz-text">The &quot;schemaless&quot; claim about MongoDB is best understood as:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">No design needed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The database doesn&#39;t enforce structure by default, so <em>you</em> must</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Data has no types</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Indexes aren&#39;t needed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Embedded timestamp."><p class="quiz-text">What does an <code>ObjectId</code> contain besides randomness?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A checksum only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A creation timestamp</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The collection name</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The user id</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No schema to complain."><p class="quiz-text"><code>find({ pricee_minor: { $lt: 20000 } })</code> (typo) returns:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">An error</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An empty result, silently</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">All documents</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A warning</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Bounded, read together."><p class="quiz-text">Which is the best candidate for <em>embedding</em> in an order document?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">All the customer&#39;s past orders</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The order&#39;s line items (bounded)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The product&#39;s 50,000 reviews</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The whole product catalogue</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Snapshot."><p class="quiz-text">Why are the <code>name</code> and <code>unit_price_minor</code> copied into each order line?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Laziness</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A snapshot of what was true at sale time</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">MongoDB requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">For indexing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No FKs."><p class="quiz-text">MongoDB&#39;s referential integrity is provided by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Foreign keys</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Nothing built in: the application</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>$lookup</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">ObjectIds</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="COLLSCAN."><p class="quiz-text"><code>docsExamined: 200000, nReturned: 10</code> indicates:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A great plan</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A collection scan: a missing/unusable index</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A covered query</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A sharded query</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Index order = sort order."><p class="quiz-text">A compound index <code>{ userId: 1, createdAt: -1 }</code> can answer &quot;latest 5 orders of user X&quot; because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s unique</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Equality on the prefix plus index order gives sorted results without a sort stage</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s partial</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">TTL</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Covered query."><p class="quiz-text"><code>PROJECTION_COVERED</code> means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The query used a transaction</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The index contained all projected fields, so no documents were read</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The projection failed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sharding</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Fan-out."><p class="quiz-text">In aggregation, <code>$unwind</code> on <code>items</code> before <code>$group</code> can cause:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Fan-out: counting orders needs distinct ids</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Data loss</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Index loss</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="50 confirmed, stock 8 (measured)."><p class="quiz-text">In our oversell test, &quot;naive read-then-write&quot; gave:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">10 confirmed, stock 0</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">50 confirmed, stock 8</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">An error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0 confirmed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Atomic conditional update."><p class="quiz-text">The correct atomic pattern is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>findOne</code> then <code>updateOne</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>updateOne({ stock: { $gte: 1 } }, { $inc: { stock: -1 } })</code> and check <code>modifiedCount</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Use <code>$where</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Lock the collection</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Replica set required."><p class="quiz-text">Multi-document transactions in MongoDB require:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A standalone server</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A replica set (or sharded cluster)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The Atlas cloud</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Mongoose</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Operation runs outside the transaction."><p class="quiz-text">What&#39;s the classic mistake inside <code>withTransaction</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Using <code>await</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Forgetting to pass <code>{ session }</code> to an operation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Retrying</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using <code>$inc</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="DocumentValidationFailure."><p class="quiz-text">Error code 121 means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Duplicate key</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Document validation failure</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Network error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Auth failure</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="App-level only."><p class="quiz-text">Mongoose&#39;s <code>required</code>/<code>min</code> validators are enforced:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">By the database for all writers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Only for writes going through the Mongoose model</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Never</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">By the replica set</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Additional queries."><p class="quiz-text"><code>populate()</code> is best described as:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A server-side join</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Extra queries that Mongoose stitches together</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">An index</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A cache</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Query-operator injection."><p class="quiz-text">The <code>{&quot;password&quot;: {&quot;$ne&quot;: null}}</code> attack works because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">MongoDB has a bug</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An object from the request body was used as a query operator</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Passwords are hashed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">TTL</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Type validation."><p class="quiz-text">The best fix for operator injection is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Escape quotes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Validate that inputs have the expected primitive types at the boundary</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Disable <code>$ne</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Use <code>lean()</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Relational strengths."><p class="quiz-text">Which is a natural reason to choose PostgreSQL over MongoDB?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Highly variable document shapes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Strong relationships, money, multi-entity transactions and reporting</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">You want built-in sharding</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Tiny prototypes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-a, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="18-18-20-hands-on-exercises">18.18 20 Hands-on Exercises</h2>
+<p><em>(Follow <a href="/learn/backend-master/resources/ch18/README.txt">resources/ch18/README.txt</a> to start the throwaway MongoDB replica set.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Insert three products with different <code>attrs</code>; query by a nested field and by an array member.</li>
+<li>Print the creation date from an <code>ObjectId</code>.</li>
+<li>Use <code>$inc</code>, <code>$push</code> and <code>$set</code> in one <code>updateOne</code>; verify.</li>
+<li>Do an upsert twice and show <code>upsertedCount</code> differences.</li>
+<li>Reproduce the silent-typo query and explain why SQL would have failed.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Model ShopLine&#39;s <code>orders</code> with embedded items; fetch an order in one query; change a product&#39;s price and show the snapshot is unchanged.</li>
+<li>Load 200k orders; capture <code>explain</code> before/after a compound index; compute the speedup.</li>
+<li>Show that a <code>{userId, createdAt}</code> index does not help a <code>createdAt</code>-only query; fix it.</li>
+<li>Create a partial index and compare its size to the full index.</li>
+<li>Write the monthly-revenue pipeline; then fix a <code>$sum: 1</code> order count that wrongly counts line items.</li>
+<li>Create a <code>$jsonSchema</code> validator and trigger each type of rejection.</li>
+<li>Reproduce the Chapter 16 oversell race with 50 concurrent buyers and fix it atomically.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Implement a money transfer with <code>withTransaction</code>, with a failure injected after the debit; verify no money is lost.</li>
+<li>Demonstrate that a transaction fails on a standalone <code>mongod</code> (start one on another port) and explain why.</li>
+<li>Implement the login operator-injection attack and the Zod-based defence; add a regression test.</li>
+<li>Build a bucketed comments model (50 comments per bucket doc); compare to an unbounded array at 100k comments.</li>
+<li>Compare &quot;embed the 20 latest reviews + reference the rest&quot; vs &quot;reference only&quot; for a product page: queries, latency, update cost.</li>
+<li>Port <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>&#39;s &quot;top product per category&quot; query to an aggregation pipeline using <code>$lookup</code>; benchmark vs SQL.</li>
+<li>Add a TTL index for sessions and write an app that tolerates the ≤60 s deletion lag.</li>
+<li>Build the same small feature in PostgreSQL (with <code>jsonb</code> for attrs) and MongoDB; write a one-page comparison of code, integrity guarantees and performance.</li>
+</ol>
+<hr>
+
+<h2 id="18-19-5-interview-questions">18.19 5 Interview Questions</h2>
+<p><strong>1. When would you choose MongoDB over PostgreSQL?</strong>
+<em>Model answer:</em> When data is naturally document-shaped and accessed as a unit, schemas vary per record or change rapidly, access patterns are known and key-based, or I need built-in horizontal sharding. For relational data with integrity rules, money, cross-entity transactions or heavy reporting I&#39;d choose PostgreSQL, whose <code>jsonb</code> also covers much of the flexible-data need. Many systems use both.</p>
+<p><strong>2. Embedding vs referencing: how do you decide?</strong>
+<em>Model answer:</em> Embed data that is bounded, read together and changes together, and that belongs to one parent (an order&#39;s line items and address snapshot). Reference data that is shared, unbounded or updated independently (a product&#39;s reviews, users). Consider growth (16 MB limit), duplication/staleness, and whether a snapshot is desired. Model from access patterns, not entities.</p>
+<p><strong>3. How do you guarantee atomicity in MongoDB?</strong>
+<em>Model answer:</em> Single-document operations are atomic, so model related data in one document when possible and use update operators with filters (<code>updateOne({stock:{$gte:1}}, {$inc:{stock:-1}})</code>). For multi-document atomicity use transactions (replica set required), passing the session to every operation and using <code>withTransaction</code> for retries; they cost more, so I design to need them rarely.</p>
+<p><strong>4. What is NoSQL injection?</strong>
+<em>Model answer:</em> When untrusted input is placed into a query object and can carry operators (<code>{&quot;password&quot;: {&quot;$ne&quot;: null}}</code>), changing the query&#39;s meaning. Defend by validating that inputs are the expected primitive types (strings/numbers) at the boundary, using sanitization options, never accepting <code>$where</code>/server-side JS from users, and hashing passwords (the query shouldn&#39;t compare plaintext at all).</p>
+<p><strong>5. MongoDB has no foreign keys. How do you keep data consistent?</strong>
+<em>Model answer:</em> Prefer embedding for owned data so consistency is a single atomic write; for references, enforce existence in the service layer (and transactions where needed), clean up orphans with jobs, use unique indexes and <code>$jsonSchema</code> for what the DB can check, and accept eventual consistency where the business allows. If integrity is central everywhere, that&#39;s a signal PostgreSQL fits better.</p>
+<hr>
+
+<h2 id="18-20-3-real-projects">18.20 3 Real Projects</h2>
+<p><strong>Project 1: Product Catalogue Service (beginner–intermediate, ~8 hours).</strong>
+Build a REST API over MongoDB where categories define different <code>attrs</code> shapes (notebooks vs backpacks vs electronics), with <code>$jsonSchema</code> validation per category, faceted filtering with the aggregation pipeline (<code>$facet</code>), compound/partial indexes, and <code>explain</code> evidence for every query.</p>
+<p><strong>Project 2: Activity Feed with Bucketing (intermediate, ~10 hours).</strong>
+Model a social/activity feed with the bucket pattern, TTL for old buckets, cursor-based pagination, and a load test comparing bucketed vs unbounded-array designs; document when each breaks (16 MB, update latency).</p>
+<p><strong>Project 3: Dual-Database ShopLine (advanced, ~14 hours).</strong>
+Keep orders/payments/stock in PostgreSQL and the product catalogue and event log in MongoDB. Implement the cross-store flow (checkout reads catalogue, writes SQL, emits events), an idempotent sync between stores, and chaos tests for partial failures. Write up consistency decisions.</p>
+<hr>
+
+<h2 id="18-21-further-reading">18.21 Further Reading</h2>
+<ul>
+<li>MongoDB documentation: <em>Data Modeling</em> (embedding vs referencing, design patterns), <em>Indexes</em>, <em>Aggregation</em>, <em>Transactions</em>, <em>Schema Validation</em>, <em>Security Checklist</em>.</li>
+<li><em>MongoDB Applied Design Patterns</em> and the MongoDB &quot;Building With Patterns&quot; blog series (bucket, subset, extended reference patterns).</li>
+<li><em>MongoDB: The Definitive Guide</em> (Bradshaw, Brazil, Chodorow).</li>
+<li>Mongoose documentation: validation, middleware, populate, lean, <code>strictQuery</code>/<code>sanitizeFilter</code>.</li>
+<li>OWASP: <em>Testing for NoSQL Injection</em>.</li>
+<li>Jepsen.io analyses of MongoDB for what its guarantees mean under failure.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-19-redis-and-in-memory-data">Up next → Chapter 19: Redis and In-Memory Data</h3>
+<p>Databases are fast, but memory is faster. Next: Redis data structures (strings, hashes, lists, sets, sorted sets, streams), expiry, caching patterns, atomic counters and rate limiters, distributed locks (and why they&#39;re subtle), pub/sub, persistence (RDB/AOF) and the Node client, tested against a real Redis 7 container.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">MongoDB Data Modeling: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>When should I embed documents in MongoDB?</h3></summary><p>Embed data that is bounded, read together and owned by one parent, such as an order's line items. Reference data that is shared, unbounded or changes independently, such as a product's reviews.</p></details>
+<details class="learn-faq-item"><summary><h3>Does MongoDB support transactions?</h3></summary><p>Yes, multi-document transactions work on replica sets and sharded clusters. Single-document operations are already atomic, so good modeling avoids needing them often.</p></details>
+<details class="learn-faq-item"><summary><h3>What is NoSQL injection?</h3></summary><p>If a request body is passed into a query, an attacker can send an operator object such as {&quot;$ne&quot;: null} instead of a string. Validate input types at the boundary.</p></details>
+<details class="learn-faq-item"><summary><h3>Is schemaless the same as no schema design?</h3></summary><p>No. The database does not enforce structure by default, so you must design it and validate it yourself, with a $jsonSchema validator and application-level checks.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span>&larr; Previous &middot; Chapter 17</span><strong>ORMs vs Query Builders: Prisma, Drizzle</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span>Next &middot; Chapter 19 &rarr;</span><strong>Redis: Caching, Rate Limits &amp; Streams</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#18-0-why-this-chapter-matters">18.0 Why This Chapter Matters</a></li><li><a href="#18-1-the-document-model">18.1 The Document Model</a></li><li><a href="#18-2-queries-and-updates">18.2 Queries and Updates</a></li><li><a href="#18-3-modeling-embed-or-reference-the-central-decision">18.3 Modeling: Embed or Reference? (The Central Decision)</a></li><li><a href="#18-4-indexes-and-explain">18.4 Indexes and explain()</a></li><li><a href="#18-5-the-aggregation-pipeline">18.5 The Aggregation Pipeline</a></li><li><a href="#18-6-atomicity-concurrency-and-transactions">18.6 Atomicity, Concurrency and Transactions</a></li><li><a href="#18-7-schema-validation-putting-some-rules-back">18.7 Schema Validation: Putting Some Rules Back</a></li><li><a href="#18-8-mongoose-the-popular-odm">18.8 Mongoose (the Popular ODM)</a></li><li><a href="#18-9-classic-mongodb-traps">18.9 Classic MongoDB Traps</a></li><li><a href="#18-10-mongodb-vs-postgresql-choosing">18.10 MongoDB vs PostgreSQL: Choosing</a></li><li><a href="#18-11-edge-cases-and-gotchas-checklist">18.11 Edge Cases and Gotchas Checklist</a></li><li><a href="#18-12-chapter-summary">18.12 Chapter Summary</a></li><li><a href="#18-13-revision-notes">18.13 Revision Notes</a></li><li><a href="#18-14-mind-map-ascii">18.14 Mind Map (ASCII)</a></li><li><a href="#18-15-cheat-sheet">18.15 Cheat Sheet</a></li><li><a href="#18-16-key-takeaways">18.16 Key Takeaways</a></li><li><a href="#18-17-20-multiple-choice-questions">18.17 20 Multiple Choice Questions</a></li><li><a href="#18-18-20-hands-on-exercises">18.18 20 Hands-on Exercises</a></li><li><a href="#18-19-5-interview-questions">18.19 5 Interview Questions</a></li><li><a href="#18-20-3-real-projects">18.20 3 Real Projects</a></li><li><a href="#18-21-further-reading">18.21 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "mongodb-data-modeling-aggregation-mongoose"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

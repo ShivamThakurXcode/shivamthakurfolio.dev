@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>How the Internet Works: DNS, TCP &amp; TLS | Backend Master</title>
+    <meta name="description" content="Learn how the internet works for backend developers: IP addresses, DNS lookups, the TCP handshake, TLS encryption, latency numbers and what happens per request.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="how the internet works, dns explained, tcp handshake, tls handshake, ip address, network latency, what happens when you type a url, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/what-is-backend-development">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="how the internet works">
+    <meta property="article:tag" content="dns explained">
+    <meta property="article:tag" content="tcp handshake">
+    <meta property="article:tag" content="tls handshake">
+    <meta property="article:tag" content="ip address">
+    <meta property="article:tag" content="network latency">
+    <meta property="article:tag" content="what happens when you type a url">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="How the Internet Works: DNS, TCP &amp; TLS">
+    <meta property="og:description" content="Learn how the internet works for backend developers: IP addresses, DNS lookups, the TCP handshake, TLS encryption, latency numbers and what happens per request.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/how-the-internet-works-dns-tcp-tls.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="How the Internet Works: IP, DNS, TCP, TLS and Latency: Backend Master chapter 2">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How the Internet Works: DNS, TCP &amp; TLS">
+    <meta name="twitter:description" content="Learn how the internet works for backend developers: IP addresses, DNS lookups, the TCP handshake, TLS encryption, latency numbers and what happens per request.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/how-the-internet-works-dns-tcp-tls.png">
+    <meta name="twitter:image:alt" content="How the Internet Works: IP, DNS, TCP, TLS and Latency: Backend Master chapter 2">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls",
+          "name": "How the Internet Works: DNS, TCP & TLS | Backend Master",
+          "description": "Learn how the internet works for backend developers: IP addresses, DNS lookups, the TCP handshake, TLS encryption, latency numbers and what happens per request.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/how-the-internet-works-dns-tcp-tls.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "How the Internet Works: IP, DNS, TCP, TLS and Latency"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#webpage"
+          },
+          "headline": "How the Internet Works: IP, DNS, TCP, TLS and Latency",
+          "alternativeHeadline": "How the Internet Works — IP, DNS, TCP, TLS and the Numbers That Rule Everything",
+          "description": "Learn how the internet works for backend developers: IP addresses, DNS lookups, the TCP handshake, TLS encryption, latency numbers and what happens per request.",
+          "abstract": "Every request your backend serves travels over IP, is routed using DNS, carried by TCP and protected by TLS. This chapter explains each layer with measured examples, the latency numbers that govern performance, and what really happens between typing a URL and seeing a page.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/how-the-internet-works-dns-tcp-tls.png",
+          "url": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6327,
+          "timeRequired": "PT29M",
+          "articleSection": "Backend Development",
+          "keywords": "how the internet works, dns explained, tcp handshake, tls handshake, ip address, network latency, what happens when you type a url",
+          "proficiencyLevel": "Beginner",
+          "educationalLevel": "Beginner",
+          "teaches": [
+            "IP addresses, ports and packets",
+            "DNS resolution step by step",
+            "The TCP three-way handshake and reliability",
+            "TLS encryption and certificates",
+            "Latency, bandwidth and why round trips matter"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "how the internet works"
+          },
+          "isAccessibleForFree": true,
+          "position": 2,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/what-is-backend-development#article",
+            "name": "What Is Backend Development? The Big Picture",
+            "url": "https://shivamthakur.me/learn/backend-master/what-is-backend-development"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "How the Internet Works: DNS, TCP & TLS",
+              "item": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What happens when you type a URL into a browser?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The browser asks DNS for the server's IP address, opens a TCP connection, performs a TLS handshake for HTTPS, sends an HTTP request, and renders the response. Each step costs at least one network round trip."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does DNS do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "DNS translates human-friendly names like example.com into IP addresses. Results are cached at several levels, controlled by each record's TTL, which is why DNS changes take time to spread."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does latency matter more than bandwidth for APIs?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Most API responses are small, so the time is dominated by round trips (DNS, TCP, TLS, the request itself) rather than transfer speed. Reducing round trips through connection reuse and caching often helps more than a faster link."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the TLS handshake for?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It lets the client verify the server's identity using a certificate and agree on encryption keys, so the data exchanged afterwards cannot be read or altered by anyone on the network."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#quiz",
+          "name": "How the Internet Works: DNS, TCP & TLS: 20 multiple choice questions",
+          "educationalLevel": "Beginner",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "how the internet works"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does DNS do?",
+              "text": "What does DNS do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Translates domain names to IP addresses"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Encrypts traffic"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Routes packets"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Stores cookies"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a private IPv4 address?",
+              "text": "Which is a private IPv4 address?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "192.168.1.50"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "8.8.8.8"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "203.0.113.10"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "1.1.1.1"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "127.0.0.1 refers to:",
+              "text": "127.0.0.1 refers to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The local machine itself"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The router"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The DNS server"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A random public server"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How many addresses are in a /24 IPv4 block?",
+              "text": "How many addresses are in a /24 IPv4 block?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "256"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "24"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "128"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "65,536"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which DNS record type maps a name to an IPv4 address?",
+              "text": "Which DNS record type maps a name to an IPv4 address?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "AAAA"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "MX"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "TXT"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does TTL on a DNS record control?",
+              "text": "What does TTL on a DNS record control?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "How long the answer may be cached"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Encryption strength"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Packet hop limit only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Server uptime"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The TCP three-way handshake consists of:",
+              "text": "The TCP three-way handshake consists of:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SYN, SYN-ACK, ACK"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "GET, POST, ACK"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HELLO, KEY, DONE"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "FIN, ACK, FIN"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which protocol would suit a live video call where occasional lost frames are acceptable?",
+              "text": "Which protocol would suit a live video call where occasional lost frames are acceptable?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "UDP"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "TCP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "FTP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SMTP"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "HTTP/3 runs over:",
+              "text": "HTTP/3 runs over:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "QUIC (on UDP)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "TCP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "ICMP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SMTP"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which of these does TLS NOT provide?",
+              "text": "Which of these does TLS NOT provide?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Faster page rendering"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Confidentiality"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Integrity"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Authentication of the server"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A certificate is trusted because it is:",
+              "text": "A certificate is trusted because it is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Signed by a CA the client already trusts"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Long"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Written in JSON"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sent over HTTP"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In TLS, bulk data is encrypted using:",
+              "text": "In TLS, bulk data is encrypted using:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Symmetric encryption"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Asymmetric encryption"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No encryption after the handshake"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Hashing only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Roughly how many round trips does a cold HTTPS (TLS 1.3) request need before the server's response starts, excluding DNS?",
+              "text": "Roughly how many round trips does a cold HTTPS (TLS 1.3) request need before the server's response starts, excluding DNS?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "3"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "2"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "10"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "ECONNREFUSED most likely means:",
+              "text": "ECONNREFUSED most likely means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The host was reachable but nothing was listening on that port"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "DNS failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The certificate expired"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The firewall silently dropped packets"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A server inside Docker is unreachable from your host. The most likely cause is that it binds to:",
+              "text": "A server inside Docker is unreachable from your host. The most likely cause is that it binds to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "127.0.0.1 inside the container"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "0.0.0.0"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Port 3000"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "IPv6"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why are connections reused (keep-alive / pooling)?",
+              "text": "Why are connections reused (keep-alive / pooling)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To save handshake round trips and avoid TCP slow start"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "To avoid using HTTP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To encrypt data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To change IPs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does a reverse proxy do?",
+              "text": "What does a reverse proxy do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sits in front of servers and forwards client requests"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Hides the client from servers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replaces DNS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Compresses the database"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why can't you trust the X-Forwarded-For header blindly?",
+              "text": "Why can't you trust the X-Forwarded-For header blindly?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Clients can forge it"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's encrypted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's deprecated"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It only carries ports"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which approach reduces latency for users far from your origin server?",
+              "text": "Which approach reduces latency for users far from your origin server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A CDN / edge caching"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A bigger CPU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "More RAM"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A faster language"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why does lowering DNS TTL before a migration help?",
+              "text": "Why does lowering DNS TTL before a migration help?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Old cached answers expire sooner, so users switch to the new IP faster"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It speeds up TCP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It encrypts DNS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It reduces packet size"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">How the Internet Works: DNS, TCP &amp; TLS</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:5.6%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item active" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" aria-current="page"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 2 of 36 &middot; Beginner</p>
+                        <h1>How the Internet Works: IP, DNS, TCP, TLS and Latency</h1>
+                        <p class="learn-book-title">How the Internet Works — IP, DNS, TCP, TLS and the Numbers That Rule Everything</p>
+                        <ul class="learn-meta text-caption">
+                            <li>29 min read</li>
+                            <li>Beginner</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/how-the-internet-works-dns-tcp-tls.webp"><img src="../../assets/images/learn/backend-master/how-the-internet-works-dns-tcp-tls.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="How the Internet Works: IP, DNS, TCP, TLS and Latency: Backend Master chapter 2 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Every request your backend serves travels over IP, is routed using DNS, carried by TCP and protected by TLS. This chapter explains each layer with measured examples, the latency numbers that govern performance, and what really happens between typing a URL and seeing a page.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>IP addresses, ports and packets</li><li>DNS resolution step by step</li><li>The TCP three-way handshake and reliability</li><li>TLS encryption and certificates</li><li>Latency, bandwidth and why round trips matter</li></ul>
+                        </section>
+<hr>
+
+<h2 id="2-0-why-this-chapter-matters">2.0 Why This Chapter Matters</h2>
+<p>In <a href="/learn/backend-master/what-is-backend-development" title="What Is Backend Development? Start Here">Chapter 1</a> we built a server and said &quot;the request gets there somehow.&quot; This chapter removes the &quot;somehow.&quot;</p>
+<p>Why should a backend engineer care about cables and handshakes? Because <strong>every slow API, every mysterious timeout, every &quot;works on my machine but not in production&quot; bug eventually traces back to the network.</strong></p>
+<ul>
+<li>Your API is fast on your laptop (0 ms network) and slow for users in another country (150 ms network, <em>per round trip</em>).</li>
+<li>Your app can&#39;t reach the database: is it DNS? A firewall? A closed port? The wrong IP?</li>
+<li>Your HTTPS site shows a scary certificate warning. Why?</li>
+<li>Your server runs out of connections under load. What is a connection, anyway?</li>
+</ul>
+<p>After this chapter, you will be able to look at any of these and know <strong>which layer to blame</strong>.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>Light in optical fiber travels at about two-thirds of the speed of light in a vacuum, roughly 200,000 km/s. New York to London is about 5,600 km, so the <em>physical minimum</em> one-way delay is about 28 ms, regardless of how much money you spend. You cannot optimize the speed of light. You can only <strong>make fewer round trips</strong>. That sentence will drive half of your performance decisions.</p>
+</aside>
+<hr>
+
+<h2 id="2-1-the-big-picture-what-happens-when-you-visit-a-website">2.1 The Big Picture: What Happens When You Visit a Website</h2>
+<p>You type <code>https://shopline.com/products</code> and press Enter. In roughly 200 ms, all of this happens:</p>
+<pre class="is-plain"><code> YOUR BROWSER                                                       SERVER
+ ─────────────                                                      ──────
+ 1. DNS:  &quot;what IP is shopline.com?&quot;  ──▶ DNS servers  ──▶ 203.0.113.10
+ 2. TCP:  connect to 203.0.113.10:443  ─── SYN ────────────────────▶
+                                       ◀── SYN-ACK ────────────────
+                                       ─── ACK ────────────────────▶
+ 3. TLS:  agree on encryption, verify certificate ◀──────────────▶
+ 4. HTTP: GET /products ─────────────────────────────────────────▶
+                                       ◀──────────  200 OK + HTML/JSON
+ 5. Browser renders / app uses the data</code></pre>
+<p>Five stages. We&#39;ll take them one by one:</p>
+<ol>
+<li><strong>IP addresses &amp; ports</strong>: how machines and programs are identified.</li>
+<li><strong>DNS</strong>: turning names into addresses.</li>
+<li><strong>TCP</strong>: reliable delivery of bytes.</li>
+<li><strong>TLS</strong>: making those bytes private and verified.</li>
+<li><strong>HTTP</strong>: the language spoken on top (<a href="/learn/backend-master/http-explained-methods-status-codes-headers" title="HTTP Explained: Methods, Status &amp; Headers">Chapter 3</a>).</li>
+</ol>
+<h3 id="real-life-analogy-sending-a-letter-by-post">Real-Life Analogy: Sending a Letter by Post</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Post</th>
+<th>Internet</th>
+</tr>
+</thead><tbody><tr>
+<td>Looking up a friend&#39;s address in a phone book</td>
+<td><strong>DNS</strong></td>
+</tr>
+<tr>
+<td>The address (street, number)</td>
+<td><strong>IP address</strong></td>
+</tr>
+<tr>
+<td>The apartment number</td>
+<td><strong>Port</strong></td>
+</tr>
+<tr>
+<td>Calling first: &quot;Are you home? Yes. OK, I&#39;m sending.&quot;</td>
+<td><strong>TCP handshake</strong></td>
+</tr>
+<tr>
+<td>Putting the letter in a sealed, tamper-evident envelope signed by a notary</td>
+<td><strong>TLS</strong></td>
+</tr>
+<tr>
+<td>The language you write the letter in</td>
+<td><strong>HTTP</strong></td>
+</tr>
+<tr>
+<td>The postal service breaking big parcels into small boxes and re-assembling them</td>
+<td><strong>Packets</strong></td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="2-2-layers-why-the-internet-is-a-stack">2.2 Layers: Why the Internet Is a Stack</h2>
+<p>Networking is organized into <strong>layers</strong>. Each layer solves one problem and relies on the layer below. You don&#39;t need all of the formal models, only this practical version (the &quot;TCP/IP model&quot;):</p>
+<pre class="is-plain"><code> ┌─────────────────────────────────────────────────────────────┐
+ │ APPLICATION    HTTP, DNS, SMTP, WebSocket, gRPC   ← YOU live  │
+ ├─────────────────────────────────────────────────────────────┤
+ │ (SECURITY)     TLS  (sits between application and transport)  │
+ ├─────────────────────────────────────────────────────────────┤
+ │ TRANSPORT      TCP, UDP     (ports, reliability)              │
+ ├─────────────────────────────────────────────────────────────┤
+ │ INTERNET       IP           (addresses, routing)              │
+ ├─────────────────────────────────────────────────────────────┤
+ │ LINK           Ethernet, Wi-Fi  (one hop to the next device)  │
+ └─────────────────────────────────────────────────────────────┘</code></pre>
+<p><strong>Encapsulation</strong> is the key idea. When your app sends <code>GET /products</code>, each layer wraps the data in its own &quot;envelope&quot; with its own header:</p>
+<pre class="is-plain"><code> HTTP message:     [ GET /products ... ]
+ + TLS:            [ encrypted( HTTP message ) ]
+ + TCP header:     [ src port | dst port | seq # | ... | encrypted data ]
+ + IP header:      [ src IP | dst IP | ... | TCP segment ]
+ + Link header:    [ MAC addresses | ... | IP packet ]</code></pre>
+<p>Each layer only reads its own envelope. A router only looks at the IP header; it doesn&#39;t know or care that you&#39;re loading a shopping page.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;A TIP of the stack&quot;</strong>: <strong>A</strong>pplication, <strong>T</strong>ransport, <strong>I</strong>nternet, <strong>P</strong>hysical/link. Top to bottom: what you say → how reliably → where it goes → the wire.</p>
+<p>As a backend developer you will mostly work at the <strong>application layer</strong> and need to <em>understand</em> the transport and internet layers for debugging and performance.</p>
+</aside>
+<hr>
+
+<h2 id="2-3-ip-addresses">2.3 IP Addresses</h2>
+<p>An <strong>IP address</strong> identifies a device (more precisely, a network interface) on a network.</p>
+<h3 id="ipv4">IPv4</h3>
+<p>Four numbers from 0–255, separated by dots: <code>203.0.113.10</code>. That&#39;s 32 bits, giving about <strong>4.3 billion</strong> addresses. Sounds like a lot, but we ran out years ago, because there are more devices than that.</p>
+<h3 id="ipv6">IPv6</h3>
+<p>Eight groups of hex: <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code> (leading zeros and runs of zero groups can be shortened: <code>2001:db8:85a3::8a2e:370:7334</code>). 128 bits, about 3.4×10³⁸ addresses, enough to give every grain of sand a few trillion.</p>
+<h3 id="public-vs-private-addresses">Public vs private addresses</h3>
+<p>Your home Wi-Fi gives your laptop an address like <code>192.168.1.23</code>. That&#39;s a <strong>private</strong> address; it only means something inside your home. The whole house shares one <strong>public</strong> address on the internet.</p>
+<p>Private ranges (memorize these; you&#39;ll see them in cloud networking constantly):</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Range</th>
+<th>Common use</th>
+</tr>
+</thead><tbody><tr>
+<td><code>10.0.0.0/8</code></td>
+<td>Companies, cloud VPCs</td>
+</tr>
+<tr>
+<td><code>172.16.0.0/12</code></td>
+<td>Docker uses <code>172.17.x.x</code> by default</td>
+</tr>
+<tr>
+<td><code>192.168.0.0/16</code></td>
+<td>Home routers</td>
+</tr>
+</tbody></table></div>
+<p><strong>NAT (Network Address Translation)</strong> is how the router lets many private devices share one public address: it rewrites addresses on the way out and remembers which reply belongs to whom, like a receptionist forwarding calls.</p>
+<h3 id="special-addresses">Special addresses</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Address</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><code>127.0.0.1</code> / <code>localhost</code></td>
+<td>&quot;This computer&quot; (loopback). Traffic never leaves the machine. IPv6: <code>::1</code></td>
+</tr>
+<tr>
+<td><code>0.0.0.0</code></td>
+<td>&quot;All network interfaces&quot;. A server binding to it accepts connections from anywhere</td>
+</tr>
+<tr>
+<td><code>255.255.255.255</code></td>
+<td>Broadcast</td>
+</tr>
+</tbody></table></div>
+<h3 id="cidr-notation-you-will-see-this-in-firewalls-and-cloud-config">CIDR notation (you will see this in firewalls and cloud config)</h3>
+<p><code>10.0.0.0/24</code> means &quot;the first 24 bits are fixed; the last 8 bits vary.&quot; That&#39;s 2⁸ = 256 addresses (<code>10.0.0.0</code>–<code>10.0.0.255</code>). <code>/16</code> is 65,536 addresses. <strong>Smaller number after the slash = bigger network.</strong></p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-localhost-vs-0-0-0-0" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: <code>localhost</code> vs <code>0.0.0.0</code></span></h3>
+<p>Your server listens on <code>127.0.0.1</code> only, and works perfectly on your laptop, but your phone, a Docker container, or a teammate can&#39;t reach it. In Node, <code>server.listen(3000)</code> listens on all interfaces by default, but frameworks and tools sometimes bind to <code>127.0.0.1</code>. In Docker, a server bound to <code>127.0.0.1</code> inside the container is <strong>unreachable from outside the container</strong>; it must bind to <code>0.0.0.0</code>. You will hit this exact bug in <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>.</p>
+</aside>
+<hr>
+
+<h2 id="2-4-ports">2.4 Ports</h2>
+<p>An IP address finds the machine; a <strong>port</strong> (0–65535) finds the program on it.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Port</th>
+<th>Service</th>
+</tr>
+</thead><tbody><tr>
+<td>22</td>
+<td>SSH (remote login)</td>
+</tr>
+<tr>
+<td>25 / 587</td>
+<td>Email sending (SMTP)</td>
+</tr>
+<tr>
+<td>53</td>
+<td>DNS</td>
+</tr>
+<tr>
+<td>80</td>
+<td>HTTP</td>
+</tr>
+<tr>
+<td>443</td>
+<td>HTTPS</td>
+</tr>
+<tr>
+<td>3000, 8080</td>
+<td>Common dev ports for web apps</td>
+</tr>
+<tr>
+<td>3306</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>5432</td>
+<td>PostgreSQL</td>
+</tr>
+<tr>
+<td>6379</td>
+<td>Redis</td>
+</tr>
+<tr>
+<td>27017</td>
+<td>MongoDB</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>Ports 0–1023 are &quot;well-known&quot; and, on Linux, need elevated privileges to bind. That&#39;s why dev servers use 3000 or 8080, and production puts a reverse proxy (NGINX) on 80/443 in front.</li>
+<li>A <strong>socket</strong> is the pair <strong>(IP address, port)</strong>. A TCP <strong>connection</strong> is uniquely identified by four values: <code>(client IP, client port, server IP, server port)</code>. This is why one server port (443) can handle thousands of simultaneous clients: each client has a different IP/port.</li>
+</ul>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-2" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>A phone call: IP = phone number, port = extension. A connection = <em>this</em> caller on <em>that</em> line.</p>
+</aside>
+<hr>
+
+<h2 id="2-5-dns-the-internet-s-phone-book">2.5 DNS: The Internet&#39;s Phone Book</h2>
+<p>Humans remember <code>shopline.com</code>. Computers route to <code>203.0.113.10</code>. <strong>DNS (Domain Name System)</strong> translates one into the other.</p>
+<h3 id="2-5-1-anatomy-of-a-domain-name">2.5.1 Anatomy of a domain name</h3>
+<pre class="is-plain"><code>        www . shopline . com .
+         │       │        │   └─ root (usually invisible)
+         │       │        └───── TLD: top-level domain (.com, .org, .in)
+         │       └────────────── second-level domain (what you buy)
+         └────────────────────── subdomain (you create as many as you like)</code></pre>
+<p>Read right to left: root → <code>.com</code> → <code>shopline</code> → <code>www</code>. DNS is a <strong>hierarchy</strong>, a tree. (Yes, a tree from our DSA book!)</p>
+<h3 id="2-5-2-the-resolution-journey">2.5.2 The resolution journey</h3>
+<p>When your browser needs <code>api.shopline.com</code>:</p>
+<pre class="is-plain"><code> Browser cache? ──no──▶ OS cache? ──no──▶ Router cache? ──no──▶
+                                                              │
+                                              ┌───────────────▼──────────────┐
+                                              │ RECURSIVE RESOLVER           │
+                                              │ (your ISP, 8.8.8.8, 1.1.1.1) │
+                                              └───────────────┬──────────────┘
+          cached? return immediately.                         │ not cached:
+                                                              ▼
+   1. ask ROOT server:        &quot;who handles .com?&quot;       → &quot;ask the .com servers&quot;
+   2. ask .COM TLD server:    &quot;who handles shopline.com?&quot; → &quot;ask ns1.shopline.com&quot;
+   3. ask AUTHORITATIVE NS:   &quot;IP of api.shopline.com?&quot;  → &quot;203.0.113.10, TTL 300&quot;
+                                                              │
+                                  resolver caches the answer for 300 seconds
+                                  and returns it to your browser</code></pre>
+<p>Takeaways:</p>
+<ul>
+<li>Most lookups are answered from <strong>caches</strong> and cost almost nothing.</li>
+<li>A <em>cold</em> lookup might take 20–120 ms.</li>
+<li>Each answer carries a <strong>TTL (Time To Live)</strong>: how many seconds it may be cached.</li>
+</ul>
+<h3 id="2-5-3-dns-record-types-you-will-edit-these">2.5.3 DNS record types (you will edit these)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Type</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>A</strong></td>
+<td>Name → IPv4</td>
+<td><code>api.shopline.com → 203.0.113.10</code></td>
+</tr>
+<tr>
+<td><strong>AAAA</strong></td>
+<td>Name → IPv6</td>
+<td><code>api.shopline.com → 2001:db8::10</code></td>
+</tr>
+<tr>
+<td><strong>CNAME</strong></td>
+<td>Alias to another name</td>
+<td><code>www.shopline.com → shopline.com</code></td>
+</tr>
+<tr>
+<td><strong>MX</strong></td>
+<td>Mail servers for the domain</td>
+<td><code>shopline.com → mail.google.com</code></td>
+</tr>
+<tr>
+<td><strong>TXT</strong></td>
+<td>Arbitrary text (domain verification, SPF/DKIM email auth)</td>
+<td><code>&quot;v=spf1 include:_spf.google.com ~all&quot;</code></td>
+</tr>
+<tr>
+<td><strong>NS</strong></td>
+<td>Which servers are authoritative</td>
+<td><code>ns1.cloudflare.com</code></td>
+</tr>
+</tbody></table></div>
+<h3 id="2-5-4-ttl-the-trade-off-you-ll-feel-when-deploying">2.5.4 TTL: the trade-off you&#39;ll feel when deploying</h3>
+<ul>
+<li><strong>High TTL (e.g., 86400 s = 1 day):</strong> fewer lookups, fast for users, <strong>but</strong> if you change the IP, some people still hit the old one for up to a day.</li>
+<li><strong>Low TTL (e.g., 60 s):</strong> changes propagate quickly, <strong>but</strong> more DNS lookups.</li>
+</ul>
+<p><strong>Pro move:</strong> Before a planned migration, lower the TTL to 60 s a day ahead; after the switch, raise it again. &quot;DNS propagation&quot; isn&#39;t magic; it&#39;s caches expiring.</p>
+<h3 id="2-5-5-try-it-in-node">2.5.5 Try it in Node</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// dns-demo.js</span>
+<span class="hljs-keyword">const</span> dns = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:dns/promises&#x27;</span>);
+
+(<span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;lookup  :&#x27;</span>, <span class="hljs-keyword">await</span> dns.<span class="hljs-title function_">lookup</span>(<span class="hljs-string">&#x27;example.com&#x27;</span>));      <span class="hljs-comment">// uses the OS resolver</span>
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;A       :&#x27;</span>, <span class="hljs-keyword">await</span> dns.<span class="hljs-title function_">resolve4</span>(<span class="hljs-string">&#x27;example.com&#x27;</span>));    <span class="hljs-comment">// asks DNS directly</span>
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;MX      :&#x27;</span>, <span class="hljs-keyword">await</span> dns.<span class="hljs-title function_">resolveMx</span>(<span class="hljs-string">&#x27;gmail.com&#x27;</span>));
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;TXT     :&#x27;</span>, <span class="hljs-keyword">await</span> dns.<span class="hljs-title function_">resolveTxt</span>(<span class="hljs-string">&#x27;example.com&#x27;</span>));
+})();</code></pre></div>
+<p>Output (your values will differ; the shape is what matters):</p>
+<pre class="is-plain"><code>lookup  : { address: '93.184.215.14', family: 4 }
+A       : [ '93.184.215.14' ]
+MX      : [ { exchange: 'gmail-smtp-in.l.google.com', priority: 5 }, ... ]
+TXT     : [ [ 'v=spf1 -all' ], ... ]</code></pre>
+<p>From the terminal, the classic tools:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">nslookup example.com
+dig example.com A +short       <span class="hljs-comment"># macOS/Linux</span>
+dig example.com MX
+dig @8.8.8.8 example.com       <span class="hljs-comment"># ask a specific resolver</span></code></pre></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-dns-lookup-vs-dns-resolve" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: <code>dns.lookup</code> vs <code>dns.resolve</code></span></h3>
+<p><code>dns.lookup</code> uses the operating system&#39;s resolver (respects your <code>/etc/hosts</code>, runs on the libuv thread pool, and is what <code>http.get</code> uses). <code>dns.resolve*</code> talks to DNS servers directly over the network. If you hammer <code>dns.lookup</code> under load, you can <strong>exhaust Node&#39;s thread pool (default 4 threads)</strong> and slow down file reads and crypto too. This is a real production issue; caching DNS results in high-throughput services is common.</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;What happens when you type a URL?&quot; → <em>Always start with DNS.</em> Mentioning caches (browser → OS → resolver), the root/TLD/authoritative chain, and TTLs separates you from the crowd.</p>
+</aside>
+<hr>
+
+<h2 id="2-6-packets-and-routing">2.6 Packets and Routing</h2>
+<p>Data isn&#39;t sent as one big blob. It is chopped into <strong>packets</strong> (typically ≤ ~1,500 bytes on Ethernet, the &quot;MTU&quot;), each sent independently and possibly by different routes, then reassembled at the destination.</p>
+<pre class="is-plain"><code>  your laptop ─▶ home router ─▶ ISP ─▶ backbone ─▶ ... ─▶ data center ─▶ server
+                          (each is a &quot;hop&quot;; routers pick the next hop
+                           by looking at the destination IP)</code></pre>
+<p>See the hops yourself:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">traceroute example.com        <span class="hljs-comment"># macOS / Linux</span>
+tracert example.com           <span class="hljs-comment"># Windows</span>
+ping example.com              <span class="hljs-comment"># round-trip time to the host</span></code></pre></div>
+<p><code>ping</code> output like <code>time=24.3 ms</code> is the <strong>RTT (round-trip time)</strong>: out and back. RTT is the currency of networking.</p>
+<p>Why split into packets? Resilience (a lost piece can be resent without resending everything), fair sharing of links, and the ability to route around failures.</p>
+<hr>
+
+<h2 id="2-7-tcp-reliable-delivery">2.7 TCP: Reliable Delivery</h2>
+<p>IP is &quot;best effort&quot;: packets may be lost, duplicated, reordered. <strong>TCP (Transmission Control Protocol)</strong> sits on top and turns that unreliable pipe into a reliable, ordered <strong>stream of bytes</strong>.</p>
+<p>What TCP guarantees:</p>
+<ol>
+<li><strong>Delivery:</strong> lost segments are retransmitted.</li>
+<li><strong>Order:</strong> bytes arrive in the order they were sent.</li>
+<li><strong>No duplicates.</strong></li>
+<li><strong>Flow control:</strong> the sender won&#39;t overwhelm a slow receiver.</li>
+<li><strong>Congestion control:</strong> the sender slows down when the network is congested.</li>
+</ol>
+<h3 id="2-7-1-the-three-way-handshake">2.7.1 The three-way handshake</h3>
+<p>Before any data flows, the two sides establish a connection:</p>
+<pre class="is-plain"><code>   CLIENT                                   SERVER
+     │ ──────── SYN  (seq=x) ────────────▶    │   &quot;Can we talk? My counter starts at x.&quot;
+     │ ◀─────── SYN-ACK (seq=y, ack=x+1) ──   │   &quot;Yes. Mine starts at y. Got your x.&quot;
+     │ ──────── ACK  (ack=y+1) ──────────▶    │   &quot;Got your y. Go!&quot;
+     │            connection ESTABLISHED       │</code></pre>
+<p><strong>Cost: one full round trip (1 RTT) before the first byte of your request can even be sent.</strong> If RTT to the server is 100 ms, you&#39;ve burned 100 ms on &quot;hello&quot;.</p>
+<h3 id="2-7-2-closing">2.7.2 Closing</h3>
+<p>Either side sends <code>FIN</code>; the other acknowledges. The side that closes first enters <code>TIME_WAIT</code> for about a minute (so late packets don&#39;t corrupt a new connection). On a very busy server making thousands of short outgoing connections you can run out of ports stuck in <code>TIME_WAIT</code>, which is one reason <strong>connection reuse (keep-alive and pooling)</strong> is a core backend technique.</p>
+<h3 id="2-7-3-slow-start">2.7.3 Slow start</h3>
+<p>A new TCP connection doesn&#39;t blast at full speed. It starts slowly and ramps up as it confirms the network can handle it. Consequence: <strong>fresh connections are slower than warm ones.</strong> Reusing connections isn&#39;t just saving handshakes; it avoids slow-start too.</p>
+<h3 id="2-7-4-tcp-in-code-a-server-and-a-client-in-20-lines">2.7.4 TCP in code: a server and a client in 20 lines</h3>
+<p>HTTP is just text over TCP. Let&#39;s prove it by speaking TCP directly.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// tcp-echo-server.js</span>
+<span class="hljs-keyword">const</span> net = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:net&#x27;</span>);
+
+<span class="hljs-keyword">const</span> server = net.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">socket</span>) =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;client connected from&#x27;</span>, socket.<span class="hljs-property">remoteAddress</span>, socket.<span class="hljs-property">remotePort</span>);
+  socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;data&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">chunk</span>) =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;got:&#x27;</span>, chunk.<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">trim</span>());
+    socket.<span class="hljs-title function_">write</span>(<span class="hljs-string">`echo: <span class="hljs-subst">${chunk}</span>`</span>);
+  });
+  socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;close&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;client disconnected&#x27;</span>));
+});
+
+server.<span class="hljs-title function_">listen</span>(<span class="hljs-number">4000</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;TCP server on 4000&#x27;</span>));</code></pre></div>
+<p>Run it, then in another terminal connect with a raw TCP client:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash"><span class="hljs-comment"># macOS/Linux:  nc localhost 4000        Windows: use telnet, or:</span>
+node -e <span class="hljs-string">&quot;const s=require(&#x27;net&#x27;).connect(4000,&#x27;localhost&#x27;,()=&gt;{s.write(&#x27;hello\n&#x27;)});s.on(&#x27;data&#x27;,d=&gt;{console.log(d.toString());s.end()})&quot;</span></code></pre></div>
+<p>Output:</p>
+<pre class="is-plain"><code>echo: hello</code></pre>
+<p>Server terminal:</p>
+<pre class="is-plain"><code>TCP server on 4000
+client connected from ::ffff:127.0.0.1 51482
+got: hello
+client disconnected</code></pre>
+<p>Notice the random high port <code>51482</code>. That&#39;s the client&#39;s side of the 4-tuple.</p>
+<h3 id="2-7-5-speaking-http-by-hand-over-tcp">2.7.5 Speaking HTTP by hand over TCP</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// raw-http.js</span>
+<span class="hljs-keyword">const</span> net = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:net&#x27;</span>);
+
+<span class="hljs-keyword">const</span> socket = net.<span class="hljs-title function_">connect</span>(<span class="hljs-number">80</span>, <span class="hljs-string">&#x27;example.com&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+  socket.<span class="hljs-title function_">write</span>(
+    <span class="hljs-string">&#x27;GET / HTTP/1.1\r\n&#x27;</span> +
+    <span class="hljs-string">&#x27;Host: example.com\r\n&#x27;</span> +
+    <span class="hljs-string">&#x27;Connection: close\r\n&#x27;</span> +
+    <span class="hljs-string">&#x27;\r\n&#x27;</span>            <span class="hljs-comment">// blank line = end of headers</span>
+  );
+});
+
+<span class="hljs-keyword">let</span> data = <span class="hljs-string">&#x27;&#x27;</span>;
+socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;data&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">c</span>) =&gt;</span> (data += c));
+socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;end&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(data.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;\r\n\r\n&#x27;</span>)[<span class="hljs-number">0</span>])); <span class="hljs-comment">// print only the headers</span></code></pre></div>
+<p>Output (abridged):</p>
+<pre class="is-plain"><code>HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1256
+...</code></pre>
+<p><strong>HTTP is just structured text sent over a TCP connection.</strong> Every framework you will ever use is a convenience layer over this.</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip</span></h3>
+<p>When something about HTTP confuses you, drop to <code>curl -v</code> or raw sockets and <em>look at the actual bytes</em>. Frameworks hide a lot; bytes don&#39;t lie.</p>
+</aside>
+<hr>
+
+<h2 id="2-8-udp-fast-and-careless">2.8 UDP: Fast and Careless</h2>
+<p><strong>UDP</strong> skips the handshake, ordering and retransmission. It just fires packets. No guarantees, minimal overhead.</p>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>TCP</th>
+<th>UDP</th>
+</tr>
+</thead><tbody><tr>
+<td>Connection setup</td>
+<td>Yes (handshake)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Reliable &amp; ordered</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Speed / overhead</td>
+<td>Slower, heavier</td>
+<td>Faster, lighter</td>
+</tr>
+<tr>
+<td>Analogy</td>
+<td>Registered mail with signature</td>
+<td>Throwing postcards in a mailbox</td>
+</tr>
+<tr>
+<td>Used by</td>
+<td>HTTP/1.1, HTTP/2, databases, SSH, email</td>
+<td>DNS queries, video calls, online games, <strong>HTTP/3 (QUIC)</strong></td>
+</tr>
+</tbody></table></div>
+<p>Rule of thumb: if getting <em>every</em> byte matters, use TCP. If <em>freshness</em> beats completeness (a dropped video frame is irrelevant a moment later), use UDP.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know-2" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>HTTP/3 runs over <strong>QUIC</strong>, which is built on UDP; it re-implements reliability, ordering and encryption in user space so it can be updated faster than operating-system TCP stacks and avoid TCP&#39;s &quot;head-of-line blocking&quot; problems. More in <a href="/learn/backend-master/http-explained-methods-status-codes-headers" title="HTTP Explained: Methods, Status &amp; Headers">Chapter 3</a>.</p>
+</aside>
+<hr>
+
+<h2 id="2-9-tls-and-https-privacy-and-identity">2.9 TLS and HTTPS: Privacy and Identity</h2>
+<p>Plain HTTP sends everything as readable text. Anyone on the path (Wi-Fi owner, ISP, an attacker on café Wi-Fi) can read passwords or modify responses. <strong>TLS (Transport Layer Security)</strong> wraps the TCP connection in encryption. <strong>HTTPS = HTTP over TLS.</strong></p>
+<p>TLS provides three things:</p>
+<ol>
+<li><strong>Confidentiality:</strong> nobody else can read the data.</li>
+<li><strong>Integrity:</strong> nobody can alter it undetected.</li>
+<li><strong>Authentication:</strong> you&#39;re really talking to <code>shopline.com</code>, not an impostor.</li>
+</ol>
+<h3 id="2-9-1-two-kinds-of-cryptography-working-together">2.9.1 Two kinds of cryptography working together</h3>
+<ul>
+<li><strong>Asymmetric (public/private key):</strong> a key <em>pair</em>. What the public key locks, only the private key unlocks (and the private key can <em>sign</em> things that the public key verifies). Slow, but solves &quot;how do two strangers agree on a secret?&quot;</li>
+<li><strong>Symmetric:</strong> one shared secret key for both locking and unlocking. Very fast, so it encrypts the actual data.</li>
+</ul>
+<p>TLS uses asymmetric math for the <em>handshake</em> to agree on a fresh shared secret, then switches to symmetric encryption for the bulk traffic.</p>
+<h3 id="2-9-2-certificates-and-the-chain-of-trust">2.9.2 Certificates and the chain of trust</h3>
+<p>How does your browser know the public key really belongs to <code>shopline.com</code>? Through a <strong>certificate</strong>: a document saying &quot;this public key belongs to <code>shopline.com</code>,&quot; <strong>signed by a Certificate Authority (CA)</strong> your device already trusts.</p>
+<pre class="is-plain"><code>   Root CA  (pre-installed in your OS / browser trust store)
+      │ signs
+      ▼
+   Intermediate CA
+      │ signs
+      ▼
+   Leaf certificate:  CN=shopline.com, public key, expiry date...</code></pre>
+<p>The browser checks: signature chain valid? Domain matches? Not expired? Not revoked? If anything fails you get the red warning page.</p>
+<p><strong>Let&#39;s Encrypt</strong> provides free, automated certificates; certificates last ~90 days and renew automatically. In 2026, there&#39;s no excuse for plain HTTP.</p>
+<h3 id="2-9-3-the-handshake-tls-1-3-simplified">2.9.3 The handshake (TLS 1.3, simplified)</h3>
+<pre class="is-plain"><code>  CLIENT                                          SERVER
+    │ ── ClientHello: versions, ciphers,           │
+    │    my key share, &quot;I want shopline.com&quot; ────▶ │
+    │                                              │
+    │ ◀── ServerHello + key share +                │
+    │     certificate + signature (&quot;Finished&quot;) ─── │
+    │                                              │
+    │  both now derive the same session keys       │
+    │ ── Finished, then encrypted HTTP ──────────▶ │</code></pre>
+<p>TLS 1.3 needs <strong>1 RTT</strong> (TLS 1.2 needed 2). With TCP&#39;s 1 RTT, a fresh HTTPS connection costs about <strong>2 RTTs before the first request byte</strong>. At 100 ms RTT, that&#39;s 200 ms spent on setup. This is why <strong>connection reuse</strong> and <strong>TLS session resumption</strong> matter so much.</p>
+<h3 id="2-9-4-peek-at-a-certificate-from-node">2.9.4 Peek at a certificate from Node</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// cert-peek.js</span>
+<span class="hljs-keyword">const</span> tls = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:tls&#x27;</span>);
+
+<span class="hljs-keyword">const</span> socket = tls.<span class="hljs-title function_">connect</span>(<span class="hljs-number">443</span>, <span class="hljs-string">&#x27;example.com&#x27;</span>, { <span class="hljs-attr">servername</span>: <span class="hljs-string">&#x27;example.com&#x27;</span> }, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">const</span> cert = socket.<span class="hljs-title function_">getPeerCertificate</span>();
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Protocol :&#x27;</span>, socket.<span class="hljs-title function_">getProtocol</span>());      <span class="hljs-comment">// e.g. TLSv1.3</span>
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Subject  :&#x27;</span>, cert.<span class="hljs-property">subject</span>.<span class="hljs-property">CN</span>);
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Issuer   :&#x27;</span>, cert.<span class="hljs-property">issuer</span>.<span class="hljs-property">O</span>);
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Valid to :&#x27;</span>, cert.<span class="hljs-property">valid_to</span>);
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Trusted  :&#x27;</span>, socket.<span class="hljs-property">authorized</span>);
+  socket.<span class="hljs-title function_">end</span>();
+});</code></pre></div>
+<p>Output (will vary):</p>
+<pre class="is-plain"><code>Protocol : TLSv1.3
+Subject  : www.example.org
+Issuer   : DigiCert Inc
+Valid to : Mar 1 23:59:59 2027 GMT
+Trusted  : true</code></pre>
+<h3 id="2-9-5-where-does-tls-actually-end">2.9.5 Where does TLS actually end?</h3>
+<p>In production, your Node app often <em>doesn&#39;t</em> do TLS itself. A <strong>reverse proxy / load balancer</strong> (NGINX, a cloud load balancer, Cloudflare) <strong>terminates TLS</strong> and forwards plain HTTP to your app inside the private network. This is called <strong>TLS termination</strong>, covered properly in <a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>.</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-disabling-certificate-checks" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Disabling certificate checks</span></h3>
+<p>When a TLS error blocks your dev work, StackOverflow will tell you to set <code>NODE_TLS_REJECT_UNAUTHORIZED=0</code> or <code>rejectUnauthorized: false</code>. This <strong>turns off authentication</strong>, so anyone can impersonate the server. If it ever ships to production, you have silently removed the &quot;S&quot; from HTTPS. Fix the certificate; don&#39;t mute the alarm.</p>
+</aside>
+<hr>
+
+<h2 id="2-10-cdns-put-the-data-closer">2.10 CDNs: Put the Data Closer</h2>
+<p>Since distance = latency and you can&#39;t beat the speed of light, the fix is to <strong>move the content closer to the user</strong>.</p>
+<p>A <strong>CDN (Content Delivery Network)</strong> is a global fleet of cache servers (&quot;edge nodes&quot;). Users fetch images, CSS, JS (and sometimes API responses) from a nearby edge instead of your faraway origin.</p>
+<pre class="is-plain"><code>   User in Mumbai ──▶ nearest edge (Mumbai) ── hit ─▶ instant
+                                       └── miss ─▶ your origin (Virginia) ─▶ cache it</code></pre>
+<p>Examples: Cloudflare, Akamai, Fastly, AWS CloudFront. CDNs also absorb traffic spikes and attacks (DDoS). Static assets almost always belong behind a CDN.</p>
+<hr>
+
+<h2 id="2-11-latency-numbers-every-backend-engineer-should-know">2.11 Latency Numbers Every Backend Engineer Should Know</h2>
+<p>Famously popularized by Jeff Dean / Peter Norvig. Approximate, but the <em>ratios</em> are what matter:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Operation</th>
+<th>Time</th>
+<th>Scaled to &quot;human time&quot; (1 ns = 1 sec)</th>
+</tr>
+</thead><tbody><tr>
+<td>CPU L1 cache reference</td>
+<td>~1 ns</td>
+<td>1 second</td>
+</tr>
+<tr>
+<td>Main memory (RAM) reference</td>
+<td>~100 ns</td>
+<td>~1.5 minutes</td>
+</tr>
+<tr>
+<td>Compress 1 KB</td>
+<td>~2 µs</td>
+<td>~30 minutes</td>
+</tr>
+<tr>
+<td>Read 1 MB sequentially from RAM</td>
+<td>~10-50 µs</td>
+<td>hours</td>
+</tr>
+<tr>
+<td>SSD random read</td>
+<td>~100 µs</td>
+<td>~1 day</td>
+</tr>
+<tr>
+<td>Round trip within the same data center</td>
+<td>~0.5 ms</td>
+<td>~6 days</td>
+</tr>
+<tr>
+<td>Read 1 MB sequentially from SSD</td>
+<td>~0.2–1 ms</td>
+<td>about a week</td>
+</tr>
+<tr>
+<td>Disk (HDD) seek</td>
+<td>~5-10 ms</td>
+<td>~months</td>
+</tr>
+<tr>
+<td>Round trip same continent</td>
+<td>~30-80 ms</td>
+<td>~years</td>
+</tr>
+<tr>
+<td>Round trip across oceans (e.g., US ↔ Europe/Asia)</td>
+<td>~100–250 ms</td>
+<td>decades</td>
+</tr>
+</tbody></table></div>
+<p>What this table teaches:</p>
+<ol>
+<li><strong>RAM vs network:</strong> a network call to another service is 5,000×+ slower than reading memory. This is why caching exists.</li>
+<li><strong>A database query is a network round trip plus disk work.</strong> 10 queries in a loop = 10 round trips (the infamous <strong>N+1 problem</strong>, <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>).</li>
+<li><strong>Distance dominates.</strong> If your database is in Virginia and your app server in Mumbai, <em>every query</em> costs ~200 ms.</li>
+<li><strong>Fewer round trips beats faster code.</strong> Batching beats looping.</li>
+</ol>
+<h3 id="a-concrete-budget">A concrete budget</h3>
+<p>A user in Singapore (RTT ≈ 180 ms) hits a server in Virginia over HTTPS with a cold connection:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Step</th>
+<th>Cost</th>
+</tr>
+</thead><tbody><tr>
+<td>DNS (cold)</td>
+<td>~50 ms</td>
+</tr>
+<tr>
+<td>TCP handshake</td>
+<td>180 ms (1 RTT)</td>
+</tr>
+<tr>
+<td>TLS 1.3 handshake</td>
+<td>180 ms (1 RTT)</td>
+</tr>
+<tr>
+<td>HTTP request + response</td>
+<td>180 ms (1 RTT) + server time</td>
+</tr>
+<tr>
+<td><strong>Total before first byte</strong></td>
+<td><strong>~590 ms + processing</strong></td>
+</tr>
+</tbody></table></div>
+<p>Your lightning-fast 5 ms handler is <strong>less than 1%</strong> of what the user feels. That insight leads directly to CDNs, edge servers, connection reuse, HTTP/2 and HTTP/3.</p>
+<h3 id="measure-it-yourself-with-curl">Measure it yourself with curl</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -o /dev/null -s -w <span class="hljs-string">&quot;dns: %{time_namelookup}s\ntcp: %{time_connect}s\ntls: %{time_appconnect}s\nfirst byte: %{time_starttransfer}s\ntotal: %{time_total}s\n&quot;</span> https://example.com</code></pre></div>
+<p>(On Windows PowerShell, replace <code>/dev/null</code> with <code>NUL</code> and use <code>curl.exe</code>.)</p>
+<p>Output (example):</p>
+<pre class="is-plain"><code>dns: 0.012s
+tcp: 0.045s
+tls: 0.098s
+first byte: 0.143s
+total: 0.144s</code></pre>
+<p>Each number is <em>cumulative</em>. Subtract the previous line to get that stage&#39;s own cost. Run it twice: the second run&#39;s DNS is nearly free.</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-2" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;Why is my API slow for users in Asia?&quot; → Walk the table: distance (RTT) × round trips (DNS, TCP, TLS, HTTP, plus N DB queries). Then propose fixes in order: CDN/edge caching, regional deployment, connection keep-alive, fewer sequential calls, read replicas near users.</p>
+</aside>
+<hr>
+
+<h2 id="2-12-firewalls-proxies-and-reverse-proxies">2.12 Firewalls, Proxies and Reverse Proxies</h2>
+<ul>
+<li><strong>Firewall:</strong> allows or blocks traffic by IP, port, protocol. Rule of thumb: <em>deny everything, then open only what is needed</em> (e.g., 443 to the world, 5432 only from your app servers).</li>
+<li><strong>Forward proxy:</strong> sits in front of <em>clients</em> (corporate proxy, VPN).</li>
+<li><strong>Reverse proxy:</strong> sits in front of <em>servers</em>. Clients think they&#39;re talking to your site; the proxy forwards to the real servers. Used for TLS termination, load balancing, caching, compression, security (NGINX, HAProxy, Cloudflare).</li>
+</ul>
+<pre class="is-plain"><code> clients ──▶ [ reverse proxy :443 ] ──▶ app server 1 :3000
+                                    ├─▶ app server 2 :3000
+                                    └─▶ app server 3 :3000</code></pre>
+<p>Important side effect: your app now sees the <strong>proxy&#39;s</strong> IP as the client IP. The real one arrives in the <code>X-Forwarded-For</code> header. (And because anyone can forge that header, trusting it blindly is a security hole. <a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>.)</p>
+<hr>
+
+<h2 id="2-13-debugging-toolkit-which-layer-is-broken">2.13 Debugging Toolkit: Which Layer Is Broken?</h2>
+<p>When &quot;it can&#39;t connect,&quot; walk <strong>up the stack</strong>:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Symptom</th>
+<th>Likely layer</th>
+<th>Check with</th>
+</tr>
+</thead><tbody><tr>
+<td>Name not found / <code>ENOTFOUND</code></td>
+<td>DNS</td>
+<td><code>nslookup</code>, <code>dig</code></td>
+</tr>
+<tr>
+<td>Timeout, no response</td>
+<td>Network / firewall / host down</td>
+<td><code>ping</code>, <code>traceroute</code></td>
+</tr>
+<tr>
+<td><code>ECONNREFUSED</code></td>
+<td>Host reachable, <strong>nothing listening on that port</strong></td>
+<td><code>curl -v</code>, <code>netstat</code>/<code>ss -tlnp</code>, is the server running?</td>
+</tr>
+<tr>
+<td><code>ECONNRESET</code></td>
+<td>Connection killed mid-way (crash, proxy timeout, idle timeout)</td>
+<td>server and proxy logs</td>
+</tr>
+<tr>
+<td><code>ETIMEDOUT</code></td>
+<td>Packets dropped (firewall silently dropping)</td>
+<td>firewall / security-group rules</td>
+</tr>
+<tr>
+<td>Cert errors (<code>CERT_HAS_EXPIRED</code>, hostname mismatch)</td>
+<td>TLS</td>
+<td><code>openssl s_client -connect host:443</code>, <code>curl -v</code></td>
+</tr>
+<tr>
+<td>4xx / 5xx</td>
+<td>Application layer (HTTP)</td>
+<td>app logs</td>
+</tr>
+</tbody></table></div>
+<p>Useful commands:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">ping host                         <span class="hljs-comment"># reachable? RTT?</span>
+curl -v https://host/path         <span class="hljs-comment"># DNS, TCP, TLS, HTTP — verbose, all layers</span>
+nc -zv host 5432                  <span class="hljs-comment"># is port 5432 open? (macOS/Linux)</span>
+ss -tlnp                          <span class="hljs-comment"># Linux: which programs listen on which ports</span>
+netstat -ano | findstr :3000      <span class="hljs-comment"># Windows: who owns port 3000?</span></code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-d-t-t-h" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;D-T-T-H&quot;</span></h3>
+<p>Debug in order: <strong>D</strong>NS → <strong>T</strong>CP (connect) → <strong>T</strong>LS (certificate) → <strong>H</strong>TTP (status). Most outages are the first one you didn&#39;t check.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-econnrefused-vs-etimedout" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: <code>ECONNREFUSED</code> vs <code>ETIMEDOUT</code></span></h3>
+<p>Refused = the machine answered &quot;nobody&#39;s home on that port&quot; (fast failure; wrong port or service down). Timeout = no answer at all (packets dropped; usually a firewall or wrong IP). Different cause, different fix.</p>
+</aside>
+<hr>
+
+<h2 id="2-14-edge-cases-and-gotchas-checklist">2.14 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> DNS change not visible → TTL still caching; wait it out or flush local caches.</li>
+<li><input disabled="" type="checkbox"> Works by IP but not by name → DNS problem. Works by name but wrong server → stale DNS or <code>/etc/hosts</code> override.</li>
+<li><input disabled="" type="checkbox"> Works locally, &quot;connection refused&quot; in Docker → server bound to <code>127.0.0.1</code>; use <code>0.0.0.0</code>.</li>
+<li><input disabled="" type="checkbox"> Certificate error only for some users → missing intermediate certificate in your chain, or user clock wrong.</li>
+<li><input disabled="" type="checkbox"> Certificate suddenly expired → auto-renewal failed silently. <strong>Monitor expiry.</strong></li>
+<li><input disabled="" type="checkbox"> Intermittent timeouts under load → exhausted ports/connections (<code>TIME_WAIT</code>), exhausted thread pool, or connection limits.</li>
+<li><input disabled="" type="checkbox"> Client IP always shows the proxy → read <code>X-Forwarded-For</code> (carefully) or enable your framework&#39;s <code>trust proxy</code> setting.</li>
+<li><input disabled="" type="checkbox"> Mixed content → an HTTPS page calling HTTP endpoints; browsers block it.</li>
+<li><input disabled="" type="checkbox"> Time zones and clocks → TLS validity and token expiry both depend on correct clocks.</li>
+</ul>
+<hr>
+
+<h2 id="2-15-chapter-summary">2.15 Chapter Summary</h2>
+<ul>
+<li>The internet is a <strong>stack of layers</strong>; each does one job and wraps data in its own envelope.</li>
+<li><strong>IP</strong> addresses locate machines (IPv4/IPv6, public/private, NAT); <strong>ports</strong> locate programs; a connection is the 4-tuple.</li>
+<li><strong>DNS</strong> is a cached, hierarchical phone book; records (A, AAAA, CNAME, MX, TXT, NS) and <strong>TTL</strong> govern what you get and how fast changes spread.</li>
+<li><strong>TCP</strong> gives reliable, ordered streams via a <strong>3-way handshake</strong> (1 RTT); <strong>UDP</strong> trades reliability for speed.</li>
+<li><strong>TLS</strong> gives confidentiality, integrity and authentication via certificates and a CA chain; TLS 1.3 costs 1 extra RTT.</li>
+<li>A cold HTTPS request costs ~<strong>3 RTTs before the response begins</strong>. Distance and round trips dominate, so reuse connections, use CDNs, minimize sequential calls.</li>
+<li>Debug by walking the stack: <strong>DNS → TCP → TLS → HTTP</strong>.</li>
+</ul>
+<hr>
+
+<h2 id="2-16-revision-notes">2.16 Revision Notes</h2>
+<ul>
+<li>Port ranges: 80 HTTP, 443 HTTPS, 22 SSH, 5432 Postgres, 3306 MySQL, 6379 Redis, 27017 Mongo.</li>
+<li>Private IPs: <code>10/8</code>, <code>172.16/12</code>, <code>192.168/16</code>; <code>127.0.0.1</code> = loopback; <code>0.0.0.0</code> = all interfaces.</li>
+<li><code>/24</code> = 256 addrs, <code>/16</code> = 65,536. Smaller prefix = bigger network.</li>
+<li>DNS order: cache → resolver → root → TLD → authoritative. TTL = cache lifetime.</li>
+<li>TCP: SYN, SYN-ACK, ACK. Reliable, ordered, congestion-aware.</li>
+<li>TLS: asymmetric handshake → symmetric data. Certs signed by CAs.</li>
+<li>Latency ratios: RAM ≪ SSD ≪ same-DC network ≪ cross-continent.</li>
+<li>Errors: <code>ENOTFOUND</code> (DNS), <code>ECONNREFUSED</code> (no listener), <code>ETIMEDOUT</code> (dropped), <code>ECONNRESET</code> (killed).</li>
+</ul>
+<hr>
+
+<h2 id="2-17-mind-map-ascii">2.17 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                              THE INTERNET (Ch. 2)
+                                       │
+      ┌───────────┬──────────┬─────────┼──────────┬───────────┬──────────┐
+   ADDRESSING   DNS        TCP/UDP    TLS        LATENCY     EDGE      DEBUG
+      │          │            │         │           │           │         │
+   IPv4/IPv6   hierarchy   handshake  certs       RTT         CDN      DNS→TCP
+   public/     root→TLD→   reliable   CA chain    distance    reverse   →TLS→HTTP
+   private     auth        ordered    asym→sym    round       proxy     ping, curl,
+   ports       records     UDP=fast   TLS 1.3     trips       firewall  dig, ss
+   NAT         TTL cache   QUIC/H3    = 1 RTT     matter</code></pre>
+<hr>
+
+<h2 id="2-18-cheat-sheet">2.18 Cheat Sheet</h2>
+<pre class="is-plain"><code>LAYERS         App (HTTP/DNS) → [TLS] → Transport (TCP/UDP) → Internet (IP) → Link
+IP             IPv4 32-bit | IPv6 128-bit | private: 10/8 172.16/12 192.168/16
+LOOPBACK       127.0.0.1 / ::1 / localhost       ALL IFACES: 0.0.0.0
+PORTS          22 ssh | 53 dns | 80 http | 443 https | 5432 pg | 6379 redis | 27017 mongo
+DNS RECORDS    A (v4) AAAA (v6) CNAME (alias) MX (mail) TXT (text) NS (nameserver)
+COLD HTTPS     DNS + 1 RTT (TCP) + 1 RTT (TLS 1.3) + 1 RTT (HTTP)
+TOOLS          ping | traceroute | nslookup | dig | curl -v | nc -zv | ss -tlnp
+TIMING         curl -o /dev/null -s -w &quot;dns:%{time_namelookup} tcp:%{time_connect}
+                    tls:%{time_appconnect} ttfb:%{time_starttransfer}\n&quot; URL
+ERRORS         ENOTFOUND=DNS  ECONNREFUSED=no listener  ETIMEDOUT=dropped
+               ECONNRESET=killed mid-way
+GOLDEN RULE    You can't beat the speed of light. Reduce round trips.</code></pre>
+<hr>
+
+<h2 id="2-19-key-takeaways">2.19 Key Takeaways</h2>
+<ol>
+<li>Every web request is a chain: DNS → TCP → TLS → HTTP. Know which link is failing.</li>
+<li><strong>Round trips, not CPU, dominate user-perceived latency.</strong> Design to need fewer of them.</li>
+<li>DNS caching and TTL explain most &quot;it hasn&#39;t updated yet&quot; mysteries.</li>
+<li>HTTPS is non-negotiable; never disable certificate verification to &quot;make it work.&quot;</li>
+<li>HTTP is just text over TCP. When confused, look at the raw bytes.</li>
+</ol>
+<hr>
+
+<h2 id="2-20-20-multiple-choice-questions">2.20 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="DNS maps names to addresses."><p class="quiz-text">What does DNS do?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Encrypts traffic</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Translates domain names to IP addresses</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Routes packets</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Stores cookies</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="192.168/16 is private."><p class="quiz-text">Which is a private IPv4 address?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">8.8.8.8</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">192.168.1.50</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">203.0.113.10</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">1.1.1.1</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Loopback address."><p class="quiz-text"><code>127.0.0.1</code> refers to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The router</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The DNS server</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The local machine itself</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A random public server</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="2⁸ = 256."><p class="quiz-text">How many addresses are in a <code>/24</code> IPv4 block?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">24</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">128</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">256</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">65,536</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="A = IPv4, AAAA = IPv6."><p class="quiz-text">Which DNS record type maps a name to an IPv4 address?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">AAAA</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">MX</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">TXT</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Cache lifetime in seconds."><p class="quiz-text">What does TTL on a DNS record control?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Encryption strength</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">How long the answer may be cached</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Packet hop limit only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Server uptime</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="SYN, SYN-ACK, ACK."><p class="quiz-text">The TCP three-way handshake consists of:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">GET, POST, ACK</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">SYN, SYN-ACK, ACK</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">HELLO, KEY, DONE</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">FIN, ACK, FIN</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Freshness beats completeness."><p class="quiz-text">Which protocol would suit a live video call where occasional lost frames are acceptable?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">TCP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">UDP</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">FTP</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">SMTP</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="QUIC over UDP."><p class="quiz-text">HTTP/3 runs over:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">TCP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">QUIC (on UDP)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">ICMP</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">SMTP</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="d" data-why="TLS adds a little overhead, not speed."><p class="quiz-text">Which of these does TLS NOT provide?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Confidentiality</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Integrity</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Authentication of the server</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Faster page rendering</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Chain of trust to a root CA."><p class="quiz-text">A certificate is trusted because it is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Long</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Signed by a CA the client already trusts</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Written in JSON</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sent over HTTP</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Fast symmetric keys after the handshake."><p class="quiz-text">In TLS, bulk data is encrypted using:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Asymmetric encryption</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Symmetric encryption</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No encryption after the handshake</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Hashing only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="TCP (1) + TLS 1.3 (1) + HTTP request/response (1)."><p class="quiz-text">Roughly how many round trips does a cold HTTPS (TLS 1.3) request need before the server&#39;s response starts, excluding DNS?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">2</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">3</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">10</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Host replied &quot;nothing here&quot;."><p class="quiz-text"><code>ECONNREFUSED</code> most likely means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">DNS failed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The host was reachable but nothing was listening on that port</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The certificate expired</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The firewall silently dropped packets</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Loopback inside the container isn't reachable from outside."><p class="quiz-text">A server inside Docker is unreachable from your host. The most likely cause is that it binds to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">0.0.0.0</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">127.0.0.1 inside the container</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Port 3000</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">IPv6</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Handshakes and slow start are costly."><p class="quiz-text">Why are connections reused (keep-alive / pooling)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To save handshake round trips and avoid TCP slow start</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">To avoid using HTTP</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To encrypt data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To change IPs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="It fronts servers."><p class="quiz-text">What does a reverse proxy do?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Hides the client from servers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Sits in front of servers and forwards client requests</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Replaces DNS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Compresses the database</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Any client can set arbitrary headers."><p class="quiz-text">Why can&#39;t you trust the <code>X-Forwarded-For</code> header blindly?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s encrypted</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Clients can forge it</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s deprecated</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It only carries ports</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Move content closer to users."><p class="quiz-text">Which approach reduces latency for users far from your origin server?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A bigger CPU</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A CDN / edge caching</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">More RAM</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A faster language</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Caches expire sooner."><p class="quiz-text">Why does lowering DNS TTL before a migration help?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It speeds up TCP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Old cached answers expire sooner, so users switch to the new IP faster</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It encrypts DNS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It reduces packet size</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-c, 4-c, 5-b, 6-b, 7-b, 8-b, 9-b, 10-d, 11-b, 12-b, 13-c, 14-b, 15-b, 16-a, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="2-21-20-hands-on-exercises">2.21 20 Hands-on Exercises</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>ping example.com</code>. Record the RTT. Ping a server on another continent and compare.</li>
+<li>Use <code>nslookup</code> (or <code>dig</code>) to find the A record of three sites. Do any return multiple IPs? Why might they?</li>
+<li>Run <code>traceroute</code>/<code>tracert</code> to a distant site. Count the hops and find the biggest latency jump.</li>
+<li>Look up the MX and TXT records of <code>gmail.com</code>. What do they tell you?</li>
+<li>Find your private IP (<code>ipconfig</code> / <code>ifconfig</code>) and your public IP (search &quot;what is my IP&quot;). Why are they different?</li>
+<li>Use <code>curl -v https://example.com</code> and label each part of the output: DNS, TCP, TLS, request, response.</li>
+<li>Run the <code>dns-demo.js</code> script. Compare <code>lookup</code> vs <code>resolve4</code> for <code>localhost</code>. Why does <code>resolve4(&#39;localhost&#39;)</code> fail?</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="8">
+<li>Run the curl timing command 5 times. Which stage changes most? Why is DNS faster on later runs?</li>
+<li>Start the TCP echo server and connect with two clients at once. Print each client&#39;s remote port.</li>
+<li>Modify the echo server to uppercase what it receives.</li>
+<li>Write a Node script that opens a TCP connection to <code>localhost:3000</code> (your <a href="/learn/backend-master/what-is-backend-development" title="What Is Backend Development? Start Here">Chapter 1</a> server) and sends a hand-written HTTP request.</li>
+<li>Use <code>cert-peek.js</code> on three different sites. Compare issuers and expiry dates.</li>
+<li>Write a port scanner in Node (<code>net.connect</code> with timeout) that checks which of ports 20–100 are open on <code>localhost</code>.</li>
+<li>Start a server that binds to <code>127.0.0.1</code> only. Try reaching it from your phone (same Wi-Fi) using your laptop&#39;s private IP. Then bind to <code>0.0.0.0</code> and retry.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="15">
+<li>Edit your OS <code>hosts</code> file to map <code>shopline.test</code> to <code>127.0.0.1</code>. Visit <code>http://shopline.test:3000</code>. Explain which step of DNS you bypassed.</li>
+<li>Measure Node&#39;s <code>dns.lookup</code> throughput by calling it 1,000 times in parallel. Observe the thread-pool effect; then add an in-memory cache with a TTL and compare.</li>
+<li>Build a tiny &quot;DNS-over-cache&quot; function: <code>cachedLookup(hostname)</code> that respects a 60 s TTL.</li>
+<li>Using <code>openssl s_client -connect example.com:443 -servername example.com</code>, extract and read the certificate chain. Identify the root, intermediate and leaf.</li>
+<li>Make an HTTPS server in Node with a self-signed certificate (<code>openssl req -x509 ...</code>). Visit it with a browser and <code>curl</code> (with and without <code>-k</code>). Explain each warning.</li>
+<li>Calculate the cold-request time for a user with 220 ms RTT hitting an uncached API that makes 4 sequential DB queries to a DB 1 ms away. Then calculate again if the API server is moved next to the user but the DB stays 220 ms away. Which is worse?</li>
+</ol>
+<hr>
+
+<h2 id="2-22-5-interview-questions">2.22 5 Interview Questions</h2>
+<p><strong>1. What happens when you type a URL into a browser and press Enter?</strong>
+<em>Model answer:</em> Browser checks caches, then resolves the domain via DNS (browser/OS cache → recursive resolver → root → TLD → authoritative). It opens a TCP connection (3-way handshake), performs a TLS handshake for HTTPS (certificate validation, key agreement), sends the HTTP request, the server (possibly via CDN/load balancer/reverse proxy) routes it to the app, which queries a cache/database and responds. The browser then parses the response, requests sub-resources (reusing connections) and renders. I&#39;d mention caching and keep-alive at each stage.</p>
+<p><strong>2. What&#39;s the difference between TCP and UDP?</strong>
+<em>Model answer:</em> TCP is connection-oriented, reliable and ordered, with flow and congestion control; costs a handshake. UDP is connectionless with no delivery or ordering guarantees but lower latency and overhead. TCP: web, DB, email. UDP: DNS queries, streaming, games, QUIC/HTTP-3.</p>
+<p><strong>3. How does HTTPS keep data secure?</strong>
+<em>Model answer:</em> TLS authenticates the server via a CA-signed certificate, uses asymmetric cryptography during the handshake to agree on a shared secret (with forward secrecy in modern suites), then encrypts and integrity-protects all traffic with fast symmetric ciphers. This blocks eavesdropping, tampering and impersonation.</p>
+<p><strong>4. A service reports <code>ECONNREFUSED</code> vs <code>ETIMEDOUT</code> connecting to the database. What does each tell you?</strong>
+<em>Model answer:</em> Refused: the host is reachable but nothing accepts on that port (DB down, wrong port, not listening on that interface). Timeout: packets are dropped or the host is unreachable, typically a firewall/security-group/routing issue. I&#39;d check listening ports with <code>ss</code>, then firewall rules and routes.</p>
+<p><strong>5. Why might an API be slow for overseas users even though the server code is fast?</strong>
+<em>Model answer:</em> Network latency dominates: DNS + TCP + TLS + HTTP are several round trips, each multiplied by high RTT, plus sequential backend calls. Fixes: CDN/edge caching for cacheable data, keep-alive/HTTP2/3, TLS session resumption, deploying regionally or near users, reducing sequential round trips (batching), and read replicas near users.</p>
+<hr>
+
+<h2 id="2-23-3-real-projects">2.23 3 Real Projects</h2>
+<p><strong>Project 1: Network Doctor CLI (beginner, ~2 hours).</strong>
+A Node script: <code>node doctor.js example.com 443</code> that reports (1) DNS result and time, (2) TCP connect time, (3) TLS version and certificate expiry (if 443), (4) HTTP status and time-to-first-byte. Print a green/red summary showing which stage fails and how long each takes. It is the programmatic version of <code>curl -w</code>.</p>
+<p><strong>Project 2: Mini TCP Chat Room (intermediate, ~3 hours).</strong>
+Using only <code>net</code>, build a server where every connected client&#39;s message is broadcast to the others, with nicknames and a <code>/quit</code> command. It teaches sockets, connection lifecycle, and handling disconnects without crashing. This is the seed for the WebSocket chat in <a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a>.</p>
+<p><strong>Project 3: Certificate Expiry Watcher (intermediate, ~2 hours).</strong>
+Read a list of domains from a JSON file, check each certificate&#39;s expiry, and print a table sorted by days remaining, flagging anything under 21 days. Optionally send results to a webhook. Expired certificates are one of the most common (and most embarrassing) production outages.</p>
+<hr>
+
+<h2 id="2-24-further-reading">2.24 Further Reading</h2>
+<ul>
+<li>MDN: <em>&quot;How the Web works&quot;</em> and <em>&quot;What is DNS?&quot;</em></li>
+<li>Cloudflare Learning Center: <em>&quot;What is DNS?&quot;</em>, <em>&quot;What is TLS?&quot;</em>, <em>&quot;What is a CDN?&quot;</em> (excellent diagrams)</li>
+<li>High Performance Browser Networking by Ilya Grigorik (free online): the best deep dive on TCP, TLS, HTTP/2 and latency.</li>
+<li><em>Latency Numbers Every Programmer Should Know</em> (search for the interactive version).</li>
+<li>Node.js docs: <code>net</code>, <code>dns</code>, <code>tls</code> modules.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-3-http-deep-dive">Up next → Chapter 3: HTTP Deep Dive</h3>
+<p>You now know how bytes reach the server. Next we study the <em>language</em> inside those bytes: methods, status codes, headers, cookies, caching and CORS, the vocabulary every API conversation uses.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">How the Internet Works: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What happens when you type a URL into a browser?</h3></summary><p>The browser asks DNS for the server's IP address, opens a TCP connection, performs a TLS handshake for HTTPS, sends an HTTP request, and renders the response. Each step costs at least one network round trip.</p></details>
+<details class="learn-faq-item"><summary><h3>What does DNS do?</h3></summary><p>DNS translates human-friendly names like example.com into IP addresses. Results are cached at several levels, controlled by each record's TTL, which is why DNS changes take time to spread.</p></details>
+<details class="learn-faq-item"><summary><h3>Why does latency matter more than bandwidth for APIs?</h3></summary><p>Most API responses are small, so the time is dominated by round trips (DNS, TCP, TLS, the request itself) rather than transfer speed. Reducing round trips through connection reuse and caching often helps more than a faster link.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the TLS handshake for?</h3></summary><p>It lets the client verify the server's identity using a certificate and agree on encryption keys, so the data exchanged afterwards cannot be read or altered by anyone on the network.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/what-is-backend-development"><span>&larr; Previous &middot; Chapter 1</span><strong>What Is Backend Development? Start Here</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span>Next &middot; Chapter 3 &rarr;</span><strong>HTTP Explained: Methods, Status &amp; Headers</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#2-0-why-this-chapter-matters">2.0 Why This Chapter Matters</a></li><li><a href="#2-1-the-big-picture-what-happens-when-you-visit-a-website">2.1 The Big Picture: What Happens When You Visit a Website</a></li><li><a href="#2-2-layers-why-the-internet-is-a-stack">2.2 Layers: Why the Internet Is a Stack</a></li><li><a href="#2-3-ip-addresses">2.3 IP Addresses</a></li><li><a href="#2-4-ports">2.4 Ports</a></li><li><a href="#2-5-dns-the-internet-s-phone-book">2.5 DNS: The Internet's Phone Book</a></li><li><a href="#2-6-packets-and-routing">2.6 Packets and Routing</a></li><li><a href="#2-7-tcp-reliable-delivery">2.7 TCP: Reliable Delivery</a></li><li><a href="#2-8-udp-fast-and-careless">2.8 UDP: Fast and Careless</a></li><li><a href="#2-9-tls-and-https-privacy-and-identity">2.9 TLS and HTTPS: Privacy and Identity</a></li><li><a href="#2-10-cdns-put-the-data-closer">2.10 CDNs: Put the Data Closer</a></li><li><a href="#2-11-latency-numbers-every-backend-engineer-should-know">2.11 Latency Numbers Every Backend Engineer Should Know</a></li><li><a href="#2-12-firewalls-proxies-and-reverse-proxies">2.12 Firewalls, Proxies and Reverse Proxies</a></li><li><a href="#2-13-debugging-toolkit-which-layer-is-broken">2.13 Debugging Toolkit: Which Layer Is Broken?</a></li><li><a href="#2-14-edge-cases-and-gotchas-checklist">2.14 Edge Cases and Gotchas Checklist</a></li><li><a href="#2-15-chapter-summary">2.15 Chapter Summary</a></li><li><a href="#2-16-revision-notes">2.16 Revision Notes</a></li><li><a href="#2-17-mind-map-ascii">2.17 Mind Map (ASCII)</a></li><li><a href="#2-18-cheat-sheet">2.18 Cheat Sheet</a></li><li><a href="#2-19-key-takeaways">2.19 Key Takeaways</a></li><li><a href="#2-20-20-multiple-choice-questions">2.20 20 Multiple Choice Questions</a></li><li><a href="#2-21-20-hands-on-exercises">2.21 20 Hands-on Exercises</a></li><li><a href="#2-22-5-interview-questions">2.22 5 Interview Questions</a></li><li><a href="#2-23-3-real-projects">2.23 3 Real Projects</a></li><li><a href="#2-24-further-reading">2.24 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "how-the-internet-works-dns-tcp-tls"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

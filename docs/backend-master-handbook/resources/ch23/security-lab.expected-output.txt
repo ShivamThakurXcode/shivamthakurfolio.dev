@@ -1,0 +1,73 @@
+=== 1. XSS: output encoding ===
+v1 (raw interpolation)                         200  <h1>Results for <script>alert(document.cookie)</script></h1>
+v2 (HTML-escaped)                              200  <h1>Results for &lt;script&gt;alert(document.cookie)&lt;/script&gt;</h1>
+
+=== 2. path traversal ===
+v1 /v1/file?f=logo.txt                         200  public logo
+v1 /v1/file?f=../secret.txt                    200  TOP-SECRET-CONFIG
+v2 /v2/file?f=../secret.txt                    400  bad path
+v2 /v2/file?f=logo.txt                         200  public logo
+v2 sibling dir trick f=../public-evil/x        400  bad path
+
+=== 3. command injection ===
+v1 host="x; echo INJECTED"                     200  pinging x; echo INJECTED 
+v2 same payload                                400  bad host
+v2 host="example.com"                          200  pinging example.com 
+
+=== 4. SSRF ===
+v1 fetch http://127.0.0.1:8947/                200  INTERNAL-ADMIN-SECRET-42
+v1 fetch http://localhost:8947/                200  INTERNAL-ADMIN-SECRET-42
+v1 fetch http://2130706433:8947/               200  INTERNAL-ADMIN-SECRET-42
+v1 fetch http://[::1]:8947/                    502  fetch failed
+v1 fetch file:///etc/hosts                     502  fetch failed
+v2 fetch http://127.0.0.1:8947/                400  blocked: resolves to a private address
+v2 fetch http://localhost:8947/                400  blocked: resolves to a private address
+v2 fetch http://2130706433:8947/               400  blocked: resolves to a private address
+v2 fetch http://[::1]:8947/                    400  blocked: resolves to a private address
+v2 fetch http://example.org/ (not allow-listed) 400  blocked: host not on allow-list
+
+=== 5. open redirect ===
+next=/orders            v1 -> /orders            v2 -> /orders
+next=//evil.com         v1 -> //evil.com         v2 -> /
+next=https://evil.com   v1 -> https://evil.com   v2 -> /
+next=/\evil.com         v1 -> /\evil.com         v2 -> /
+
+=== 6. CORS ===
+/cors-bad/data     Origin: https://evil.example       -> ACAO: https://evil.example         credentials: true
+/cors-bad/data     Origin: https://shop.example.com   -> ACAO: https://shop.example.com     credentials: true
+/cors-good/data    Origin: https://evil.example       -> ACAO: null                         credentials: true
+/cors-good/data    Origin: https://shop.example.com   -> ACAO: https://shop.example.com     credentials: true
+
+=== 7. CSRF on a cookie-authenticated endpoint ===
+v1 forged cross-site request (Origin evil)     200  {"moved":5000}
+v2 same forged request                         403  {"title":"bad origin"}
+v2 forged, spoofed good Origin but no token    403  {"title":"bad csrf token"}
+v2 legit: origin + X-CSRF-Token                200  {"moved":5000}
+
+=== 8. prototype pollution ===
+before: ({}).isAdmin = undefined
+after naiveMerge(JSON.parse('{"__proto__":{"isAdmin":true}}')): ({}).isAdmin = true <- EVERY object now has isAdmin
+after safeMerge: ({}).isAdmin = undefined
+
+=== 10. body-size limit and JSON errors ===
+5 KB body vs 1 KB limit -> 413 {"title":"entity.too.large"}
+malformed JSON -> 400
+
+=== 11. security headers: express default vs helmet ===
+without helmet: content-security-policy=MISSING strict-transport-security=MISSING x-content-type-options=MISSING x-frame-options=MISSING referrer-policy=MISSING
+with helmet   :
+   content-security-policy      default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'sel
+   strict-transport-security    max-age=31536000; includeSubDomains
+   x-content-type-options       nosniff
+   x-frame-options              SAMEORIGIN
+   referrer-policy              no-referrer
+   cross-origin-opener-policy   same-origin
+   x-powered-by                 (absent)
+
+=== 12. ReDoS: catastrophic backtracking blocks the WHOLE server ===
+/^(a+)+$/ on 20 a's + "!" ->       172.7 ms
+/^(a+)+$/ on 24 a's + "!" ->       162.4 ms
+/^(a+)+$/ on 26 a's + "!" ->       689.5 ms
+/^(a+)+$/ on 28 a's + "!" ->       3206.9 ms
+safe equivalent /^a+$/ on a 31-char input -> 0.063 ms
+an innocent request sent just before a 28-char evil input took 2532 ms (the evil regex held the event loop for 2520 ms)

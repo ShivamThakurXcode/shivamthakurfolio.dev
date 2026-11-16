@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Message Queues &amp; Background Jobs: Outbox | Backend Master</title>
+    <meta name="description" content="Move slow work off the request: a PostgreSQL SKIP LOCKED queue, BullMQ, Redis Streams, retries and dead letters, idempotent consumers and the outbox pattern.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="message queue nodejs, background jobs, bullmq tutorial, skip locked queue postgresql, outbox pattern, idempotent consumer, dead letter queue, redis streams, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="message queue nodejs">
+    <meta property="article:tag" content="background jobs">
+    <meta property="article:tag" content="bullmq tutorial">
+    <meta property="article:tag" content="skip locked queue postgresql">
+    <meta property="article:tag" content="outbox pattern">
+    <meta property="article:tag" content="idempotent consumer">
+    <meta property="article:tag" content="dead letter queue">
+    <meta property="article:tag" content="redis streams">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Message Queues &amp; Background Jobs: Outbox">
+    <meta property="og:description" content="Move slow work off the request: a PostgreSQL SKIP LOCKED queue, BullMQ, Redis Streams, retries and dead letters, idempotent consumers and the outbox pattern.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/message-queues-background-jobs-outbox-nodejs.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Asynchronous Processing: Message Queues, Background Jobs and the Outbox Pattern: Backend Master chapter 28">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Message Queues &amp; Background Jobs: Outbox">
+    <meta name="twitter:description" content="Move slow work off the request: a PostgreSQL SKIP LOCKED queue, BullMQ, Redis Streams, retries and dead letters, idempotent consumers and the outbox pattern.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/message-queues-background-jobs-outbox-nodejs.png">
+    <meta name="twitter:image:alt" content="Asynchronous Processing: Message Queues, Background Jobs and the Outbox Pattern: Backend Master chapter 28">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs",
+          "name": "Message Queues & Background Jobs: Outbox | Backend Master",
+          "description": "Move slow work off the request: a PostgreSQL SKIP LOCKED queue, BullMQ, Redis Streams, retries and dead letters, idempotent consumers and the outbox pattern.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/message-queues-background-jobs-outbox-nodejs.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Asynchronous Processing: Message Queues, Background Jobs and the Outbox Pattern"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#webpage"
+          },
+          "headline": "Asynchronous Processing: Message Queues, Background Jobs and the Outbox Pattern",
+          "alternativeHeadline": "Asynchronous Processing — Queues, Workers and Events",
+          "description": "Move slow work off the request: a PostgreSQL SKIP LOCKED queue, BullMQ, Redis Streams, retries and dead letters, idempotent consumers and the outbox pattern.",
+          "abstract": "Slow or flaky work should not run inside the HTTP request. This chapter builds a PostgreSQL job queue with leases and fenced completion, compares BullMQ and Redis Streams, tests crashes, poison jobs and duplicate delivery, shows the outbox pattern avoiding silent event loss, and covers backpressure and cron on several instances.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/message-queues-background-jobs-outbox-nodejs.png",
+          "url": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6918,
+          "timeRequired": "PT31M",
+          "articleSection": "Backend Development",
+          "keywords": "message queue nodejs, background jobs, bullmq tutorial, skip locked queue postgresql, outbox pattern, idempotent consumer, dead letter queue, redis streams",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "A job queue with SKIP LOCKED, leases and retries",
+            "Idempotent handlers for at-least-once delivery",
+            "BullMQ and Redis Streams",
+            "The transactional outbox pattern",
+            "Backpressure and scheduled jobs across instances"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "message queue nodejs"
+          },
+          "isAccessibleForFree": true,
+          "position": 28,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#article",
+            "name": "Caching: HTTP Cache-Control, ETags, Redis Cache-Aside and Invalidation",
+            "url": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Message Queues & Background Jobs: Outbox",
+              "item": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does at-least-once delivery mean?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A message may be delivered more than once, for example when a worker is slow or crashes. Consumers must be idempotent. Exactly-once delivery is effectively at-least-once plus deduplication."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the outbox pattern?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Write the event to an outbox table in the same transaction as the business change, and let a relay publish it later. A naive write-then-publish lost 60 of 300 events in our test; the outbox lost none."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I run a cron job on several instances?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Make firing a claim only one instance wins, using a conditional update or advisory lock, or use a scheduler with shared state such as BullMQ job schedulers. Three instances ran a naive cron 15 times for 5 ticks."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a dead-letter queue?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A place where jobs go after exhausting their retries, so they stop blocking the queue and can be inspected and replayed by a human."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#quiz",
+          "name": "Message Queues & Background Jobs: Outbox: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "message queue nodejs"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why queue an email instead of sending it in the request?",
+              "text": "Why queue an email instead of sending it in the request?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It shortens the request and removes the email provider from the failure path"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Emails are slow to type"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Queues are cheaper"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HTTP forbids it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "FOR UPDATE SKIP LOCKED lets multiple workers:",
+              "text": "FOR UPDATE SKIP LOCKED lets multiple workers:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Claim different rows without blocking each other"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Process the same row"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Skip all jobs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Lock the table"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A lease/visibility timeout exists so that:",
+              "text": "A lease/visibility timeout exists so that:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A crashed worker's job becomes claimable again"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Jobs run faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Jobs are deleted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Order is preserved"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A fenced completion (WHERE locked_by = me) prevents:",
+              "text": "A fenced completion (WHERE locked_by = me) prevents:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A zombie worker from marking a job done after losing its lease"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Retries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Backoff"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Deadlocks"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our test 4 workers vs 1 gave about:",
+              "text": "In our test 4 workers vs 1 gave about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "4.1× throughput with no duplicate effects"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "10×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0.5×"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "\"At-least-once\" delivery means a job may be:",
+              "text": "\"At-least-once\" delivery means a job may be:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Delivered more than once"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Lost"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Delivered exactly once always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Reordered only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The slow-worker experiment sent 2 emails because:",
+              "text": "The slow-worker experiment sent 2 emails because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The lease expired while the first worker was still working, so a second ran it too"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Postgres duplicated the row"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retries were off"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Backoff failed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The fix for duplicate side effects belongs in:",
+              "text": "The fix for duplicate side effects belongs in:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The handler (idempotency key / dedup record)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The broker"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The load balancer"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nowhere"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A poison job should:",
+              "text": "A poison job should:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Retry with backoff up to a cap, then move to a dead-letter state with an alert"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Retry forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Be deleted silently"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Block the queue"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "BullMQ priorities only affect ordering when:",
+              "text": "BullMQ priorities only affect ordering when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Jobs are waiting together in the queue"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only with delays"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The BullMQ limiter { max: 10, duration: 1000 } produced:",
+              "text": "The BullMQ limiter { max: 10, duration: 1000 } produced:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "About 10 jobs per second"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "40 jobs at once"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "1 job per second"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Random pacing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A scheduler stored in Redis (BullMQ) with 2 workers fires:",
+              "text": "A scheduler stored in Redis (BullMQ) with 2 workers fires:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Once per interval"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Twice per interval"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only on worker A"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The dual-write problem is:",
+              "text": "The dual-write problem is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Updating the DB and publishing a message in two steps with no shared transaction, so a crash loses the event"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Writing twice to a DB"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Two replicas"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Duplicate keys"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The outbox pattern fixes it by:",
+              "text": "The outbox pattern fixes it by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Writing the event row in the same DB transaction as the business change and relaying it later"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Using two-phase commit"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retrying forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Skipping the broker"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did the outbox test show duplicate deliveries?",
+              "text": "Why did the outbox test show duplicate deliveries?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The relay crashed after publishing but before marking rows published (at-least-once)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A bug in Postgres"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis was down"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The consumer was slow"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "\"Exactly-once delivery\" in practice means:",
+              "text": "\"Exactly-once delivery\" in practice means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "At-least-once delivery plus idempotent processing (effectively-once)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A perfect network"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No retries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A single worker"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Backpressure in our simulation: a bounded queue (max 100):",
+              "text": "Backpressure in our simulation: a bounded queue (max 100):",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Capped depth at 100 and rejected excess work fast"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Grew forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Dropped all jobs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Doubled latency"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best health signal for a queue is:",
+              "text": "The best health signal for a queue is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Age of the oldest job (plus dead-job count)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Queue depth only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CPU of the broker"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Number of workers"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Running node-cron on 3 instances caused:",
+              "text": "Running node-cron on 3 instances caused:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Three runs per tick unless the tick is claimed atomically"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "One run"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No runs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorted runs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Job payloads should usually contain:",
+              "text": "Job payloads should usually contain:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ids and a version, letting the worker load current state"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The whole order object"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Passwords"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Binary files"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Message Queues &amp; Background Jobs: Outbox</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:77.8%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item active" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" aria-current="page"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 28 of 36 &middot; Advanced</p>
+                        <h1>Asynchronous Processing: Message Queues, Background Jobs and the Outbox Pattern</h1>
+                        <p class="learn-book-title">Asynchronous Processing — Queues, Workers and Events</p>
+                        <ul class="learn-meta text-caption">
+                            <li>31 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/message-queues-background-jobs-outbox-nodejs.webp"><img src="../../assets/images/learn/backend-master/message-queues-background-jobs-outbox-nodejs.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Asynchronous Processing: Message Queues, Background Jobs and the Outbox Pattern: Backend Master chapter 28 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Slow or flaky work should not run inside the HTTP request. This chapter builds a PostgreSQL job queue with leases and fenced completion, compares BullMQ and Redis Streams, tests crashes, poison jobs and duplicate delivery, shows the outbox pattern avoiding silent event loss, and covers backpressure and cron on several instances.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>A job queue with SKIP LOCKED, leases and retries</li><li>Idempotent handlers for at-least-once delivery</li><li>BullMQ and Redis Streams</li><li>The transactional outbox pattern</li><li>Backpressure and scheduled jobs across instances</li></ul>
+                        </section>
+<hr>
+
+<h2 id="28-0-why-this-chapter-matters">28.0 Why This Chapter Matters</h2>
+<p>Look at what happens when a customer clicks &quot;Place order&quot;:</p>
+<ol>
+<li>Save the order <em>(10 ms)</em>.</li>
+<li>Charge the card <em>(800 ms, an external API)</em>.</li>
+<li>Send a confirmation email <em>(300 ms, another external API)</em>.</li>
+<li>Generate a PDF invoice <em>(500 ms of CPU)</em>.</li>
+<li>Update the warehouse system <em>(200 ms, flaky)</em>.</li>
+<li>Recompute the recommendation model, ping analytics, notify the seller…</li>
+</ol>
+<p>If all of that happens <strong>inside the HTTP request</strong>, the customer waits two seconds, and any one slow or failing step ruins the whole request. If the email provider is down, <strong>the order fails</strong>, even though the order itself was fine.</p>
+<p>The fix is one of the oldest ideas in software: <strong>do the essential work now, and put everything else on a queue for background workers.</strong> The request returns in milliseconds; the rest happens reliably, at its own pace, with retries.</p>
+<p>But queues bring their own failure modes, which this chapter makes you <em>see</em>:</p>
+<ul>
+<li>A worker <strong>crashes mid-job</strong>. Is the job lost, or done twice?</li>
+<li>A job <strong>always fails</strong>. Does it retry forever and clog the queue?</li>
+<li>Two workers pick <strong>the same</strong> job. Does the customer get two invoices?</li>
+<li>Producers are <strong>faster than consumers</strong>. Does the queue grow until memory runs out?</li>
+<li>You write to the database and <em>then</em> publish an event, and the process dies <strong>in between</strong>. Is the event lost?</li>
+<li>Three servers all run the &quot;nightly report&quot; cron. Does it run three times?</li>
+</ul>
+<p>We&#39;ll build a production-shaped queue on <strong>PostgreSQL</strong> (using the <code>SKIP LOCKED</code> pattern from <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>), compare it with <strong>BullMQ</strong> on Redis and <strong>Redis Streams</strong> (<a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>), and test every failure above.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>All outputs are real, from labs in <a href="/learn/backend-master/resources/ch28/README.txt">resources/ch28/</a>: Node 22.17, PostgreSQL 17, Redis 7.2.14, <strong>BullMQ 6.7.6</strong> (with <code>ioredis</code>). <strong>Not run:</strong> RabbitMQ, Amazon SQS/SNS, Google Pub/Sub, Kafka/Redpanda, Temporal/Inngest-style workflow engines, and event-sourcing frameworks; they appear in comparisons from documentation only. The email, invoice and warehouse &quot;systems&quot; are simulated with timers. Timings are from a laptop with Docker, so compare ratios.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The idea of a message queue is older than the web: IBM&#39;s <strong>MQSeries</strong> (1993) let banks send transactions between mainframes reliably <em>even when the receiving system was down</em>. Its core promise, <strong>&quot;I will deliver this message at least once, no matter what&quot;</strong>, is exactly the promise (and the problem) we explore here: <em>at least once</em> means <em>possibly twice</em>.</p>
+</aside>
+<hr>
+
+<h2 id="28-1-the-vocabulary">28.1 The Vocabulary</h2>
+<pre class="is-plain"><code>                 ┌─────────────┐   enqueue    ┌─────────────────┐   claim     ┌──────────────┐
+   HTTP request ─►  Producer   ├─────────────►│   QUEUE / BROKER ├────────────►│  Consumer(s) │
+   (returns fast)│ (your API)  │              │ (durable storage)│  ack / nack │   (workers)  │
+                 └─────────────┘              └─────────────────┘◄────────────┴──────────────┘</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Producer</strong></td>
+<td>Code that creates a job/message (the API handler)</td>
+</tr>
+<tr>
+<td><strong>Queue / broker</strong></td>
+<td>Durable storage that holds jobs until processed (PostgreSQL, Redis, RabbitMQ, SQS, Kafka)</td>
+</tr>
+<tr>
+<td><strong>Worker / consumer</strong></td>
+<td>A separate process that claims and executes jobs</td>
+</tr>
+<tr>
+<td><strong>Job</strong> vs <strong>message</strong></td>
+<td>A <em>job</em> is &quot;do this work&quot; (a command); a <em>message/event</em> is &quot;this happened&quot; (a fact)</td>
+</tr>
+<tr>
+<td><strong>Ack / nack</strong></td>
+<td>Consumer tells the broker &quot;done&quot; / &quot;failed, retry&quot;</td>
+</tr>
+<tr>
+<td><strong>Visibility timeout / lease</strong></td>
+<td>A claimed job is hidden from others for a while; if not acked in time, it reappears</td>
+</tr>
+<tr>
+<td><strong>Dead-letter queue (DLQ)</strong></td>
+<td>Where jobs go after too many failures, for humans to inspect</td>
+</tr>
+<tr>
+<td><strong>Delivery semantics</strong></td>
+<td><strong>At-most-once</strong> (may lose), <strong>at-least-once</strong> (may duplicate), <strong>exactly-once</strong> (a myth; see §28.6)</td>
+</tr>
+<tr>
+<td><strong>Idempotent consumer</strong></td>
+<td>Processing the same job twice has the same effect as once</td>
+</tr>
+<tr>
+<td><strong>Backpressure</strong></td>
+<td>Slowing/rejecting producers when consumers can&#39;t keep up</td>
+</tr>
+</tbody></table></div>
+<h3 id="what-belongs-in-a-queue">What belongs in a queue?</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Put in a queue</th>
+<th>Keep in the request</th>
+</tr>
+</thead><tbody><tr>
+<td>Sending email/SMS/push</td>
+<td>Validating input</td>
+</tr>
+<tr>
+<td>Generating PDFs, reports, thumbnails</td>
+<td>Writing the order to the database (the essential state change)</td>
+</tr>
+<tr>
+<td>Calling slow or flaky third-party APIs</td>
+<td>Anything the user <em>must see the result of</em> immediately</td>
+</tr>
+<tr>
+<td>Webhook delivery (with retries)</td>
+<td>Authorisation checks</td>
+</tr>
+<tr>
+<td>Search index updates, cache warming, analytics</td>
+<td></td>
+</tr>
+<tr>
+<td>Bulk imports/exports, nightly jobs</td>
+<td></td>
+</tr>
+</tbody></table></div>
+<p>Rule of thumb: <strong>if the user doesn&#39;t need the result to continue, and it can fail and be retried independently, queue it.</strong></p>
+<hr>
+
+<h2 id="28-2-a-job-queue-in-postgresql">28.2 A Job Queue in PostgreSQL</h2>
+<p>You do not need new infrastructure to start. A table plus <code>FOR UPDATE SKIP LOCKED</code> (<a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>) is a correct, transactional queue, with the enormous advantage that <strong>enqueueing can happen inside the same transaction as your business write</strong> (§28.5). Our schema (<a href="/learn/backend-master/resources/ch28/pgqueue.mjs">pgqueue.mjs</a>):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> jobs (
+  id <span class="hljs-type">bigint</span> GENERATED ALWAYS <span class="hljs-keyword">AS</span> <span class="hljs-keyword">IDENTITY</span> <span class="hljs-keyword">PRIMARY</span> KEY, queue text <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>, payload jsonb <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>,
+  status text <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;queued&#x27;</span> <span class="hljs-keyword">CHECK</span> (status <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;queued&#x27;</span>,<span class="hljs-string">&#x27;running&#x27;</span>,<span class="hljs-string">&#x27;done&#x27;</span>,<span class="hljs-string">&#x27;dead&#x27;</span>)),
+  attempts <span class="hljs-type">int</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-number">0</span>, max_attempts <span class="hljs-type">int</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-number">5</span>,
+  run_at timestamptz <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> now(),            <span class="hljs-comment">-- when it becomes eligible (delays and backoff)</span>
+  locked_by text, locked_until timestamptz,             <span class="hljs-comment">-- the lease</span>
+  last_error text, created_at timestamptz <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> now(), finished_at timestamptz);
+<span class="hljs-keyword">CREATE</span> INDEX jobs_ready_idx <span class="hljs-keyword">ON</span> jobs (queue, run_at) <span class="hljs-keyword">WHERE</span> status <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;queued&#x27;</span>,<span class="hljs-string">&#x27;running&#x27;</span>);   <span class="hljs-comment">-- partial index (Ch 15)</span></code></pre></div>
+<h3 id="claiming-work-safely">Claiming work safely</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">UPDATE</span> jobs <span class="hljs-keyword">SET</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;running&#x27;</span>, locked_by <span class="hljs-operator">=</span> $worker,
+                locked_until <span class="hljs-operator">=</span> now() <span class="hljs-operator">+</span> ($lease <span class="hljs-operator">||</span> <span class="hljs-string">&#x27; milliseconds&#x27;</span>)::<span class="hljs-type">interval</span>, attempts <span class="hljs-operator">=</span> attempts <span class="hljs-operator">+</span> <span class="hljs-number">1</span>
+<span class="hljs-keyword">WHERE</span> id <span class="hljs-keyword">IN</span> (
+  <span class="hljs-keyword">SELECT</span> id <span class="hljs-keyword">FROM</span> jobs <span class="hljs-keyword">WHERE</span> queue <span class="hljs-operator">=</span> $q
+    <span class="hljs-keyword">AND</span> ((status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;queued&#x27;</span>  <span class="hljs-keyword">AND</span> run_at <span class="hljs-operator">&lt;=</span> now())
+      <span class="hljs-keyword">OR</span> (status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;running&#x27;</span> <span class="hljs-keyword">AND</span> locked_until <span class="hljs-operator">&lt;</span> now()))      <span class="hljs-comment">-- a crashed/slow worker&#x27;s expired lease</span>
+  <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> run_at, id LIMIT $n <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">SKIP</span> LOCKED)       <span class="hljs-comment">-- workers never block each other</span>
+RETURNING <span class="hljs-operator">*</span>;</code></pre></div>
+<p>Completion is <strong>fenced</strong>: only the <em>current</em> lease holder may finish the job.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">UPDATE</span> jobs <span class="hljs-keyword">SET</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;done&#x27;</span>, finished_at <span class="hljs-operator">=</span> now() <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> locked_by <span class="hljs-operator">=</span> $worker <span class="hljs-keyword">AND</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;running&#x27;</span>;
+<span class="hljs-comment">-- rows updated = 0  →  I lost my lease; someone else owns this job now</span></code></pre></div>
+<h3 id="experiment-1-throughput-and-exactly-one-claim">Experiment 1: throughput and &quot;exactly one claim&quot;</h3>
+<p>600 jobs, each simulating 10 ms of work, with 1 worker versus 4:</p>
+<pre class="is-plain"><code>1 worker(s): 22.5 s = 27 jobs/s  | effects 600 (duplicates: 0) | split w1:600
+4 worker(s):  5.4 s = 111 jobs/s | effects 600 (duplicates: 0) | split w1:151 w2:150 w3:149 w4:150</code></pre>
+<p>Four workers gave <strong>4.1× the throughput</strong>, divided the jobs almost perfectly evenly, and processed <strong>every job exactly once</strong> (zero duplicate effects), because <code>SKIP LOCKED</code> guarantees no two workers claim the same row. (Absolute rates are low because every job costs several database round trips through Docker; the <em>scaling</em> is the point. Adding workers is how queues scale.)</p>
+<h3 id="experiment-2-a-worker-crashes-mid-job">Experiment 2: a worker crashes mid-job</h3>
+<pre class="is-plain"><code>w-crash claimed job 1 (attempt 1, lease 800 ms) then died.
+immediately: w-live can claim? NO (lease still held)
+after the lease expired: w-live claimed job 1 (attempt 2, locked_by w-live)
+the zombie w-crash wakes up and tries to mark it done -&gt; rows updated: 0 (fenced: only the current lease holder may finish)</code></pre>
+<p>The dead worker never acknowledged, so the job&#39;s <strong>lease expired</strong> and another worker took it over (<code>attempts</code> = 2): <strong>no job is lost when a worker dies.</strong> And if the &quot;dead&quot; worker was merely slow and wakes up later, its completion is <strong>rejected</strong> by the fencing condition. This is the same pattern as SQS&#39;s <em>visibility timeout</em> and Redis Streams&#39; pending list.</p>
+<h3 id="experiment-3-a-poison-job-retries-and-the-dead-state">Experiment 3: a poison job, retries and the dead state</h3>
+<p>A job that always fails (<code>SMTP 550 mailbox does not exist</code>), <code>max_attempts = 4</code>, exponential backoff with jitter (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>):</p>
+<pre class="is-plain"><code>attempt 1: retry (next try in 104 ms) at +27 ms
+attempt 2: retry (next try in 236 ms) at +144 ms
+attempt 3: retry (next try in 750 ms) at +412 ms
+attempt 4: dead at +1171 ms            (the printed &quot;next try&quot; delay on the last line is not used)
+final row: {&quot;status&quot;:&quot;dead&quot;,&quot;attempts&quot;:4,&quot;last_error&quot;:&quot;SMTP 550 mailbox does not exist&quot;}</code></pre>
+<p>Retries spread out in time rather than hammering the failing dependency, and after the last attempt the job moves to <strong><code>dead</code></strong>: out of the way, with its error recorded, waiting for a human (and an alert on &quot;dead jobs &gt; 0&quot;, <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>). Without a cap, a poison job retries forever and, in a simple FIFO queue, can block everything behind it. <strong>Always set <code>max_attempts</code>, backoff, and a dead-letter state.</strong> Distinguish <strong>retryable</strong> failures (timeouts, 5xx) from <strong>permanent</strong> ones (invalid address): permanent failures should go straight to dead without burning retries.</p>
+<h3 id="experiment-4-at-least-once-means-possibly-twice">Experiment 4: at-least-once means <em>possibly twice</em></h3>
+<p>The most important experiment. Worker <code>w1</code> is slow (1.5 s, as in a GC pause or a slow API) but the lease is only 1 s. The job&#39;s lease expires, <code>w2</code> claims it and finishes in 100 ms, then <code>w1</code> wakes up and finishes too. The side effect: &quot;send the invoice email&quot;.</p>
+<pre class="is-plain"><code>naive handler                       lease 1 s, w1 takes 1.5 s | events: w2:done, w1:lost-lease | invoice emails sent: 2   &lt;- DUPLICATE
+idempotent handler (effects table)  lease 1 s, w1 takes 1.5 s | events: w2:done, w1:lost-lease | invoice emails sent: 1</code></pre>
+<p>The queue did exactly what it promised (<strong>at-least-once</strong>): the job was delivered twice. The fencing check stopped <code>w1</code> from marking it done (<code>lost-lease</code>), but it <strong>could not stop <code>w1</code> from performing the side effect</strong> before noticing. The fix belongs in the <strong>handler</strong>: record &quot;this effect happened&quot; under a unique key and skip if it already did:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;INSERT INTO effects (job_key) VALUES ($1) ON CONFLICT DO NOTHING&#x27;</span>, [<span class="hljs-string">`invoice-<span class="hljs-subst">${order}</span>`</span>]);
+<span class="hljs-keyword">if</span> (r.<span class="hljs-property">rowCount</span> === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;          <span class="hljs-comment">// someone already did it</span>
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">sendInvoiceEmail</span>(order);         <span class="hljs-comment">// (ideally pass an idempotency key to the provider, too: Chapters 16, 26)</span></code></pre></div>
+<p>With that in place, the duplicate delivery was harmless (<strong>1 email</strong>). <em>(A subtle gap: if the process dies between <code>INSERT</code> and the send, the effect is recorded but never performed. For truly critical side effects use a provider-side idempotency key, or write the effect and the record in one transaction when the effect is a database write.)</em></p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Leases, fences, keys.&quot;</strong> A <em>lease</em> makes crashed work recoverable; a <em>fence</em> stops zombies from finishing; an <em>idempotency key</em> makes duplicates harmless. You need all three.</p>
+</aside>
+<hr>
+
+<h2 id="28-3-bullmq-a-redis-backed-queue-library">28.3 BullMQ: A Redis-Backed Queue Library</h2>
+<p>Writing a queue is educational; <strong>in production, use a library</strong> unless you have a reason not to. <strong>BullMQ</strong> is the standard Redis-based queue for Node: jobs, workers, retries, delays, priorities, rate limits, repeatable jobs, and a UI ecosystem. (It uses <code>ioredis</code>; install it alongside: a gotcha I hit, since the error message appears only when you construct the first <code>Queue</code>.)</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> queue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Queue</span>(<span class="hljs-string">&#x27;emails&#x27;</span>, { connection });
+<span class="hljs-keyword">await</span> queue.<span class="hljs-title function_">add</span>(<span class="hljs-string">&#x27;flaky&#x27;</span>,   {}, { <span class="hljs-attr">attempts</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">backoff</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;exponential&#x27;</span>, <span class="hljs-attr">delay</span>: <span class="hljs-number">100</span> } });
+<span class="hljs-keyword">await</span> queue.<span class="hljs-title function_">add</span>(<span class="hljs-string">&#x27;delayed&#x27;</span>, { <span class="hljs-attr">n</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">delay</span>: <span class="hljs-number">800</span> });
+<span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(<span class="hljs-string">&#x27;emails&#x27;</span>, <span class="hljs-keyword">async</span> (job) =&gt; { <span class="hljs-comment">/* throw to retry */</span> }, { connection, <span class="hljs-attr">concurrency</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">limiter</span>: { <span class="hljs-attr">max</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">duration</span>: <span class="hljs-number">1000</span> } });</code></pre></div>
+<p>Tested results:</p>
+<pre class="is-plain"><code>flaky job result: ok after 3 attempts | handler calls: 3
+   flaky failed (attempt 1/4): 503 from provider
+   flaky failed (attempt 2/4): 503 from provider        (then succeeded on attempt 3, with 100 ms then 200 ms backoff)
+   poison failed (attempt 1/3) … (attempt 3/3): always fails
+poison job ends in the failed set (BullMQ's dead-letter equivalent): poison(attempts 3)
+delayed job (800 ms) ran at: +1042 ms</code></pre>
+<ul>
+<li><strong>Retries with backoff</strong> worked as configured; the permanently failing job ended in the <code>failed</code> set after its 3 attempts.</li>
+<li><strong>Delayed jobs</strong> (<code>delay: 800</code>) ran after the delay (+1042 ms here, including the time to reach the worker through a busy test).</li>
+<li><strong>Priority</strong>: my first test <em>looked wrong</em> (<code>low -&gt; high</code>) because I enqueued the jobs one at a time while an idle worker was waiting: the low-priority job was taken the instant it arrived. Priority only matters when jobs are <strong>waiting together</strong>. Re-run correctly: enqueued <code>low, normal, high</code> → processed <strong><code>high -&gt; normal -&gt; low</code></strong>.</li>
+<li><strong>Rate limiting</strong>: 40 jobs enqueued at once, limiter 10/second:</li>
+</ul>
+<pre class="is-plain"><code>jobs finished per second: 10, 10, 10, 10, 0   (total 40 in 3.2 s)   &lt;- capped by the limiter, protecting a downstream API</code></pre>
+<p>  This is how you respect a third party&#39;s rate limit (an email provider allowing 10 sends/second) without writing throttling code.</p>
+<ul>
+<li><strong>Scheduled/repeatable jobs</strong>: with <strong>two workers</strong> and a scheduler firing every 300 ms for ~2 s, we saw <strong>7 ticks in total</strong> (not 14): the schedule lives in Redis, so it fires <strong>once per interval no matter how many instances run</strong> (one instance handled most ticks; either may).</li>
+</ul>
+<h3 id="redis-streams-chapter-19-and-crashed-consumers">Redis Streams (Chapter 19) and crashed consumers</h3>
+<p>Redis Streams give you a durable log with consumer groups. The crash-recovery mechanism is <code>XAUTOCLAIM</code>:</p>
+<pre class="is-plain"><code>worker-A read invoice-1, invoice-2 ... and crashed without XACK
+pending list: 2 message(s) owned by a dead consumer
+worker-B reads NEW messages only: invoice-3 (the two held by A are invisible to it)
+after 500 ms idle, worker-B XAUTOCLAIMed: invoice-1, invoice-2
+delivery counts now: both messages at delivery count 2 (&gt; 1 means redelivered; use it to dead-letter after N tries)
+pending after ack: 0</code></pre>
+<p>Messages a dead consumer held are invisible to other workers <em>until</em> they&#39;ve been idle long enough to be <strong>claimed</strong>, and their delivery counter tells you how many times they&#39;ve been tried. Same lease idea, different spelling.</p>
+<h3 id="choosing-a-queue-technology">Choosing a queue technology</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>PostgreSQL table</strong></th>
+<th><strong>Redis (BullMQ / Streams)</strong></th>
+<th><strong>RabbitMQ</strong></th>
+<th><strong>SQS (+SNS)</strong></th>
+<th><strong>Kafka / Redpanda</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Enqueue in the <strong>same transaction</strong> as business data</td>
+<td><strong>Yes</strong></td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Setup / ops</td>
+<td>None (already have it)</td>
+<td>A Redis you already run</td>
+<td>Broker to run</td>
+<td>Managed</td>
+<td>Heavy</td>
+</tr>
+<tr>
+<td>Throughput</td>
+<td>Hundreds–low thousands/s</td>
+<td>Tens of thousands/s</td>
+<td>Tens of thousands/s</td>
+<td>Very high</td>
+<td>Millions/s</td>
+</tr>
+<tr>
+<td>Delays, retries, priorities, rate limits</td>
+<td>Build it</td>
+<td><strong>Built in (BullMQ)</strong></td>
+<td>Plugins/DLX</td>
+<td>Delay + DLQ</td>
+<td>Build it</td>
+</tr>
+<tr>
+<td>Replay old messages</td>
+<td>If you keep rows</td>
+<td>Streams: yes</td>
+<td>No</td>
+<td>No</td>
+<td><strong>Yes</strong> (core feature)</td>
+</tr>
+<tr>
+<td>Durability</td>
+<td>PostgreSQL&#39;s</td>
+<td>Depends on AOF/persistence (Ch 19)</td>
+<td>Good</td>
+<td>Excellent</td>
+<td>Excellent</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Starting out; transactional enqueue</td>
+<td>General background jobs</td>
+<td>Complex routing</td>
+<td>AWS-native, zero-ops</td>
+<td>Event streaming, replay, huge scale</td>
+</tr>
+</tbody></table></div>
+<p><em>(RabbitMQ, SQS and Kafka columns are from documentation; I did not run them.)</em> <strong>Start with what you have</strong> (a PostgreSQL table or BullMQ on the Redis you already run); move to a dedicated broker when you&#39;ve <em>measured</em> a limit (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>&#39;s rule).</p>
+<hr>
+
+<h2 id="28-4-workers-in-practice">28.4 Workers in Practice</h2>
+<h3 id="running-workers">Running workers</h3>
+<ul>
+<li><strong>A separate process (or container) from the web server</strong>, same codebase, different entry point (<code>node worker.js</code>). That way a slow job can&#39;t affect request latency, and you can <strong>scale each independently</strong> (10 web instances, 3 workers).</li>
+<li><strong>Concurrency</strong>: BullMQ&#39;s <code>concurrency</code> and the number of worker processes. CPU-bound jobs need worker <em>processes/threads</em>; I/O-bound jobs can run many concurrently in one process (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>).</li>
+<li><strong>Graceful shutdown</strong> (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>): on <code>SIGTERM</code>, stop claiming new jobs, <strong>finish the current ones</strong> (or let leases expire), close connections, exit. Set the lease/visibility timeout <strong>longer than the typical job</strong> and <strong>extend it (heartbeat)</strong> for long jobs, or you&#39;ll cause the duplicate in Experiment 4.</li>
+<li><strong>Timeouts per job</strong> (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>): a hung job holds a worker slot forever.</li>
+<li><strong>Isolate queues</strong> by importance (a <code>critical</code> queue for payments and a <code>bulk</code> queue for reports) with separate workers: a <strong>bulkhead</strong> (Chapter 26) so a flood of low-priority work can&#39;t starve critical work.</li>
+</ul>
+<h3 id="job-design-rules">Job design rules</h3>
+<ol>
+<li><strong>Small payloads: pass ids, not data.</strong> <code>{ orderId: 77 }</code>, not the whole order: the data may change, and queues are poor databases. The worker loads current state.</li>
+<li><strong>Idempotent handlers</strong>, always (§28.2, Experiment 4).</li>
+<li><strong>Deterministic job ids / dedup keys</strong> for work that shouldn&#39;t be queued twice (<code>invoice-77</code>).</li>
+<li><strong>Version your job payloads</strong> (<code>{ v: 2, … }</code>) so old queued jobs survive a deploy that changes the handler.</li>
+<li><strong>Make handlers small and resumable.</strong> For multi-step work, queue each step (or use a workflow engine) so a failure repeats one step, not everything.</li>
+<li><strong>Observe</strong>: queue depth, <strong>age of the oldest job</strong>, processing time, retry and dead counts, worker liveness (Chapter 25). <em>Queue depth alone is misleading; <strong>age of oldest job</strong> is the real health signal</em>.</li>
+</ol>
+<hr>
+
+<h2 id="28-5-the-outbox-pattern-never-lose-an-event">28.5 The Outbox Pattern: Never Lose an Event</h2>
+<p>The most common queue bug in real systems is the <strong>dual write</strong>: change the database, <em>then</em> publish a message.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> db.<span class="hljs-title function_">insertOrder</span>(order);          <span class="hljs-comment">// ✔ committed</span>
+<span class="hljs-keyword">await</span> broker.<span class="hljs-title function_">publish</span>(<span class="hljs-string">&#x27;order.created&#x27;</span>, order);   <span class="hljs-comment">// ✘ the process crashes / the broker is down → the event is lost forever</span></code></pre></div>
+<p>There is no transaction spanning PostgreSQL and the broker, so a crash between the two leaves the system <strong>permanently inconsistent</strong>: an order exists that no email, warehouse or analytics ever hears about. We simulated &quot;20% of requests crash between the two steps&quot; over 300 orders:</p>
+<pre class="is-plain"><code>naive dual write : 60 of 300 orders committed but NEVER announced (no email, no inventory event) -&gt; silent data loss</code></pre>
+<p>(No error is thrown anywhere; the crashes simply happened after the commit. Silent loss is the worst kind.)</p>
+<h3 id="the-fix-write-the-event-in-the-same-transaction">The fix: write the event <em>in the same transaction</em></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>);
+<span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [o] } = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;INSERT INTO orders (...) VALUES (...) RETURNING id&#x27;</span>);
+<span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">`INSERT INTO outbox (topic, payload) VALUES (&#x27;order.created&#x27;, $1)`</span>, [{ <span class="hljs-attr">orderId</span>: o.<span class="hljs-property">id</span> }]);   <span class="hljs-comment">// ← atomic with the order</span>
+<span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>);                      <span class="hljs-comment">// both exist, or neither does</span></code></pre></div>
+<p>A separate <strong>relay</strong> process reads unpublished outbox rows and publishes them (using the same <code>SKIP LOCKED</code> claim), then marks them published:</p>
+<pre class="is-plain"><code>outbox + relay : orders 300 | unpublished 0 | messages delivered 400 for 300 distinct orders (100 duplicates caused by 2 relay crashes after publishing)
+idempotent consumer: emails actually sent 300 for 300 orders (duplicates absorbed by the processed table)</code></pre>
+<p><strong>Nothing was lost</strong>: all 300 orders were announced. But note the 100 <strong>duplicates</strong>: the relay crashed twice <em>after</em> publishing a batch and <em>before</em> marking it, so those batches were published again. (I crashed the relay deliberately on two batches so this would show; real crashes are rarer but inevitable.) That&#39;s <strong>at-least-once</strong> again, and the cure is the same: an <strong>idempotent consumer</strong> with a <code>processed(message_id)</code> table (<code>INSERT … ON CONFLICT DO NOTHING</code>; act only if a row was inserted) made the final effect <strong>exactly one email per order</strong>.</p>
+<pre class="is-plain"><code>the pattern in one sentence:  atomic write (state + outbox)  →  at-least-once relay  →  idempotent consumer  =  effectively-once</code></pre>
+<p>Variations: poll the outbox (simple, a little latency), or use <strong>change data capture</strong> (e.g., Debezium reading PostgreSQL&#39;s WAL) to stream the outbox table with no polling <em>(not run)</em>. Clean up published rows periodically (partition or delete old ones).</p>
+<hr>
+
+<h2 id="28-6-delivery-guarantees-and-the-exactly-once-myth">28.6 Delivery Guarantees and the &quot;Exactly Once&quot; Myth</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Guarantee</th>
+<th>How</th>
+<th>Failure</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>At-most-once</strong></td>
+<td>Ack <em>before</em> processing</td>
+<td>A crash during processing <strong>loses</strong> the job</td>
+</tr>
+<tr>
+<td><strong>At-least-once</strong></td>
+<td>Ack <em>after</em> processing; redeliver on timeout</td>
+<td>A crash/slow worker causes <strong>duplicates</strong></td>
+</tr>
+<tr>
+<td><strong>Exactly-once delivery</strong></td>
+<td>Impossible in general over an unreliable network: if an ack is lost, the sender can&#39;t know whether the receiver processed the message</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td><strong>Effectively-once</strong></td>
+<td>At-least-once delivery <strong>+ idempotent processing</strong></td>
+<td>What real systems achieve</td>
+</tr>
+</tbody></table></div>
+<p>Vendors advertise &quot;exactly-once&quot;, but it always means <em>within a closed system</em> (e.g., Kafka transactions between Kafka topics) or <em>at-least-once plus deduplication</em>. The moment a side effect leaves the system (an email, a card charge, a webhook), <strong>you</strong> need idempotency. Design every consumer as if every message will arrive twice, <strong>because eventually it will</strong>.</p>
+<h3 id="ordering">Ordering</h3>
+<ul>
+<li>A single queue with one worker preserves order; <strong>more workers or retries break it</strong> (job 2 can finish before job 1&#39;s retry).</li>
+<li>If order matters <em>per entity</em> (events for order 77 must apply in sequence), <strong>partition by key</strong>: route all events with the same key to the same worker/partition (Kafka partitions, BullMQ groups, or consistent routing), and make handlers tolerate out-of-order arrival using <strong>version numbers</strong> (apply only if <code>event.version &gt; row.version</code>).</li>
+<li>Don&#39;t rely on global ordering; it&#39;s costly and fragile.</li>
+</ul>
+<hr>
+
+<h2 id="28-7-backpressure-when-producers-outrun-consumers">28.7 Backpressure: When Producers Outrun Consumers</h2>
+<p>Queues absorb <strong>bursts</strong>, but if producers <em>consistently</em> outpace consumers, the queue grows without bound: memory/disk fill, and <strong>every job waits longer and longer</strong>. We simulated a producer at 200 jobs/s and a consumer at 50 jobs/s for 4 seconds:</p>
+<pre class="is-plain"><code>unbounded queue            queue depth after 1/2/3/4 s: 79, 147, 201, 274 | rejected (429/503)   0 | median wait of served jobs 1426 ms, p99 2749 ms
+bounded (max depth 100)    queue depth after 1/2/3/4 s: 50, 100, 100, 100 | rejected (429/503) 139 | median wait of served jobs 1197 ms, p99 2567 ms</code></pre>
+<p>The unbounded queue&#39;s depth climbed steadily (274 and growing) and wait times grew with it. With a <strong>bounded queue</strong>, depth stopped at 100 and <strong>139 requests were rejected immediately</strong> (<code>429</code>/<code>503</code> with <code>Retry-After</code>) instead of being accepted into a line they&#39;d wait ages in. (In this short run the served jobs&#39; waits were similar; the bounded queue&#39;s real benefit is a <em>cap</em>: wait time can&#39;t exceed <code>depth ÷ consumer rate</code> = 2 s, while the unbounded queue&#39;s wait keeps growing for as long as the overload lasts.)</p>
+<p><strong>Strategies:</strong> scale consumers; <strong>bound the queue</strong> and shed load (reject new work or drop the least important); rate-limit producers; make the work cheaper; prioritise; and <strong>alert on the age of the oldest job</strong>, which is the number users feel. Rejecting fast is <em>kind</em>: a client told &quot;busy, retry in 30 s&quot; can plan; one whose job silently ages for an hour cannot.</p>
+<hr>
+
+<h2 id="28-8-scheduled-jobs-cron-without-duplicates">28.8 Scheduled Jobs (Cron) Without Duplicates</h2>
+<p>&quot;Send the daily report at 02:00.&quot; On one server, <code>node-cron</code> is fine. On <strong>three</strong> instances, <strong>all three fire</strong>:</p>
+<pre class="is-plain"><code>naive    runs per tick (5 ticks, 3 instances): 3, 3, 3, 3, 3  -&gt; total 15
+claimed  runs per tick (5 ticks, 3 instances): 1, 1, 1, 1, 1  -&gt; total 5</code></pre>
+<p>Three reports, three emails, three charges. The fix is to make firing a <strong>claim</strong> that exactly one instance wins: an atomic conditional update on a schedule row (<code>UPDATE schedule SET last_tick = $1 WHERE name = &#39;daily-report&#39; AND last_tick &lt; $1</code>: only one instance sees <code>rowCount = 1</code>), a PostgreSQL <strong>advisory lock</strong> (Chapters <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">14</a>/16), or a scheduler whose state lives in shared storage (BullMQ&#39;s job schedulers, as tested in §28.3: one tick per interval across workers). Alternatives: <strong>one dedicated scheduler process</strong>, or the platform&#39;s scheduler (Kubernetes <code>CronJob</code>, AWS EventBridge, a managed cron) that enqueues a job once <em>(not run here)</em>. Also: make the <em>job itself</em> idempotent (re-running yesterday&#39;s report must be safe), record each run, and use UTC with a plan for daylight-saving transitions.</p>
+<hr>
+
+<h2 id="28-9-do-the-work-later-inline-vs-queued">28.9 Do the Work Later: Inline vs Queued</h2>
+<p>Back to the opening scenario. 200 orders, 20 concurrent clients, a 300 ms &quot;send email&quot; step:</p>
+<pre class="is-plain"><code>inline (await sendEmail)         request latency p50 335 ms  p99 849 ms | 200 orders took 3.8 s
+enqueue (outbox row, same tx)    request latency p50 158 ms  p99 243 ms | 200 orders took 1.6 s</code></pre>
+<p>Moving the email out of the request cut <strong>p50 by 2.1× and p99 by 3.5×</strong>, finished the batch <strong>2.4× sooner</strong>, and, the bigger win, <strong>removed the email provider from the request&#39;s failure path entirely</strong>: the order succeeds even if email is down for an hour; the queue holds the job and retries. (The 158 ms queued figure is mostly this laptop&#39;s database round trips; the <em>difference</em> is the lesson.)</p>
+<p>The trade-offs: the user sees &quot;order placed; confirmation email on its way&quot; rather than a synchronous result; you need worker infrastructure, monitoring, and idempotent handlers; and <strong>debugging crosses a process boundary</strong> (propagate the request/trace id into the job, Chapter 25).</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;The checkout endpoint is slow because it sends email and generates a PDF. How do you fix it?&quot;</em> Keep only the essential transactional write in the request; write an <strong>outbox</strong> row in the same transaction; have workers send the email and render the PDF with retries, backoff, a dead-letter state and <strong>idempotent handlers</strong>; return <code>202</code>/<code>201</code> immediately; monitor queue age and dead jobs; propagate trace ids. Mention at-least-once semantics and why exactly-once is a myth.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="28-10-event-driven-design">28.10 Event-Driven Design</h2>
+<p>When several parts of the system react to the same fact (&quot;an order was placed&quot;), publishing an <strong>event</strong> decouples them: the order service doesn&#39;t know who listens.</p>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Command</strong> (job)</th>
+<th><strong>Event</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Meaning</td>
+<td>&quot;Do X&quot; (<code>SendInvoice(order 77)</code>)</td>
+<td>&quot;X happened&quot; (<code>OrderPlaced(order 77)</code>)</td>
+</tr>
+<tr>
+<td>Naming</td>
+<td>Imperative</td>
+<td>Past tense</td>
+</tr>
+<tr>
+<td>Recipients</td>
+<td>One handler (the sender expects it done)</td>
+<td>Zero to many (the sender doesn&#39;t care)</td>
+</tr>
+<tr>
+<td>Coupling</td>
+<td>Sender knows the receiver</td>
+<td>Publisher knows no one</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>Domain events</strong> (inside one service/module, <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a>): in-process, often via an event emitter; fine for decoupling code, but <strong>not durable</strong>: a crash loses them. Persist critical ones with the outbox.</li>
+<li><strong>Integration events</strong> (between services/modules): durable messages (queue/stream/topic) with a <strong>versioned, documented schema</strong> (treat it like a public API, <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>: add fields, don&#39;t break consumers).</li>
+<li>Event payloads: include an <strong>event id</strong> (for deduplication), a <strong>timestamp</strong>, the <strong>entity id and version</strong>, and enough data for consumers to act <em>or</em> just the id so they fetch current state (trade-off: fat events couple schemas; thin events cause extra reads).</li>
+<li><strong>Sagas</strong>: multi-step business transactions across services (reserve stock → charge card → create shipment) with <strong>compensating actions</strong> (release stock, refund) when a later step fails. Two styles: <strong>choreography</strong> (services react to each other&#39;s events; decentralised but hard to follow) and <strong>orchestration</strong> (a coordinator drives the steps; clearer, but a central component). Workflow engines (Temporal, AWS Step Functions) provide durable orchestration <em>(not run here; we return to this in Chapters <a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">30</a> and 33)</em>.</li>
+<li><strong>Event sourcing</strong> (store the <em>sequence of events</em> as the source of truth) and <strong>CQRS</strong> (separate read and write models) are powerful and heavy; adopt only with a clear need and experienced team.</li>
+</ul>
+<hr>
+
+<h2 id="28-11-shopline-s-async-architecture">28.11 ShopLine&#39;s Async Architecture</h2>
+<pre class="is-plain"><code>POST /orders ──► [ tx: orders + order_items + outbox('order.created') ] ──► 201 in ~tens of ms
+                                       │
+                         relay (SKIP LOCKED, polls outbox)
+                                       ▼
+                        BullMQ queues (Redis)  ─ critical: payments-webhook, stock-sync
+                                       │         ─ default:  email, invoice-pdf, search-index
+                                       ▼         ─ bulk:     reports, exports (rate-limited)
+                              worker processes (separate deployment)
+                        (idempotent handlers + processed-message table; dead jobs alert)
+cron-like: BullMQ job schedulers (one tick per interval across instances)</code></pre>
+<p>Rules of this design: <strong>business state and outbox row in one transaction</strong>; <strong>idempotent consumers</strong> keyed by event id; <strong>retries with jittered backoff and a dead-letter state</strong>; <strong>separate queues per criticality</strong>; <strong>queue age and dead-letter alerts</strong>; <strong>trace ids propagated</strong> into jobs; <strong>graceful worker shutdown</strong>; and a <strong>runbook</strong> for replaying dead jobs.</p>
+<hr>
+
+<h2 id="28-12-edge-cases-and-gotchas-checklist">28.12 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Slow/flaky work performed inside the request; user-visible failures from non-essential steps.</li>
+<li><input disabled="" type="checkbox"> Dual write (DB then broker) with no outbox: silent event loss on crashes.</li>
+<li><input disabled="" type="checkbox"> Non-idempotent handlers; assuming exactly-once delivery; no dedup key for side effects.</li>
+<li><input disabled="" type="checkbox"> Lease/visibility timeout shorter than the job (duplicate execution); no heartbeat for long jobs.</li>
+<li><input disabled="" type="checkbox"> No fencing: a zombie worker completes or overwrites after losing the lease.</li>
+<li><input disabled="" type="checkbox"> Unlimited retries, fixed (non-backoff) retries, retrying permanent errors; no dead-letter state or alert.</li>
+<li><input disabled="" type="checkbox"> A single queue for everything (bulk work starves critical work).</li>
+<li><input disabled="" type="checkbox"> Large payloads or secrets in jobs; unversioned payload schemas.</li>
+<li><input disabled="" type="checkbox"> Unbounded queues; no backpressure; alerting on depth instead of <strong>age of oldest job</strong>.</li>
+<li><input disabled="" type="checkbox"> Assuming order across workers/retries; no per-key partitioning or version checks.</li>
+<li><input disabled="" type="checkbox"> Cron on every instance; non-idempotent scheduled jobs; timezone/DST surprises.</li>
+<li><input disabled="" type="checkbox"> Workers killed mid-job on deploy (no graceful shutdown); workers sharing the web process.</li>
+<li><input disabled="" type="checkbox"> No trace/request id propagation into jobs; no queue observability.</li>
+<li><input disabled="" type="checkbox"> Outbox table never cleaned; BullMQ without <code>removeOnComplete</code> limits (Redis memory growth).</li>
+<li><input disabled="" type="checkbox"> Using a heavyweight broker before a PostgreSQL table or BullMQ was proven insufficient.</li>
+</ul>
+<hr>
+
+<h2 id="28-13-chapter-summary">28.13 Chapter Summary</h2>
+<ul>
+<li><strong>Queue the non-essential, keep the essential transactional write in the request.</strong> Inline email made p50 335 ms / p99 849 ms; queued: 158 / 243 ms, and the email provider left the failure path.</li>
+<li>A correct <strong>PostgreSQL queue</strong> is <code>FOR UPDATE SKIP LOCKED</code> + <strong>leases</strong> + <strong>fenced completion</strong> + <strong>backoff</strong> + <strong>dead state</strong>. Measured: 4 workers = <strong>4.1×</strong> throughput with <strong>0 duplicates</strong>; a crashed worker&#39;s job was <strong>recovered</strong> after the lease expired and the zombie&#39;s late completion was <strong>rejected</strong>; a poison job retried with exponential backoff then went <code>dead</code>.</li>
+<li><strong>At-least-once means possibly twice</strong>: a slow worker outliving its lease sent <strong>2 emails</strong>; an <strong>idempotent handler</strong> (unique effect key) sent <strong>1</strong>. <em>Leases, fences, keys.</em></li>
+<li><strong>BullMQ</strong> gives retries/backoff, delays, priority (only among waiting jobs), <strong>rate limiting</strong> (10/s measured), and schedulers that fire <strong>once per interval across instances</strong>; <strong>Redis Streams</strong> recover a dead consumer&#39;s messages with <code>XAUTOCLAIM</code> and a delivery counter.</li>
+<li><strong>Outbox pattern:</strong> naive dual write <strong>lost 60 of 300 events silently</strong>; writing the event in the <strong>same transaction</strong> lost none, with duplicates (100) after relay crashes that an <strong>idempotent consumer</strong> absorbed (300 emails for 300 orders).</li>
+<li><strong>Exactly-once is a myth</strong>; build <strong>effectively-once</strong> (at-least-once + idempotency). Per-key ordering needs partitioning and version checks.</li>
+<li><strong>Backpressure:</strong> an unbounded queue grew (depth 79 → 274); a <strong>bounded</strong> queue capped at 100 and rejected 139 requests fast. Alert on <strong>age of oldest job</strong>.</li>
+<li><strong>Cron on 3 instances</strong> ran <strong>15</strong> times unless firing is a <strong>claim</strong> (5 runs). Events vs commands; sagas for multi-service flows.</li>
+</ul>
+<hr>
+
+<h2 id="28-14-revision-notes">28.14 Revision Notes</h2>
+<ul>
+<li>Claim: <code>FOR UPDATE SKIP LOCKED</code>; lease <code>locked_until</code>; fenced <code>UPDATE … WHERE locked_by = me</code>.</li>
+<li>Retries: exponential backoff + jitter, <code>max_attempts</code>, dead/DLQ, retryable vs permanent errors.</li>
+<li>At-least-once ⇒ idempotent handlers (unique key / processed table / provider idempotency key).</li>
+<li>Outbox: state + outbox row in ONE transaction; relay with SKIP LOCKED; consumers dedupe by event id.</li>
+<li>BullMQ: <code>attempts/backoff</code>, <code>delay</code>, <code>priority</code>, <code>limiter</code>, job schedulers; install <code>ioredis</code>.</li>
+<li>Streams: <code>XREADGROUP</code>, <code>XACK</code>, <code>XAUTOCLAIM</code>, delivery counter.</li>
+<li>Backpressure: bound queues, reject with 429/503, scale consumers, alert on oldest-job age.</li>
+<li>Cron: claim the tick (conditional UPDATE / advisory lock / shared scheduler).</li>
+<li>Pass ids not blobs; version payloads; separate queues by criticality; graceful shutdown; heartbeat long jobs.</li>
+</ul>
+<hr>
+
+<h2 id="28-15-mind-map-ascii">28.15 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                          ASYNC PROCESSING
+                                 │
+   ┌─────────────┬──────────────┬┴────────────┬─────────────┬───────────────┐
+ WHAT TO QUEUE  BROKERS      RELIABILITY    OUTBOX        SCALE/CONTROL    EVENTS
+   │              │              │             │              │              │
+ email, PDF    Postgres        leases       dual-write     workers ×N      commands vs events
+ 3rd-party     BullMQ/Redis    fencing      problem        backpressure    sagas
+ webhooks      Streams         retries      relay          rate limits     schema versions
+ reports       Rabbit/SQS/     backoff      idempotent     cron claims     ordering by key
+               Kafka*          DLQ          consumer       oldest-job age  exactly-once myth</code></pre>
+<hr>
+
+<h2 id="28-16-cheat-sheet">28.16 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-comment">-- claim</span>
+<span class="hljs-keyword">UPDATE</span> jobs <span class="hljs-keyword">SET</span> status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;running&#x27;</span>, locked_by<span class="hljs-operator">=</span>$w, locked_until<span class="hljs-operator">=</span>now()<span class="hljs-operator">+</span><span class="hljs-type">interval</span> <span class="hljs-string">&#x27;30 s&#x27;</span>, attempts<span class="hljs-operator">=</span>attempts<span class="hljs-operator">+</span><span class="hljs-number">1</span>
+<span class="hljs-keyword">WHERE</span> id <span class="hljs-keyword">IN</span> (<span class="hljs-keyword">SELECT</span> id <span class="hljs-keyword">FROM</span> jobs <span class="hljs-keyword">WHERE</span> queue<span class="hljs-operator">=</span>$q <span class="hljs-keyword">AND</span> ((status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;queued&#x27;</span> <span class="hljs-keyword">AND</span> run_at<span class="hljs-operator">&lt;=</span>now()) <span class="hljs-keyword">OR</span> (status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;running&#x27;</span> <span class="hljs-keyword">AND</span> locked_until<span class="hljs-operator">&lt;</span>now()))
+             <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> run_at,id LIMIT <span class="hljs-number">1</span> <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">SKIP</span> LOCKED) RETURNING <span class="hljs-operator">*</span>;
+<span class="hljs-comment">-- finish (fenced)         UPDATE jobs SET status=&#x27;done&#x27; WHERE id=$1 AND locked_by=$w AND status=&#x27;running&#x27;;</span>
+<span class="hljs-comment">-- idempotent effect       INSERT INTO effects(key) VALUES($1) ON CONFLICT DO NOTHING;   -- act only if rowCount = 1</span>
+<span class="hljs-comment">-- outbox                  BEGIN; INSERT business row; INSERT INTO outbox(...); COMMIT;</span></code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> queue.<span class="hljs-title function_">add</span>(<span class="hljs-string">&#x27;email&#x27;</span>, { orderId }, { <span class="hljs-attr">attempts</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">backoff</span>: { <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;exponential&#x27;</span>, <span class="hljs-attr">delay</span>: <span class="hljs-number">1000</span> }, <span class="hljs-attr">removeOnComplete</span>: <span class="hljs-number">1000</span>, <span class="hljs-attr">removeOnFail</span>: <span class="hljs-number">5000</span> });
+<span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(<span class="hljs-string">&#x27;email&#x27;</span>, handler, { connection, <span class="hljs-attr">concurrency</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">limiter</span>: { <span class="hljs-attr">max</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">duration</span>: <span class="hljs-number">1000</span> } });
+<span class="hljs-keyword">await</span> queue.<span class="hljs-title function_">upsertJobScheduler</span>(<span class="hljs-string">&#x27;nightly-report&#x27;</span>, { <span class="hljs-attr">pattern</span>: <span class="hljs-string">&#x27;0 2 * * *&#x27;</span> }, { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;report&#x27;</span> });</code></pre></div>
+<hr>
+
+<h2 id="28-17-key-takeaways">28.17 Key Takeaways</h2>
+<ol>
+<li><strong>Do the essential write now; queue the rest.</strong> Keep third-party failures out of your request path.</li>
+<li><strong>Delivery is at-least-once, so every handler must be idempotent.</strong> Leases recover crashes; fences stop zombies; keys absorb duplicates.</li>
+<li><strong>Use the outbox</strong>: never write the database and publish in two separate steps.</li>
+<li><strong>Retries need backoff, caps and a dead-letter state</strong>, and an alert when jobs die.</li>
+<li><strong>Bound queues and watch the age of the oldest job</strong>; rejecting fast beats waiting forever.</li>
+<li><strong>Cron on many instances means claiming the tick.</strong></li>
+</ol>
+<hr>
+
+<h2 id="28-18-20-multiple-choice-questions">28.18 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Latency and failure isolation."><p class="quiz-text">Why queue an email instead of sending it in the request?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Emails are slow to type</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It shortens the request and removes the email provider from the failure path</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Queues are cheaper</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">HTTP forbids it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Skip locked rows."><p class="quiz-text"><code>FOR UPDATE SKIP LOCKED</code> lets multiple workers:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Process the same row</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Claim different rows without blocking each other</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Skip all jobs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Lock the table</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Crash recovery."><p class="quiz-text">A lease/visibility timeout exists so that:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Jobs run faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A crashed worker&#39;s job becomes claimable again</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Jobs are deleted</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Order is preserved</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Fencing."><p class="quiz-text">A fenced completion (<code>WHERE locked_by = me</code>) prevents:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Retries</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A zombie worker from marking a job done after losing its lease</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Backoff</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Deadlocks</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="111 vs 27 jobs/s."><p class="quiz-text">In our test 4 workers vs 1 gave about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1×</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">4.1× throughput with no duplicate effects</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">10×</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0.5×</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Duplicates possible."><p class="quiz-text">&quot;At-least-once&quot; delivery means a job may be:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Lost</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Delivered more than once</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Delivered exactly once always</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Reordered only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Lease expiry."><p class="quiz-text">The slow-worker experiment sent 2 emails because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Postgres duplicated the row</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The lease expired while the first worker was still working, so a second ran it too</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Retries were off</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Backoff failed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Idempotent handler."><p class="quiz-text">The fix for duplicate side effects belongs in:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The broker</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The handler (idempotency key / dedup record)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The load balancer</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nowhere</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Cap + dead state."><p class="quiz-text">A poison job should:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Retry forever</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Retry with backoff up to a cap, then move to a dead-letter state with an alert</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Be deleted silently</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Block the queue</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Only among waiting jobs."><p class="quiz-text">BullMQ priorities only affect ordering when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Jobs are waiting together in the queue</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Always</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Never</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only with delays</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="10/s."><p class="quiz-text">The BullMQ limiter <code>{ max: 10, duration: 1000 }</code> produced:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">40 jobs at once</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">About 10 jobs per second</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">1 job per second</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Random pacing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Once per interval."><p class="quiz-text">A scheduler stored in Redis (BullMQ) with 2 workers fires:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Twice per interval</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Once per interval</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Never</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only on worker A</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Non-atomic two-step."><p class="quiz-text">The dual-write problem is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Writing twice to a DB</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Updating the DB and publishing a message in two steps with no shared transaction, so a crash loses the event</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Two replicas</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Duplicate keys</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Same transaction."><p class="quiz-text">The outbox pattern fixes it by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Using two-phase commit</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Writing the event row in the same DB transaction as the business change and relaying it later</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Retrying forever</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Skipping the broker</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Crash before marking."><p class="quiz-text">Why did the outbox test show duplicate deliveries?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A bug in Postgres</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The relay crashed after publishing but before marking rows published (at-least-once)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Redis was down</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The consumer was slow</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Effectively-once."><p class="quiz-text">&quot;Exactly-once delivery&quot; in practice means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A perfect network</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">At-least-once delivery plus idempotent processing (effectively-once)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No retries</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A single worker</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Bounded depth."><p class="quiz-text">Backpressure in our simulation: a bounded queue (max 100):</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Grew forever</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Capped depth at 100 and rejected excess work fast</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Dropped all jobs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Doubled latency</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Oldest-job age."><p class="quiz-text">The best health signal for a queue is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Queue depth only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Age of the oldest job (plus dead-job count)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">CPU of the broker</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Number of workers</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="15 vs 5 runs."><p class="quiz-text">Running <code>node-cron</code> on 3 instances caused:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">One run</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Three runs per tick unless the tick is claimed atomically</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No runs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sorted runs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Ids, not blobs."><p class="quiz-text">Job payloads should usually contain:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The whole order object</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Ids and a version, letting the worker load current state</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Passwords</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Binary files</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-a, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="28-19-20-hands-on-exercises">28.19 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch28/README.txt">resources/ch28/</a>.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>lab-queue.mjs</code>; confirm zero duplicates with 4 workers.</li>
+<li>Add a worker count of 8; measure throughput and database CPU; explain the plateau.</li>
+<li>Enqueue a poison job and observe retries and the dead state.</li>
+<li>Add BullMQ with a flaky handler and watch <code>attempts</code>/<code>backoff</code> in logs.</li>
+<li>Compute the maximum wait for a bounded queue of depth 100 and a consumer at 50/s.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Add heartbeats: let a long job extend its lease every 10 s; prove no duplicate when it runs 60 s with a 30 s lease.</li>
+<li>Add priorities and delayed jobs to the PostgreSQL queue.</li>
+<li>Implement permanent vs retryable error classes (move permanent errors straight to <code>dead</code>).</li>
+<li>Build the dedup table for the handler and prove duplicate deliveries have no duplicate effects.</li>
+<li>Implement a <code>queue-age</code> metric and a Prometheus alert for oldest job &gt; 60 s (Ch 25).</li>
+<li>Add graceful shutdown to the worker: stop claiming, finish current job, exit; test with <code>docker stop</code> in Linux.</li>
+<li>Replace polling with <code>LISTEN/NOTIFY</code> to wake workers instantly; compare latency and load.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Implement the full outbox relay with batching, ordering per aggregate, publishing to BullMQ, and cleanup; chaos-test by killing the relay randomly.</li>
+<li>Implement per-key ordering: route events for the same order id to the same worker and apply with version checks; test with shuffled delivery.</li>
+<li>Build a saga for checkout (reserve stock → charge → ship) with compensations; inject failures at each step.</li>
+<li>Run two queue implementations (PostgreSQL vs BullMQ) under the same load; compare throughput, latency, and failure recovery.</li>
+<li>Add rate limiting per downstream provider with a shared token bucket across workers (Redis Lua).</li>
+<li>Implement a dead-letter dashboard with &quot;replay&quot; and &quot;discard&quot; actions, including audit logging.</li>
+<li>Evaluate RabbitMQ or SQS locally (e.g., LocalStack/ElasticMQ): reproduce visibility-timeout redelivery and DLQ routing.</li>
+<li>Perform a game day: kill workers, stop Redis, delay Postgres, and verify no job is lost and no side effect is duplicated.</li>
+</ol>
+<hr>
+
+<h2 id="28-20-5-interview-questions">28.20 5 Interview Questions</h2>
+<p><strong>1. Why use a message queue, and what problems does it introduce?</strong>
+<em>Model answer:</em> It decouples slow/unreliable work from the request, absorbs bursts, enables retries and independent scaling. It introduces at-least-once duplicates, ordering issues, backpressure, operational complexity (monitoring queue age, DLQs), and eventual consistency. Mitigate with idempotent handlers, per-key ordering, bounded queues, and observability.</p>
+<p><strong>2. What does &quot;at-least-once delivery&quot; mean and how do you cope?</strong>
+<em>Model answer:</em> A message may be delivered multiple times (consumer crashes before ack, lease expires, relay retries). Cope with idempotent consumers (dedup by message/event id or natural unique keys, provider idempotency keys, conditional updates). &quot;Exactly-once&quot; really means at-least-once plus idempotency. In my test a slow worker caused two emails; a unique-key effects table reduced it to one.</p>
+<p><strong>3. Explain the transactional outbox pattern.</strong>
+<em>Model answer:</em> To avoid the dual-write problem, write the business change and an outbox event row in the same database transaction; a relay publishes unpublished rows (using <code>SKIP LOCKED</code>) and marks them sent. A crash can cause duplicate publishes but never a lost event; consumers dedupe by event id. It trades latency for reliability; CDC can replace polling.</p>
+<p><strong>4. How would you design a retry policy for background jobs?</strong>
+<em>Model answer:</em> Distinguish retryable (timeouts, 5xx, rate limits) from permanent errors; exponential backoff with jitter; capped attempts; a dead-letter state with alerts and replay tooling; per-job timeouts; idempotent handlers; separate queues so retries of low-priority jobs don&#39;t starve critical ones; and metrics on retry/dead counts.</p>
+<p><strong>5. How do you run a scheduled job safely across several instances?</strong>
+<em>Model answer:</em> Ensure exactly one instance runs each tick: claim the tick with an atomic conditional update or advisory lock, use a scheduler with shared state (BullMQ job schedulers, a platform cron that enqueues one job), or run a single scheduler process. Make the job idempotent and record runs. In my test, three instances fired 15 times for 5 ticks until the tick was claimed (5).</p>
+<hr>
+
+<h2 id="28-21-3-real-projects">28.21 3 Real Projects</h2>
+<p><strong>Project 1: Notification Pipeline (intermediate, ~10 hours).</strong>
+Build ShopLine&#39;s email/SMS/push notifications: outbox → relay → BullMQ queues (critical/default/bulk), idempotent handlers with provider idempotency keys, retry/backoff/DLQ, per-provider rate limits, a dead-job dashboard with replay, and dashboards for queue age and failures.</p>
+<p><strong>Project 2: Queue Library on PostgreSQL (intermediate–advanced, ~14 hours).</strong>
+Package the PostgreSQL queue: priorities, delays, heartbeats, fenced completion, batching, <code>LISTEN/NOTIFY</code> wakeups, partitioned job history, metrics, and a CLI. Property-test the claim logic under random crashes and prove no job is lost or run concurrently.</p>
+<p><strong>Project 3: Checkout Saga (advanced, ~16 hours).</strong>
+Implement an orchestrated saga (reserve stock → authorise payment → create shipment → confirm) with compensations, idempotency keys at every step, durable state, timeouts, and a chaos suite that kills services at every step, verifying money and stock always reconcile.</p>
+<hr>
+
+<h2 id="28-22-further-reading">28.22 Further Reading</h2>
+<ul>
+<li><em>Enterprise Integration Patterns</em> (Hohpe &amp; Woolf): the classic catalogue of messaging patterns.</li>
+<li>Chris Richardson, <em>Microservices Patterns</em>: Transactional Outbox, Saga, Idempotent Consumer.</li>
+<li><em>Designing Data-Intensive Applications</em>, <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a> (stream processing, message brokers, exactly-once) and <a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">Chapter 12</a>.</li>
+<li>BullMQ documentation (retries, rate limiting, job schedulers, going to production); Redis Streams docs (consumer groups, <code>XAUTOCLAIM</code>).</li>
+<li>Amazon SQS docs (visibility timeout, DLQs); RabbitMQ tutorials; Kafka documentation (partitions, consumer groups, transactions).</li>
+<li>Brandur Leach, &quot;Postgres Job Queues&quot; and &quot;Transactionally Staged Job Drains in Postgres&quot;; the <code>graphile-worker</code>, <code>pg-boss</code> and <code>river</code> projects (PostgreSQL queues).</li>
+<li>Pat Helland, &quot;Life beyond Distributed Transactions&quot; and &quot;Idempotence Is Not a Medical Condition&quot;.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-29-scaling-and-load-balancing">Up next → Chapter 29: Scaling and Load Balancing</h3>
+<p>One server can only go so far. Next: vertical vs horizontal scaling, stateless services, load balancers (L4/L7, algorithms, health checks, sticky sessions), reverse proxies with nginx, database read replicas and replication lag, connection management at scale (PgBouncer), sessions and caches across instances, autoscaling signals, and capacity planning, with a multi-instance ShopLine put behind a real load balancer and measured.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Message Queues: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What does at-least-once delivery mean?</h3></summary><p>A message may be delivered more than once, for example when a worker is slow or crashes. Consumers must be idempotent. Exactly-once delivery is effectively at-least-once plus deduplication.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the outbox pattern?</h3></summary><p>Write the event to an outbox table in the same transaction as the business change, and let a relay publish it later. A naive write-then-publish lost 60 of 300 events in our test; the outbox lost none.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I run a cron job on several instances?</h3></summary><p>Make firing a claim only one instance wins, using a conditional update or advisory lock, or use a scheduler with shared state such as BullMQ job schedulers. Three instances ran a naive cron 15 times for 5 ticks.</p></details>
+<details class="learn-faq-item"><summary><h3>What is a dead-letter queue?</h3></summary><p>A place where jobs go after exhausting their retries, so they stop blocking the queue and can be inspected and replayed by a human.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span>&larr; Previous &middot; Chapter 27</span><strong>Caching: HTTP Headers, Redis &amp; Invalidation</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span>Next &middot; Chapter 29 &rarr;</span><strong>Scaling Backends: Load Balancing &amp; PgBouncer</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#28-0-why-this-chapter-matters">28.0 Why This Chapter Matters</a></li><li><a href="#28-1-the-vocabulary">28.1 The Vocabulary</a></li><li><a href="#28-2-a-job-queue-in-postgresql">28.2 A Job Queue in PostgreSQL</a></li><li><a href="#28-3-bullmq-a-redis-backed-queue-library">28.3 BullMQ: A Redis-Backed Queue Library</a></li><li><a href="#28-4-workers-in-practice">28.4 Workers in Practice</a></li><li><a href="#28-5-the-outbox-pattern-never-lose-an-event">28.5 The Outbox Pattern: Never Lose an Event</a></li><li><a href="#28-6-delivery-guarantees-and-the-exactly-once-myth">28.6 Delivery Guarantees and the Exactly Once Myth</a></li><li><a href="#28-7-backpressure-when-producers-outrun-consumers">28.7 Backpressure: When Producers Outrun Consumers</a></li><li><a href="#28-8-scheduled-jobs-cron-without-duplicates">28.8 Scheduled Jobs (Cron) Without Duplicates</a></li><li><a href="#28-9-do-the-work-later-inline-vs-queued">28.9 Do the Work Later: Inline vs Queued</a></li><li><a href="#28-10-event-driven-design">28.10 Event-Driven Design</a></li><li><a href="#28-11-shopline-s-async-architecture">28.11 ShopLine's Async Architecture</a></li><li><a href="#28-12-edge-cases-and-gotchas-checklist">28.12 Edge Cases and Gotchas Checklist</a></li><li><a href="#28-13-chapter-summary">28.13 Chapter Summary</a></li><li><a href="#28-14-revision-notes">28.14 Revision Notes</a></li><li><a href="#28-15-mind-map-ascii">28.15 Mind Map (ASCII)</a></li><li><a href="#28-16-cheat-sheet">28.16 Cheat Sheet</a></li><li><a href="#28-17-key-takeaways">28.17 Key Takeaways</a></li><li><a href="#28-18-20-multiple-choice-questions">28.18 20 Multiple Choice Questions</a></li><li><a href="#28-19-20-hands-on-exercises">28.19 20 Hands-on Exercises</a></li><li><a href="#28-20-5-interview-questions">28.20 5 Interview Questions</a></li><li><a href="#28-21-3-real-projects">28.21 3 Real Projects</a></li><li><a href="#28-22-further-reading">28.22 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "message-queues-background-jobs-outbox-nodejs"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

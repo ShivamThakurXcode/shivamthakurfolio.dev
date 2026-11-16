@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Node.js Event Loop, Streams &amp; Threads | Backend Master</title>
+    <meta name="description" content="Understand how Node.js really works: the event loop phases, the libuv thread pool, streams and backpressure, worker threads and the cluster module, with demos.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="nodejs event loop, libuv thread pool, nodejs streams backpressure, worker threads, nodejs cluster, nodejs performance, blocking the event loop, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/linux-terminal-git-for-backend-developers">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="nodejs event loop">
+    <meta property="article:tag" content="libuv thread pool">
+    <meta property="article:tag" content="nodejs streams backpressure">
+    <meta property="article:tag" content="worker threads">
+    <meta property="article:tag" content="nodejs cluster">
+    <meta property="article:tag" content="nodejs performance">
+    <meta property="article:tag" content="blocking the event loop">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Node.js Event Loop, Streams &amp; Threads">
+    <meta property="og:description" content="Understand how Node.js really works: the event loop phases, the libuv thread pool, streams and backpressure, worker threads and the cluster module, with demos.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/nodejs-event-loop-streams-worker-threads.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Node.js Internals: The Event Loop, Streams, Worker Threads and Cluster: Backend Master chapter 5">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Node.js Event Loop, Streams &amp; Threads">
+    <meta name="twitter:description" content="Understand how Node.js really works: the event loop phases, the libuv thread pool, streams and backpressure, worker threads and the cluster module, with demos.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/nodejs-event-loop-streams-worker-threads.png">
+    <meta name="twitter:image:alt" content="Node.js Internals: The Event Loop, Streams, Worker Threads and Cluster: Backend Master chapter 5">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads",
+          "name": "Node.js Event Loop, Streams & Threads | Backend Master",
+          "description": "Understand how Node.js really works: the event loop phases, the libuv thread pool, streams and backpressure, worker threads and the cluster module, with demos.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/nodejs-event-loop-streams-worker-threads.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Node.js Internals: The Event Loop, Streams, Worker Threads and Cluster"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#webpage"
+          },
+          "headline": "Node.js Internals: The Event Loop, Streams, Worker Threads and Cluster",
+          "alternativeHeadline": "Node.js Internals — The Event Loop, Streams, Threads and Why Node Is Fast",
+          "description": "Understand how Node.js really works: the event loop phases, the libuv thread pool, streams and backpressure, worker threads and the cluster module, with demos.",
+          "abstract": "Node.js runs your JavaScript on one thread and delegates I/O to the operating system and a thread pool. This chapter explains the event loop phases, microtasks, why blocking code freezes every request, streams and backpressure, worker threads for CPU work and the cluster module, with measured examples.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/nodejs-event-loop-streams-worker-threads.png",
+          "url": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 7736,
+          "timeRequired": "PT35M",
+          "articleSection": "Backend Development",
+          "keywords": "nodejs event loop, libuv thread pool, nodejs streams backpressure, worker threads, nodejs cluster, nodejs performance, blocking the event loop",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "The event loop phases and microtask queue",
+            "The libuv thread pool and what it handles",
+            "Streams, pipes and backpressure",
+            "Worker threads for CPU-bound work",
+            "Scaling across cores with cluster"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs event loop"
+          },
+          "isAccessibleForFree": true,
+          "position": 5,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/linux-terminal-git-for-backend-developers#article",
+            "name": "Linux, the Terminal, Git and Your Backend Dev Environment",
+            "url": "https://shivamthakur.me/learn/backend-master/linux-terminal-git-for-backend-developers"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Node.js Event Loop, Streams & Threads",
+              "item": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is Node.js single-threaded?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Your JavaScript runs on a single main thread, but Node uses the operating system and a libuv thread pool for I/O such as files, DNS and crypto, so many operations proceed in parallel behind the scenes."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does blocking the event loop mean?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Running long synchronous code on the main thread stops Node from handling any other request until it finishes. A CPU-heavy loop or a slow regex can freeze the whole server."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When should I use worker threads?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use them for CPU-bound work such as image processing, hashing large data or parsing huge files, so the main thread stays free to serve requests."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is backpressure in streams?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Backpressure is the signal that a consumer cannot keep up with a producer. Streams pause the source when the destination's buffer is full, which keeps memory use flat when moving large files."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#quiz",
+          "name": "Node.js Event Loop, Streams & Threads: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs event loop"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Node.js executes your JavaScript on:",
+              "text": "Node.js executes your JavaScript on:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A single main thread"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Many threads, one per request"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The GPU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A thread per CPU core automatically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which library gives Node its event loop and thread pool?",
+              "text": "Which library gives Node its event loop and thread pool?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "libuv"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "V8"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "OpenSSL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "npm"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the correct order of execution?",
+              "text": "What is the correct order of execution?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "sync → nextTick → promise → timers"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Promise → nextTick → sync"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "timers → sync → promise"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "sync → promise → nextTick"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which operation blocks the event loop?",
+              "text": "Which operation blocks the event loop?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "fs.readFileSync() in a request handler"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "await fs.promises.readFile()"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "setTimeout"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "fetch()"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Default size of libuv's thread pool?",
+              "text": "Default size of libuv's thread pool?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "4"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "16"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Equal to CPU cores"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which of these uses the thread pool?",
+              "text": "Which of these uses the thread pool?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "crypto.pbkdf2"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "TCP sockets"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "setTimeout"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "process.nextTick"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Inside an I/O callback, which fires first?",
+              "text": "Inside an I/O callback, which fires first?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "setImmediate(fn)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "setTimeout(fn, 0)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Random"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Neither"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is items.forEach(async (x) => await save(x)) problematic?",
+              "text": "Why is items.forEach(async (x) => await save(x)) problematic?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "forEach doesn't wait for the returned promises"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's a syntax error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's too fast"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It runs in a worker"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which turns three independent 300 ms calls into ~300 ms total?",
+              "text": "Which turns three independent 300 ms calls into ~300 ms total?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "await Promise.all([...])"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Three sequential awaits"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Promise.race"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A for loop"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does Promise.allSettled do?",
+              "text": "What does Promise.allSettled do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Waits for all and reports each outcome"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Rejects on first failure"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Returns the fastest"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retries failures"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why use streams for large files?",
+              "text": "Why use streams for large files?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Constant memory and earlier first byte"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They're prettier"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They avoid disks"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They encrypt data"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does writable.write(chunk) returning false mean?",
+              "text": "What does writable.write(chunk) returning false mean?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Its buffer is full; wait for 'drain'"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The write failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The stream ended"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Invalid chunk"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why prefer pipeline over .pipe()?",
+              "text": "Why prefer pipeline over .pipe()?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It propagates errors and cleans up all streams"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It uses threads"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It compresses"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a worker_thread best suited for?",
+              "text": "What is a worker_thread best suited for?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "CPU-intensive computation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Waiting on network"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Serving static files"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DNS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A key difference between cluster workers and worker_threads?",
+              "text": "A key difference between cluster workers and worker_threads?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cluster workers are processes with separate memory"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They're identical"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cluster shares heap"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Worker threads can't run JS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "After an uncaughtException, the recommended action is:",
+              "text": "After an uncaughtException, the recommended action is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Log and exit, letting a supervisor restart"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Ignore and continue"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retry in a loop"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Call process.nextTick"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "An EventEmitter emits 'error' with no listener. What happens?",
+              "text": "An EventEmitter emits 'error' with no listener. What happens?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It throws and may crash the process"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's logged silently"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The event is queued"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A steadily rising heapUsed that never levels off most likely indicates:",
+              "text": "A steadily rising heapUsed that never levels off most likely indicates:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A memory leak"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Healthy caching"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Fast GC"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Normal Node behavior"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why set keepAliveTimeout higher than your load balancer's idle timeout?",
+              "text": "Why set keepAliveTimeout higher than your load balancer's idle timeout?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To avoid sporadic 502s from reused connections Node already closed"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "To save CPU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To enable HTTPS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To raise the thread pool"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does monitorEventLoopDelay tell you?",
+              "text": "What does monitorEventLoopDelay tell you?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "How long the event loop is delayed, revealing blocking code"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "DB latency"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Network speed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CPU temperature"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Node.js Event Loop, Streams &amp; Threads</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:13.9%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item active" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" aria-current="page"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 5 of 36 &middot; Intermediate</p>
+                        <h1>Node.js Internals: The Event Loop, Streams, Worker Threads and Cluster</h1>
+                        <p class="learn-book-title">Node.js Internals — The Event Loop, Streams, Threads and Why Node Is Fast</p>
+                        <ul class="learn-meta text-caption">
+                            <li>35 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/nodejs-event-loop-streams-worker-threads.webp"><img src="../../assets/images/learn/backend-master/nodejs-event-loop-streams-worker-threads.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Node.js Internals: The Event Loop, Streams, Worker Threads and Cluster: Backend Master chapter 5 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Node.js runs your JavaScript on one thread and delegates I/O to the operating system and a thread pool. This chapter explains the event loop phases, microtasks, why blocking code freezes every request, streams and backpressure, worker threads for CPU work and the cluster module, with measured examples.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>The event loop phases and microtask queue</li><li>The libuv thread pool and what it handles</li><li>Streams, pipes and backpressure</li><li>Worker threads for CPU-bound work</li><li>Scaling across cores with cluster</li></ul>
+                        </section>
+<hr>
+
+<h2 id="5-0-why-this-chapter-matters">5.0 Why This Chapter Matters</h2>
+<p>Node.js is described with a sentence that sounds like a contradiction: <em>&quot;single-threaded, yet handles thousands of concurrent connections.&quot;</em> How?</p>
+<p>If you don&#39;t know the answer, you will eventually write code that <strong>freezes your entire server for every user at once</strong> (it&#39;s the most common serious Node bug there is). If you do know the answer, you can:</p>
+<ul>
+<li>Predict the order in which async code runs.</li>
+<li>Know exactly which operations block and which don&#39;t.</li>
+<li>Handle gigabyte files without running out of memory.</li>
+<li>Use all your CPU cores.</li>
+<li>Debug &quot;the server randomly stops responding.&quot;</li>
+</ul>
+<p>This is the most &quot;internals-heavy&quot; chapter in Part 1, and it pays off in every chapter after.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>Node.js was created by Ryan Dahl in 2009 after he watched a file-upload progress bar and wondered why servers could not do many things at once without a pile of threads. The key idea was: <em>most servers spend most of their time waiting</em> (for the network, for the disk, for the database), so don&#39;t dedicate an entire thread to each waiting request.</p>
+</aside>
+<hr>
+
+<h2 id="5-1-the-problem-node-solves-waiting">5.1 The Problem Node Solves: Waiting</h2>
+<p>Think about what a typical request handler does:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT ...&#x27;</span>);      <span class="hljs-comment">// wait ~5 ms</span>
+<span class="hljs-keyword">const</span> orders = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT ...&#x27;</span>);    <span class="hljs-comment">// wait ~5 ms</span>
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">sendEmail</span>(user.<span class="hljs-property">email</span>);                     <span class="hljs-comment">// wait ~200 ms</span></code></pre></div>
+<p>The CPU work is microseconds. The rest is <strong>waiting for I/O</strong> (input/output: network, disk, database). Waiting costs nothing for the CPU, but it needs a <em>plan</em> for what to do while waiting.</p>
+<h3 id="real-life-analogy-one-waiter-vs-one-waiter-per-table">Real-Life Analogy: One Waiter vs One Waiter Per Table</h3>
+<p><strong>Thread-per-request model (classic Apache/Java):</strong> every table gets its own dedicated waiter. A waiter takes the order, walks to the kitchen, <em>stands there staring at the chef</em> until the food is ready, and carries it back. If you have 10,000 tables, you need 10,000 waiters, and each one costs salary (memory: ~1 MB+ per thread) and they trip over one another (context switching).</p>
+<p><strong>Event-driven model (Node):</strong> one very fast waiter. Takes table 1&#39;s order, hands it to the kitchen, and <em>immediately</em> goes to table 2. When the kitchen rings a bell (&quot;order up for table 1!&quot;), the waiter delivers it. One waiter can serve many tables because he <strong>never stands around waiting</strong>.</p>
+<p>The catch: if the one waiter decides to personally cook a 20-minute dish, <em>nobody</em> gets served. Hold on to that; it&#39;s the main danger of Node (§5.6).</p>
+<hr>
+
+<h2 id="5-2-what-is-node-js-made-of">5.2 What Is Node.js Made Of?</h2>
+<pre class="is-plain"><code> ┌──────────────────────────── YOUR JAVASCRIPT ─────────────────────────────┐
+ │                                                                          │
+ │   ┌───────────────┐       Node.js bindings (C++)                         │
+ │   │      V8       │◀────────────────────────────────┐                    │
+ │   │ JS engine:    │                                 │                    │
+ │   │ parses &amp;      │       ┌───────────────────────────────────────────┐  │
+ │   │ runs your JS, │       │                 libuv                     │  │
+ │   │ JIT compiles, │       │  ┌─────────────┐   ┌───────────────────┐  │  │
+ │   │ garbage       │       │  │ EVENT LOOP  │   │   THREAD POOL     │  │  │
+ │   │ collects      │       │  │ (1 thread)  │──▶│ 4 threads default │  │  │
+ │   └───────────────┘       │  └──────┬──────┘   │ fs, crypto, zlib, │  │  │
+ │                           │         │          │ dns.lookup        │  │  │
+ │                           │         ▼          └───────────────────┘  │  │
+ │                           │  OS async I/O: epoll (Linux), kqueue      │  │
+ │                           │  (macOS), IOCP (Windows): sockets &amp; more  │  │
+ │                           └───────────────────────────────────────────┘  │
+ └──────────────────────────────────────────────────────────────────────────┘</code></pre>
+<p>Three ingredients:</p>
+<ol>
+<li><strong>V8:</strong> Google&#39;s JavaScript engine (same one in Chrome). Compiles JS to machine code on the fly (JIT) and manages memory.</li>
+<li><strong>libuv:</strong> a C library that provides the <strong>event loop</strong>, a <strong>thread pool</strong>, and cross-platform async I/O.</li>
+<li><strong>Node&#39;s core modules and C++ bindings:</strong> <code>http</code>, <code>fs</code>, <code>net</code>, <code>crypto</code>, <code>stream</code>… glue between JS and the system.</li>
+</ol>
+<p><strong>JavaScript itself runs on ONE thread</strong>, the &quot;main thread.&quot; But the <em>system</em> around it uses the OS kernel&#39;s async facilities and a small pool of helper threads to do the waiting and slow work in parallel.</p>
+<hr>
+
+<h2 id="5-3-the-call-stack-in-brief">5.3 The Call Stack, in Brief</h2>
+<p>When you call a function, it&#39;s pushed on the <strong>call stack</strong>; when it returns, it&#39;s popped. JavaScript has <strong>one</strong> call stack, so it can do exactly <strong>one thing at a time</strong>.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">c</span>(<span class="hljs-params"></span>) { <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;c&#x27;</span>); }
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">b</span>(<span class="hljs-params"></span>) { <span class="hljs-title function_">c</span>(); }
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">a</span>(<span class="hljs-params"></span>) { <span class="hljs-title function_">b</span>(); }
+<span class="hljs-title function_">a</span>();</code></pre></div>
+<pre class="is-plain"><code> push a → push b → push c → (print &quot;c&quot;) → pop c → pop b → pop a</code></pre>
+<p>A runaway recursion fills the stack and throws <code>RangeError: Maximum call stack size exceeded</code> (<a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a> of the DSA book). While the stack is busy, <strong>nothing else can run</strong>, which is the core of why blocking is so dangerous.</p>
+<hr>
+
+<h2 id="5-4-the-event-loop">5.4 The Event Loop</h2>
+<p>The event loop is a perpetual loop with one job: <strong>whenever the call stack is empty, pick the next waiting callback and run it.</strong></p>
+<h3 id="a-simple-version">A simple version</h3>
+<pre class="is-plain"><code>   ┌─────────────────────────────────────────────────┐
+   │  1. Run your script top to bottom (call stack)   │
+   │  2. Is there any pending callback ready to run?  │
+   │       yes → run it to completion → back to 2     │
+   │       no  → wait for I/O / timers → back to 2    │
+   │  3. Nothing pending and nothing waiting? → exit  │
+   └─────────────────────────────────────────────────┘</code></pre>
+<h3 id="the-real-version-phases">The real version: phases</h3>
+<p>Each pass (&quot;tick&quot;) through the loop visits <strong>phases</strong>, each with its own queue of callbacks:</p>
+<pre class="is-plain"><code>   ┌───────────────────────────┐
+┌─▶│          timers           │  setTimeout / setInterval callbacks that are due
+│  └─────────────┬─────────────┘
+│  ┌─────────────▼─────────────┐
+│  │     pending callbacks     │  some deferred system-level I/O callbacks
+│  └─────────────┬─────────────┘
+│  ┌─────────────▼─────────────┐
+│  │       idle, prepare       │  internal use
+│  └─────────────┬─────────────┘
+│  ┌─────────────▼─────────────┐      ┌───────────────┐
+│  │           poll            │◀─────│   incoming:   │
+│  │  retrieve new I/O events; │      │  connections, │
+│  │  run I/O callbacks        │      │  data, etc.   │
+│  └─────────────┬─────────────┘      └───────────────┘
+│  ┌─────────────▼─────────────┐
+│  │           check           │  setImmediate callbacks
+│  └─────────────┬─────────────┘
+│  ┌─────────────▼─────────────┐
+└──┤      close callbacks      │  e.g. socket.on('close')
+   └───────────────────────────┘</code></pre>
+<p>Between <strong>every</strong> callback (and between phases), Node drains two special queues first:</p>
+<ol>
+<li><strong><code>process.nextTick</code> queue</strong> (highest priority)</li>
+<li><strong>Promise microtask queue</strong> (<code>.then</code>, <code>await</code> continuations, <code>queueMicrotask</code>)</li>
+</ol>
+<h3 id="5-4-1-predict-the-output">5.4.1 Predict the output</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// order.js</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;1: sync start&#x27;</span>);
+
+<span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;2: setTimeout 0&#x27;</span>), <span class="hljs-number">0</span>);
+<span class="hljs-title function_">setImmediate</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;3: setImmediate&#x27;</span>));
+<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>().<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;4: promise microtask&#x27;</span>));
+process.<span class="hljs-title function_">nextTick</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;5: nextTick&#x27;</span>));
+
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;6: sync end&#x27;</span>);</code></pre></div>
+<p>Output:</p>
+<pre class="is-plain"><code>1: sync start
+6: sync end
+5: nextTick
+4: promise microtask
+2: setTimeout 0        ← these two can swap order when run from the main module
+3: setImmediate</code></pre>
+<p><strong>Why:</strong></p>
+<ol>
+<li>All <strong>synchronous</strong> code runs first, top to bottom (1, 6).</li>
+<li>When the stack empties, <code>nextTick</code> queue runs (5), then promise microtasks (4).</li>
+<li>Then the loop starts: timers phase (2), poll, then check phase (3).</li>
+</ol>
+<p><strong>The one nondeterministic pair:</strong> from the main module, <code>setTimeout(…, 0)</code> vs <code>setImmediate</code> depends on process timing. But <strong>inside an I/O callback</strong>, <code>setImmediate</code> always fires first (the check phase comes right after poll):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:fs&#x27;</span>);
+fs.<span class="hljs-title function_">readFile</span>(__filename, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;timeout&#x27;</span>), <span class="hljs-number">0</span>);
+  <span class="hljs-title function_">setImmediate</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;immediate&#x27;</span>));
+});
+<span class="hljs-comment">// always: immediate, then timeout</span></code></pre></div>
+<h3 id="5-4-2-priority-order-memorize">5.4.2 Priority order (memorize)</h3>
+<pre class="is-plain"><code>1. Synchronous code         (the current call stack)
+2. process.nextTick queue
+3. Promise microtasks       (.then / await / queueMicrotask)
+4. Event-loop phases:       timers → poll (I/O) → check (setImmediate) → close</code></pre>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-starving-the-loop-with-microtasks" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Starving the loop with microtasks</span></h3>
+<p>A <code>nextTick</code> or promise callback that keeps scheduling <em>another</em> nextTick/microtask will run forever <strong>before the loop ever advances</strong> to I/O. Your server stops answering requests while &quot;busy doing async work.&quot; Never recurse via <code>nextTick</code>; use <code>setImmediate</code> to yield to the loop.</p>
+</aside>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-sync-tick-promise-then-the-loop" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick: &quot;Sync, Tick, Promise, then the Loop&quot;</span></h3>
+<p>Synchronous first, then <strong>nextTick</strong>, then <strong>promises</strong>, then the loop&#39;s phases.</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;What&#39;s the output of this snippet?&quot; with a mix of <code>setTimeout</code>, <code>Promise</code>, <code>process.nextTick</code> and <code>setImmediate</code> is a Node interview staple. Use the priority list above, and say out loud which queue each callback lands in.</p>
+</aside>
+<hr>
+
+<h2 id="5-5-async-styles-callbacks-promises-async-await">5.5 Async Styles: Callbacks → Promises → async/await</h2>
+<p>All three do the same thing (continue when the work finishes). They differ in readability.</p>
+<p><strong>Callbacks</strong> (the original; &quot;error-first&quot; convention):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:fs&#x27;</span>);
+fs.<span class="hljs-title function_">readFile</span>(<span class="hljs-string">&#x27;a.txt&#x27;</span>, <span class="hljs-string">&#x27;utf8&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">err, data</span>) =&gt;</span> {
+  <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">return</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(err);     <span class="hljs-comment">// ALWAYS handle err first</span>
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(data);
+});</code></pre></div>
+<p>Nesting these produces &quot;callback hell&quot; (pyramids of indentation and tangled error handling).</p>
+<p><strong>Promises:</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> fsp = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:fs/promises&#x27;</span>);
+fsp.<span class="hljs-title function_">readFile</span>(<span class="hljs-string">&#x27;a.txt&#x27;</span>, <span class="hljs-string">&#x27;utf8&#x27;</span>)
+  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(data))
+  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(err));</code></pre></div>
+<p><strong>async/await:</strong> promises that read like synchronous code:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> fsp.<span class="hljs-title function_">readFile</span>(<span class="hljs-string">&#x27;a.txt&#x27;</span>, <span class="hljs-string">&#x27;utf8&#x27;</span>);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(data);
+  } <span class="hljs-keyword">catch</span> (err) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(err);
+  }
+}
+<span class="hljs-title function_">main</span>();</code></pre></div>
+<p>Important truths about <code>await</code>:</p>
+<ul>
+<li>It pauses <strong>that function</strong>, not the whole thread. Other work continues.</li>
+<li>An <code>async</code> function <strong>always returns a promise</strong>.</li>
+<li>A forgotten <code>await</code> is a silent bug (you get a promise, not the value).</li>
+<li>An un-caught rejection can crash modern Node (unhandled rejections are errors by default).</li>
+</ul>
+<h3 id="sequential-vs-parallel-the-most-common-performance-mistake">Sequential vs parallel: the most common performance mistake</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// SLOW: each waits for the previous: total ≈ 300 + 300 + 300 = 900 ms</span>
+<span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> <span class="hljs-title function_">getUser</span>(id);
+<span class="hljs-keyword">const</span> orders = <span class="hljs-keyword">await</span> <span class="hljs-title function_">getOrders</span>(id);
+<span class="hljs-keyword">const</span> reviews = <span class="hljs-keyword">await</span> <span class="hljs-title function_">getReviews</span>(id);
+
+<span class="hljs-comment">// FAST: independent calls run together: total ≈ 300 ms</span>
+<span class="hljs-keyword">const</span> [user, orders, reviews] = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([
+  <span class="hljs-title function_">getUser</span>(id), <span class="hljs-title function_">getOrders</span>(id), <span class="hljs-title function_">getReviews</span>(id),
+]);</code></pre></div>
+<p>Promise combinators:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Resolves when</th>
+<th>Rejects when</th>
+</tr>
+</thead><tbody><tr>
+<td><code>Promise.all([...])</code></td>
+<td><strong>all</strong> succeed</td>
+<td><strong>any</strong> fails (fast-fail)</td>
+</tr>
+<tr>
+<td><code>Promise.allSettled([...])</code></td>
+<td>all finish (success or failure)</td>
+<td>never</td>
+</tr>
+<tr>
+<td><code>Promise.race([...])</code></td>
+<td>the <strong>first</strong> settles</td>
+<td>the first settles with failure</td>
+</tr>
+<tr>
+<td><code>Promise.any([...])</code></td>
+<td>the first <strong>success</strong></td>
+<td>all fail</td>
+</tr>
+</tbody></table></div>
+<p>Careful: <code>await</code> inside a <code>for</code> loop is sequential. <code>array.forEach(async ...)</code> doesn&#39;t wait for anything.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// WRONG: forEach ignores the promises; &quot;done&quot; prints before the work</span>
+items.<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">async</span> (i) =&gt; <span class="hljs-keyword">await</span> <span class="hljs-title function_">process</span>(i));
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;done&#x27;</span>);
+
+<span class="hljs-comment">// RIGHT (sequential):</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> i <span class="hljs-keyword">of</span> items) <span class="hljs-keyword">await</span> <span class="hljs-title function_">process</span>(i);
+<span class="hljs-comment">// RIGHT (parallel, but unbounded: dangerous for thousands of items):</span>
+<span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(items.<span class="hljs-title function_">map</span>(process));</code></pre></div>
+<p>For large lists, limit concurrency (e.g., 5–20 at a time with a small pool or the <code>p-limit</code> package), or you&#39;ll overwhelm your database or the remote API.</p>
+<hr>
+
+<h2 id="5-6-the-1-node-sin-blocking-the-event-loop">5.6 The #1 Node Sin: Blocking the Event Loop</h2>
+<p>Because JavaScript runs on one thread, <strong>a long synchronous computation freezes everything</strong>: every other request, timer and I/O callback waits.</p>
+<h3 id="prove-it">Prove it</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// blocking.js</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">fib</span>(<span class="hljs-params">n</span>) { <span class="hljs-keyword">return</span> n &lt; <span class="hljs-number">2</span> ? n : <span class="hljs-title function_">fib</span>(n - <span class="hljs-number">1</span>) + <span class="hljs-title function_">fib</span>(n - <span class="hljs-number">2</span>); }   <span class="hljs-comment">// deliberately slow</span>
+
+http.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-property">url</span> === <span class="hljs-string">&#x27;/slow&#x27;</span>) {
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">String</span>(<span class="hljs-title function_">fib</span>(<span class="hljs-number">42</span>)));          <span class="hljs-comment">// ~2-5 seconds of pure CPU work</span>
+  } <span class="hljs-keyword">else</span> {
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-string">&#x27;fast\n&#x27;</span>);
+  }
+}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);</code></pre></div>
+<ol>
+<li>Terminal A: <code>curl localhost:3000/slow</code> (will take seconds).</li>
+<li>Immediately, terminal B: <code>curl localhost:3000/fast</code>.</li>
+</ol>
+<p><strong>The fast request hangs until the slow one finishes.</strong> One user&#39;s expensive request froze every other user. That is exactly the &quot;waiter cooking a 20-minute dish&quot; problem.</p>
+<h3 id="what-blocks">What blocks?</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Blocks the loop (CPU-bound or sync)</th>
+<th>Does NOT block (async I/O)</th>
+</tr>
+</thead><tbody><tr>
+<td>Big loops, heavy math, <code>fib(42)</code></td>
+<td><code>await db.query(...)</code></td>
+</tr>
+<tr>
+<td><code>JSON.parse</code> / <code>JSON.stringify</code> of huge payloads</td>
+<td><code>fs.promises.readFile</code></td>
+</tr>
+<tr>
+<td><code>fs.readFileSync</code>, <code>execSync</code> (any <code>*Sync</code>)</td>
+<td><code>fetch(...)</code>, <code>http.get</code></td>
+</tr>
+<tr>
+<td>Sync <code>crypto.pbkdf2Sync</code>, <code>bcrypt</code> sync</td>
+<td>Async <code>crypto.pbkdf2</code> (uses thread pool)</td>
+</tr>
+<tr>
+<td>Catastrophic regex (ReDoS)</td>
+<td>Timers (<code>setTimeout</code>)</td>
+</tr>
+<tr>
+<td>Sorting/mapping a million-element array</td>
+<td>Streams</td>
+</tr>
+</tbody></table></div>
+<h3 id="rules-to-live-by">Rules to live by</h3>
+<ol>
+<li><strong>Never use <code>*Sync</code> functions in request handlers.</strong> They&#39;re fine at startup (reading config once).</li>
+<li><strong>Keep each tick short.</strong> Rule of thumb: less than a few milliseconds of CPU per request.</li>
+<li><strong>Move heavy CPU work out:</strong> worker threads (§5.10), a separate service, or a job queue (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>).</li>
+<li><strong>Chunk big loops</strong> and yield with <code>await setImmediate</code>-style breaks if you must process large arrays on the main thread.</li>
+</ol>
+<h3 id="measure-event-loop-lag">Measure event loop lag</h3>
+<p>If lag is high, something is blocking:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> { monitorEventLoopDelay } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:perf_hooks&#x27;</span>);
+<span class="hljs-keyword">const</span> h = <span class="hljs-title function_">monitorEventLoopDelay</span>({ <span class="hljs-attr">resolution</span>: <span class="hljs-number">10</span> });
+h.<span class="hljs-title function_">enable</span>();
+<span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`event loop delay p99: <span class="hljs-subst">${(h.percentile(<span class="hljs-number">99</span>) / <span class="hljs-number">1e6</span>).toFixed(<span class="hljs-number">1</span>)}</span> ms`</span>);
+  h.<span class="hljs-title function_">reset</span>();
+}, <span class="hljs-number">5000</span>);</code></pre></div>
+<p>Healthy servers show single-digit milliseconds. Hundreds of ms = something is blocking. <strong>Event loop lag is one of the most useful production metrics for a Node service</strong> (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>).</p>
+<aside class="callout callout-warn">
+<h3 id="redos-when-a-regex-blocks-your-server" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>ReDoS: when a regex blocks your server</span></h3>
+<p>A badly written regex can take <em>exponential</em> time on crafted input, such as <code>/^(a+)+$/</code> against <code>&quot;aaaaaaaaaaaaaaaaaaaaaaaa!&quot;</code>. One malicious request pins the CPU and freezes everyone. Avoid nested quantifiers, cap input length before regex matching, and consider safe regex libraries.</p>
+</aside>
+<hr>
+
+<h2 id="5-7-the-thread-pool-node-s-hidden-helpers">5.7 The Thread Pool: Node&#39;s Hidden Helpers</h2>
+<p>If JavaScript is single-threaded, who reads the file without blocking? <strong>libuv&#39;s thread pool</strong> (4 threads by default).</p>
+<p>Operations that use it:</p>
+<ul>
+<li><code>fs.*</code> (most file-system calls)</li>
+<li><code>crypto.pbkdf2</code>, <code>crypto.scrypt</code>, <code>crypto.randomBytes</code>, <code>bcrypt</code></li>
+<li><code>zlib</code> (compression)</li>
+<li><code>dns.lookup</code> (what <code>http</code> uses to resolve hostnames; <a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a>)</li>
+</ul>
+<p>Operations that do <strong>not</strong> use it: network sockets (TCP/HTTP), which use the OS&#39;s native async mechanisms (epoll/kqueue/IOCP). Network I/O scales to tens of thousands of connections without threads.</p>
+<h3 id="prove-the-pool-size-matters">Prove the pool size matters</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// pool.js</span>
+<span class="hljs-keyword">const</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:crypto&#x27;</span>);
+<span class="hljs-keyword">const</span> start = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">8</span>; i++) {
+  crypto.<span class="hljs-title function_">pbkdf2</span>(<span class="hljs-string">&#x27;password&#x27;</span>, <span class="hljs-string">&#x27;salt&#x27;</span>, <span class="hljs-number">500_000</span>, <span class="hljs-number">64</span>, <span class="hljs-string">&#x27;sha512&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`hash <span class="hljs-subst">${i}</span> done at <span class="hljs-subst">${<span class="hljs-built_in">Date</span>.now() - start}</span> ms`</span>);
+  });
+}</code></pre></div>
+<p>Typical output on a multi-core machine:</p>
+<pre class="is-plain"><code>hash 1 done at 410 ms
+hash 2 done at 415 ms
+hash 3 done at 418 ms
+hash 4 done at 420 ms     ← first batch of 4 (parallel)
+hash 5 done at 830 ms
+hash 6 done at 835 ms
+hash 7 done at 838 ms
+hash 8 done at 842 ms     ← second batch waited for free threads</code></pre>
+<p>(Your timings will differ, and within a batch the hashes may finish in any order. What matters is the shape: four finish together, then the next four.) Four at a time, because the pool has 4 threads. Raise it with <code>UV_THREADPOOL_SIZE=8 node pool.js</code> (set it <strong>before</strong> the process starts; max 1024). If your app does heavy <code>fs</code>/<code>crypto</code>/<code>dns</code> and seems oddly serialized under load, <strong>thread-pool saturation</strong> is a prime suspect (we noted the <code>dns.lookup</code> case in Chapter 2).</p>
+<hr>
+
+<h2 id="5-8-events-eventemitter">5.8 Events: <code>EventEmitter</code></h2>
+<p>Much of Node is built on one simple pattern: objects that <strong>emit named events</strong> others <strong>listen</strong> to. HTTP servers, streams, sockets: all are <code>EventEmitter</code>s.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> { <span class="hljs-title class_">EventEmitter</span> } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:events&#x27;</span>);
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderService</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">EventEmitter</span> {
+  <span class="hljs-title function_">place</span>(<span class="hljs-params">order</span>) {
+    <span class="hljs-comment">// ... save to DB ...</span>
+    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;order:placed&#x27;</span>, order);     <span class="hljs-comment">// notify anyone interested</span>
+  }
+}
+
+<span class="hljs-keyword">const</span> orders = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OrderService</span>();
+orders.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;order:placed&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">o</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;send email for&#x27;</span>, o.<span class="hljs-property">id</span>));
+orders.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;order:placed&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">o</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;update inventory for&#x27;</span>, o.<span class="hljs-property">id</span>));
+orders.<span class="hljs-title function_">once</span>(<span class="hljs-string">&#x27;order:placed&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;first order ever!&#x27;</span>));
+
+orders.<span class="hljs-title function_">place</span>({ <span class="hljs-attr">id</span>: <span class="hljs-number">101</span> });</code></pre></div>
+<p>Output:</p>
+<pre class="is-plain"><code>send email for 101
+update inventory for 101
+first order ever!</code></pre>
+<p>Gotchas:</p>
+<ul>
+<li>Listeners run <strong>synchronously</strong>, in the order registered. A slow listener delays <code>emit</code>&#39;s return.</li>
+<li>An <code>&#39;error&#39;</code> event with <strong>no listener throws</strong> and can crash the process. Always attach <code>.on(&#39;error&#39;, ...)</code> to emitters that can fail (streams, sockets).</li>
+<li>Too many listeners on one event logs a &quot;possible memory leak&quot; warning (default limit 10). It&#39;s usually right: you&#39;re adding a listener per request and never removing it.</li>
+</ul>
+<p>This is the <strong>observer pattern</strong>, and the seed of event-driven architecture (Chapters <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">28</a> and 33).</p>
+<hr>
+
+<h2 id="5-9-buffers-and-streams">5.9 Buffers and Streams</h2>
+<h3 id="5-9-1-buffers-raw-bytes">5.9.1 Buffers: raw bytes</h3>
+<p>JavaScript strings are text; networks and files deal in <strong>bytes</strong>. A <code>Buffer</code> is a fixed-size chunk of raw memory.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> b = <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(<span class="hljs-string">&#x27;héllo&#x27;</span>, <span class="hljs-string">&#x27;utf8&#x27;</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(b);                    <span class="hljs-comment">// &lt;Buffer 68 c3 a9 6c 6c 6f&gt;</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(b.<span class="hljs-property">length</span>);             <span class="hljs-comment">// 6  ← 6 BYTES, though the string has 5 characters</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(b.<span class="hljs-title function_">toString</span>(<span class="hljs-string">&#x27;hex&#x27;</span>));    <span class="hljs-comment">// 68c3a96c6c6f</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(b.<span class="hljs-title function_">toString</span>(<span class="hljs-string">&#x27;base64&#x27;</span>)); <span class="hljs-comment">// aMOpbGxv</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">alloc</span>(<span class="hljs-number">4</span>));      <span class="hljs-comment">// &lt;Buffer 00 00 00 00&gt;   (zero-filled, safe)</span></code></pre></div>
+<p><code>é</code> takes two bytes in UTF-8, which is why <code>string.length</code> and <code>Buffer.byteLength</code> differ. This matters when you enforce size limits (<code>Content-Length</code> is in bytes). Prefer <code>Buffer.alloc</code> over the unsafe <code>Buffer.allocUnsafe</code> unless you fill it immediately.</p>
+<h3 id="5-9-2-why-streams">5.9.2 Why streams?</h3>
+<p>The naive way to send a 2 GB file:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// DANGEROUS: loads the entire file into memory</span>
+<span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> fsp.<span class="hljs-title function_">readFile</span>(<span class="hljs-string">&#x27;huge.mp4&#x27;</span>);
+res.<span class="hljs-title function_">end</span>(data);</code></pre></div>
+<p>100 concurrent downloads = 200 GB of RAM. The server crashes.</p>
+<p>A <strong>stream</strong> processes data in small <strong>chunks</strong> (default 64 KB for files), so memory use stays tiny and constant, and the first byte reaches the client immediately.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:fs&#x27;</span>);
+<span class="hljs-comment">// SAFE: constant memory, begins sending instantly</span>
+fs.<span class="hljs-title function_">createReadStream</span>(<span class="hljs-string">&#x27;huge.mp4&#x27;</span>).<span class="hljs-title function_">pipe</span>(res);</code></pre></div>
+<h3 id="real-life-analogy-water-pipe-vs-water-tank">Real-Life Analogy: Water Pipe vs Water Tank</h3>
+<p>A <strong>tank</strong> approach: fill a giant tank completely, then pour it out. Needs a tank as big as the whole lake. A <strong>pipe</strong>: water flows through continuously; you only ever need pipe-sized capacity.</p>
+<h3 id="5-9-3-the-four-stream-types">5.9.3 The four stream types</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Type</th>
+<th>Direction</th>
+<th>Examples</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Readable</strong></td>
+<td>produces data</td>
+<td><code>fs.createReadStream</code>, HTTP request body (<code>req</code>), <code>process.stdin</code></td>
+</tr>
+<tr>
+<td><strong>Writable</strong></td>
+<td>consumes data</td>
+<td><code>fs.createWriteStream</code>, HTTP response (<code>res</code>), <code>process.stdout</code></td>
+</tr>
+<tr>
+<td><strong>Duplex</strong></td>
+<td>both ways, independent</td>
+<td>TCP <code>socket</code></td>
+</tr>
+<tr>
+<td><strong>Transform</strong></td>
+<td>modifies data in the middle</td>
+<td><code>zlib.createGzip()</code>, encryption, CSV parsing</td>
+</tr>
+</tbody></table></div>
+<h3 id="5-9-4-pipeline-always-prefer-it-to-pipe">5.9.4 <code>pipeline</code>: always prefer it to <code>.pipe()</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:fs&#x27;</span>);
+<span class="hljs-keyword">const</span> zlib = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:zlib&#x27;</span>);
+<span class="hljs-keyword">const</span> { pipeline } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:stream/promises&#x27;</span>);
+
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">compress</span>(<span class="hljs-params">src, dest</span>) {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">pipeline</span>(
+    fs.<span class="hljs-title function_">createReadStream</span>(src),
+    zlib.<span class="hljs-title function_">createGzip</span>(),
+    fs.<span class="hljs-title function_">createWriteStream</span>(dest),
+  );
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;done&#x27;</span>);
+}
+
+<span class="hljs-title function_">compress</span>(<span class="hljs-string">&#x27;big.log&#x27;</span>, <span class="hljs-string">&#x27;big.log.gz&#x27;</span>).<span class="hljs-title function_">catch</span>(<span class="hljs-variable language_">console</span>.<span class="hljs-property">error</span>);</code></pre></div>
+<p><code>pipeline</code> forwards errors and <strong>cleans up every stream if any one fails</strong>. Plain <code>.pipe()</code> doesn&#39;t, so it can leak file descriptors on error.</p>
+<h3 id="5-9-5-a-custom-transform-stream">5.9.5 A custom Transform stream</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> { <span class="hljs-title class_">Transform</span> } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:stream&#x27;</span>);
+
+<span class="hljs-keyword">const</span> upper = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transform</span>({
+  <span class="hljs-title function_">transform</span>(<span class="hljs-params">chunk, _enc, callback</span>) {
+    <span class="hljs-title function_">callback</span>(<span class="hljs-literal">null</span>, chunk.<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">toUpperCase</span>());
+  },
+});
+
+process.<span class="hljs-property">stdin</span>.<span class="hljs-title function_">pipe</span>(upper).<span class="hljs-title function_">pipe</span>(process.<span class="hljs-property">stdout</span>);
+<span class="hljs-comment">// type &quot;hello&quot; → HELLO</span></code></pre></div>
+<h3 id="5-9-6-backpressure-the-flow-control-idea">5.9.6 Backpressure: the flow-control idea</h3>
+<p>What if the reader is much faster than the writer (reading a disk quickly, writing to a slow client on a bad mobile network)? Without control, data piles up in memory.</p>
+<p><strong>Backpressure</strong> is the mechanism where a slow consumer tells the producer &quot;pause.&quot; Manually:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> ok = writable.<span class="hljs-title function_">write</span>(chunk);          <span class="hljs-comment">// returns false when its internal buffer is full</span>
+<span class="hljs-keyword">if</span> (!ok) {
+  readable.<span class="hljs-title function_">pause</span>();                        <span class="hljs-comment">// stop producing…</span>
+  writable.<span class="hljs-title function_">once</span>(<span class="hljs-string">&#x27;drain&#x27;</span>, <span class="hljs-function">() =&gt;</span> readable.<span class="hljs-title function_">resume</span>());   <span class="hljs-comment">// …resume when it empties</span>
+}</code></pre></div>
+<p><code>pipe</code> and <code>pipeline</code> do this for you automatically. <strong>That is the strongest reason to use them instead of hand-rolled <code>on(&#39;data&#39;)</code> loops.</strong></p>
+<h3 id="5-9-7-streaming-a-large-csv-line-by-line">5.9.7 Streaming a large CSV line by line</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:fs&#x27;</span>);
+<span class="hljs-keyword">const</span> readline = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:readline&#x27;</span>);
+
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">countRows</span>(<span class="hljs-params">file</span>) {
+  <span class="hljs-keyword">const</span> rl = readline.<span class="hljs-title function_">createInterface</span>({ <span class="hljs-attr">input</span>: fs.<span class="hljs-title function_">createReadStream</span>(file), <span class="hljs-attr">crlfDelay</span>: <span class="hljs-title class_">Infinity</span> });
+  <span class="hljs-keyword">let</span> n = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> line <span class="hljs-keyword">of</span> rl) n++;       <span class="hljs-comment">// for-await consumes a stream chunk by chunk</span>
+  <span class="hljs-keyword">return</span> n;
+}
+<span class="hljs-title function_">countRows</span>(<span class="hljs-string">&#x27;orders.csv&#x27;</span>).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">n</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(n, <span class="hljs-string">&#x27;rows&#x27;</span>));</code></pre></div>
+<p>This handles a 10 GB file with a few MB of memory.</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-2" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;How would you handle uploading/processing a 5 GB file?&quot; → streams, backpressure, never buffer entire content, <code>pipeline</code>, perhaps a multipart streaming parser, and direct-to-object-storage uploads with pre-signed URLs (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>).</p>
+</aside>
+<hr>
+
+<h2 id="5-10-using-more-than-one-core">5.10 Using More Than One Core</h2>
+<p>One Node process uses one core for JavaScript. A modern server has 4–64 cores. Two ways to use them.</p>
+<h3 id="5-10-1-cluster-multiple-copies-of-the-whole-server">5.10.1 <code>cluster</code>: multiple copies of the whole server</h3>
+<p>Run one process per CPU core; they all share the same port. The OS or Node distributes incoming connections.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// cluster.js</span>
+<span class="hljs-keyword">const</span> cluster = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:cluster&#x27;</span>);
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+<span class="hljs-keyword">const</span> os = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:os&#x27;</span>);
+
+<span class="hljs-keyword">if</span> (cluster.<span class="hljs-property">isPrimary</span>) {
+  <span class="hljs-keyword">const</span> n = os.<span class="hljs-title function_">availableParallelism</span>();
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Primary <span class="hljs-subst">${process.pid}</span> starting <span class="hljs-subst">${n}</span> workers`</span>);
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) cluster.<span class="hljs-title function_">fork</span>();
+
+  cluster.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;exit&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">worker</span>) =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`worker <span class="hljs-subst">${worker.process.pid}</span> died, restarting`</span>);
+    cluster.<span class="hljs-title function_">fork</span>();                                   <span class="hljs-comment">// self-heal</span>
+  });
+} <span class="hljs-keyword">else</span> {
+  http.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-string">`handled by pid <span class="hljs-subst">${process.pid}</span>\n`</span>);
+  }).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);
+}</code></pre></div>
+<p>Hit it repeatedly with <code>curl localhost:3000</code> and you&#39;ll see different PIDs. This also gives resilience: one worker crash doesn&#39;t take everything down.</p>
+<p><strong>Important:</strong> workers don&#39;t share memory. An in-memory <code>sessions = {}</code> object in worker A is invisible to worker B. That&#39;s another reason for <strong>stateless servers with external state</strong> (Redis/DB), which is also what makes horizontal scaling across machines possible (<a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>).</p>
+<p>In practice, many teams skip <code>cluster</code> and run <strong>one process per container</strong> and let the orchestrator (Kubernetes, ECS) or PM2 (<code>pm2 start app.js -i max</code>) manage replicas.</p>
+<h3 id="5-10-2-worker-threads-parallel-javascript-inside-one-process">5.10.2 <code>worker_threads</code>: parallel JavaScript inside one process</h3>
+<p>For <strong>CPU-heavy tasks</strong> (image resizing, parsing, hashing, heavy computation), move the work to a separate thread so the event loop stays responsive.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// main.js</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+<span class="hljs-keyword">const</span> { <span class="hljs-title class_">Worker</span> } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:worker_threads&#x27;</span>);
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">fibInWorker</span>(<span class="hljs-params">n</span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> w = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(<span class="hljs-string">&#x27;./fib-worker.js&#x27;</span>, { <span class="hljs-attr">workerData</span>: n });
+    w.<span class="hljs-title function_">once</span>(<span class="hljs-string">&#x27;message&#x27;</span>, resolve);
+    w.<span class="hljs-title function_">once</span>(<span class="hljs-string">&#x27;error&#x27;</span>, reject);
+  });
+}
+
+http.<span class="hljs-title function_">createServer</span>(<span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-property">url</span> === <span class="hljs-string">&#x27;/slow&#x27;</span>) {
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">String</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">fibInWorker</span>(<span class="hljs-number">42</span>)));     <span class="hljs-comment">// heavy work OFF the main thread</span>
+  } <span class="hljs-keyword">else</span> {
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-string">&#x27;fast\n&#x27;</span>);                          <span class="hljs-comment">// stays instant even during /slow</span>
+  }
+}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// fib-worker.js</span>
+<span class="hljs-keyword">const</span> { parentPort, workerData } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:worker_threads&#x27;</span>);
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">fib</span> = (<span class="hljs-params">n</span>) =&gt; (n &lt; <span class="hljs-number">2</span> ? n : <span class="hljs-title function_">fib</span>(n - <span class="hljs-number">1</span>) + <span class="hljs-title function_">fib</span>(n - <span class="hljs-number">2</span>));
+parentPort.<span class="hljs-title function_">postMessage</span>(<span class="hljs-title function_">fib</span>(workerData));</code></pre></div>
+<p>Now repeat the experiment from §5.6: <code>/fast</code> responds instantly while <code>/slow</code> is computing. In real systems, don&#39;t spawn a new Worker per request (startup cost ~tens of ms); use a <strong>pool</strong> (e.g., <code>piscina</code>).</p>
+<h3 id="5-10-3-which-tool-for-which-job">5.10.3 Which tool for which job?</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Need</th>
+<th>Use</th>
+</tr>
+</thead><tbody><tr>
+<td>Use all cores for more <em>requests/second</em></td>
+<td><code>cluster</code> / multiple processes / multiple containers</td>
+</tr>
+<tr>
+<td>Keep server responsive during <em>CPU-heavy</em> work</td>
+<td><code>worker_threads</code> (pool)</td>
+</tr>
+<tr>
+<td>Run an external program</td>
+<td><code>child_process</code> (<code>spawn</code>, <code>execFile</code>)</td>
+</tr>
+<tr>
+<td>Heavy or long jobs, retries, scheduling</td>
+<td>Job queue + workers (Chapter 28)</td>
+</tr>
+<tr>
+<td>Waiting on I/O</td>
+<td>Plain <code>async/await</code>; no threads needed</td>
+</tr>
+</tbody></table></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>Cluster = more waiters. Worker threads = a cook in the back kitchen.</strong> More waiters serve more tables. A cook handles slow dishes so the waiter stays free.</p>
+</aside>
+<hr>
+
+<h2 id="5-11-modules-commonjs-vs-es-modules">5.11 Modules: CommonJS vs ES Modules</h2>
+<p>Node supports two module systems.</p>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>CommonJS (CJS)</th>
+<th>ES Modules (ESM)</th>
+</tr>
+</thead><tbody><tr>
+<td>Import</td>
+<td><code>const x = require(&#39;x&#39;)</code></td>
+<td><code>import x from &#39;x&#39;</code></td>
+</tr>
+<tr>
+<td>Export</td>
+<td><code>module.exports = ...</code></td>
+<td><code>export default ...</code> / <code>export const a</code></td>
+</tr>
+<tr>
+<td>Loading</td>
+<td>Synchronous</td>
+<td>Asynchronous, statically analyzable</td>
+</tr>
+<tr>
+<td>Top-level <code>await</code></td>
+<td>No</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td><code>__dirname</code>, <code>__filename</code></td>
+<td>Available</td>
+<td>Use <code>import.meta.dirname</code> / <code>import.meta.filename</code> (Node 20.11+)</td>
+</tr>
+<tr>
+<td>Enable</td>
+<td>Default for <code>.js</code></td>
+<td><code>&quot;type&quot;: &quot;module&quot;</code> in <code>package.json</code>, or <code>.mjs</code></td>
+</tr>
+</tbody></table></div>
+<p>ESM is the standard going forward; new projects should usually use it. In this book, snippets use CommonJS where it keeps them copy-paste short; from <a href="/learn/backend-master/nodejs-http-server-routing-middleware-express" title="Build a Node.js Server: Routing &amp; Middleware">Chapter 6</a> onward the ShopLine project uses ESM (<code>&quot;type&quot;: &quot;module&quot;</code>). Know both, since you&#39;ll encounter both in real codebases. You can&#39;t <code>require()</code> a pure-ESM package in older Node versions; recent Node releases have added limited support, but check the docs for your version.</p>
+<hr>
+
+<h2 id="5-12-error-handling-in-node">5.12 Error Handling in Node</h2>
+<p>Errors come in three flavors, and each is handled differently:</p>
+<ol>
+<li><strong>Synchronous throws:</strong> <code>try/catch</code>.</li>
+<li><strong>Promise rejections / <code>async</code> functions:</strong> <code>try/catch</code> around <code>await</code>, or <code>.catch()</code>.</li>
+<li><strong>Callback errors:</strong> the first argument <code>err</code>.</li>
+<li><strong>Event errors:</strong> the <code>&#39;error&#39;</code> event on emitters.</li>
+</ol>
+<h3 id="last-resort-handlers-log-and-exit-don-t-carry-on">Last-resort handlers (log and exit, don&#39;t &quot;carry on&quot;)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;uncaughtException&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;FATAL uncaught exception:&#x27;</span>, err);
+  process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>);      <span class="hljs-comment">// state may be corrupt; let the supervisor restart a clean process</span>
+});
+
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;unhandledRejection&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;FATAL unhandled rejection:&#x27;</span>, reason);
+  process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>);
+});</code></pre></div>
+<p><strong>Why exit instead of continuing?</strong> After an unexpected error, you can&#39;t know what state your program is in (half-written data, leaked resources). The robust pattern is <strong>&quot;crash and restart&quot;</strong>: log it, exit, and let systemd/Docker/Kubernetes bring up a fresh process (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>). Combine with multiple instances so users barely notice.</p>
+<h3 id="operational-vs-programmer-errors">Operational vs programmer errors</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Operational</th>
+<th>Programmer</th>
+</tr>
+</thead><tbody><tr>
+<td>Valid code, bad circumstances: DB down, timeout, invalid user input, file missing</td>
+<td>Bugs: <code>undefined.foo</code>, wrong argument types</td>
+</tr>
+<tr>
+<td><strong>Handle and recover</strong> (retry, return 4xx/5xx)</td>
+<td><strong>Fix the code</strong>; crash if it surfaces unexpectedly</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="5-13-memory-garbage-collection-and-leaks">5.13 Memory, Garbage Collection and Leaks</h2>
+<p>V8 manages memory. Objects live on the <strong>heap</strong>; when nothing references an object anymore, the <strong>garbage collector (GC)</strong> frees it. Roughly:</p>
+<ul>
+<li><strong>Young generation (&quot;new space&quot;):</strong> small, collected often and fast. Most objects die young.</li>
+<li><strong>Old generation:</strong> objects that survived; collected less often, with larger pauses.</li>
+</ul>
+<p>By default Node limits the old-space heap based on available memory. Raise it if you must: <code>node --max-old-space-size=4096 app.js</code> (MB).</p>
+<h3 id="check-memory">Check memory</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> m = process.<span class="hljs-title function_">memoryUsage</span>();
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>({
+  <span class="hljs-attr">rss</span>: (m.<span class="hljs-property">rss</span> / <span class="hljs-number">1e6</span>).<span class="hljs-title function_">toFixed</span>(<span class="hljs-number">0</span>) + <span class="hljs-string">&#x27; MB&#x27;</span>,           <span class="hljs-comment">// total process memory</span>
+  <span class="hljs-attr">heapUsed</span>: (m.<span class="hljs-property">heapUsed</span> / <span class="hljs-number">1e6</span>).<span class="hljs-title function_">toFixed</span>(<span class="hljs-number">0</span>) + <span class="hljs-string">&#x27; MB&#x27;</span>, <span class="hljs-comment">// live JS objects</span>
+  <span class="hljs-attr">external</span>: (m.<span class="hljs-property">external</span> / <span class="hljs-number">1e6</span>).<span class="hljs-title function_">toFixed</span>(<span class="hljs-number">0</span>) + <span class="hljs-string">&#x27; MB&#x27;</span>, <span class="hljs-comment">// Buffers etc., outside the V8 heap</span>
+});</code></pre></div>
+<h3 id="classic-leak-patterns">Classic leak patterns</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// 1. Unbounded cache: grows forever</span>
+<span class="hljs-keyword">const</span> cache = {};
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/user/:id&#x27;</span>, <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  cache[req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>] = <span class="hljs-keyword">await</span> <span class="hljs-title function_">loadUser</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>);   <span class="hljs-comment">// never evicted!</span>
+});
+
+<span class="hljs-comment">// 2. Listener added per request, never removed</span>
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/x&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> { emitter.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;tick&#x27;</span>, <span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">/* ... */</span> }); });
+
+<span class="hljs-comment">// 3. Timers never cleared</span>
+<span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">/* holds references forever */</span> }, <span class="hljs-number">1000</span>);
+
+<span class="hljs-comment">// 4. Closures capturing large objects</span>
+<span class="hljs-comment">// 5. Global arrays/maps that only grow (logs, &quot;recent requests&quot;)</span></code></pre></div>
+<p><strong>Fixes:</strong> bound every cache (LRU with max size/TTL; see the DSA book&#39;s LRU cache), remove listeners (<code>once</code>, <code>off</code>), clear timers, use <code>WeakMap</code>/<code>WeakRef</code> for metadata attached to objects. A leak looks like a <strong>sawtooth that keeps rising</strong>: memory climbs, GC works harder, latency grows, then <code>FATAL ERROR: Reached heap limit</code> and a crash (typically hours or days after deploy).</p>
+<h3 id="finding-a-leak">Finding a leak</h3>
+<ol>
+<li>Watch <code>heapUsed</code> over time (it should plateau).</li>
+<li>Run with <code>node --inspect app.js</code>, open <code>chrome://inspect</code>, take <strong>heap snapshots</strong> before and after load, and compare which object types grew.</li>
+<li>In production, use continuous profiling/APM (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>).</li>
+</ol>
+<hr>
+
+<h2 id="5-14-profiling-and-debugging">5.14 Profiling and Debugging</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">node --inspect app.js          <span class="hljs-comment"># attach Chrome DevTools: breakpoints, heap, CPU profiles</span>
+node --inspect-brk app.js      <span class="hljs-comment"># pause on first line</span>
+node --cpu-prof app.js         <span class="hljs-comment"># write a .cpuprofile you can open in DevTools</span>
+node --watch app.js            <span class="hljs-comment"># auto-restart on changes</span>
+node --trace-warnings app.js   <span class="hljs-comment"># show stack traces for warnings</span></code></pre></div>
+<p><strong>CPU profile, flame chart:</strong> shows where time goes. The widest bars are your hot functions. A flame graph that reveals 70% of time in <code>JSON.stringify</code> or a regex is more useful than any guess.</p>
+<p><strong>Debugging rules:</strong></p>
+<ol>
+<li>Reproduce first. 2. Measure, don&#39;t guess. 3. Change one thing at a time. 4. Use <code>console.time</code>/<code>performance.now()</code> for quick checks, and a profiler for real work.</li>
+</ol>
+<p>Quick timing:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">time</span>(<span class="hljs-string">&#x27;query&#x27;</span>);
+<span class="hljs-keyword">await</span> db.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;...&#x27;</span>);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">timeEnd</span>(<span class="hljs-string">&#x27;query&#x27;</span>);          <span class="hljs-comment">// query: 12.4ms</span>
+
+<span class="hljs-keyword">const</span> t0 = performance.<span class="hljs-title function_">now</span>();
+<span class="hljs-comment">// ...work...</span>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">${(performance.now() - t0).toFixed(<span class="hljs-number">1</span>)}</span> ms`</span>);</code></pre></div>
+<hr>
+
+<h2 id="5-15-handy-modern-node-features">5.15 Handy Modern Node Features</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Feature</th>
+<th>Since</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td>Built-in <code>fetch</code></td>
+<td>18</td>
+<td><code>const r = await fetch(url); const j = await r.json();</code></td>
+</tr>
+<tr>
+<td>Built-in test runner</td>
+<td>18/20</td>
+<td><code>node --test</code> with <code>import test from &#39;node:test&#39;</code></td>
+</tr>
+<tr>
+<td><code>--watch</code></td>
+<td>18.11</td>
+<td><code>node --watch server.js</code></td>
+</tr>
+<tr>
+<td><code>--env-file</code></td>
+<td>20.6</td>
+<td><code>node --env-file=.env server.js</code></td>
+</tr>
+<tr>
+<td><code>AbortController</code> (cancel/timeouts)</td>
+<td>15+</td>
+<td><code>fetch(url, { signal: AbortSignal.timeout(3000) })</code></td>
+</tr>
+<tr>
+<td><code>structuredClone</code></td>
+<td>17</td>
+<td>deep copy</td>
+</tr>
+<tr>
+<td>Top-level await (ESM)</td>
+<td>14.8</td>
+<td><code>const cfg = await loadConfig();</code></td>
+</tr>
+<tr>
+<td><code>util.parseArgs</code></td>
+<td>18.3</td>
+<td>built-in CLI argument parser</td>
+</tr>
+<tr>
+<td><code>crypto.randomUUID()</code></td>
+<td>14.17</td>
+<td>unique IDs</td>
+</tr>
+</tbody></table></div>
+<h3 id="timeouts-matter">Timeouts matter</h3>
+<p>A request that never completes ties up resources forever. <strong>Every outbound call needs a timeout:</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">try</span> {
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&#x27;https://api.example.com/data&#x27;</span>, {
+    <span class="hljs-attr">signal</span>: <span class="hljs-title class_">AbortSignal</span>.<span class="hljs-title function_">timeout</span>(<span class="hljs-number">3000</span>),         <span class="hljs-comment">// abort after 3 s</span>
+  });
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>());
+} <span class="hljs-keyword">catch</span> (err) {
+  <span class="hljs-keyword">if</span> (err.<span class="hljs-property">name</span> === <span class="hljs-string">&#x27;TimeoutError&#x27;</span>) <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;upstream too slow&#x27;</span>);
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">throw</span> err;
+}</code></pre></div>
+<p>(We make this a pillar of resilience in <a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>.)</p>
+<hr>
+
+<h2 id="5-16-putting-it-together-a-well-behaved-node-server-skeleton">5.16 Putting It Together: A Well-Behaved Node Server Skeleton</h2>
+<p>Combines this chapter and the last: config validation, graceful shutdown, error handlers, event-loop-friendly design, health endpoint.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// server.js</span>
+<span class="hljs-keyword">import</span> http <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:http&#x27;</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">PORT</span> = <span class="hljs-title class_">Number</span>(process.<span class="hljs-property">env</span>.<span class="hljs-property">PORT</span>) || <span class="hljs-number">3000</span>;
+<span class="hljs-keyword">let</span> shuttingDown = <span class="hljs-literal">false</span>;
+
+<span class="hljs-keyword">const</span> server = http.<span class="hljs-title function_">createServer</span>(<span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-property">url</span> === <span class="hljs-string">&#x27;/health&#x27;</span>) {
+    res.<span class="hljs-title function_">writeHead</span>(shuttingDown ? <span class="hljs-number">503</span> : <span class="hljs-number">200</span>, { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> });
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">status</span>: shuttingDown ? <span class="hljs-string">&#x27;draining&#x27;</span> : <span class="hljs-string">&#x27;ok&#x27;</span>, <span class="hljs-attr">uptime</span>: process.<span class="hljs-title function_">uptime</span>() }));
+  }
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-comment">// ... routing &amp; handlers here (async, no *Sync, no heavy CPU) ...</span>
+    res.<span class="hljs-title function_">writeHead</span>(<span class="hljs-number">200</span>, { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;text/plain&#x27;</span> });
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-string">&#x27;hello\n&#x27;</span>);
+  } <span class="hljs-keyword">catch</span> (err) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>({ <span class="hljs-attr">msg</span>: <span class="hljs-string">&#x27;request failed&#x27;</span>, <span class="hljs-attr">err</span>: err.<span class="hljs-property">message</span>, <span class="hljs-attr">url</span>: req.<span class="hljs-property">url</span> });
+    <span class="hljs-keyword">if</span> (!res.<span class="hljs-property">headersSent</span>) res.<span class="hljs-title function_">writeHead</span>(<span class="hljs-number">500</span>, { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> });
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Internal server error&#x27;</span> }));
+  }
+});
+
+server.<span class="hljs-property">requestTimeout</span> = <span class="hljs-number">30_000</span>;          <span class="hljs-comment">// limit time to receive a full request</span>
+server.<span class="hljs-property">headersTimeout</span> = <span class="hljs-number">10_000</span>;
+server.<span class="hljs-property">keepAliveTimeout</span> = <span class="hljs-number">65_000</span>;        <span class="hljs-comment">// &gt; typical load balancer idle timeout (60s)</span>
+
+server.<span class="hljs-title function_">listen</span>(<span class="hljs-variable constant_">PORT</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`listening on <span class="hljs-subst">${PORT}</span> (pid <span class="hljs-subst">${process.pid}</span>)`</span>));
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">shutdown</span>(<span class="hljs-params">signal</span>) {
+  <span class="hljs-keyword">if</span> (shuttingDown) <span class="hljs-keyword">return</span>;
+  shuttingDown = <span class="hljs-literal">true</span>;
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">${signal}</span>: draining...`</span>);
+  server.<span class="hljs-title function_">close</span>(<span class="hljs-function">() =&gt;</span> process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">0</span>));                 <span class="hljs-comment">// finish in-flight requests</span>
+  server.<span class="hljs-property">closeIdleConnections</span>?.();                     <span class="hljs-comment">// drop idle keep-alive sockets</span>
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>), <span class="hljs-number">10_000</span>).<span class="hljs-title function_">unref</span>();   <span class="hljs-comment">// hard deadline</span>
+}
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;SIGTERM&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">shutdown</span>(<span class="hljs-string">&#x27;SIGTERM&#x27;</span>));
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;SIGINT&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">shutdown</span>(<span class="hljs-string">&#x27;SIGINT&#x27;</span>));
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;uncaughtException&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> { <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;uncaught&#x27;</span>, e); process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>); });
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;unhandledRejection&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> { <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;unhandled&#x27;</span>, e); process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>); });</code></pre></div>
+<p>Note the <code>keepAliveTimeout</code>: if your load balancer&#39;s idle timeout is 60 s and Node closes idle connections sooner (Node&#39;s default is 5 s), the balancer can send a request down a connection Node just closed, producing sporadic <code>502</code> errors under low traffic. Setting Node&#39;s keep-alive timeout <em>higher</em> than the balancer&#39;s is a well-known production fix.</p>
+<hr>
+
+<h2 id="5-17-edge-cases-and-gotchas-checklist">5.17 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> A <code>*Sync</code> call or heavy loop inside a handler → entire server freezes.</li>
+<li><input disabled="" type="checkbox"> <code>await</code> inside a loop for independent calls → needlessly sequential. Use <code>Promise.all</code>.</li>
+<li><input disabled="" type="checkbox"> <code>forEach(async …)</code> → promises ignored; errors lost.</li>
+<li><input disabled="" type="checkbox"> Unbounded <code>Promise.all</code> over thousands of items → overwhelms DB/APIs. Limit concurrency.</li>
+<li><input disabled="" type="checkbox"> Missing <code>try/catch</code> around <code>await</code> in handlers → unhandled rejection.</li>
+<li><input disabled="" type="checkbox"> <code>&#39;error&#39;</code> event with no listener → crash.</li>
+<li><input disabled="" type="checkbox"> Listener added per request → memory leak warning.</li>
+<li><input disabled="" type="checkbox"> Unbounded in-memory cache/array → slow leak and OOM.</li>
+<li><input disabled="" type="checkbox"> Reading a huge file/body fully into memory → use streams and size limits.</li>
+<li><input disabled="" type="checkbox"> Using <code>.pipe()</code> without error handling → leaked streams; prefer <code>pipeline</code>.</li>
+<li><input disabled="" type="checkbox"> Thread-pool saturation (<code>fs</code>, <code>crypto</code>, <code>dns.lookup</code>) → raise <code>UV_THREADPOOL_SIZE</code> or reduce usage.</li>
+<li><input disabled="" type="checkbox"> Timers keep the process alive → <code>.unref()</code> or clear them.</li>
+<li><input disabled="" type="checkbox"> No outbound timeouts → hung requests pile up.</li>
+<li><input disabled="" type="checkbox"> State kept in process memory with <code>cluster</code> or multiple instances → inconsistent; externalize.</li>
+<li><input disabled="" type="checkbox"> Catastrophic regex on user input → ReDoS.</li>
+<li><input disabled="" type="checkbox"> No handlers for <code>SIGTERM</code> → dropped requests during deploys.</li>
+<li><input disabled="" type="checkbox"> Continuing after <code>uncaughtException</code> → unpredictable corrupt state.</li>
+</ul>
+<hr>
+
+<h2 id="5-18-chapter-summary">5.18 Chapter Summary</h2>
+<ul>
+<li>Node uses <strong>one JavaScript thread</strong> plus the OS and a <strong>libuv thread pool</strong> to wait on I/O efficiently. It&#39;s excellent for I/O-bound work (APIs, proxies, real-time), weaker for CPU-bound work.</li>
+<li>The <strong>event loop</strong> repeatedly runs: sync code → <code>nextTick</code> → microtasks → timers → poll → check → close.</li>
+<li><strong>Blocking the loop</strong> (sync calls, heavy CPU, bad regex) delays every request. Offload to <strong>worker threads</strong>, other services or queues.</li>
+<li><strong>Streams and backpressure</strong> keep memory constant for large data; use <code>pipeline</code>.</li>
+<li><strong>Cluster/processes</strong> scale across cores; <strong>worker threads</strong> run CPU work off the main thread. Don&#39;t keep state in process memory.</li>
+<li>Handle errors deliberately; for unexpected ones, <strong>log, exit and restart</strong>.</li>
+<li>Bound caches, remove listeners, add timeouts, handle <code>SIGTERM</code>.</li>
+<li>Measure with event-loop lag, heap snapshots and CPU profiles.</li>
+</ul>
+<hr>
+
+<h2 id="5-19-revision-notes">5.19 Revision Notes</h2>
+<ul>
+<li>Priority: sync → <code>process.nextTick</code> → promises → timers → poll → <code>setImmediate</code> → close.</li>
+<li>Thread pool: <code>fs</code>, <code>crypto</code>, <code>zlib</code>, <code>dns.lookup</code> (default size 4; <code>UV_THREADPOOL_SIZE</code>). Sockets don&#39;t use it.</li>
+<li><code>Promise.all</code> (fail-fast), <code>allSettled</code> (all outcomes), <code>race</code> (first settled), <code>any</code> (first success).</li>
+<li><code>readFile</code> loads fully; <code>createReadStream</code> chunks. Use <code>stream/promises.pipeline</code>.</li>
+<li><code>write()</code> returning <code>false</code> → wait for <code>&#39;drain&#39;</code>.</li>
+<li><code>cluster</code>: processes with separate memory. <code>worker_threads</code>: parallel JS, message passing.</li>
+<li>Exit on <code>uncaughtException</code>; supervisor restarts.</li>
+<li>Leaks: unbounded caches, listeners, timers, closures.</li>
+<li>Always: timeouts on outbound calls, graceful shutdown, no sync in handlers.</li>
+</ul>
+<hr>
+
+<h2 id="5-20-mind-map-ascii">5.20 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                               NODE.JS INTERNALS (Ch. 5)
+                                         │
+    ┌─────────────┬───────────────┬──────┼────────┬──────────────┬────────────┐
+ ARCHITECTURE  EVENT LOOP     ASYNC   STREAMS   PARALLELISM    RELIABILITY   MEMORY
+     │             │             │        │          │              │           │
+  V8 + libuv   phases:       callback  Readable   cluster       try/catch    heap, GC
+  1 JS thread  timers→poll   promise   Writable   (processes)   'error' evt   leaks
+  thread pool  →check→close  async/    Transform  worker_threads uncaught→    snapshots
+  epoll        nextTick &gt;    await     pipeline   (CPU work)    exit+restart  bounded
+               microtasks    Promise.  backpressure child_process SIGTERM      caches
+               NEVER BLOCK   all       Buffers    job queues    timeouts</code></pre>
+<hr>
+
+<h2 id="5-21-cheat-sheet">5.21 Cheat Sheet</h2>
+<pre class="is-plain"><code>ORDER        sync → process.nextTick → Promise.then/await → timers → I/O → setImmediate → close
+NEVER BLOCK  no *Sync in handlers | no heavy loops | beware regex | big JSON | sort huge arrays
+THREAD POOL  fs, crypto(pbkdf2/scrypt/bcrypt), zlib, dns.lookup   → UV_THREADPOOL_SIZE=N (default 4)
+PARALLEL     await Promise.all([a(), b()])        ≠   await a(); await b();
+STREAMS      await pipeline(readStream, transform, writeStream)     (from 'node:stream/promises')
+             write() === false → pause until 'drain'
+CPU WORK     new Worker(file, { workerData })  → use a POOL (piscina)
+MULTI-CORE   cluster.fork() per CPU  |  or N containers / pm2 -i max
+ERRORS       try/catch(await) | .catch | emitter.on('error') | uncaught → log + exit(1)
+SHUTDOWN     SIGTERM → server.close() → finish → exit(0); hard timeout fallback
+OUTBOUND     fetch(url, { signal: AbortSignal.timeout(3000) })
+DEBUG        node --inspect | --cpu-prof | process.memoryUsage() | monitorEventLoopDelay
+GOLDEN RULE  Keep the event loop free. Wait asynchronously; compute elsewhere.</code></pre>
+<hr>
+
+<h2 id="5-22-key-takeaways">5.22 Key Takeaways</h2>
+<ol>
+<li>Node&#39;s speed comes from <strong>not waiting</strong>: one thread juggling many in-flight I/O operations.</li>
+<li>The one thing you must never do is <strong>hog the event loop</strong>: it&#39;s shared by every user.</li>
+<li>Know the priority order of sync, <code>nextTick</code>, microtasks and loop phases; it explains async behavior.</li>
+<li><strong>Streams</strong> and <strong>backpressure</strong> let you handle data larger than memory.</li>
+<li>Scale CPU with <strong>processes or worker threads</strong>, and keep servers <strong>stateless</strong> so you can.</li>
+<li>Production-grade Node means: timeouts, graceful shutdown, bounded memory, crash-and-restart discipline.</li>
+</ol>
+<hr>
+
+<h2 id="5-23-20-multiple-choice-questions">5.23 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="One JS thread; helpers do I/O."><p class="quiz-text">Node.js executes your JavaScript on:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Many threads, one per request</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A single main thread</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The GPU</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A thread per CPU core automatically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="libuv provides loop and pool."><p class="quiz-text">Which library gives Node its event loop and thread pool?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">V8</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">libuv</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">OpenSSL</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">npm</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Sync, then nextTick, then microtasks, then loop phases."><p class="quiz-text">What is the correct order of execution?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Promise → nextTick → sync</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">sync → nextTick → promise → timers</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">timers → sync → promise</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">sync → promise → nextTick</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Any Sync call blocks."><p class="quiz-text">Which operation blocks the event loop?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>await fs.promises.readFile()</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>fs.readFileSync()</code> in a request handler</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>setTimeout</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>fetch()</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Four threads by default."><p class="quiz-text">Default size of libuv&#39;s thread pool?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">4</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">16</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Equal to CPU cores</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="pbkdf2 runs on the pool; sockets use OS async I/O."><p class="quiz-text">Which of these uses the thread pool?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">TCP sockets</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>crypto.pbkdf2</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>setTimeout</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>process.nextTick</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Check phase follows poll."><p class="quiz-text">Inside an I/O callback, which fires first?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>setTimeout(fn, 0)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>setImmediate(fn)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Random</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Neither</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="forEach ignores returned promises."><p class="quiz-text">Why is <code>items.forEach(async (x) =&gt; await save(x))</code> problematic?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s a syntax error</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>forEach</code> doesn&#39;t wait for the returned promises</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s too fast</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It runs in a worker</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="They run concurrently."><p class="quiz-text">Which turns three independent 300 ms calls into ~300 ms total?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Three sequential awaits</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>await Promise.all([...])</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>Promise.race</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A <code>for</code> loop</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Never rejects; reports every result."><p class="quiz-text">What does <code>Promise.allSettled</code> do?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Rejects on first failure</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Waits for all and reports each outcome</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Returns the fastest</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Retries failures</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Chunked processing keeps memory small."><p class="quiz-text">Why use streams for large files?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They&#39;re prettier</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Constant memory and earlier first byte</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They avoid disks</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They encrypt data</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Backpressure signal."><p class="quiz-text">What does <code>writable.write(chunk)</code> returning <code>false</code> mean?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The write failed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Its buffer is full; wait for <code>&#39;drain&#39;</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The stream ended</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Invalid chunk</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Reliable cleanup and error forwarding."><p class="quiz-text">Why prefer <code>pipeline</code> over <code>.pipe()</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It propagates errors and cleans up all streams</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It uses threads</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It compresses</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Keeps the event loop free."><p class="quiz-text">What is a <code>worker_thread</code> best suited for?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Waiting on network</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">CPU-intensive computation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Serving static files</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">DNS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Separate processes, separate memory."><p class="quiz-text">A key difference between <code>cluster</code> workers and <code>worker_threads</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Cluster workers are processes with separate memory</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">They&#39;re identical</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Cluster shares heap</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Worker threads can&#39;t run JS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="State is unknown; restart clean."><p class="quiz-text">After an <code>uncaughtException</code>, the recommended action is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Ignore and continue</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Log and exit, letting a supervisor restart</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Retry in a loop</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Call <code>process.nextTick</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Unhandled 'error' throws."><p class="quiz-text">An <code>EventEmitter</code> emits <code>&#39;error&#39;</code> with no listener. What happens?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It throws and may crash the process</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s logged silently</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The event is queued</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Memory not being released."><p class="quiz-text">A steadily rising <code>heapUsed</code> that never levels off most likely indicates:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Healthy caching</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A memory leak</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Fast GC</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Normal Node behavior</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Avoids reusing a socket Node has just closed."><p class="quiz-text">Why set <code>keepAliveTimeout</code> higher than your load balancer&#39;s idle timeout?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To save CPU</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">To avoid sporadic 502s from reused connections Node already closed</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To enable HTTPS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To raise the thread pool</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Direct measure of loop blocking."><p class="quiz-text">What does <code>monitorEventLoopDelay</code> tell you?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">DB latency</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">How long the event loop is delayed, revealing blocking code</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Network speed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">CPU temperature</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-a, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="5-24-20-hands-on-exercises">5.24 20 Hands-on Exercises</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>order.js</code> ten times. Does the <code>setTimeout</code>/<code>setImmediate</code> order ever change? Explain.</li>
+<li>Write a snippet where <code>nextTick</code> and a promise both log. Predict, then confirm the order.</li>
+<li>Read a file using callbacks, then promises, then <code>async/await</code>. Compare readability.</li>
+<li>Print <code>process.memoryUsage()</code> before and after creating an array of 1,000,000 numbers.</li>
+<li>Create an <code>EventEmitter</code> with two listeners and an <code>once</code> listener; emit three times and note the output.</li>
+<li>Show that <code>Buffer.byteLength(&#39;héllo&#39;)</code> differs from <code>&#39;héllo&#39;.length</code>. Explain why.</li>
+<li>Reproduce the §5.6 freeze with two terminals and record how long <code>/fast</code> waited.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="8">
+<li>Convert a sequential 3-call <code>await</code> chain into <code>Promise.all</code>; time both versions with <code>console.time</code>.</li>
+<li>Rewrite <code>items.forEach(async …)</code> correctly in two ways: sequential and parallel with a concurrency limit of 3 (hand-rolled).</li>
+<li>Stream-copy a large file (create one with <code>dd</code>/<code>fsutil</code>/Node) using <code>pipeline</code> and watch memory stay flat; then compare with <code>readFile</code> + <code>writeFile</code>.</li>
+<li>Build a Transform stream that counts words as data flows through and prints the total at the end.</li>
+<li>Run <code>pool.js</code> with <code>UV_THREADPOOL_SIZE</code> set to 1, 4, 8 and compare total time. Explain results.</li>
+<li>Fix the blocking <code>/slow</code> route using <code>worker_threads</code>; prove <code>/fast</code> stays instant.</li>
+<li>Add <code>monitorEventLoopDelay</code> to a server; compare the p99 delay with and without the blocking route.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="15">
+<li>Implement a simple worker-thread <strong>pool</strong> (N workers, a task queue) and benchmark against spawning a worker per task.</li>
+<li>Implement <code>cluster</code> with automatic restart; kill workers with <code>kill -9</code> and watch recovery. Add a graceful shutdown that waits for workers.</li>
+<li>Write a deliberately leaky server (unbounded cache + per-request listener); watch <code>heapUsed</code> climb under <code>autocannon</code>, then fix both leaks and compare.</li>
+<li>Take a heap snapshot via <code>--inspect</code> before and after load on the leaky server and identify the growing object type.</li>
+<li>Write a ReDoS-vulnerable validator and attack it with a crafted string; measure the freeze, then fix it (simplify the regex and cap the length).</li>
+<li>Build an HTTP endpoint that streams a 1 GB generated response (e.g., numbers one per line) while honoring backpressure; verify memory stays low with a slow client (<code>curl --limit-rate 100k</code>).</li>
+</ol>
+<hr>
+
+<h2 id="5-25-5-interview-questions">5.25 5 Interview Questions</h2>
+<p><strong>1. Node is single-threaded. How does it handle thousands of concurrent connections?</strong>
+<em>Model answer:</em> JavaScript runs on one thread, but I/O is delegated to the OS&#39;s non-blocking mechanisms (epoll/kqueue/IOCP) and libuv&#39;s thread pool. The event loop runs callbacks when I/O completes, so waiting never occupies a thread. Concurrency comes from interleaving many in-flight operations, not parallel threads. It scales for I/O-bound workloads; CPU-bound work must be offloaded.</p>
+<p><strong>2. Explain the event loop phases and where <code>nextTick</code>, promises and <code>setImmediate</code> fit.</strong>
+<em>Model answer:</em> Phases: timers → pending → idle/prepare → poll → check → close. <code>nextTick</code> and promise microtasks run between operations, after the current synchronous code and before the loop proceeds, with <code>nextTick</code> first. <code>setTimeout</code> runs in timers, <code>setImmediate</code> in check (after poll). Inside I/O callbacks <code>setImmediate</code> always precedes <code>setTimeout(0)</code>.</p>
+<p><strong>3. A Node API becomes unresponsive for all users when one endpoint is hit. How do you diagnose and fix it?</strong>
+<em>Model answer:</em> Suspect event-loop blocking. Check event-loop delay metrics, take a CPU profile / flame graph, look for sync APIs, big JSON, heavy loops or bad regex. Fix by making it async, chunking, moving CPU work to worker threads or a job queue, adding limits/timeouts, and horizontal replicas for resilience.</p>
+<p><strong>4. When would you use streams, and what&#39;s backpressure?</strong>
+<em>Model answer:</em> For large or unbounded data (file uploads/downloads, log processing, proxying) to keep memory constant and reduce time-to-first-byte. Backpressure lets a slow consumer signal the producer to pause (<code>write()</code> returns false, then <code>&#39;drain&#39;</code>), preventing unbounded buffering. <code>pipeline</code> handles it and cleans up on error.</p>
+<p><strong>5. Cluster vs worker threads vs child processes?</strong>
+<em>Model answer:</em> Cluster forks multiple full Node processes sharing a server port to utilize cores and provide resilience; separate memory. Worker threads run JS in parallel threads in one process with message passing/shared buffers; best for CPU-bound tasks. Child processes spawn separate programs (any language) and communicate through pipes/IPC. For scaling APIs I&#39;d run multiple stateless instances (containers) and use worker pools for CPU tasks.</p>
+<hr>
+
+<h2 id="5-26-3-real-projects">5.26 3 Real Projects</h2>
+<p><strong>Project 1: Event-Loop Lab (beginner, ~3 hours).</strong>
+A small CLI/web page that runs experiments: prints the order of mixed <code>nextTick</code>/promise/timer/immediate calls, demonstrates blocking vs non-blocking endpoints, and shows live event-loop delay. Add a &quot;fix it&quot; button for each anti-pattern (sync → async, blocking → worker). A great way to cement this chapter and a strong portfolio piece.</p>
+<p><strong>Project 2: Streaming Log Processor (intermediate, ~4 hours).</strong>
+Process a multi-GB access log with <code>pipeline</code>: parse lines (Transform), aggregate stats by status/path/minute, write a JSON report, and gzip the raw log, all in constant memory. Show memory use graphs comparing to the <code>readFile</code> approach. Add a <code>--workers</code> flag that splits work using <code>worker_threads</code>.</p>
+<p><strong>Project 3: Image Thumbnail Service (intermediate–advanced, ~6 hours).</strong>
+<code>POST /resize</code> accepts an image upload (streamed, size-limited), processes it in a worker-thread pool (using <code>sharp</code> or a pure-JS library), and streams back the result. Include a timeout, concurrency cap with a 503 + <code>Retry-After</code> when saturated, graceful shutdown that finishes in-flight jobs, and a <code>/metrics</code> endpoint with event-loop delay and queue depth.</p>
+<hr>
+
+<h2 id="5-27-further-reading">5.27 Further Reading</h2>
+<ul>
+<li>Node.js docs: <em>&quot;The Node.js Event Loop, Timers, and process.nextTick()&quot;</em> (nodejs.org/learn). The canonical explanation.</li>
+<li>Node.js docs: <em>Don&#39;t Block the Event Loop (or the Worker Pool)</em>. Short and essential.</li>
+<li>Node.js docs: <em>Backpressuring in Streams</em>.</li>
+<li><em>Node.js Design Patterns</em> by Mario Casciaro &amp; Luciano Mammino: the best deep book on async and streams.</li>
+<li>Philip Roberts, <em>&quot;What the heck is the event loop anyway?&quot;</em> (JSConf talk); a visual classic.</li>
+<li>libuv design overview (docs.libuv.org) for the curious.</li>
+<li>Our companion book: <em>DSA Handbook</em> Chapter 2 (Recursion/call stack) and <a href="/learn/backend-master/nodejs-http-server-routing-middleware-express" title="Build a Node.js Server: Routing &amp; Middleware">Chapter 6</a> (Queues), the data structures behind the event loop.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-6-your-first-real-server-raw-http-then-express">Up next → Chapter 6: Your First Real Server (Raw <code>http</code>, then Express)</h3>
+<p>Part 1 is complete. You understand the internet, HTTP, the terminal, Git, and the runtime itself. In Part 2 we start building real APIs: routing, middleware, validation, error handling, and the beginning of the <strong>ShopLine</strong> project.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Node.js Event Loop, Streams: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Is Node.js single-threaded?</h3></summary><p>Your JavaScript runs on a single main thread, but Node uses the operating system and a libuv thread pool for I/O such as files, DNS and crypto, so many operations proceed in parallel behind the scenes.</p></details>
+<details class="learn-faq-item"><summary><h3>What does blocking the event loop mean?</h3></summary><p>Running long synchronous code on the main thread stops Node from handling any other request until it finishes. A CPU-heavy loop or a slow regex can freeze the whole server.</p></details>
+<details class="learn-faq-item"><summary><h3>When should I use worker threads?</h3></summary><p>Use them for CPU-bound work such as image processing, hashing large data or parsing huge files, so the main thread stays free to serve requests.</p></details>
+<details class="learn-faq-item"><summary><h3>What is backpressure in streams?</h3></summary><p>Backpressure is the signal that a consumer cannot keep up with a producer. Streams pause the source when the destination's buffer is full, which keeps memory use flat when moving large files.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span>&larr; Previous &middot; Chapter 4</span><strong>Linux, Terminal &amp; Git for Backend Devs</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span>Next &middot; Chapter 6 &rarr;</span><strong>Build a Node.js Server: Routing &amp; Middleware</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#5-0-why-this-chapter-matters">5.0 Why This Chapter Matters</a></li><li><a href="#5-1-the-problem-node-solves-waiting">5.1 The Problem Node Solves: Waiting</a></li><li><a href="#5-2-what-is-node-js-made-of">5.2 What Is Node.js Made Of?</a></li><li><a href="#5-3-the-call-stack-in-brief">5.3 The Call Stack, in Brief</a></li><li><a href="#5-4-the-event-loop">5.4 The Event Loop</a></li><li><a href="#5-5-async-styles-callbacks-promises-async-await">5.5 Async Styles: Callbacks → Promises → async/await</a></li><li><a href="#5-6-the-1-node-sin-blocking-the-event-loop">5.6 The #1 Node Sin: Blocking the Event Loop</a></li><li><a href="#5-7-the-thread-pool-node-s-hidden-helpers">5.7 The Thread Pool: Node's Hidden Helpers</a></li><li><a href="#5-8-events-eventemitter">5.8 Events: EventEmitter</a></li><li><a href="#5-9-buffers-and-streams">5.9 Buffers and Streams</a></li><li><a href="#5-10-using-more-than-one-core">5.10 Using More Than One Core</a></li><li><a href="#5-11-modules-commonjs-vs-es-modules">5.11 Modules: CommonJS vs ES Modules</a></li><li><a href="#5-12-error-handling-in-node">5.12 Error Handling in Node</a></li><li><a href="#5-13-memory-garbage-collection-and-leaks">5.13 Memory, Garbage Collection and Leaks</a></li><li><a href="#5-14-profiling-and-debugging">5.14 Profiling and Debugging</a></li><li><a href="#5-15-handy-modern-node-features">5.15 Handy Modern Node Features</a></li><li><a href="#5-16-putting-it-together-a-well-behaved-node-server-skeleton">5.16 Putting It Together: A Well-Behaved Node Server Skeleton</a></li><li><a href="#5-17-edge-cases-and-gotchas-checklist">5.17 Edge Cases and Gotchas Checklist</a></li><li><a href="#5-18-chapter-summary">5.18 Chapter Summary</a></li><li><a href="#5-19-revision-notes">5.19 Revision Notes</a></li><li><a href="#5-20-mind-map-ascii">5.20 Mind Map (ASCII)</a></li><li><a href="#5-21-cheat-sheet">5.21 Cheat Sheet</a></li><li><a href="#5-22-key-takeaways">5.22 Key Takeaways</a></li><li><a href="#5-23-20-multiple-choice-questions">5.23 20 Multiple Choice Questions</a></li><li><a href="#5-24-20-hands-on-exercises">5.24 20 Hands-on Exercises</a></li><li><a href="#5-25-5-interview-questions">5.25 5 Interview Questions</a></li><li><a href="#5-26-3-real-projects">5.26 3 Real Projects</a></li><li><a href="#5-27-further-reading">5.27 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "nodejs-event-loop-streams-worker-threads"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

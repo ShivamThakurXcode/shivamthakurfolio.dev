@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Distributed Systems: CAP, Raft &amp; Sagas | Backend Master</title>
+    <meta name="description" content="Understand distributed systems: partial failure, unreliable clocks, CAP and PACELC, quorums, Raft, consistent hashing, fencing tokens and the saga pattern.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="distributed systems, cap theorem pacelc, raft consensus, quorum, consistent hashing, saga pattern, fencing token, eventual consistency, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="distributed systems">
+    <meta property="article:tag" content="cap theorem pacelc">
+    <meta property="article:tag" content="raft consensus">
+    <meta property="article:tag" content="quorum">
+    <meta property="article:tag" content="consistent hashing">
+    <meta property="article:tag" content="saga pattern">
+    <meta property="article:tag" content="fencing token">
+    <meta property="article:tag" content="eventual consistency">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Distributed Systems: CAP, Raft &amp; Sagas">
+    <meta property="og:description" content="Understand distributed systems: partial failure, unreliable clocks, CAP and PACELC, quorums, Raft, consistent hashing, fencing tokens and the saga pattern.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/distributed-systems-cap-raft-consensus-sagas.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Distributed Systems: CAP, Consistency, Consensus, Consistent Hashing and Sagas: Backend Master chapter 30">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Distributed Systems: CAP, Raft &amp; Sagas">
+    <meta name="twitter:description" content="Understand distributed systems: partial failure, unreliable clocks, CAP and PACELC, quorums, Raft, consistent hashing, fencing tokens and the saga pattern.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/distributed-systems-cap-raft-consensus-sagas.png">
+    <meta name="twitter:image:alt" content="Distributed Systems: CAP, Consistency, Consensus, Consistent Hashing and Sagas: Backend Master chapter 30">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas",
+          "name": "Distributed Systems: CAP, Raft & Sagas | Backend Master",
+          "description": "Understand distributed systems: partial failure, unreliable clocks, CAP and PACELC, quorums, Raft, consistent hashing, fencing tokens and the saga pattern.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/distributed-systems-cap-raft-consensus-sagas.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Distributed Systems: CAP, Consistency, Consensus, Consistent Hashing and Sagas"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#webpage"
+          },
+          "headline": "Distributed Systems: CAP, Consistency, Consensus, Consistent Hashing and Sagas",
+          "alternativeHeadline": "Distributed Systems — When One Computer Isn't Enough (and Why That's Hard)",
+          "description": "Understand distributed systems: partial failure, unreliable clocks, CAP and PACELC, quorums, Raft, consistent hashing, fencing tokens and the saga pattern.",
+          "abstract": "Once a system spans machines, partial failure, unreliable networks and clocks become unavoidable. This chapter explains CAP and PACELC, consistency models, quorums, split-brain, Raft, consistent hashing, fencing tokens, two-phase commit versus sagas and CRDTs. It was written without running the code sketches, which are marked not run.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/distributed-systems-cap-raft-consensus-sagas.png",
+          "url": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 5914,
+          "timeRequired": "PT27M",
+          "articleSection": "Backend Development",
+          "keywords": "distributed systems, cap theorem pacelc, raft consensus, quorum, consistent hashing, saga pattern, fencing token, eventual consistency",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "Partial failure, unreliable clocks and unknown outcomes",
+            "CAP, PACELC and consistency models",
+            "Quorums, replication and split-brain",
+            "Raft consensus and consistent hashing",
+            "Fencing tokens, sagas and CRDTs"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "distributed systems"
+          },
+          "isAccessibleForFree": true,
+          "position": 30,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#article",
+            "name": "Scaling and Load Balancing: Stateless Services, nginx, PgBouncer and Read Replicas",
+            "url": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Distributed Systems: CAP, Raft & Sagas",
+              "item": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does CAP actually say?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "During a network partition a system must choose between consistency and availability. Because partitions happen, the real decision is what to sacrifice when one occurs; PACELC adds the latency versus consistency trade-off in normal operation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a quorum?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The number of replicas that must acknowledge an operation. If writes (W) plus reads (R) exceed the replica count (N), every read overlaps the latest acknowledged write."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a saga?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A way to run a multi-service business transaction as a sequence of local transactions with compensating actions, giving eventual consistency without distributed locks or two-phase commit."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are the examples in this chapter tested?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. This chapter was written in fast mode: the code sketches were not run and may contain mistakes, so treat them as illustrations."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#quiz",
+          "name": "Distributed Systems: CAP, Raft & Sagas: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "distributed systems"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "After a request times out, the safest assumption is that the operation:",
+              "text": "After a request times out, the safest assumption is that the operation:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Has an unknown outcome"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Succeeded"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never reached the server"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is \"last write wins\" by wall-clock time risky?",
+              "text": "Why is \"last write wins\" by wall-clock time risky?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Clocks differ and can jump, so the newer write may lose"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It needs consensus"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It uses too much memory"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Lamport timestamps provide:",
+              "text": "Lamport timestamps provide:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A causal ordering of events"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Real time"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Distributed locks"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Consensus"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Vector clocks can detect:",
+              "text": "Vector clocks can detect:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Whether two events were concurrent"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Wall-clock skew"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Network partitions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replica lag"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "During a partition, a CP system:",
+              "text": "During a partition, a CP system:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "May refuse some requests to stay consistent"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Answers everything"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ignores the partition"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Becomes AP"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "PACELC's extra insight is that even without partitions you trade:",
+              "text": "PACELC's extra insight is that even without partitions you trade:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Latency and consistency"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Cost and speed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Security and speed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CPU and memory"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Read-your-writes is violated when:",
+              "text": "Read-your-writes is violated when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You read from a lagging replica right after writing"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "You use a transaction"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "You use an index"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "You use HTTPS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "With N=5, W=3, R=3:",
+              "text": "With N=5, W=3, R=3:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "W+R>N, so reads overlap the latest write and 2 nodes can fail"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Reads may miss writes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No node may fail"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It is eventually consistent only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Odd cluster sizes (3, 5) are preferred because:",
+              "text": "Odd cluster sizes (3, 5) are preferred because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A majority is the same size for N and N+1, so extra even nodes add no failure tolerance"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Odd numbers are faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Raft requires primes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Of licensing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Split-brain is:",
+              "text": "Split-brain is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Two nodes both acting as leader and accepting writes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A slow replica"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A cache miss"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A broken index"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In Raft a log entry is committed when:",
+              "text": "In Raft a log entry is committed when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It is stored on a majority of nodes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The leader writes it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A client acknowledges"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "All nodes store it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "hash(key) % N is poor for resizing because:",
+              "text": "hash(key) % N is poor for resizing because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Changing N remaps most keys"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It isn't deterministic"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It needs vnodes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Virtual nodes in consistent hashing:",
+              "text": "Virtual nodes in consistent hashing:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Smooth distribution and weight machines"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Add security"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Remove the ring"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Make hashing slower"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A fencing token is:",
+              "text": "A fencing token is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A monotonically increasing number the resource uses to reject stale lock holders"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A password"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A TTL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A UUID"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Two-phase commit's main drawback across services is:",
+              "text": "Two-phase commit's main drawback across services is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Blocking and locks held across the network; coordinator failure leaves participants in doubt"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's too fast"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It needs no coordinator"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's eventually consistent"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A saga relies on:",
+              "text": "A saga relies on:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Local transactions with compensating actions"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A global lock"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "2PC"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Shared memory"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Sagas provide:",
+              "text": "Sagas provide:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Eventual consistency; intermediate states are visible"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Isolation"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Strong consistency"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No failure handling"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "CRDTs merge:",
+              "text": "CRDTs merge:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In any order with the same result"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only in a fixed order"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By wall-clock time"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using consensus"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A fan-out to 100 backends, each slow 1% of the time, is slow about:",
+              "text": "A fan-out to 100 backends, each slow 1% of the time, is slow about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "63%"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "10%"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is the best practice for core domain data?",
+              "text": "Which is the best practice for core domain data?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Keep in one transactional store until you have a measured reason to split"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Spread across many services immediately"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use 2PC everywhere"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Avoid transactions"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Distributed Systems: CAP, Raft &amp; Sagas</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:83.3%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item active" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" aria-current="page"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 30 of 36 &middot; Advanced</p>
+                        <h1>Distributed Systems: CAP, Consistency, Consensus, Consistent Hashing and Sagas</h1>
+                        <p class="learn-book-title">Distributed Systems — When One Computer Isn't Enough (and Why That's Hard)</p>
+                        <ul class="learn-meta text-caption">
+                            <li>27 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/distributed-systems-cap-raft-consensus-sagas.webp"><img src="../../assets/images/learn/backend-master/distributed-systems-cap-raft-consensus-sagas.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Distributed Systems: CAP, Consistency, Consensus, Consistent Hashing and Sagas: Backend Master chapter 30 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Once a system spans machines, partial failure, unreliable networks and clocks become unavoidable. This chapter explains CAP and PACELC, consistency models, quorums, split-brain, Raft, consistent hashing, fencing tokens, two-phase commit versus sagas and CRDTs. It was written without running the code sketches, which are marked not run.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Partial failure, unreliable clocks and unknown outcomes</li><li>CAP, PACELC and consistency models</li><li>Quorums, replication and split-brain</li><li>Raft consensus and consistent hashing</li><li>Fencing tokens, sagas and CRDTs</li></ul>
+                        </section>
+<hr>
+
+<h2 id="30-0-why-this-chapter-matters">30.0 Why This Chapter Matters</h2>
+<p>A single computer has comforting properties: operations happen in one order, a function call either returns or throws, and &quot;now&quot; means the same thing everywhere. The moment your system spans <strong>more than one machine</strong>, all of those comforts vanish. Leslie Lamport&#39;s famous definition: <em>&quot;A distributed system is one in which the failure of a computer you didn&#39;t even know existed can render your own computer unusable.&quot;</em></p>
+<p>Everything you&#39;ve built in Part 5 already touches this: load-balanced instances (<a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>), replicas with lag, queues with at-least-once delivery (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>), caches that disagree (<a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>). This chapter gives you the <strong>mental models</strong> to reason about them: the failure modes that are <em>fundamental</em> rather than bugs, and the standard tools (quorums, consensus, consistent hashing, sagas, fencing tokens) that engineers use to live with them.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run-fast-mode" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run (fast mode)</span></h3>
+<p><strong>Nothing in this chapter was executed.</strong> It was written in &quot;fast mode&quot; at your request: the explanations come from the standard literature (Lamport, Brewer, Kleppmann, the Raft and Dynamo papers), and the code snippets are small teaching sketches <strong>I did not run or test; they may contain mistakes.</strong> Treat them as illustrations of the ideas, not production code. Where an idea connects to something that <em>was</em> measured earlier in the book (the stale-cache race in <a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>, duplicate delivery in <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>, lock leases in <a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>), I say so.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The &quot;Two Generals&#39; Problem&quot; (1975) proves that two parties communicating over an unreliable channel <strong>cannot guarantee</strong> they both agree to attack at the same time, no matter how many acknowledgements they exchange: the last message could always be lost. Every &quot;exactly-once&quot; claim you&#39;ve met in this book runs into this impossibility.</p>
+</aside>
+<hr>
+
+<h2 id="30-1-the-eight-fallacies-and-the-fundamental-problems">30.1 The Eight Fallacies and the Fundamental Problems</h2>
+<p>The <strong>Fallacies of Distributed Computing</strong> (Peter Deutsch, Sun, 1994): beliefs every newcomer holds, all false:</p>
+<ol>
+<li>The network is reliable. 2. Latency is zero. 3. Bandwidth is infinite. 4. The network is secure. 5. Topology doesn&#39;t change. 6. There is one administrator. 7. Transport cost is zero. 8. The network is homogeneous.</li>
+</ol>
+<p>From these, three fundamental difficulties follow:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Problem</th>
+<th>Meaning</th>
+<th>Example in ShopLine</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Partial failure</strong></td>
+<td>Some parts fail while others keep working, and you often can&#39;t tell which</td>
+<td>Payment API times out: did it charge? (Ch 26)</td>
+</tr>
+<tr>
+<td><strong>Unreliable networks</strong></td>
+<td>Messages can be lost, delayed, duplicated, reordered</td>
+<td>Webhook delivered twice (Ch 28)</td>
+</tr>
+<tr>
+<td><strong>Unreliable clocks</strong></td>
+<td>Machines disagree on the time; time can jump</td>
+<td>Two servers disagree which write came last</td>
+</tr>
+</tbody></table></div>
+<p><strong>The core uncertainty:</strong> when a request gets no reply, it might be that the request was lost, the server crashed, the server is slow, the <em>reply</em> was lost, or the server did the work and then crashed. <strong>From the caller&#39;s side these are indistinguishable.</strong> All the techniques in this chapter are ways to build something reliable <em>despite</em> that ambiguity: timeouts, retries with idempotency, redundancy, agreement protocols.</p>
+<hr>
+
+<h2 id="30-2-time-and-ordering">30.2 Time and Ordering</h2>
+<h3 id="clocks-lie">Clocks lie</h3>
+<ul>
+<li><strong>Wall-clock time</strong> (<code>Date.now()</code>): synchronised by NTP, accurate to milliseconds in good conditions, but it can <strong>drift, jump forward or backward</strong> (NTP corrections, leap seconds, VM pauses), and two machines are never perfectly in step.</li>
+<li><strong>Monotonic clocks</strong> (<code>performance.now()</code>, <code>process.hrtime</code>): only move forward, good for measuring <em>durations on one machine</em>, meaningless across machines.</li>
+</ul>
+<p><strong>Consequence:</strong> you cannot reliably order events from different machines by comparing their timestamps. A &quot;last write wins&quot; policy based on wall-clock time can <strong>silently drop the newer write</strong> when the clocks disagree by even a few milliseconds. (Cassandra&#39;s default conflict resolution works this way; see §30.5.)</p>
+<h3 id="logical-clocks-ordering-without-wall-time">Logical clocks: ordering without wall time</h3>
+<ul>
+<li><strong>Lamport timestamps</strong>: each node keeps a counter; increment on each event; on receiving a message set <code>counter = max(local, received) + 1</code>. This gives a <strong>causal ordering</strong>: if event A <em>could have influenced</em> B, then <code>ts(A) &lt; ts(B)</code>. It can&#39;t tell you whether two events were <em>concurrent</em>.</li>
+<li><strong>Vector clocks</strong>: one counter <em>per node</em>; comparing vectors tells you whether A happened-before B, B before A, or they were <strong>concurrent</strong> (a conflict that needs resolving). Used by Dynamo-style stores.</li>
+<li><strong>Hybrid logical clocks (HLC)</strong>: wall-clock-like timestamps that still respect causality (used by CockroachDB). <strong>TrueTime</strong> (Google Spanner) exposes <em>clock uncertainty bounds</em> and waits them out to get strong consistency.</li>
+</ul>
+<p>Sketch of a Lamport clock <em>(not run)</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Lamport</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) { <span class="hljs-variable language_">this</span>.<span class="hljs-property">t</span> = <span class="hljs-number">0</span>; }
+  <span class="hljs-title function_">tick</span>(<span class="hljs-params"></span>) { <span class="hljs-keyword">return</span> ++<span class="hljs-variable language_">this</span>.<span class="hljs-property">t</span>; }                          <span class="hljs-comment">// local event or send</span>
+  <span class="hljs-title function_">receive</span>(<span class="hljs-params">remote</span>) { <span class="hljs-variable language_">this</span>.<span class="hljs-property">t</span> = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">t</span>, remote) + <span class="hljs-number">1</span>; <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">t</span>; }
+}</code></pre></div>
+<h3 id="practical-guidance">Practical guidance</h3>
+<ul>
+<li>Use <strong>database-assigned ordering</strong> (sequences, <code>version</code> columns, transaction IDs, <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>) rather than wall-clock timestamps to decide which write wins.</li>
+<li>Use <strong>monotonic time</strong> for timeouts and rate limiters on a single node.</li>
+<li>Treat timestamps from other machines as <strong>approximate</strong>, store them as <code>timestamptz</code> in UTC (<a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>), and never compare them for correctness-critical ordering.</li>
+<li>A process can <strong>pause</strong> for seconds (GC, VM migration, container CPU throttling) and wake up <em>believing</em> its lease is still valid: this is why locks need <strong>fencing tokens</strong> (§30.7).</li>
+</ul>
+<hr>
+
+<h2 id="30-3-cap-pacelc-and-consistency-models">30.3 CAP, PACELC and Consistency Models</h2>
+<h3 id="cap-stated-precisely">CAP, stated precisely</h3>
+<p>Brewer&#39;s theorem: during a <strong>network partition</strong>, a system must choose between <strong>Consistency</strong> (every read sees the latest write: <em>linearizability</em>) and <strong>Availability</strong> (every non-failed node answers). You do not &quot;pick two of three&quot;; <strong>partitions will happen</strong>, so the real choice is <strong>C or A <em>when</em> a partition occurs.</strong></p>
+<ul>
+<li><strong>CP</strong> systems (e.g., PostgreSQL primary with synchronous replicas, etcd/ZooKeeper, MongoDB with majority writes, Spanner) refuse some requests during a partition to avoid inconsistency.</li>
+<li><strong>AP</strong> systems (Cassandra, DynamoDB in default modes, Riak) keep answering but may return stale data and must reconcile conflicts later.</li>
+</ul>
+<p><strong>PACELC</strong> adds the everyday case: *if there&#39;s a <strong>P</strong>artition choose <strong>A</strong> or <strong>C</strong>; <strong>E</strong>lse (normal operation) choose <strong>L</strong>atency or <strong>C</strong>onsistency.* Even without failures, strong consistency costs latency (waiting for replicas to acknowledge), which is why many systems default to weaker guarantees. (<a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">Chapter 12</a> introduced both.)</p>
+<h3 id="the-consistency-spectrum">The consistency spectrum</h3>
+<p>From strongest (and slowest) to weakest (and fastest):</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Model</th>
+<th>Guarantee</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Linearizable</strong> (strong)</td>
+<td>Behaves like one copy; once a write completes, every later read sees it</td>
+<td>Single-leader DB reading from the leader; etcd; Spanner</td>
+</tr>
+<tr>
+<td><strong>Sequential</strong></td>
+<td>All nodes see operations in the same order (not necessarily real-time)</td>
+<td>ZooKeeper</td>
+</tr>
+<tr>
+<td><strong>Causal</strong></td>
+<td>Causally related operations are seen in order; concurrent ones may differ</td>
+<td>Some document stores; collaborative editors</td>
+</tr>
+<tr>
+<td><strong>Read-your-writes</strong> (session)</td>
+<td><em>You</em> always see your own writes</td>
+<td>Sticky/primary reads (Ch 29 §29.5)</td>
+</tr>
+<tr>
+<td><strong>Monotonic reads</strong></td>
+<td>Time never goes backwards for you</td>
+<td>Pin a user to one replica</td>
+</tr>
+<tr>
+<td><strong>Eventual</strong></td>
+<td>If writes stop, replicas converge <em>eventually</em></td>
+<td>DNS, caches, many AP stores</td>
+</tr>
+</tbody></table></div>
+<p><a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>&#39;s replica lag problem is a <strong>read-your-writes</strong> violation; Chapter 27&#39;s stale cache is <strong>eventual consistency</strong> with a TTL; <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>&#39;s isolation levels are about <em>transaction-level</em> guarantees on a single database (a different axis from replica consistency, though often confused with it).</p>
+<p><strong>Choose per feature:</strong> account balances and stock decisions want strong consistency; &quot;likes&quot; counters and recommendations are fine eventually consistent. Pay for strong consistency only where wrong answers cost real money.</p>
+<hr>
+
+<h2 id="30-4-replication-and-quorums">30.4 Replication and Quorums</h2>
+<p><strong>Replication</strong> (keeping copies on several nodes) gives availability and read scale; the design question is <strong>how copies stay in agreement</strong>:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Approach</th>
+<th>How</th>
+<th>Trade-off</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Single-leader</strong></td>
+<td>One node takes writes, replicas follow (PostgreSQL, MySQL, MongoDB replica sets)</td>
+<td>Simple, strong consistency on the leader; leader is a bottleneck/failover point; replica lag</td>
+</tr>
+<tr>
+<td><strong>Multi-leader</strong></td>
+<td>Several nodes accept writes, replicate to each other (multi-region setups)</td>
+<td>Low write latency per region; <strong>write conflicts</strong> must be resolved</td>
+</tr>
+<tr>
+<td><strong>Leaderless</strong></td>
+<td>Any node accepts writes; clients write/read to several nodes (Dynamo, Cassandra)</td>
+<td>High availability; conflicts and repair (read repair, anti-entropy)</td>
+</tr>
+</tbody></table></div>
+<h3 id="quorums">Quorums</h3>
+<p>With <strong>N</strong> replicas, writing to <strong>W</strong> and reading from <strong>R</strong>: if <strong>W + R &gt; N</strong>, every read quorum overlaps every write quorum, so a read sees at least one up-to-date copy.</p>
+<pre class="is-plain"><code>N = 3, W = 2, R = 2   →  W + R = 4 &gt; 3  : reads see the latest write (tolerates 1 node down)
+N = 3, W = 1, R = 1   →  W + R = 2 ≤ 3  : fast, but reads may be stale
+N = 5, W = 3, R = 3   →  tolerates 2 nodes down for both reads and writes</code></pre>
+<p><em>(Standard arithmetic; not run.)</em> Quorums don&#39;t give linearizability by themselves (sloppy quorums, concurrent writes, and clock-based conflict resolution can still produce anomalies), but they&#39;re the basic dial between consistency, latency and availability in leaderless systems. A <strong>majority quorum</strong> (<code>⌊N/2⌋ + 1</code>) is also the heart of consensus (§30.6); that&#39;s why clusters use <strong>odd</strong> sizes: 3 or 5 nodes tolerate 1 or 2 failures; 4 nodes tolerate no more than 3.</p>
+<h3 id="failover-and-split-brain">Failover and split-brain</h3>
+<p>When a leader dies, a replica must be <strong>promoted</strong>. The danger is <strong>split-brain</strong>: two nodes both believe they&#39;re the leader (a partition made the old leader look dead while it&#39;s merely unreachable) and both accept writes, diverging the data. Defences: <strong>majority-based leader election</strong> (only a node that can reach a majority may lead), <strong>fencing</strong> (the old leader is cut off from storage/clients), and tools that implement this correctly (Patroni with etcd/Consul for PostgreSQL, managed services, Kubernetes operators). Never script failover by hand with timeouts alone.</p>
+<hr>
+
+<h2 id="30-5-consensus-and-leader-election-raft-in-one-page">30.5 Consensus and Leader Election (Raft in One Page)</h2>
+<p><strong>Consensus</strong> is getting a group of nodes to agree on a value (or a sequence of values) even when some nodes fail and messages are lost. It underlies leader election, distributed locks, configuration stores (etcd, Consul, ZooKeeper), and replicated state machines. <strong>Paxos</strong> is the classic (notoriously hard to understand); <strong>Raft</strong> (Ongaro &amp; Ousterhout, 2014) was designed for understandability, and powers etcd (so Kubernetes), Consul, CockroachDB and many others.</p>
+<h3 id="raft-at-a-glance">Raft at a glance</h3>
+<ul>
+<li>Nodes are <strong>followers</strong>, <strong>candidates</strong>, or the single <strong>leader</strong>, per <strong>term</strong> (a logical epoch number that only increases).</li>
+<li><strong>Leader election</strong>: a follower that hears no heartbeat within a randomised timeout becomes a candidate, increments the term, and asks for votes; <strong>a majority</strong> elects it. Randomised timeouts prevent endless ties.</li>
+<li><strong>Log replication</strong>: clients send commands to the leader; it appends them to its log and replicates to followers; an entry is <strong>committed</strong> once stored on a <strong>majority</strong>; then it&#39;s applied to the state machine. All nodes apply the same commands in the same order.</li>
+<li><strong>Safety</strong>: a leader can only be elected if its log is at least as up-to-date as a majority&#39;s, so committed entries are never lost.</li>
+</ul>
+<pre class="is-plain"><code>term 1:  leader = A         A,B,C all have log [x=1, y=2]
+A fails → B's election timer fires → term 2, B asks C for a vote → B+C = majority → B leader
+A returns as a follower of term 2; if it had uncommitted entries, they're overwritten.</code></pre>
+<p><strong>What this means for you:</strong> consensus clusters need a <strong>majority alive</strong> (3 nodes tolerate 1 failure, 5 tolerate 2), are slower than a single node (each write waits for a majority round trip), and are best used for <strong>small, critical metadata</strong> (leader election, configuration, locks, schema), not as a general data store. You will almost always <em>use</em> consensus (etcd, ZooKeeper, a managed database) rather than implement it.</p>
+<hr>
+
+<h2 id="30-6-partitioning-consistent-hashing">30.6 Partitioning: Consistent Hashing</h2>
+<p>To spread data over many nodes, hash the key to pick a node. The naive <code>hash(key) % N</code> has a fatal flaw: <strong>changing N (adding or removing a node) remaps almost every key</strong>, invalidating nearly the entire cache or forcing a massive data migration.</p>
+<p><strong>Consistent hashing</strong> places both nodes and keys on a <strong>ring</strong> (a hash space <code>0..2³²−1</code>). A key belongs to the first node clockwise from its position. Adding or removing a node only moves the keys in the arc adjacent to it, about <code>1/N</code> of the data on average. <strong>Virtual nodes</strong> (each physical node appears at many ring positions) smooth out the distribution and let stronger machines take more.</p>
+<p>A sketch <em>(not run)</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> crypto <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:crypto&#x27;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">h</span> = (<span class="hljs-params">s</span>) =&gt; <span class="hljs-built_in">parseInt</span>(crypto.<span class="hljs-title function_">createHash</span>(<span class="hljs-string">&#x27;md5&#x27;</span>).<span class="hljs-title function_">update</span>(s).<span class="hljs-title function_">digest</span>(<span class="hljs-string">&#x27;hex&#x27;</span>).<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, <span class="hljs-number">8</span>), <span class="hljs-number">16</span>);   <span class="hljs-comment">// 32-bit position</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Ring</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">nodes, vnodes = <span class="hljs-number">100</span></span>) { <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span> = []; <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> n <span class="hljs-keyword">of</span> nodes) <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">add</span>(n, vnodes); }
+  <span class="hljs-title function_">add</span>(<span class="hljs-params">node, vnodes = <span class="hljs-number">100</span></span>) { <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; vnodes; i++) <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>.<span class="hljs-title function_">push</span>({ <span class="hljs-attr">pos</span>: <span class="hljs-title function_">h</span>(<span class="hljs-string">`<span class="hljs-subst">${node}</span>#<span class="hljs-subst">${i}</span>`</span>), node }); <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>.<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a.<span class="hljs-property">pos</span> - b.<span class="hljs-property">pos</span>); }
+  <span class="hljs-title function_">remove</span>(<span class="hljs-params">node</span>) { <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span> = <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">p</span>) =&gt;</span> p.<span class="hljs-property">node</span> !== node); }
+  <span class="hljs-title function_">get</span>(<span class="hljs-params">key</span>) {
+    <span class="hljs-keyword">const</span> pos = <span class="hljs-title function_">h</span>(key); <span class="hljs-keyword">let</span> lo = <span class="hljs-number">0</span>, hi = <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>;                 <span class="hljs-comment">// binary search: first point &gt;= pos</span>
+    <span class="hljs-keyword">while</span> (lo &lt; hi) { <span class="hljs-keyword">const</span> m = (lo + hi) &gt;&gt; <span class="hljs-number">1</span>; <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>[m].<span class="hljs-property">pos</span> &lt; pos) lo = m + <span class="hljs-number">1</span>; <span class="hljs-keyword">else</span> hi = m; }
+    <span class="hljs-keyword">return</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>[lo].<span class="hljs-property">pos</span> &gt;= pos ? <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>[lo] : <span class="hljs-variable language_">this</span>.<span class="hljs-property">points</span>[<span class="hljs-number">0</span>]).<span class="hljs-property">node</span>;  <span class="hljs-comment">// wrap around the ring</span>
+  }
+}</code></pre></div>
+<p>If you ran an experiment, you&#39;d expect: with 4 nodes and 100k keys, <strong>modulo hashing</strong> moves ~75% of keys when a 5th node is added, while the <strong>ring</strong> moves ~20% (1/5). That&#39;s the standard result; I did not measure it here. Used by Dynamo-style stores, Cassandra, Redis Cluster (a variant with 16,384 fixed hash <em>slots</em>), memcached clients, and CDNs. <strong>Rendezvous (HRW) hashing</strong> is a simpler alternative with similar properties.</p>
+<p><strong>Hot spots:</strong> hashing spreads <em>keys</em> evenly, but not <em>load</em>: one viral product is still one key on one node (Chapter 27: hot keys). Mitigate with replication of hot keys, key splitting, or caching in front.</p>
+<hr>
+
+<h2 id="30-7-coordination-without-coordination-locks-leases-and-fencing">30.7 Coordination Without Coordination: Locks, Leases and Fencing</h2>
+<p><a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a> warned that a Redis lock is a <strong>lease</strong> that can expire while the holder is still working. The deeper reason is the process-pause problem: after a long GC pause or a stalled VM, a client resumes <strong>believing it still holds the lock</strong>, though its lease expired and another client now holds it. Both write to the shared resource.</p>
+<p>The fix, from Martin Kleppmann&#39;s analysis, is a <strong>fencing token</strong>: the lock service issues a <strong>monotonically increasing number</strong> with each grant; the protected resource (the database) <strong>rejects writes carrying an older token than the highest it has seen</strong>.</p>
+<pre class="is-plain"><code>client A acquires lock → token 33  ... A pauses (GC) ... lease expires
+client B acquires lock → token 34  → writes to storage with token 34 (storage records &quot;highest = 34&quot;)
+client A resumes, writes with token 33 → storage REJECTS (33 &lt; 34)</code></pre>
+<p>In ShopLine terms (a sketch, <em>not run</em>), using a PostgreSQL row as the &quot;resource&quot; and a sequence as the token source:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-comment">-- the lock service hands out token = nextval(&#x27;lock_token_seq&#x27;)</span>
+<span class="hljs-keyword">UPDATE</span> shipments <span class="hljs-keyword">SET</span> status <span class="hljs-operator">=</span> $<span class="hljs-number">1</span>, last_token <span class="hljs-operator">=</span> $<span class="hljs-number">2</span>
+<span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> $<span class="hljs-number">3</span> <span class="hljs-keyword">AND</span> last_token <span class="hljs-operator">&lt;</span> $<span class="hljs-number">2</span>;        <span class="hljs-comment">-- 0 rows updated =&gt; a newer holder already wrote; abort</span></code></pre></div>
+<p>This is the <strong>same fencing idea</strong> as the <code>locked_by</code> condition on job completion in Chapter 28&#39;s queue (which <em>was</em> tested: the zombie worker&#39;s late completion updated 0 rows). General rules: <strong>a lease/lock is never enough on its own; the resource must be able to reject stale writers</strong>, or the operation must be idempotent/commutative so a duplicate is harmless. Prefer designs that avoid distributed locks: a single-writer per key (partitioning), optimistic concurrency (<code>WHERE version = $n</code>, Chapter 16), or queues that serialise per key (Chapter 28).</p>
+<hr>
+
+<h2 id="30-8-distributed-transactions-2pc-and-sagas">30.8 Distributed Transactions: 2PC and Sagas</h2>
+<p><strong>Problem:</strong> an order must reserve stock (inventory service/database), charge a card (payment service), and create a shipment (logistics service). Three systems, no single ACID transaction.</p>
+<h3 id="two-phase-commit-2pc">Two-phase commit (2PC)</h3>
+<p>A <strong>coordinator</strong> asks every participant to <strong>prepare</strong> (lock resources and promise it can commit); if all say yes, it tells them to <strong>commit</strong>; otherwise <strong>abort</strong>. It provides atomicity but has serious costs: participants <strong>hold locks</strong> across the network round trips; if the coordinator crashes after prepare, participants are <strong>blocked</strong> in doubt; throughput and availability suffer; and it requires all participants to support it (XA). Used inside some databases and in tightly-controlled environments; generally avoided across independent services.</p>
+<h3 id="sagas">Sagas</h3>
+<p>A <strong>saga</strong> breaks the business transaction into a sequence of <strong>local transactions</strong>, each with a <strong>compensating action</strong> that undoes it semantically:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Step</th>
+<th>Action</th>
+<th>Compensation (if a later step fails)</th>
+</tr>
+</thead><tbody><tr>
+<td>1</td>
+<td>Reserve stock</td>
+<td>Release stock</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Authorise/charge payment</td>
+<td>Refund / void authorisation</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Create shipment</td>
+<td>Cancel shipment</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Confirm order</td>
+<td>(none; point of no return)</td>
+</tr>
+</tbody></table></div>
+<p>Two coordination styles: <strong>orchestration</strong> (a central orchestrator, or a workflow engine like Temporal / AWS Step Functions, tells each service what to do and handles failures: easier to understand and monitor) and <strong>choreography</strong> (each service reacts to events and emits its own: decentralised but the flow is implicit and hard to trace).</p>
+<p><strong>Saga properties and cautions:</strong></p>
+<ul>
+<li>Sagas give <strong>eventual consistency, not isolation</strong>: intermediate states are visible (the stock is reserved but the payment hasn&#39;t happened). Design the UI and business rules for it (&quot;pending&quot;).</li>
+<li><strong>Compensations must be idempotent and retryable</strong>, and can themselves fail: you need retries, a dead-letter path and sometimes manual intervention (Chapter 28).</li>
+<li><strong>Every step is idempotent</strong> (keys, Chapters 16/26), and the saga&#39;s <strong>state is durable</strong> (an orchestrator database, or event log), so a crash resumes rather than restarts.</li>
+<li>Prefer ordering steps so the <strong>hardest-to-undo step comes last</strong> (charge the card after reserving stock, ship after paying).</li>
+<li>The <strong>transactional outbox</strong> (Chapter 28) is how each step reliably publishes its event.</li>
+</ul>
+<p>A minimal orchestrator sketch <em>(not run)</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">placeOrderSaga</span>(<span class="hljs-params">order</span>) {
+  <span class="hljs-keyword">const</span> done = [];                                                 <span class="hljs-comment">// compensations to run in reverse order on failure</span>
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">reserveStock</span>(order);    done.<span class="hljs-title function_">push</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">releaseStock</span>(order));
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">chargeCard</span>(order);      done.<span class="hljs-title function_">push</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">refund</span>(order));
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">createShipment</span>(order);  done.<span class="hljs-title function_">push</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">cancelShipment</span>(order));
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">confirmOrder</span>(order);
+  } <span class="hljs-keyword">catch</span> (err) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> undo <span class="hljs-keyword">of</span> done.<span class="hljs-title function_">reverse</span>()) <span class="hljs-keyword">await</span> <span class="hljs-title function_">retry</span>(undo);          <span class="hljs-comment">// compensations retried until they succeed (or alert a human)</span>
+    <span class="hljs-keyword">throw</span> err;
+  }
+}</code></pre></div>
+<p>This sketch <strong>omits</strong> durability: a crash mid-saga would lose <code>done</code>. Real orchestrators persist each step. (This is the exact problem Temporal-style workflow engines solve.)</p>
+<hr>
+
+<h2 id="30-9-conflict-free-data-crdts-and-convergence">30.9 Conflict-Free Data: CRDTs and Convergence</h2>
+<p>In multi-leader and leaderless systems (and offline-first apps), two replicas may be modified concurrently and must later <strong>merge</strong> without losing data. <strong>CRDTs</strong> (Conflict-free Replicated Data Types) are data structures designed so that <em>any</em> order of merging yields the <strong>same result</strong>: merging is commutative, associative and idempotent.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>CRDT</th>
+<th>Idea</th>
+<th>Use</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>G-Counter</strong></td>
+<td>Each node has its own counter; value = sum; merge = per-node max</td>
+<td>Likes, view counts</td>
+</tr>
+<tr>
+<td><strong>PN-Counter</strong></td>
+<td>Two G-Counters (increments and decrements)</td>
+<td>Inventory-ish counters (with caveats: can&#39;t enforce a lower bound)</td>
+</tr>
+<tr>
+<td><strong>G-Set / OR-Set</strong></td>
+<td>Add-only set / add-and-remove set with unique tags</td>
+<td>Tags, shopping-cart items</td>
+</tr>
+<tr>
+<td><strong>LWW-Register</strong></td>
+<td>Last-writer-wins by timestamp</td>
+<td>Simple fields (with the clock caveats of §30.2)</td>
+</tr>
+<tr>
+<td><strong>Sequence/text CRDTs</strong> (Yjs, Automerge, RGA)</td>
+<td>Ordered lists/text merging concurrent edits</td>
+<td>Collaborative editing</td>
+</tr>
+</tbody></table></div>
+<p>A G-Counter sketch <em>(not run)</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">class</span> <span class="hljs-title class_">GCounter</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">id</span>) { <span class="hljs-variable language_">this</span>.<span class="hljs-property">id</span> = id; <span class="hljs-variable language_">this</span>.<span class="hljs-property">counts</span> = {}; }
+  <span class="hljs-title function_">inc</span>(<span class="hljs-params">n = <span class="hljs-number">1</span></span>) { <span class="hljs-variable language_">this</span>.<span class="hljs-property">counts</span>[<span class="hljs-variable language_">this</span>.<span class="hljs-property">id</span>] = (<span class="hljs-variable language_">this</span>.<span class="hljs-property">counts</span>[<span class="hljs-variable language_">this</span>.<span class="hljs-property">id</span>] ?? <span class="hljs-number">0</span>) + n; }
+  <span class="hljs-title function_">value</span>(<span class="hljs-params"></span>) { <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">values</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">counts</span>).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a + b, <span class="hljs-number">0</span>); }
+  <span class="hljs-title function_">merge</span>(<span class="hljs-params">other</span>) { <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [k, v] <span class="hljs-keyword">of</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(other.<span class="hljs-property">counts</span>)) <span class="hljs-variable language_">this</span>.<span class="hljs-property">counts</span>[k] = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">counts</span>[k] ?? <span class="hljs-number">0</span>, v); }
+}</code></pre></div>
+<p>CRDTs trade <em>expressiveness</em> for <em>convergence without coordination</em>: they can&#39;t express invariants like &quot;stock never below zero&quot; (that needs coordination: Chapter 16 / consensus). Use them for data where merging is natural and the cost of a brief divergence is low.</p>
+<hr>
+
+<h2 id="30-10-failure-detection-gossip-and-observability-of-distributed-systems">30.10 Failure Detection, Gossip and Observability of Distributed Systems</h2>
+<ul>
+<li><strong>Failure detection</strong> is probabilistic: a node that hasn&#39;t responded in T seconds is <em>suspected</em>, not <em>known</em> dead. Heartbeat timeouts trade false positives (healthy node declared dead: unnecessary failover) against detection delay. <strong>Phi-accrual</strong> detectors output a suspicion level instead of a boolean.</li>
+<li><strong>Gossip protocols</strong> (Cassandra, Consul, SWIM) spread membership and state by having each node periodically tell a few random peers: scalable, tolerant, eventually consistent.</li>
+<li><strong>Observability (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>) is essential:</strong> correlation ids and distributed tracing to follow a request across services; dependency maps; per-hop latency percentiles; and <strong>tail-latency amplification</strong> (a request that fans out to 100 backends is as slow as its <em>slowest</em> one: if each has a 1% chance of being slow, the fan-out request is slow 63% of the time: <code>1 − 0.99¹⁰⁰</code>, standard arithmetic). Mitigations: hedged requests, timeouts, fewer fan-outs, caching.</li>
+<li><strong>Testing distributed behaviour:</strong> chaos engineering (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>), fault injection (Toxiproxy), deterministic simulation (FoundationDB&#39;s approach), and <strong>Jepsen</strong>-style testing that checks consistency claims under partitions.</li>
+</ul>
+<hr>
+
+<h2 id="30-11-practical-design-rules-for-shopline">30.11 Practical Design Rules for ShopLine</h2>
+<ol>
+<li><strong>Prefer a single database for the core domain</strong> as long as possible: a monolith with one transactional store dodges most of this chapter (<a href="/learn/backend-master/microservices-vs-monolith-architecture-decision" title="Microservices vs Monolith: How to Decide">Chapter 33</a>).</li>
+<li><strong>Assume every message arrives twice, late, or out of order</strong>: idempotent consumers, version checks (Chapter 28).</li>
+<li><strong>Pass idempotency keys</strong> on every non-idempotent cross-service call (Chapters 16, 26).</li>
+<li><strong>Decide consistency per feature</strong>; document it (&quot;the cart is read-your-writes; recommendations are eventually consistent&quot;).</li>
+<li><strong>Use the database&#39;s ordering (versions/sequences), not wall clocks</strong>, to resolve conflicts.</li>
+<li><strong>Use consensus services (etcd, managed DB failover), don&#39;t write your own.</strong></li>
+<li><strong>Sagas + outbox</strong> instead of distributed transactions; make compensations idempotent.</li>
+<li><strong>Fence your locks</strong>, or avoid them with partitioning and optimistic concurrency.</li>
+<li><strong>Design for partial failure</strong>: timeouts, breakers, bulkheads, degraded modes (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>).</li>
+<li><strong>Add network hops only when they buy you something</strong> you can name.</li>
+</ol>
+<hr>
+
+<h2 id="30-12-edge-cases-and-gotchas-checklist">30.12 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Ordering events from different machines by wall-clock timestamps; &quot;last write wins&quot; on skewed clocks.</li>
+<li><input disabled="" type="checkbox"> Treating a timeout as &quot;the operation failed&quot; instead of &quot;unknown&quot;.</li>
+<li><input disabled="" type="checkbox"> Assuming exactly-once delivery; consumers/handlers not idempotent.</li>
+<li><input disabled="" type="checkbox"> Locks/leases without fencing tokens; assuming a lock holder can&#39;t pause.</li>
+<li><input disabled="" type="checkbox"> Split-brain: failover scripted with timeouts only; no majority/fencing.</li>
+<li><input disabled="" type="checkbox"> Even-sized consensus clusters; fewer than a majority alive.</li>
+<li><input disabled="" type="checkbox"> <code>hash % N</code> partitioning that reshuffles everything on resize; hot keys ignored.</li>
+<li><input disabled="" type="checkbox"> Distributed transactions (2PC) across independent services; sagas without idempotent compensations or durable state.</li>
+<li><input disabled="" type="checkbox"> Reading intermediate saga states as final; no &quot;pending&quot; UX.</li>
+<li><input disabled="" type="checkbox"> Mixing up isolation levels (single DB) with replica consistency models.</li>
+<li><input disabled="" type="checkbox"> CRDTs used where invariants (non-negative stock) need coordination.</li>
+<li><input disabled="" type="checkbox"> Unbounded fan-out and tail-latency amplification; no timeouts/hedging.</li>
+<li><input disabled="" type="checkbox"> No tracing across services; no chaos testing; consistency claims never tested under partitions.</li>
+</ul>
+<hr>
+
+<h2 id="30-13-chapter-summary">30.13 Chapter Summary</h2>
+<ul>
+<li>Distributed systems add <strong>partial failure, unreliable networks, and unreliable clocks</strong>; a timeout leaves the outcome <strong>unknown</strong>.</li>
+<li><strong>Clocks lie</strong>: use logical clocks (Lamport, vector, HLC) or database ordering, not wall time, for correctness. Processes can pause and wake up with expired leases.</li>
+<li><strong>CAP</strong>: during a partition choose <strong>C or A</strong>; <strong>PACELC</strong> adds the latency-vs-consistency choice in normal operation. A spectrum of models (linearizable → eventual); choose per feature.</li>
+<li><strong>Replication</strong>: single-leader, multi-leader, leaderless; <strong>quorums</strong> (<code>W + R &gt; N</code>); <strong>split-brain</strong> needs majority-based election and fencing.</li>
+<li><strong>Consensus (Raft)</strong>: terms, majority election, replicated log; use etcd/ZooKeeper/managed services rather than building it.</li>
+<li><strong>Consistent hashing</strong> moves only ~`1/N<code>of keys on resize vs ~all for</code>hash % N`; virtual nodes smooth load; hot keys remain.</li>
+<li><strong>Fencing tokens</strong> make leases safe (the same idea as the fenced job completion tested in Chapter 28).</li>
+<li><strong>2PC</strong> blocks and doesn&#39;t scale across services; <strong>sagas</strong> (orchestrated or choreographed) with idempotent compensations and durable state are the practical alternative.</li>
+<li><strong>CRDTs</strong> merge concurrent updates without coordination but can&#39;t enforce invariants.</li>
+<li><strong>Everything here was not run</strong> (fast mode); concepts are standard, code is illustrative.</li>
+</ul>
+<hr>
+
+<h2 id="30-14-revision-notes">30.14 Revision Notes</h2>
+<ul>
+<li>Unknown outcome on timeout → idempotency keys + retries.</li>
+<li>Order by version/sequence/logical clock; wall clocks only approximate.</li>
+<li>CAP: partition ⇒ choose C or A. PACELC: else L vs C.</li>
+<li>Quorum <code>W + R &gt; N</code>; majority = <code>⌊N/2⌋ + 1</code>; use odd cluster sizes.</li>
+<li>Raft: term, election by majority, commit on majority replication.</li>
+<li>Consistent hashing: ring + virtual nodes; Redis Cluster = 16,384 slots.</li>
+<li>Locks → fencing tokens (monotonic) checked by the resource.</li>
+<li>Saga = local transactions + compensations; orchestrate; idempotent; durable.</li>
+<li>CRDT: commutative, associative, idempotent merge.</li>
+<li>Fan-out tail latency: <code>1 − (1−p)^N</code>.</li>
+</ul>
+<hr>
+
+<h2 id="30-15-mind-map-ascii">30.15 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                         DISTRIBUTED SYSTEMS
+                                 │
+   ┌───────────┬──────────┬──────┴─────┬────────────┬────────────┬───────────┐
+ PROBLEMS    TIME       CONSISTENCY  REPLICATION  CONSENSUS   TRANSACTIONS  DATA
+   │           │            │            │            │            │          │
+ partial    clocks lie   CAP/PACELC   leader(s)     Raft       2PC (avoid)  partitioning
+ failure    Lamport      linearizable quorums W+R&gt;N election    sagas        consistent hash
+ unreliable vector       causal       split-brain   majority    compensations CRDTs
+ network    HLC          eventual     failover      etcd        outbox       hot keys
+ unknown    fencing tokens                          fencing
+ outcome</code></pre>
+<hr>
+
+<h2 id="30-16-cheat-sheet">30.16 Cheat Sheet</h2>
+<pre class="is-plain"><code>Timeout = outcome unknown → idempotency key + retry.      Order by DB version, not Date.now().
+CAP: partition → C or A.  PACELC: else Latency or Consistency.
+Quorum: W + R &gt; N.   Majority = floor(N/2)+1.   Use 3 or 5 nodes, not 2 or 4.
+Raft: leader per term; commit when stored on a majority.
+Consistent hashing: ring + vnodes; adding a node moves ~1/N keys.
+Lock → fencing token → resource rejects older tokens.   (UPDATE … WHERE last_token &lt; $token)
+Saga: step_i ... step_n with compensations; idempotent; persisted; orchestrated.
+CRDT: merge(a,b) = merge(b,a); merge(a,a) = a.
+Fan-out tail: P(slow) = 1 − (1 − p)^N.</code></pre>
+<hr>
+
+<h2 id="30-17-key-takeaways">30.17 Key Takeaways</h2>
+<ol>
+<li><strong>Assume the network and clocks will betray you</strong>; design so that betrayal is survivable.</li>
+<li><strong>A timeout means &quot;unknown.&quot;</strong> Idempotency is the universal answer.</li>
+<li><strong>Strong consistency costs latency and availability</strong>; buy it only where wrong answers cost money.</li>
+<li><strong>Use consensus systems; don&#39;t build them.</strong> Majority quorums, odd sizes.</li>
+<li><strong>Sagas, outbox, and fencing</strong> replace distributed transactions and naive locks.</li>
+<li><strong>The best distributed system is the one you didn&#39;t need</strong>: keep the core in one transactional store as long as you can.</li>
+</ol>
+<hr>
+
+<h2 id="30-18-20-multiple-choice-questions">30.18 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="c" data-why="Unknown."><p class="quiz-text">After a request times out, the safest assumption is that the operation:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Failed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Succeeded</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Has an unknown outcome</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Never reached the server</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Clock skew."><p class="quiz-text">Why is &quot;last write wins&quot; by wall-clock time risky?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Clocks differ and can jump, so the newer write may lose</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It needs consensus</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It uses too much memory</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Causal order."><p class="quiz-text">Lamport timestamps provide:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Real time</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A causal ordering of events</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Distributed locks</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Consensus</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Concurrency detection."><p class="quiz-text">Vector clocks can detect:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Wall-clock skew</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Whether two events were concurrent</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Network partitions</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Replica lag</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Consistency over availability."><p class="quiz-text">During a partition, a CP system:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Answers everything</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">May refuse some requests to stay consistent</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Ignores the partition</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Becomes AP</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Latency vs consistency."><p class="quiz-text">PACELC&#39;s extra insight is that even without partitions you trade:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Cost and speed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Latency and consistency</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Security and speed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">CPU and memory</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Lagging replica."><p class="quiz-text">Read-your-writes is violated when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">You read from a lagging replica right after writing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">You use a transaction</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">You use an index</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">You use HTTPS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="W+R&gt;N."><p class="quiz-text">With N=5, W=3, R=3:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Reads may miss writes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">W+R&gt;N, so reads overlap the latest write and 2 nodes can fail</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No node may fail</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It is eventually consistent only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Majority math."><p class="quiz-text">Odd cluster sizes (3, 5) are preferred because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Odd numbers are faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A majority is the same size for N and N+1, so extra even nodes add no failure tolerance</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Raft requires primes</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Of licensing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Two leaders."><p class="quiz-text">Split-brain is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Two nodes both acting as leader and accepting writes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A slow replica</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A cache miss</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A broken index</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Majority."><p class="quiz-text">In Raft a log entry is committed when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The leader writes it</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It is stored on a majority of nodes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A client acknowledges</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">All nodes store it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Remaps most keys."><p class="quiz-text"><code>hash(key) % N</code> is poor for resizing because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Changing N remaps most keys</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It isn&#39;t deterministic</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It needs vnodes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Balance/weights."><p class="quiz-text">Virtual nodes in consistent hashing:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Add security</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Smooth distribution and weight machines</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Remove the ring</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Make hashing slower</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Monotonic token."><p class="quiz-text">A fencing token is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A password</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A monotonically increasing number the resource uses to reject stale lock holders</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A TTL</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A UUID</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Blocking."><p class="quiz-text">Two-phase commit&#39;s main drawback across services is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s too fast</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Blocking and locks held across the network; coordinator failure leaves participants in doubt</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It needs no coordinator</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s eventually consistent</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Compensations."><p class="quiz-text">A saga relies on:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A global lock</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Local transactions with compensating actions</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">2PC</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Shared memory</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Eventual."><p class="quiz-text">Sagas provide:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Isolation</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Eventual consistency; intermediate states are visible</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Strong consistency</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No failure handling</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Order-independent."><p class="quiz-text">CRDTs merge:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only in a fixed order</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">In any order with the same result</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">By wall-clock time</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using consensus</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="1−0.99^100 ≈ 63%."><p class="quiz-text">A fan-out to 100 backends, each slow 1% of the time, is slow about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">63%</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">100%</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">10%</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="One store first."><p class="quiz-text">Which is the best practice for core domain data?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Spread across many services immediately</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Keep in one transactional store until you have a measured reason to split</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Use 2PC everywhere</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Avoid transactions</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-c, 2-b, 3-b, 4-b, 5-b, 6-b, 7-a, 8-b, 9-b, 10-a, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="30-19-20-hands-on-exercises">30.19 20 Hands-on Exercises</h2>
+<p><em>(All exercises are suggestions; I did not run any of them.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Implement a Lamport clock and simulate three nodes exchanging messages.</li>
+<li>Compute quorum conditions for N=3,5,7 with different W/R.</li>
+<li>Explain, with a diagram, how a timeout on a payment call can leave the outcome unknown.</li>
+<li>Classify five ShopLine features by the consistency they need.</li>
+<li>Compute fan-out slow-probability for N=10, 50, 100 with p=0.1%, 1%.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement consistent hashing with virtual nodes; measure keys moved on adding a node vs <code>% N</code>.</li>
+<li>Implement a vector clock and detect concurrent writes in a toy key-value store.</li>
+<li>Build a G-Counter and PN-Counter; test convergence under shuffled merges.</li>
+<li>Implement fencing tokens in PostgreSQL for a shipment status update and show a stale writer rejected.</li>
+<li>Write an orchestrated saga with persisted state in PostgreSQL and idempotent steps.</li>
+<li>Simulate clock skew and show &quot;last write wins&quot; losing a newer write.</li>
+<li>Run a 3-node etcd or Consul cluster and observe leader election when you kill the leader.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Implement a minimal Raft leader election in Node (no log replication) and test with message loss.</li>
+<li>Add log replication to the Raft exercise and verify committed entries survive leader changes.</li>
+<li>Build a leaderless key-value store with N=3, W=2, R=2 and read repair; test with node failures.</li>
+<li>Use Toxiproxy to partition a database from an app and document each service&#39;s behaviour.</li>
+<li>Implement hedged requests and measure tail-latency improvement vs extra load.</li>
+<li>Convert a checkout flow to a saga with a workflow engine (Temporal/Step Functions) and inject failures at each step.</li>
+<li>Write a Jepsen-style test (random operations under partitions) for a replicated counter and check linearizability.</li>
+<li>Design a multi-region ShopLine: data placement, consistency per feature, failover plan, and a risk register.</li>
+</ol>
+<hr>
+
+<h2 id="30-20-5-interview-questions">30.20 5 Interview Questions</h2>
+<p><strong>1. Explain the CAP theorem and what it means in practice.</strong>
+<em>Model answer:</em> During a network partition a system must choose between consistency (linearizable reads) and availability (answering from every live node). Partitions are unavoidable, so the real choice is what to sacrifice when one happens; PACELC adds that in normal operation you still trade latency for consistency. In practice choose per feature: strong consistency for money/stock, eventual for counters and recommendations.</p>
+<p><strong>2. What is a quorum and how do W and R relate to N?</strong>
+<em>Model answer:</em> A quorum is the number of replicas that must acknowledge an operation. With <code>W + R &gt; N</code>, read and write sets overlap so reads see the latest acknowledged write; <code>N=3, W=2, R=2</code> tolerates one failure. It&#39;s a dial between consistency, latency and availability, not a guarantee of linearizability on its own.</p>
+<p><strong>3. Why are distributed locks tricky, and what is a fencing token?</strong>
+<em>Model answer:</em> Lease-based locks can expire while the holder is paused (GC, VM stall), so two holders may act at once. A fencing token is a monotonically increasing number issued with each lock grant; the protected resource rejects writes with a token lower than the highest it has seen, making stale holders harmless. Better still, avoid locks via partitioning or optimistic concurrency.</p>
+<p><strong>4. 2PC vs sagas: when do you use which?</strong>
+<em>Model answer:</em> 2PC gives atomicity but blocks, holds locks across the network and fails badly when the coordinator dies; it suits tightly controlled single-vendor setups. Sagas decompose a business transaction into local transactions with compensating actions, accept eventual consistency and visible intermediate states, and require idempotent steps and durable orchestration. Use sagas across independent services.</p>
+<p><strong>5. What is consistent hashing and why is it used?</strong>
+<em>Model answer:</em> It maps keys and nodes onto a ring so each key belongs to the next node clockwise. Adding or removing a node only moves about 1/N of the keys (versus nearly all with <code>hash % N</code>), and virtual nodes balance the load. It&#39;s used in caches, Dynamo-style databases and Redis Cluster&#39;s slot model; hot keys still need separate handling.</p>
+<hr>
+
+<h2 id="30-21-3-real-projects">30.21 3 Real Projects</h2>
+<p><strong>Project 1: Mini Distributed KV Store (advanced, ~20 hours).</strong>
+Build a 3-node replicated key-value store with consistent hashing, N/W/R quorums, vector-clock conflict detection, hinted handoff and read repair; test with a partition simulator and report consistency anomalies.</p>
+<p><strong>Project 2: Raft From Scratch (advanced, ~25 hours).</strong>
+Implement Raft (election, log replication, persistence) in Node against the published TLA+/paper test cases; add a deterministic network simulator that drops, delays and reorders messages; verify safety properties.</p>
+<p><strong>Project 3: ShopLine Saga Engine (advanced, ~16 hours).</strong>
+Implement a durable orchestrator for checkout (reserve → pay → ship) with idempotent steps, compensations, timeouts and a recovery loop; add chaos tests that kill the orchestrator and services at random and verify stock and money reconcile.</p>
+<hr>
+
+<h2 id="30-22-further-reading">30.22 Further Reading</h2>
+<ul>
+<li>Martin Kleppmann, <em>Designing Data-Intensive Applications</em>, Chapters <a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">5</a>–9 (replication, partitioning, transactions, trouble with distributed systems, consistency and consensus); his post <em>How to do distributed locking</em>.</li>
+<li>Leslie Lamport, <em>Time, Clocks, and the Ordering of Events in a Distributed System</em> (1978); <em>Paxos Made Simple</em>.</li>
+<li>Diego Ongaro &amp; John Ousterhout, <em>In Search of an Understandable Consensus Algorithm (Raft)</em>; raft.github.io visualisation.</li>
+<li>DeCandia et al., <em>Dynamo: Amazon&#39;s Highly Available Key-value Store</em>; Brewer, <em>CAP Twelve Years Later</em>; Abadi, <em>PACELC</em>.</li>
+<li>Shapiro et al., <em>Conflict-free Replicated Data Types</em>; the Jepsen.io analyses.</li>
+<li>Pat Helland, <em>Life Beyond Distributed Transactions</em>; Chris Richardson, <em>Microservices Patterns</em> (sagas, outbox).</li>
+<li>Peter Bailis, <em>Highly Available Transactions</em>; the Fallacies of Distributed Computing (Deutsch).</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-31-docker-and-containers-part-6-deployment-and-operations">Up next → Chapter 31: Docker and Containers (Part 6: Deployment and Operations)</h3>
+<p>Part 5 is complete. Part 6 gets ShopLine out of your laptop and into production: containers (images, multi-stage Dockerfiles, security, Compose), then CI/CD and cloud basics, then the monolith-vs-microservices decision. <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a> starts with Docker, written in fast mode (examples marked <em>not run</em>).</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Distributed Systems: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What does CAP actually say?</h3></summary><p>During a network partition a system must choose between consistency and availability. Because partitions happen, the real decision is what to sacrifice when one occurs; PACELC adds the latency versus consistency trade-off in normal operation.</p></details>
+<details class="learn-faq-item"><summary><h3>What is a quorum?</h3></summary><p>The number of replicas that must acknowledge an operation. If writes (W) plus reads (R) exceed the replica count (N), every read overlaps the latest acknowledged write.</p></details>
+<details class="learn-faq-item"><summary><h3>What is a saga?</h3></summary><p>A way to run a multi-service business transaction as a sequence of local transactions with compensating actions, giving eventual consistency without distributed locks or two-phase commit.</p></details>
+<details class="learn-faq-item"><summary><h3>Are the examples in this chapter tested?</h3></summary><p>No. This chapter was written in fast mode: the code sketches were not run and may contain mistakes, so treat them as illustrations.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span>&larr; Previous &middot; Chapter 29</span><strong>Scaling Backends: Load Balancing &amp; PgBouncer</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span>Next &middot; Chapter 31 &rarr;</span><strong>Docker for Node.js: Dockerfile &amp; Compose</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#30-0-why-this-chapter-matters">30.0 Why This Chapter Matters</a></li><li><a href="#30-1-the-eight-fallacies-and-the-fundamental-problems">30.1 The Eight Fallacies and the Fundamental Problems</a></li><li><a href="#30-2-time-and-ordering">30.2 Time and Ordering</a></li><li><a href="#30-3-cap-pacelc-and-consistency-models">30.3 CAP, PACELC and Consistency Models</a></li><li><a href="#30-4-replication-and-quorums">30.4 Replication and Quorums</a></li><li><a href="#30-5-consensus-and-leader-election-raft-in-one-page">30.5 Consensus and Leader Election (Raft in One Page)</a></li><li><a href="#30-6-partitioning-consistent-hashing">30.6 Partitioning: Consistent Hashing</a></li><li><a href="#30-7-coordination-without-coordination-locks-leases-and-fencing">30.7 Coordination Without Coordination: Locks, Leases and Fencing</a></li><li><a href="#30-8-distributed-transactions-2pc-and-sagas">30.8 Distributed Transactions: 2PC and Sagas</a></li><li><a href="#30-9-conflict-free-data-crdts-and-convergence">30.9 Conflict-Free Data: CRDTs and Convergence</a></li><li><a href="#30-10-failure-detection-gossip-and-observability-of-distributed-systems">30.10 Failure Detection, Gossip and Observability of Distributed Systems</a></li><li><a href="#30-11-practical-design-rules-for-shopline">30.11 Practical Design Rules for ShopLine</a></li><li><a href="#30-12-edge-cases-and-gotchas-checklist">30.12 Edge Cases and Gotchas Checklist</a></li><li><a href="#30-13-chapter-summary">30.13 Chapter Summary</a></li><li><a href="#30-14-revision-notes">30.14 Revision Notes</a></li><li><a href="#30-15-mind-map-ascii">30.15 Mind Map (ASCII)</a></li><li><a href="#30-16-cheat-sheet">30.16 Cheat Sheet</a></li><li><a href="#30-17-key-takeaways">30.17 Key Takeaways</a></li><li><a href="#30-18-20-multiple-choice-questions">30.18 20 Multiple Choice Questions</a></li><li><a href="#30-19-20-hands-on-exercises">30.19 20 Hands-on Exercises</a></li><li><a href="#30-20-5-interview-questions">30.20 5 Interview Questions</a></li><li><a href="#30-21-3-real-projects">30.21 3 Real Projects</a></li><li><a href="#30-22-further-reading">30.22 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "distributed-systems-cap-raft-consensus-sagas"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

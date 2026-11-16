@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Redis: Caching, Rate Limits &amp; Streams | Backend Master</title>
+    <meta name="description" content="Use Redis in Node.js: core data structures, cache-aside, stampede protection, Lua rate limiters, distributed locks, streams, persistence and eviction.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="redis tutorial, redis caching nodejs, cache stampede, redis rate limiter lua, distributed lock redis, redis streams, redis persistence, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="redis tutorial">
+    <meta property="article:tag" content="redis caching nodejs">
+    <meta property="article:tag" content="cache stampede">
+    <meta property="article:tag" content="redis rate limiter lua">
+    <meta property="article:tag" content="distributed lock redis">
+    <meta property="article:tag" content="redis streams">
+    <meta property="article:tag" content="redis persistence">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Redis: Caching, Rate Limits &amp; Streams">
+    <meta property="og:description" content="Use Redis in Node.js: core data structures, cache-aside, stampede protection, Lua rate limiters, distributed locks, streams, persistence and eviction.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/redis-tutorial-caching-rate-limiting-streams.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Redis and In-Memory Data: Caching, Rate Limiting, Locks and Streams: Backend Master chapter 19">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Redis: Caching, Rate Limits &amp; Streams">
+    <meta name="twitter:description" content="Use Redis in Node.js: core data structures, cache-aside, stampede protection, Lua rate limiters, distributed locks, streams, persistence and eviction.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/redis-tutorial-caching-rate-limiting-streams.png">
+    <meta name="twitter:image:alt" content="Redis and In-Memory Data: Caching, Rate Limiting, Locks and Streams: Backend Master chapter 19">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams",
+          "name": "Redis: Caching, Rate Limits & Streams | Backend Master",
+          "description": "Use Redis in Node.js: core data structures, cache-aside, stampede protection, Lua rate limiters, distributed locks, streams, persistence and eviction.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/redis-tutorial-caching-rate-limiting-streams.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Redis and In-Memory Data: Caching, Rate Limiting, Locks and Streams"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#webpage"
+          },
+          "headline": "Redis and In-Memory Data: Caching, Rate Limiting, Locks and Streams",
+          "alternativeHeadline": "Redis and In-Memory Data — Speed, Structures, and Sharp Edges",
+          "description": "Use Redis in Node.js: core data structures, cache-aside, stampede protection, Lua rate limiters, distributed locks, streams, persistence and eviction.",
+          "abstract": "Redis is an in-memory data-structure server that is fast because it is single-threaded and keeps data in RAM. This chapter covers its data structures, cache-aside with stampede protection, atomic rate limiting with Lua, safe distributed locks, pub/sub versus streams, what survives a crash, and eviction, with a tested lab.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/redis-tutorial-caching-rate-limiting-streams.png",
+          "url": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6618,
+          "timeRequired": "PT30M",
+          "articleSection": "Backend Development",
+          "keywords": "redis tutorial, redis caching nodejs, cache stampede, redis rate limiter lua, distributed lock redis, redis streams, redis persistence",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Strings, hashes, lists, sets, sorted sets and streams",
+            "Cache-aside and stampede protection",
+            "Atomic rate limiters with Lua",
+            "Distributed locks and their limits",
+            "Persistence (RDB and AOF) and eviction policies"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "redis tutorial"
+          },
+          "isAccessibleForFree": true,
+          "position": 19,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose#article",
+            "name": "MongoDB and Document Modeling: Embedding, Indexes, Aggregation and Mongoose",
+            "url": "https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Redis: Caching, Rate Limits & Streams",
+              "item": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is Redis durable?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Not by default. With the default configuration a hard kill lost our data; enabling AOF (appendonly yes) kept it. Decide what happens if Redis restarts empty."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a cache stampede?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "When a popular key expires, many concurrent requests miss at once and all hit the database. In our test 50 concurrent misses caused 50 queries; single-flight reduced it to 1."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why not use KEYS in production?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "KEYS is O(N) and blocks the single-threaded server, delaying every other client. Use SCAN, which iterates in small steps."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I use Redis for distributed locking?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Only for efficiency, not correctness. Use SET NX PX with a unique token and a compare-and-delete release, and enforce real invariants in the database."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#quiz",
+          "name": "Redis: Caching, Rate Limits & Streams: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "redis tutorial"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why are Redis commands atomic?",
+              "text": "Why are Redis commands atomic?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A single thread executes commands one at a time"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Locks on every key"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Transactions are automatic"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They aren't"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "1,000 concurrent INCR calls result in:",
+              "text": "1,000 concurrent INCR calls result in:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Exactly 1000"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "About 900"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Random"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The value returned by GET visits in Node is:",
+              "text": "The value returned by GET visits in Node is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A string"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A number"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A BigInt"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A Buffer"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best structure for a top-N leaderboard is:",
+              "text": "The best structure for a top-N leaderboard is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sorted set"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "List"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "String"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Set"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "HyperLogLog is used to:",
+              "text": "HyperLogLog is used to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Estimate distinct counts with tiny memory"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Store every unique id"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sort items"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Queue jobs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In cache-aside, on a miss you:",
+              "text": "In cache-aside, on a miss you:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Load from the source of truth, then populate the cache"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Return null"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Delete the DB row"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Block all readers"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A cache stampede is:",
+              "text": "A cache stampede is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Many concurrent misses for a hot expired key all hitting the database"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Too many keys"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A network error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A TTL bug"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which does NOT mitigate a stampede?",
+              "text": "Which does NOT mitigate a stampede?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Making all TTLs identical"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Single-flight"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A rebuild lock"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "TTL jitter"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is INCR then EXPIRE risky?",
+              "text": "Why is INCR then EXPIRE risky?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Non-atomic: a crash between them leaves a key that never expires"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "EXPIRE is deprecated"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "INCR resets the TTL"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A Lua script in Redis runs:",
+              "text": "A Lua script in Redis runs:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Atomically, with nothing interleaved"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Concurrently with other commands"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "On the client"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only once per day"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A safe lock release requires:",
+              "text": "A safe lock release requires:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Check the stored token matches, then delete, atomically"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "DEL key"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "FLUSHALL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No release needed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did the naive DEL in our lock test cause harm?",
+              "text": "Why did the naive DEL in our lock test cause harm?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It deleted the lock that B had acquired after A's lease expired"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It was slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It crashed Redis"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It had a typo"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Redis locks are best used for:",
+              "text": "Redis locks are best used for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Avoiding duplicate work (efficiency); correctness belongs in the DB"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Guaranteeing correctness of payments"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replacing transactions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Authentication"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A subscriber that connects after a PUBLISH receives:",
+              "text": "A subscriber that connects after a PUBLISH receives:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Nothing: pub/sub doesn't store messages"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The message"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "All history"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An error"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In streams, a message read but not XACKed stays in:",
+              "text": "In streams, a message read but not XACKed stays in:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The pending entries list, available to be claimed"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The void"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A new stream"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "RDB only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "KEYS bulk: on 200k keys:",
+              "text": "KEYS bulk: on 200k keys:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Blocks the server (another client's PING waited ~116 ms)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is non-blocking"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is faster than SCAN always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is atomic across the cluster"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "With default config, docker kill shortly after SET results in:",
+              "text": "With default config, docker kill shortly after SET results in:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The key is lost (no snapshot yet)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The key survives"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A corrupted DB"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis refusing to start"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "AOF with appendfsync everysec risks losing roughly:",
+              "text": "AOF with appendfsync everysec risks losing roughly:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "About one second of writes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing ever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "One hour"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Everything"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "For a cache instance at its memory limit, the right policy is typically:",
+              "text": "For a cache instance at its memory limit, the right policy is typically:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "allkeys-lru (or lfu)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "noeviction"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "volatile-ttl with no TTLs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "None"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is the best protection for Redis in production?",
+              "text": "Which is the best protection for Redis in production?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Private network, auth/ACL, TLS, and graceful app fallback"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Expose 6379 for convenience"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No password, it's internal"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Run as root"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Redis: Caching, Rate Limits &amp; Streams</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:52.8%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item active" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" aria-current="page"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 19 of 36 &middot; Intermediate</p>
+                        <h1>Redis and In-Memory Data: Caching, Rate Limiting, Locks and Streams</h1>
+                        <p class="learn-book-title">Redis and In-Memory Data — Speed, Structures, and Sharp Edges</p>
+                        <ul class="learn-meta text-caption">
+                            <li>30 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/redis-tutorial-caching-rate-limiting-streams.webp"><img src="../../assets/images/learn/backend-master/redis-tutorial-caching-rate-limiting-streams.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Redis and In-Memory Data: Caching, Rate Limiting, Locks and Streams: Backend Master chapter 19 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Redis is an in-memory data-structure server that is fast because it is single-threaded and keeps data in RAM. This chapter covers its data structures, cache-aside with stampede protection, atomic rate limiting with Lua, safe distributed locks, pub/sub versus streams, what survives a crash, and eviction, with a tested lab.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Strings, hashes, lists, sets, sorted sets and streams</li><li>Cache-aside and stampede protection</li><li>Atomic rate limiters with Lua</li><li>Distributed locks and their limits</li><li>Persistence (RDB and AOF) and eviction policies</li></ul>
+                        </section>
+<hr>
+
+<h2 id="19-0-why-this-chapter-matters">19.0 Why This Chapter Matters</h2>
+<p>A PostgreSQL query that takes 5 ms is <em>fast</em>. A Redis lookup that takes 0.2 ms is <strong>25× faster</strong>, and, more importantly, Redis can sustain hundreds of thousands of such operations per second on one core. That makes it the backend engineer&#39;s Swiss Army knife:</p>
+<ul>
+<li>a <strong>cache</strong> in front of slow queries,</li>
+<li>a store for <strong>sessions</strong> and short-lived tokens,</li>
+<li><strong>atomic counters</strong> and <strong>rate limiters</strong>,</li>
+<li><strong>leaderboards</strong> and &quot;top N&quot; lists,</li>
+<li><strong>queues</strong> and <strong>event streams</strong>,</li>
+<li><strong>distributed locks</strong> (carefully!),</li>
+<li><strong>pub/sub</strong> for real-time fan-out.</li>
+</ul>
+<p>But Redis is <em>not</em> &quot;a faster database&quot;. It keeps data in <strong>memory</strong>, executes commands on <strong>one thread</strong>, and by default may <strong>lose recent writes</strong> when it crashes. Using it well means knowing those three facts cold. In this chapter you&#39;ll see each of them demonstrated on a real <strong>Redis 7.2.14</strong> container:</p>
+<ul>
+<li>the <strong>data structures</strong> and what each is for,</li>
+<li><strong>atomic operations</strong> (1,000 concurrent increments, no lost updates),</li>
+<li><strong>cache-aside</strong> and the <strong>cache stampede</strong> (50 requests → 50 database hits) and its fixes,</li>
+<li><strong>rate limiters</strong>, including an atomic <strong>Lua</strong> sliding window,</li>
+<li><strong>distributed locks</strong>: why a naive <code>DEL</code> deletes <em>someone else&#39;s</em> lock,</li>
+<li><strong>pub/sub vs streams</strong>: which one loses messages,</li>
+<li><strong>persistence</strong>: what survives <code>kill -9</code> (we tested it),</li>
+<li><strong>eviction</strong> when memory is full, and why <code>KEYS *</code> is dangerous.</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>All outputs are real, from <code>redis:7.2-alpine</code> (Redis 7.2.14) and the <code>redis</code> npm client <strong>6.3.1</strong> on Node 22. <strong>Not run:</strong> Redis Cluster, Sentinel failover, replication lag, Redis Stack modules (JSON/Search), Redis 8 features, TLS/ACL hardening (described only). Everything ran on a single instance.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>Redis stands for <strong>RE</strong>mote <strong>DI</strong>ctionary <strong>S</strong>erver. Salvatore Sanfilippo (&quot;antirez&quot;) wrote the first version in 2009 to speed up a real-time web analytics product, because MySQL couldn&#39;t keep up. It is still, in its core, a single-threaded event loop (the same idea as Node&#39;s, <a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>), which is exactly why it&#39;s fast and why one slow command stalls everybody.</p>
+</aside>
+<hr>
+
+<h2 id="19-1-what-redis-is-and-isn-t">19.1 What Redis Is (and Isn&#39;t)</h2>
+<p>Redis is an <strong>in-memory data-structure server</strong>: a key-value store where the <em>values</em> are rich structures (strings, hashes, lists, sets, sorted sets, streams…), and you manipulate them with <strong>atomic commands</strong>.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Property</th>
+<th>Consequence</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>In memory</strong></td>
+<td>Microsecond reads; capacity limited by RAM; data larger than RAM must be evicted or sharded</td>
+</tr>
+<tr>
+<td><strong>Single-threaded command execution</strong></td>
+<td>Every command is <strong>atomic</strong> (no two run at once) but a slow command <strong>blocks everyone</strong></td>
+</tr>
+<tr>
+<td><strong>Optional persistence</strong></td>
+<td>Not durable by default; you choose snapshots (RDB) and/or an append-only log (AOF)</td>
+</tr>
+<tr>
+<td><strong>Keys are strings, values have types</strong></td>
+<td>You design key names (<code>product:42</code>) yourself</td>
+</tr>
+<tr>
+<td><strong>Everything over the wire is text-ish</strong></td>
+<td>Numbers come back as <strong>strings</strong> (we saw <code>typeof … === &#39;string&#39;</code>)</td>
+</tr>
+</tbody></table></div>
+<h3 id="redis-vs-a-database-vs-a-cache">Redis vs a database vs a cache</h3>
+<ul>
+<li><strong>Not a replacement</strong> for PostgreSQL/MongoDB for your system of record (orders, payments). A cache can be lost and rebuilt; a source of truth can&#39;t.</li>
+<li><strong>A great complement</strong>: store a <em>copy</em> or a <em>derived, disposable</em> view (cache, counters, rate limits, sessions, queues) and keep the truth in the database.</li>
+<li>Some uses (queues, streams, sessions) are <em>primary</em> storage for transient data. There you must choose persistence settings consciously (§19.8).</li>
+</ul>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;One thread, one atom, in RAM.&quot;</strong> One thread → never run slow commands. Every command is an atom → you get race-free primitives for free. In RAM → plan memory and eviction, and don&#39;t assume durability.</p>
+</aside>
+<hr>
+
+<h2 id="19-2-the-core-structures-with-real-output">19.2 The Core Structures, With Real Output</h2>
+<p>Connect from Node (client <code>redis</code> v6):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> { createClient } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;redis&#x27;</span>;
+<span class="hljs-keyword">const</span> r = <span class="hljs-title function_">createClient</span>({ <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;redis://127.0.0.1:54331&#x27;</span> });
+r.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;redis error&#x27;</span>, e.<span class="hljs-property">message</span>));   <span class="hljs-comment">// ALWAYS attach: an unhandled &#x27;error&#x27; crashes Node</span>
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">connect</span>();</code></pre></div>
+<h3 id="strings-the-workhorse-and-the-counter">Strings: the workhorse (and the counter)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;greeting&#x27;</span>, <span class="hljs-string">&#x27;hello&#x27;</span>, { <span class="hljs-attr">EX</span>: <span class="hljs-number">2</span> });         <span class="hljs-comment">// expires in 2 seconds</span>
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;greeting&#x27;</span>)            <span class="hljs-comment">// &#x27;hello&#x27;  — ttl: 2 s</span>
+<span class="hljs-comment">// 2.2 s later:  await r.get(&#x27;greeting&#x27;) → null</span>
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;lock:a&#x27;</span>, <span class="hljs-string">&#x27;1&#x27;</span>, { <span class="hljs-attr">NX</span>: <span class="hljs-literal">true</span> })  <span class="hljs-comment">// OK       ← NX: only set if the key does NOT exist</span>
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;lock:a&#x27;</span>, <span class="hljs-string">&#x27;2&#x27;</span>, { <span class="hljs-attr">NX</span>: <span class="hljs-literal">true</span> })  <span class="hljs-comment">// null     ← refused</span></code></pre></div>
+<p><strong>Atomic counters:</strong> 1,000 <em>concurrent</em> <code>INCR</code>s on one key:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>({ <span class="hljs-attr">length</span>: <span class="hljs-number">1000</span> }, <span class="hljs-function">() =&gt;</span> r.<span class="hljs-title function_">incr</span>(<span class="hljs-string">&#x27;visits&#x27;</span>)));
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;visits&#x27;</span>)   <span class="hljs-comment">// &#x27;1000&#x27;</span></code></pre></div>
+<pre class="is-plain"><code>1000 concurrent INCR -&gt; 1000      type surprise: everything is a string: string</code></pre>
+<p>Exactly 1,000: no lost updates, because <code>INCR</code> is one atomic command executed by a single thread. That&#39;s the same &quot;make it one atomic step&quot; principle as <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>, delivered for free. (And note the value comes back as the <strong>string</strong> <code>&#39;1000&#39;</code>; convert with <code>Number()</code>.)</p>
+<h3 id="hashes-an-object-under-one-key">Hashes: an object under one key</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">hSet</span>(<span class="hljs-string">&#x27;product:1&#x27;</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Notebook A5&#x27;</span>, <span class="hljs-attr">price_minor</span>: <span class="hljs-string">&#x27;12000&#x27;</span>, <span class="hljs-attr">stock</span>: <span class="hljs-string">&#x27;50&#x27;</span> });
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">hIncrBy</span>(<span class="hljs-string">&#x27;product:1&#x27;</span>, <span class="hljs-string">&#x27;stock&#x27;</span>, -<span class="hljs-number">3</span>);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">hGetAll</span>(<span class="hljs-string">&#x27;product:1&#x27;</span>)   <span class="hljs-comment">// { name: &#x27;Notebook A5&#x27;, price_minor: &#x27;12000&#x27;, stock: &#x27;47&#x27; }</span></code></pre></div>
+<p>Use hashes for small objects where you update fields individually (<code>HINCRBY</code> an inventory count) without rewriting the whole blob.</p>
+<h3 id="lists-queues-and-stacks">Lists: queues and stacks</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">lPush</span>(<span class="hljs-string">&#x27;queue:emails&#x27;</span>, [<span class="hljs-string">&#x27;e1&#x27;</span>, <span class="hljs-string">&#x27;e2&#x27;</span>, <span class="hljs-string">&#x27;e3&#x27;</span>]);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">rPop</span>(<span class="hljs-string">&#x27;queue:emails&#x27;</span>)   <span class="hljs-comment">// &#x27;e1&#x27;  then &#x27;e2&#x27;  → FIFO (push left, pop right)</span></code></pre></div>
+<p><code>LPUSH</code>+<code>RPOP</code> is a queue; <code>BRPOP</code> blocks until an item arrives (a worker loop). Simple, but <strong>if a worker pops a job and crashes, the job is gone</strong>; for reliable queues use streams (§19.6) or <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>&#39;s queue systems.</p>
+<h3 id="sets-unique-members-and-set-algebra">Sets: unique members and set algebra</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">sAdd</span>(<span class="hljs-string">&#x27;tags:1&#x27;</span>, [<span class="hljs-string">&#x27;paper&#x27;</span>, <span class="hljs-string">&#x27;school&#x27;</span>]); <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">sAdd</span>(<span class="hljs-string">&#x27;tags:2&#x27;</span>, [<span class="hljs-string">&#x27;writing&#x27;</span>, <span class="hljs-string">&#x27;school&#x27;</span>]);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">sInter</span>([<span class="hljs-string">&#x27;tags:1&#x27;</span>, <span class="hljs-string">&#x27;tags:2&#x27;</span>])   <span class="hljs-comment">// [ &#x27;school&#x27; ]</span></code></pre></div>
+<p><code>SADD</code> (dedupe), <code>SISMEMBER</code> (membership), <code>SINTER/SUNION/SDIFF</code> (set algebra, e.g., &quot;users who bought A and B&quot;).</p>
+<h3 id="sorted-sets-leaderboards-and-ranges">Sorted sets: leaderboards and ranges</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">zAdd</span>(<span class="hljs-string">&#x27;best_sellers&#x27;</span>, [{ <span class="hljs-attr">score</span>: <span class="hljs-number">150</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">&#x27;Backpack&#x27;</span> }, { <span class="hljs-attr">score</span>: <span class="hljs-number">320</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">&#x27;Gel Pen&#x27;</span> }, { <span class="hljs-attr">score</span>: <span class="hljs-number">90</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">&#x27;Compass&#x27;</span> }]);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">zIncrBy</span>(<span class="hljs-string">&#x27;best_sellers&#x27;</span>, <span class="hljs-number">40</span>, <span class="hljs-string">&#x27;Compass&#x27;</span>);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">zRangeWithScores</span>(<span class="hljs-string">&#x27;best_sellers&#x27;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">REV</span>: <span class="hljs-literal">true</span> })
+<span class="hljs-comment">// [ { value: &#x27;Gel Pen&#x27;, score: 320 }, { value: &#x27;Backpack&#x27;, score: 150 } ]      ← top 2</span>
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">zRevRank</span>(<span class="hljs-string">&#x27;best_sellers&#x27;</span>, <span class="hljs-string">&#x27;Backpack&#x27;</span>)   <span class="hljs-comment">// 1   (0-based rank)</span></code></pre></div>
+<p>A <strong>sorted set</strong> keeps members ordered by a score, so &quot;top N&quot;, &quot;rank of X&quot; and &quot;everything between score A and B&quot; are logarithmic operations. It is the right structure for leaderboards, time-ordered feeds (score = timestamp) and <strong>sliding-window rate limits</strong> (§19.4).</p>
+<h3 id="hyperloglog-count-distinct-things-in-12-kb">HyperLogLog: count distinct things in 12 KB</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10000</span>; i++) <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">pfAdd</span>(<span class="hljs-string">&#x27;uniq:2026-11-12&#x27;</span>, <span class="hljs-string">&#x27;user&#x27;</span> + (i % <span class="hljs-number">4000</span>));
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">pfCount</span>(<span class="hljs-string">&#x27;uniq:2026-11-12&#x27;</span>)        <span class="hljs-comment">// 4006   (true distinct count: 4000)</span>
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">memoryUsage</span>(<span class="hljs-string">&#x27;uniq:2026-11-12&#x27;</span>)    <span class="hljs-comment">// 14400 bytes</span></code></pre></div>
+<p>A probabilistic structure: <strong>~0.8% error</strong> (we saw 0.15%) in about 12 KB whether you count 4 thousand or 4 billion distinct users. &quot;Unique visitors per day&quot; without storing every id.</p>
+<h3 id="other-structures-worth-knowing">Other structures worth knowing</h3>
+<p><strong>Streams</strong> (§19.6), <strong>bitmaps</strong> (daily-active flags, 1 bit per user), <strong>geo</strong> commands, <strong>JSON/Search/Vector</strong> via Redis Stack modules <em>(not run here)</em>.</p>
+<h3 id="the-key-naming-convention">The key naming convention</h3>
+<p>Colon-separated namespaces: <code>object-type:id:field</code>: <code>product:42</code>, <code>session:abc123</code>, <code>rl:ip:1.2.3.4</code>, <code>cache:product:7</code>. Keep keys short but readable; <strong>always give transient keys a TTL</strong>.</p>
+<hr>
+
+<h2 id="19-3-caching-cache-aside-and-its-dangers">19.3 Caching: Cache-Aside and Its Dangers</h2>
+<p><strong>Cache-aside</strong> (a.k.a. lazy loading) is the default pattern:</p>
+<pre class="is-plain"><code>read(id):
+  value = redis.get(key)
+  if value: return value                 ← cache HIT
+  value = database.load(id)              ← cache MISS: go to the source of truth
+  redis.set(key, value, EX ttl)          ← fill the cache
+  return value
+write(id, newValue):
+  database.update(id, newValue)
+  redis.del(key)                         ← invalidate; next read refills</code></pre>
+<p>We simulated a database call as a 200 ms function:</p>
+<pre class="is-plain"><code>miss 213 ms (DB) vs hit 2.0 ms (Redis)</code></pre>
+<h3 id="the-cache-stampede-thundering-herd">The cache stampede (thundering herd)</h3>
+<p>When a popular key expires, <em>every request arriving in the next 200 ms</em> misses, and every one of them hits the database at once. Fifty concurrent requests for a cold key:</p>
+<pre class="is-plain"><code>50 concurrent requests for a cold key -&gt; DB calls: 50   &lt;- cache stampede</code></pre>
+<p>All 50 ran the slow query, even though one would have done. On a busy site this is how an expired key takes the database down, which then makes the next misses slower, and so on.</p>
+<p><strong>Fix 1: single-flight (within one process).</strong> The first caller starts the load; others await the <em>same promise</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> inflight = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">getProduct</span>(<span class="hljs-params">id</span>) {
+  <span class="hljs-keyword">const</span> key = <span class="hljs-string">&#x27;cache:product:&#x27;</span> + id;
+  <span class="hljs-keyword">if</span> (inflight.<span class="hljs-title function_">has</span>(key)) <span class="hljs-keyword">return</span> inflight.<span class="hljs-title function_">get</span>(key);          <span class="hljs-comment">// join the load already in progress</span>
+  <span class="hljs-keyword">const</span> p = (<span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-comment">/* get → miss → load → set */</span> })().<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> inflight.<span class="hljs-title function_">delete</span>(key));
+  inflight.<span class="hljs-title function_">set</span>(key, p); <span class="hljs-keyword">return</span> p;
+}
+<span class="hljs-comment">// 50 concurrent requests → DB calls: 1</span></code></pre></div>
+<p><strong>Fix 2: a Redis lock (works across many app servers).</strong> Only the holder of <code>SET lock NX PX 2000</code> loads; the rest wait briefly and re-check the cache:</p>
+<pre class="is-plain"><code>with Redis lock (works across servers) -&gt; DB calls: 1</code></pre>
+<p><strong>Fix 3: TTL jitter.</strong> If you cache 10,000 products all with a TTL of exactly 300 s, they all expire at the same instant. Add randomness: <code>300 + random(0..60)</code> (we generated 316, 350, 323, 303, 346). Also consider <strong>refreshing early</strong> (probabilistic early expiry) and <strong>negative caching</strong> (cache &quot;not found&quot; briefly so missing ids don&#39;t hammer the DB).</p>
+<h3 id="the-hardest-part-invalidation">The hardest part: invalidation</h3>
+<blockquote>
+<p>&quot;There are only two hard things in computer science: cache invalidation and naming things.&quot; (Phil Karlton)</p>
+</blockquote>
+<div class="table-wrap"><table><thead><tr>
+<th>Strategy</th>
+<th>How</th>
+<th>Trade-off</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>TTL only</strong></td>
+<td>Let it expire</td>
+<td>Simple; data may be stale up to TTL</td>
+</tr>
+<tr>
+<td><strong>Delete on write</strong></td>
+<td><code>DEL key</code> after the DB commit</td>
+<td>Race: a concurrent reader may re-cache the old value between your write and delete</td>
+</tr>
+<tr>
+<td><strong>Write-through</strong></td>
+<td>Update DB and cache together</td>
+<td>Two writes to keep consistent; a failure between them leaves a mismatch</td>
+</tr>
+<tr>
+<td><strong>Event-driven</strong></td>
+<td>Publish changes; subscribers refresh</td>
+<td>More moving parts, but scales</td>
+</tr>
+</tbody></table></div>
+<p>Cache <strong>after</strong> the database commit, never inside the transaction; and treat the cache as <strong>disposable</strong>: the system must still be correct if Redis is empty. More patterns (HTTP caching, CDN, multi-level caches) in <a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>.</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;What is a cache stampede and how do you prevent it?&quot;</em> → Many concurrent misses for an expired hot key all hit the database. Prevent with single-flight/locking so one request rebuilds, TTL jitter so keys don&#39;t expire together, early refresh, and negative caching. Mention that invalidation is the harder problem.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="19-4-atomic-rate-limiting">19.4 Atomic Rate Limiting</h2>
+<p><a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a> used <code>express-rate-limit</code>; here is what happens underneath.</p>
+<h3 id="fixed-window-incr-expire">Fixed window: <code>INCR</code> + <code>EXPIRE</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">allow</span>(<span class="hljs-params">key, limit, windowSec</span>) {
+  <span class="hljs-keyword">const</span> n = <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">incr</span>(key);
+  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">expire</span>(key, windowSec);       <span class="hljs-comment">// first hit starts the window</span>
+  <span class="hljs-keyword">return</span> n &lt;= limit;
+}
+<span class="hljs-comment">// 15 requests, limit 10:  ok ok ok ok ok ok ok ok ok ok X X X X X   | ttl 60</span></code></pre></div>
+<p>Correct, cheap, and good enough for many uses. Two weaknesses:</p>
+<ol>
+<li><strong>Burstiness at window edges</strong>: 10 requests at 11:59:59 and 10 more at 12:00:00 = 20 in two seconds.</li>
+<li><strong>Not atomic</strong>: if the process dies between <code>INCR</code> and <code>EXPIRE</code>, the key <strong>never expires</strong> and that client is blocked forever. The fix is to make both steps one atomic unit, which is what <strong>Lua scripts</strong> are for.</li>
+</ol>
+<h3 id="sliding-window-with-a-sorted-set-lua">Sliding window with a sorted set + Lua</h3>
+<p>Redis runs a Lua script <strong>atomically</strong> (nothing else interleaves), so multi-step logic becomes race-free:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Lua</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-lua"><span class="hljs-keyword">local</span> key, now, window, limit = KEYS[<span class="hljs-number">1</span>], <span class="hljs-built_in">tonumber</span>(ARGV[<span class="hljs-number">1</span>]), <span class="hljs-built_in">tonumber</span>(ARGV[<span class="hljs-number">2</span>]), <span class="hljs-built_in">tonumber</span>(ARGV[<span class="hljs-number">3</span>])
+redis.call(<span class="hljs-string">&#x27;ZREMRANGEBYSCORE&#x27;</span>, key, <span class="hljs-number">0</span>, now - window)               <span class="hljs-comment">-- drop entries older than the window</span>
+<span class="hljs-keyword">if</span> redis.call(<span class="hljs-string">&#x27;ZCARD&#x27;</span>, key) &lt; limit <span class="hljs-keyword">then</span>
+  redis.call(<span class="hljs-string">&#x27;ZADD&#x27;</span>, key, now, now .. <span class="hljs-string">&#x27;-&#x27;</span> .. ARGV[<span class="hljs-number">4</span>])              <span class="hljs-comment">-- record this request</span>
+  redis.call(<span class="hljs-string">&#x27;PEXPIRE&#x27;</span>, key, window); <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>                      <span class="hljs-comment">-- allowed</span>
+<span class="hljs-keyword">end</span>
+<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>                                                            <span class="hljs-comment">-- limited</span></code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> sha = <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">scriptLoad</span>(script);
+<span class="hljs-keyword">await</span> r.evalSha(sha, { <span class="hljs-attr">keys</span>: [<span class="hljs-string">&#x27;rl:sw&#x27;</span>], <span class="hljs-attr">arguments</span>: [<span class="hljs-title class_">String</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>()), <span class="hljs-string">&#x27;1000&#x27;</span>, <span class="hljs-string">&#x27;5&#x27;</span>, <span class="hljs-title class_">String</span>(i)] });</code></pre></div>
+<pre class="is-plain"><code>8 requests in 400 ms, limit 5 per 1000 ms: 1 1 1 1 1 0 0 0
+after the window slides: 1</code></pre>
+<p>Five allowed, three refused, then allowed again once old entries aged out: a <strong>true sliding window</strong>, with no edge bursts, entirely atomic. (Cost: it stores one entry per request, so memory scales with the limit.) Production variants: <strong>token bucket</strong> and <strong>leaky bucket</strong> (smooth rates, allow bursts), usually also written as Lua scripts. <em>(I tested the sliding window and the fixed window; token bucket is described, not run.)</em></p>
+<p><strong>Where the limiter key comes from matters</strong> (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>): per IP, per user id, per API key. Behind a proxy, use the real client IP (<code>X-Forwarded-For</code> with trusted-proxy settings), or everyone shares one bucket.</p>
+<hr>
+
+<h2 id="19-5-distributed-locks-subtle">19.5 Distributed Locks (Subtle!)</h2>
+<p>Sometimes several servers must ensure <strong>only one</strong> runs a job (generate the nightly report, process one refund). Redis can provide a lock:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;lock:report&#x27;</span>, token, { <span class="hljs-attr">NX</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">PX</span>: <span class="hljs-number">400</span> });   <span class="hljs-comment">// acquire: only if absent, auto-expires in 400 ms</span></code></pre></div>
+<p>The <strong>expiry (a lease)</strong> is essential: if the holder crashes, the lock must free itself. But it creates the classic bug. Our test:</p>
+<pre class="is-plain"><code>A acquires: OK | B tries: null                          ← mutual exclusion works
+B acquires after A's lease expired: OK                  ← A was too slow; its lease ran out
+A does naive DEL -&gt; deleted 1 key (that was B's lock!)  ← A finishes late and releases B's lock</code></pre>
+<p>Now <em>B&#39;s</em> critical section is unprotected, and a third process C could enter while B still runs. <strong>The fix:</strong> each holder stores a <strong>unique token</strong> as the value and releases only if the value still matches, <strong>atomically</strong> (so another client can&#39;t take it between the check and the delete):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Lua</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-lua"><span class="hljs-keyword">if</span> redis.call(<span class="hljs-string">&#x27;GET&#x27;</span>, KEYS[<span class="hljs-number">1</span>]) == ARGV[<span class="hljs-number">1</span>] <span class="hljs-keyword">then</span> <span class="hljs-keyword">return</span> redis.call(<span class="hljs-string">&#x27;DEL&#x27;</span>, KEYS[<span class="hljs-number">1</span>]) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> <span class="hljs-keyword">end</span></code></pre></div>
+<pre class="is-plain"><code>A safe unlock with its token -&gt; 0 (0 = not yours, nothing deleted)</code></pre>
+<h3 id="what-a-redis-lock-does-not-guarantee">What a Redis lock does <em>not</em> guarantee</h3>
+<ul>
+<li>If A&#39;s lease expires <strong>while it&#39;s still working</strong>, two processes are in the critical section anyway (a &quot;paused&quot; process, say from a long garbage collection, wakes up thinking it still holds the lock). A lock with a timeout can never be a <em>perfect</em> mutual-exclusion guarantee. Martin Kleppmann&#39;s essay &quot;How to do distributed locking&quot; explains this at length.</li>
+<li>On failover (replica promoted before it received the lock key) two clients can hold the &quot;same&quot; lock. Redlock (a multi-instance algorithm) tries to address this and is <strong>debated</strong>.</li>
+<li><strong>Therefore: use locks for efficiency (avoid duplicate work), not for correctness.</strong> If correctness matters (don&#39;t double-charge, don&#39;t oversell), enforce it in the <strong>database</strong> with constraints, atomic updates or fencing tokens (<a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>). Use the lock to reduce wasted work, and the database to guarantee the invariant.</li>
+</ul>
+<p>For single-database exclusivity, PostgreSQL&#39;s advisory locks (Chapters <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">14</a> and 16) are often simpler and safer than Redis locks.</p>
+<hr>
+
+<h2 id="19-6-pub-sub-vs-streams">19.6 Pub/Sub vs Streams</h2>
+<h3 id="pub-sub-fire-and-forget">Pub/Sub: fire-and-forget</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> sub.<span class="hljs-title function_">subscribe</span>(<span class="hljs-string">&#x27;orders:new&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">m</span>) =&gt;</span> got.<span class="hljs-title function_">push</span>(m));
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">publish</span>(<span class="hljs-string">&#x27;orders:new&#x27;</span>, <span class="hljs-string">&#x27;order-1&#x27;</span>);</code></pre></div>
+<pre class="is-plain"><code>online subscriber received: [ 'order-1' ]
+subscriber that joined after publish received: []     &lt;- pub/sub does not store messages</code></pre>
+<p>Pub/sub delivers to <strong>whoever is subscribed right now</strong>, and then forgets. A subscriber that was disconnected, restarting or slow simply <strong>misses messages</strong>. Perfect for ephemeral signals (live notifications to connected clients, cache invalidation broadcasts); <strong>wrong</strong> for anything you can&#39;t afford to lose.</p>
+<h3 id="streams-a-durable-log-with-consumer-groups">Streams: a durable log with consumer groups</h3>
+<p>A <strong>stream</strong> (<code>XADD</code>) is an append-only log; <strong>consumer groups</strong> let several workers share it, each message going to one worker, with <strong>acknowledgements</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">xAdd</span>(<span class="hljs-string">&#x27;stream:orders&#x27;</span>, <span class="hljs-string">&#x27;*&#x27;</span>, { <span class="hljs-attr">orderId</span>: <span class="hljs-string">&#x27;1&#x27;</span> });  <span class="hljs-comment">// …2, …3</span>
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">xGroupCreate</span>(<span class="hljs-string">&#x27;stream:orders&#x27;</span>, <span class="hljs-string">&#x27;workers&#x27;</span>, <span class="hljs-string">&#x27;0&#x27;</span>);
+<span class="hljs-keyword">const</span> batch1 = <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">xReadGroup</span>(<span class="hljs-string">&#x27;workers&#x27;</span>, <span class="hljs-string">&#x27;w1&#x27;</span>, { <span class="hljs-attr">key</span>: <span class="hljs-string">&#x27;stream:orders&#x27;</span>, <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;&gt;&#x27;</span> }, { <span class="hljs-attr">COUNT</span>: <span class="hljs-number">2</span> });</code></pre></div>
+<pre class="is-plain"><code>worker w1 reads 2: [ '1', '2' ]
+pending (delivered, not acked): 2
+worker w2 reads the rest: [ '3' ] | pending now: 1      ← after w1 XACKed its two messages</code></pre>
+<p>Messages are <strong>stored</strong>; a consumer that reads a message but doesn&#39;t <code>XACK</code> (because it crashed) leaves it in the <strong>pending list</strong>, where another worker can <strong>claim</strong> it (<code>XAUTOCLAIM</code>) and retry. That is at-least-once delivery. (Claiming/retry wasn&#39;t exercised in the test.) Streams are Redis&#39;s answer to &quot;I need a lightweight message queue.&quot; For heavier needs (replays, huge throughput, strict ordering across partitions) <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a> compares Kafka, RabbitMQ and SQS.</p>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Pub/Sub</th>
+<th>List (<code>LPUSH/RPOP</code>)</th>
+<th>Stream</th>
+</tr>
+</thead><tbody><tr>
+<td>Stores messages</td>
+<td>No</td>
+<td>Yes (until popped)</td>
+<td>Yes (until trimmed)</td>
+</tr>
+<tr>
+<td>Multiple consumers each get a copy</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes (with separate groups)</td>
+</tr>
+<tr>
+<td>Work sharing among workers</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes (consumer groups)</td>
+</tr>
+<tr>
+<td>Survives a worker crash</td>
+<td>n/a</td>
+<td><strong>No</strong> (job popped = gone)</td>
+<td>Yes (pending list + ack)</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="19-7-the-single-thread-rule-don-t-block-the-server">19.7 The Single-Thread Rule: Don&#39;t Block the Server</h2>
+<p>Commands run <strong>one at a time</strong>. Fast commands (<code>GET</code>, <code>INCR</code>, <code>HGET</code>: O(1)) are fine. <strong>O(N) commands over big collections</strong> stall every client. The classic offender is <code>KEYS pattern</code>.</p>
+<p>We loaded <strong>200,000 keys</strong> and compared:</p>
+<pre class="is-plain"><code>KEYS bulk:* -&gt; 200000 keys in 354 ms (blocks the whole server meanwhile)
+while KEYS ran, another client's PING waited up to 116 ms
+SCAN in pages of ~1000 -&gt; 200000 keys in 950 ms (non-blocking)</code></pre>
+<p>While <code>KEYS</code> ran, an unrelated client&#39;s <code>PING</code>, which normally takes under a millisecond, <strong>waited 116 ms</strong>. On a production instance with millions of keys the freeze is seconds. <code>SCAN cursor MATCH pattern COUNT n</code> iterates in small steps and lets other commands interleave: slower overall, but it never stalls the server. (<code>SCAN</code> may return a key more than once and may miss keys added during the scan, so treat it as best-effort.)</p>
+<p><strong>Other things that block:</strong> <code>FLUSHALL</code> on a big dataset, huge <code>SMEMBERS</code>/<code>HGETALL</code>/<code>LRANGE 0 -1</code> on million-element collections (use <code>SSCAN</code>/<code>HSCAN</code>, or paginate), very slow Lua scripts, very large values (a 100 MB string), and <code>SORT</code>/big set operations. Find slow commands with <code>SLOWLOG GET</code> and <code>redis-cli --bigkeys</code>. <em>(<code>SLOWLOG</code> not run here.)</em></p>
+<h3 id="pipelining-and-transactions">Pipelining and transactions</h3>
+<p>Each command is a network round trip (~0.2–2 ms). To send many, <strong>pipeline</strong> them. We loaded 200,000 keys with <code>r.multi()</code> (queued, then sent together) in one go; I did not time it against 200,000 individually awaited calls, but each of those would pay a full network round trip (the effect <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a> measured for N+1). <code>MULTI/EXEC</code> groups commands to run <strong>atomically in sequence</strong> (but unlike SQL, there&#39;s no rollback if one fails, and no reads between commands that depend on each other: use Lua for that, or <code>WATCH</code> for optimistic locking).</p>
+<hr>
+
+<h2 id="19-8-persistence-what-survives-a-crash">19.8 Persistence: What Survives a Crash?</h2>
+<p>Redis offers two mechanisms:</p>
+<ul>
+<li><strong>RDB snapshots</strong>: a compact point-in-time dump written periodically (default: after <code>3600 s &amp; 1 change</code>, <code>300 s &amp; 100 changes</code>, or <code>60 s &amp; 10000 changes</code>).</li>
+<li><strong>AOF (append-only file)</strong>: logs every write; with <code>appendfsync everysec</code> (the usual setting) you can lose <strong>about one second</strong> of writes.</li>
+</ul>
+<p>Test: two containers, one with the <strong>default config</strong>, one started with <code>--appendonly yes</code>. In each we <code>SET order:1 paid</code>, waited 2 s, then <strong><code>docker kill</code></strong> (a hard kill, like a power loss), restarted, and read the key:</p>
+<pre class="is-plain"><code>default config:  save 3600 1 300 100 60 10000   appendonly no
+AOF config:      save 3600 1 300 100 60 10000   appendonly yes
+
+default after kill -9: order:1 = []       dbsize=0       ← DATA LOST
+AOF     after kill -9: order:1 = [paid]   dbsize=1       ← survived
+--- graceful shutdown of default saves a snapshot:
+default after graceful stop/start: order:2 = [shipped]   ← a clean stop writes a final RDB</code></pre>
+<p>The default Redis would have snapshot after an hour (1 change) — and we killed it at ~5 s. <strong>Everything written since the last snapshot is lost on a crash.</strong> Fine for a cache; <strong>not fine</strong> if Redis holds your only copy of sessions or queued jobs.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Setting</th>
+<th>Durability</th>
+<th>Cost</th>
+</tr>
+</thead><tbody><tr>
+<td>None / RDB only</td>
+<td>Lose everything since the last snapshot</td>
+<td>Fastest, smallest</td>
+</tr>
+<tr>
+<td><code>appendonly yes</code> + <code>everysec</code></td>
+<td>Lose ≤ ~1 s</td>
+<td>Small write overhead</td>
+</tr>
+<tr>
+<td><code>appendfsync always</code></td>
+<td>Lose ~nothing</td>
+<td>Much slower writes</td>
+</tr>
+</tbody></table></div>
+<p><em>(Not tested: AOF rewrite, mixed RDB+AOF, replication, and managed-service durability. Check your provider&#39;s guarantees.)</em> <strong>Rule:</strong> <em>decide what happens if Redis restarts empty.</em> If the answer is &quot;the app rebuilds the cache from the database,&quot; you&#39;re fine. If it&#39;s &quot;we lose orders,&quot; you chose the wrong store.</p>
+<hr>
+
+<h2 id="19-9-memory-and-eviction">19.9 Memory and Eviction</h2>
+<p>RAM is finite. <code>maxmemory</code> sets a cap; <strong><code>maxmemory-policy</code></strong> decides what happens at the cap. Test: cap = 3 MB, writing 20,000 keys of 200 bytes each:</p>
+<pre class="is-plain"><code>noeviction   writes accepted:  3892 | keys in DB:  3892 | evicted:     0 | error: OOM command not allowed when used memory &gt; 'maxmemory'.
+allkeys-lru  writes accepted: 20000 | keys in DB:  3891 | evicted: 16109</code></pre>
+<ul>
+<li><strong><code>noeviction</code></strong>: writes start <strong>failing</strong> with <code>OOM</code> once memory is full. Right for a primary store/queue where you must not silently drop data; wrong for a cache (your app will start erroring).</li>
+<li><strong><code>allkeys-lru</code></strong>: Redis <strong>evicts the least recently used keys</strong> to make room: all 20,000 writes succeeded, while only ~3,900 remain. That&#39;s the standard policy for a <strong>cache</strong>.</li>
+<li>Others: <code>allkeys-lfu</code> (least frequently used), <code>volatile-*</code> (evict only keys that have a TTL), <code>*-random</code>, <code>volatile-ttl</code>.</li>
+</ul>
+<p><strong>Practical rules:</strong> a cache instance uses <code>allkeys-lru</code>/<code>lfu</code> with a <code>maxmemory</code>; keep <strong>caches and durable data on separate instances</strong> (so an eviction policy meant for one doesn&#39;t delete the other); <strong>give every cache key a TTL</strong>; watch <code>used_memory</code>, <code>evicted_keys</code> and the hit rate (<code>keyspace_hits / (hits + misses)</code>).</p>
+<hr>
+
+<h2 id="19-10-scaling-and-high-availability-concepts">19.10 Scaling and High Availability (Concepts)</h2>
+<p><em>(Described from documentation; not run in this chapter.)</em></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Mechanism</th>
+<th>What it gives</th>
+<th>Remember</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Replication</strong> (primary → replicas)</td>
+<td>Read scaling, a hot standby</td>
+<td>Asynchronous: a failover can lose the last writes</td>
+</tr>
+<tr>
+<td><strong>Sentinel</strong></td>
+<td>Automatic failover for a primary/replica set</td>
+<td>Clients must be Sentinel-aware</td>
+</tr>
+<tr>
+<td><strong>Redis Cluster</strong></td>
+<td>Shards keys across nodes (16,384 hash slots)</td>
+<td>Multi-key operations/Lua must stay in one slot (use <code>{hash tags}</code>)</td>
+</tr>
+<tr>
+<td><strong>Managed services</strong> (ElastiCache, Upstash, Redis Cloud, Memorystore)</td>
+<td>Ops handled for you</td>
+<td>Check persistence/failover/eviction defaults</td>
+</tr>
+</tbody></table></div>
+<h3 id="security-basics">Security basics</h3>
+<p>Redis was designed for trusted networks. <strong>Never expose it to the internet</strong> (many breaches started with an open port 6379). Bind to private interfaces, set a strong <code>requirepass</code>/<strong>ACL users</strong>, enable TLS across networks, and rename/disable dangerous commands (<code>FLUSHALL</code>, <code>CONFIG</code>) for application users. (Our test containers were bound to <code>127.0.0.1</code> only.)</p>
+<hr>
+
+<h2 id="19-11-shopline-with-redis">19.11 ShopLine with Redis</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Need</th>
+<th>Redis feature</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td>Cache product pages</td>
+<td><code>cache:product:{id}</code> strings, TTL 5 min + jitter, delete on update</td>
+<td>Stampede protection on hot items</td>
+</tr>
+<tr>
+<td>Sessions / refresh tokens</td>
+<td><code>session:{id}</code> hash/string with TTL</td>
+<td>Decide durability (§19.8)</td>
+</tr>
+<tr>
+<td>Rate limiting login &amp; API</td>
+<td>Lua sliding window per IP/user</td>
+<td><a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a></td>
+</tr>
+<tr>
+<td>Best sellers</td>
+<td>Sorted set <code>ZINCRBY</code> per sale, <code>ZREVRANGE 0 9</code></td>
+<td>Rebuildable from SQL</td>
+</tr>
+<tr>
+<td>Daily unique visitors</td>
+<td>HyperLogLog</td>
+<td>~1% error</td>
+</tr>
+<tr>
+<td>Cart (anonymous)</td>
+<td>Hash <code>cart:{id}</code> with TTL</td>
+<td>Move to DB at checkout</td>
+</tr>
+<tr>
+<td>Background jobs</td>
+<td>Stream + consumer group (or BullMQ, Ch 28)</td>
+<td>At-least-once; idempotent handlers</td>
+</tr>
+<tr>
+<td>&quot;Only one cron runner&quot;</td>
+<td><code>SET NX PX</code> + token (efficiency only)</td>
+<td>Or Postgres advisory lock</td>
+</tr>
+<tr>
+<td>Live order-status push</td>
+<td>Pub/sub → SSE/WebSocket (Ch 10)</td>
+<td>Lossy: also persist state</td>
+</tr>
+</tbody></table></div>
+<p>A repository-style cache wrapper (<a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a>&#39;s pattern keeps Redis behind an interface):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">cached</span>(<span class="hljs-params">redis, { ttl = <span class="hljs-number">300</span>, jitter = <span class="hljs-number">60</span> } = {}</span>) {
+  <span class="hljs-keyword">const</span> inflight = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">get</span>(<span class="hljs-params">key, load</span>) {
+    <span class="hljs-keyword">const</span> hit = <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">get</span>(key);
+    <span class="hljs-keyword">if</span> (hit !== <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(hit);
+    <span class="hljs-keyword">if</span> (inflight.<span class="hljs-title function_">has</span>(key)) <span class="hljs-keyword">return</span> inflight.<span class="hljs-title function_">get</span>(key);              <span class="hljs-comment">// single-flight</span>
+    <span class="hljs-keyword">const</span> p = (<span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-keyword">const</span> value = <span class="hljs-keyword">await</span> <span class="hljs-title function_">load</span>();
+      <span class="hljs-keyword">if</span> (value !== <span class="hljs-literal">undefined</span>) <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">set</span>(key, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(value), { <span class="hljs-attr">EX</span>: ttl + <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * jitter) });
+      <span class="hljs-keyword">return</span> value;
+    })().<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> inflight.<span class="hljs-title function_">delete</span>(key));
+    inflight.<span class="hljs-title function_">set</span>(key, p);
+    <span class="hljs-keyword">return</span> p;
+  };
+}</code></pre></div>
+<p><em>(This wrapper combines the tested single-flight and jitter ideas from §19.3; the wrapper itself, as written, was not run.)</em> Always make the app <strong>degrade gracefully</strong> when Redis is down: catch errors, log, and fall back to the database (a cache outage must not become a site outage).</p>
+<hr>
+
+<h2 id="19-12-edge-cases-and-gotchas-checklist">19.12 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Treating Redis as the only copy of important data without enabling/understanding persistence.</li>
+<li><input disabled="" type="checkbox"> Default persistence + <code>kill -9</code>/crash = lost writes.</li>
+<li><input disabled="" type="checkbox"> No <code>maxmemory</code>/eviction policy on a cache → OOM or swapping.</li>
+<li><input disabled="" type="checkbox"> Caches without TTLs (memory grows forever).</li>
+<li><input disabled="" type="checkbox"> <code>KEYS *</code> (or any O(N) command) in production; use <code>SCAN</code>.</li>
+<li><input disabled="" type="checkbox"> Huge keys/values; unbounded lists and sets.</li>
+<li><input disabled="" type="checkbox"> Cache stampede on hot keys; synchronized TTLs.</li>
+<li><input disabled="" type="checkbox"> Caching inside a DB transaction, or caching before commit.</li>
+<li><input disabled="" type="checkbox"> <code>INCR</code> then <code>EXPIRE</code> as two steps (use Lua/atomic).</li>
+<li><input disabled="" type="checkbox"> Lock release without checking the token; lock without an expiry.</li>
+<li><input disabled="" type="checkbox"> Relying on a Redis lock for <em>correctness</em> (use DB constraints).</li>
+<li><input disabled="" type="checkbox"> Pub/sub for messages that must not be lost.</li>
+<li><input disabled="" type="checkbox"> Forgetting <code>XACK</code> (pending list grows) or never trimming streams.</li>
+<li><input disabled="" type="checkbox"> Not attaching the <code>&#39;error&#39;</code> handler to the client; no reconnect/backoff strategy.</li>
+<li><input disabled="" type="checkbox"> Assuming numbers come back as numbers (they&#39;re strings).</li>
+<li><input disabled="" type="checkbox"> Multi-key operations in Cluster across slots.</li>
+<li><input disabled="" type="checkbox"> Exposing port 6379 publicly; no auth.</li>
+<li><input disabled="" type="checkbox"> App crashes when Redis is unavailable instead of falling back.</li>
+</ul>
+<hr>
+
+<h2 id="19-13-chapter-summary">19.13 Chapter Summary</h2>
+<ul>
+<li>Redis is an <strong>in-memory, single-threaded data-structure server</strong>: very fast, every command atomic, <strong>durability optional</strong>.</li>
+<li>Structures: <strong>strings</strong> (and atomic counters: 1,000 concurrent <code>INCR</code> → exactly 1000), <strong>hashes</strong>, <strong>lists</strong>, <strong>sets</strong>, <strong>sorted sets</strong> (leaderboards), <strong>HyperLogLog</strong>, <strong>streams</strong>. Values return as strings.</li>
+<li><strong>Cache-aside</strong> is the default; the <strong>stampede</strong> turned 50 concurrent misses into 50 DB queries; <strong>single-flight / a Redis lock</strong> reduced it to 1; add <strong>TTL jitter</strong>. Invalidation is the hard part.</li>
+<li><strong>Rate limiting</strong>: fixed window (<code>INCR</code>+<code>EXPIRE</code>) has edge bursts and a non-atomic gap; a <strong>Lua sliding window</strong> is atomic and exact (5 allowed, 3 refused, then allowed again).</li>
+<li><strong>Distributed locks</strong>: <code>SET NX PX</code> + unique token + <strong>atomic compare-and-delete</strong>; a naive <code>DEL</code> deleted another client&#39;s lock. A lock is for <strong>efficiency</strong>, not correctness: enforce invariants in the database.</li>
+<li><strong>Pub/sub</strong> loses messages for absent subscribers; <strong>streams + consumer groups</strong> persist, track pending, and ack.</li>
+<li><strong>Don&#39;t block</strong>: <code>KEYS</code> on 200k keys froze other clients for ~116 ms; use <code>SCAN</code>, pipelines and Lua.</li>
+<li><strong>Persistence</strong>: default config <strong>lost the key on <code>kill -9</code></strong>; <code>appendonly yes</code> kept it; a graceful stop saves a snapshot.</li>
+<li><strong>Eviction</strong>: <code>noeviction</code> fails writes with OOM; <code>allkeys-lru</code> evicted ~16k of 20k keys and kept serving. Cache and durable data belong on separate instances.</li>
+<li>Secure it (private network, auth, TLS) and degrade gracefully when it&#39;s down.</li>
+</ul>
+<hr>
+
+<h2 id="19-14-revision-notes">19.14 Revision Notes</h2>
+<ul>
+<li><code>SET k v EX s NX</code>; <code>INCR/INCRBY</code>; <code>HSET/HINCRBY</code>; <code>LPUSH/RPOP/BRPOP</code>; <code>SADD/SINTER</code>; <code>ZADD/ZINCRBY/ZRANGE REV/ZREVRANK</code>; <code>PFADD/PFCOUNT</code>; <code>XADD/XREADGROUP/XACK</code>.</li>
+<li>Cache-aside + TTL jitter + single-flight/lock; invalidate after DB commit.</li>
+<li>Atomic multi-step = Lua (<code>EVAL</code>/<code>EVALSHA</code>) or <code>MULTI</code> (no rollback).</li>
+<li>Lock = <code>SET NX PX token</code>; release = Lua compare-and-delete; use for efficiency only.</li>
+<li>Pub/sub = lossy; Streams = durable with ack.</li>
+<li>Avoid <code>KEYS</code>; use <code>SCAN</code>. Watch big keys; use <code>SLOWLOG</code>.</li>
+<li>Persistence: RDB (snapshots), AOF (<code>everysec</code> ≈ lose 1 s); default can lose everything since the last snapshot.</li>
+<li>Eviction: <code>noeviction</code> (store) vs <code>allkeys-lru/lfu</code> (cache); set <code>maxmemory</code>.</li>
+<li>Private network + auth + TLS; fall back to the DB if Redis is down.</li>
+</ul>
+<hr>
+
+<h2 id="19-15-mind-map-ascii">19.15 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                                  REDIS
+                                    │
+   ┌───────────┬──────────┬─────────┼──────────┬───────────────┬────────────┐
+ STRUCTURES  PATTERNS   ATOMICITY  MESSAGING  PERSISTENCE    MEMORY      OPERATIONS
+   │            │          │          │           │             │             │
+ string/hash  cache-aside INCR/Lua  pub/sub    RDB / AOF     maxmemory   KEYS vs SCAN
+ list/set     stampede    sliding   streams    kill -9 test  eviction    pipelining
+ zset/HLL     rate limit  window    consumer   everysec      LRU/LFU     SLOWLOG
+ streams      locks+token  MULTI    groups     lose data?    TTLs        security/ACL
+                                    XACK                                  HA: replica/cluster</code></pre>
+<hr>
+
+<h2 id="19-16-cheat-sheet">19.16 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> r.<span class="hljs-title function_">set</span>(k, v, { <span class="hljs-attr">EX</span>: <span class="hljs-number">300</span>, <span class="hljs-attr">NX</span>: <span class="hljs-literal">true</span> });  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">get</span>(k);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">del</span>(k);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">expire</span>(k, <span class="hljs-number">60</span>);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">ttl</span>(k);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">incr</span>(k);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">incrBy</span>(k, <span class="hljs-number">5</span>);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">hSet</span>(k, {<span class="hljs-attr">a</span>:<span class="hljs-string">&#x27;1&#x27;</span>});  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">hIncrBy</span>(k,<span class="hljs-string">&#x27;a&#x27;</span>,<span class="hljs-number">1</span>);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">hGetAll</span>(k);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">lPush</span>(k, [<span class="hljs-string">&#x27;a&#x27;</span>]);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">rPop</span>(k);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">sAdd</span>(k, [<span class="hljs-string">&#x27;a&#x27;</span>]);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">sInter</span>([k1,k2]);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">zAdd</span>(k, [{<span class="hljs-attr">score</span>:<span class="hljs-number">1</span>,<span class="hljs-attr">value</span>:<span class="hljs-string">&#x27;a&#x27;</span>}]);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">zRangeWithScores</span>(k, <span class="hljs-number">0</span>, <span class="hljs-number">9</span>, { <span class="hljs-attr">REV</span>: <span class="hljs-literal">true</span> });
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">pfAdd</span>(k, id);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">pfCount</span>(k);
+<span class="hljs-keyword">await</span> r.<span class="hljs-title function_">xAdd</span>(k, <span class="hljs-string">&#x27;*&#x27;</span>, {<span class="hljs-attr">f</span>:<span class="hljs-string">&#x27;v&#x27;</span>});  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">xGroupCreate</span>(k, g, <span class="hljs-string">&#x27;0&#x27;</span>);  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">xReadGroup</span>(g, c, {<span class="hljs-attr">key</span>:k,<span class="hljs-attr">id</span>:<span class="hljs-string">&#x27;&gt;&#x27;</span>}, {<span class="hljs-attr">COUNT</span>:<span class="hljs-number">10</span>});  <span class="hljs-keyword">await</span> r.<span class="hljs-title function_">xAck</span>(k, g, ids);
+<span class="hljs-keyword">await</span> r.<span class="hljs-built_in">eval</span>(luaSrc, { <span class="hljs-attr">keys</span>:[…], <span class="hljs-attr">arguments</span>:[…] });   <span class="hljs-comment">// atomic multi-step</span>
+<span class="hljs-comment">// lock:  SET key token NX PX ttl   ·   unlock: Lua  if GET==token then DEL</span>
+<span class="hljs-comment">// cache: GET → miss → load → SET EX ttl+jitter     ·     never KEYS *, use SCAN</span>
+<span class="hljs-comment">// config: maxmemory 256mb; maxmemory-policy allkeys-lru; appendonly yes; requirepass …</span></code></pre></div>
+<hr>
+
+<h2 id="19-17-key-takeaways">19.17 Key Takeaways</h2>
+<ol>
+<li><strong>Redis is fast because it&#39;s in RAM and single-threaded.</strong> Respect both.</li>
+<li>Every command is atomic: build counters, limiters and locks from atoms (and Lua).</li>
+<li>A cache is <strong>disposable</strong>: add TTLs, stampede protection, and graceful fallback.</li>
+<li><strong>Locks are for efficiency; the database guarantees correctness.</strong></li>
+<li><strong>Know your durability</strong>: the default can lose everything since the last snapshot.</li>
+<li>Use <strong><code>SCAN</code>, not <code>KEYS</code></strong>; use <strong>streams, not pub/sub</strong>, when messages matter.</li>
+</ol>
+<hr>
+
+<h2 id="19-18-20-multiple-choice-questions">19.18 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="One thread, one command at a time."><p class="quiz-text">Why are Redis commands atomic?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Locks on every key</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A single thread executes commands one at a time</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Transactions are automatic</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They aren&#39;t</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Measured: 1000."><p class="quiz-text">1,000 concurrent <code>INCR</code> calls result in:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">About 900</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Exactly 1000</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">An error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Random</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Strings on the wire."><p class="quiz-text">The value returned by <code>GET visits</code> in Node is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A number</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A string</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A BigInt</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A Buffer</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Ordered by score."><p class="quiz-text">The best structure for a top-N leaderboard is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">List</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Sorted set</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">String</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Set</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Probabilistic distinct count."><p class="quiz-text">HyperLogLog is used to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Store every unique id</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Estimate distinct counts with tiny memory</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sort items</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Queue jobs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Lazy loading."><p class="quiz-text">In cache-aside, on a miss you:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Return null</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Load from the source of truth, then populate the cache</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Delete the DB row</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Block all readers</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="50 requests → 50 DB calls."><p class="quiz-text">A cache stampede is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Too many keys</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Many concurrent misses for a hot expired key all hitting the database</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A network error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A TTL bug</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="d" data-why="Identical TTLs expire together."><p class="quiz-text">Which does NOT mitigate a stampede?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Single-flight</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A rebuild lock</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">TTL jitter</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Making all TTLs identical</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Two steps; use Lua."><p class="quiz-text">Why is <code>INCR</code> then <code>EXPIRE</code> risky?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Non-atomic: a crash between them leaves a key that never expires</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>EXPIRE</code> is deprecated</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">INCR resets the TTL</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Scripts are atomic."><p class="quiz-text">A Lua script in Redis runs:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Concurrently with other commands</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Atomically, with nothing interleaved</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">On the client</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only once per day</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Token check + delete in Lua."><p class="quiz-text">A safe lock release requires:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>DEL key</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Check the stored token matches, then delete, atomically</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>FLUSHALL</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No release needed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Released B's lock."><p class="quiz-text">Why did the naive <code>DEL</code> in our lock test cause harm?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It was slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It deleted the lock that B had acquired after A&#39;s lease expired</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It crashed Redis</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It had a typo</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Efficiency, not correctness."><p class="quiz-text">Redis locks are best used for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Guaranteeing correctness of payments</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Avoiding duplicate work (efficiency); correctness belongs in the DB</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Replacing transactions</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Authentication</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No storage in pub/sub."><p class="quiz-text">A subscriber that connects after a <code>PUBLISH</code> receives:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The message</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Nothing: pub/sub doesn&#39;t store messages</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">All history</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">An error</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Pending list, claimable."><p class="quiz-text">In streams, a message read but not <code>XACK</code>ed stays in:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The void</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The pending entries list, available to be claimed</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A new stream</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">RDB only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Blocks; use SCAN."><p class="quiz-text"><code>KEYS bulk:*</code> on 200k keys:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is non-blocking</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Blocks the server (another client&#39;s PING waited ~116 ms)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Is faster than SCAN always</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Is atomic across the cluster</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Measured: lost."><p class="quiz-text">With default config, <code>docker kill</code> shortly after <code>SET</code> results in:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The key survives</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The key is lost (no snapshot yet)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A corrupted DB</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Redis refusing to start</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="everysec."><p class="quiz-text">AOF with <code>appendfsync everysec</code> risks losing roughly:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing ever</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">About one second of writes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">One hour</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Everything</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Evict least recently used."><p class="quiz-text">For a <strong>cache</strong> instance at its memory limit, the right policy is typically:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>noeviction</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>allkeys-lru</code> (or <code>lfu</code>)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>volatile-ttl</code> with no TTLs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">None</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Defence in depth."><p class="quiz-text">Which is the best protection for Redis in production?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Expose 6379 for convenience</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Private network, auth/ACL, TLS, and graceful app fallback</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No password, it&#39;s internal</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Run as root</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-d, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="19-19-20-hands-on-exercises">19.19 20 Hands-on Exercises</h2>
+<p><em>(Start the container from <a href="/learn/backend-master/resources/ch19/README.txt">resources/ch19/README.txt</a>. These labs call <code>FLUSHALL</code>; use a throwaway instance.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Use <code>redis-cli</code> (via <code>docker exec</code>) to <code>SET</code>/<code>GET</code> with <code>EX</code>, and watch <code>TTL</code> count down.</li>
+<li>Count to 1,000 with 1,000 concurrent <code>INCR</code>s from Node; compare with a read-modify-write version.</li>
+<li>Store a product as a hash; <code>HINCRBY</code> its stock.</li>
+<li>Build a best-sellers sorted set; fetch the top 3 and the rank of one item.</li>
+<li>Use <code>SADD</code>/<code>SINTER</code> to find users who bought both products A and B.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement cache-aside around a slow function; measure miss vs hit latency.</li>
+<li>Reproduce the stampede (50 concurrent cold-key requests); fix it with single-flight, then with a Redis lock.</li>
+<li>Implement the fixed-window limiter; demonstrate the edge burst, then fix with the Lua sliding window.</li>
+<li>Add TTL jitter to a cache and chart expiry times for 1,000 keys.</li>
+<li>Build a work queue with a stream and a consumer group; run two workers and verify each message is processed once.</li>
+<li>Kill a worker after reading but before <code>XACK</code>; use <code>XAUTOCLAIM</code> to reassign the message.</li>
+<li>Show that pub/sub loses messages for a late subscriber; build the same flow with a stream.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Implement the safe lock (token + Lua unlock) as a library with tests, including the &quot;expired lease&quot; scenario.</li>
+<li>Demonstrate a lock&#39;s limitation: pause process A (simulate GC) past its lease and show two holders; then add a <strong>fencing token</strong> check in the database to make it safe.</li>
+<li>Reproduce the persistence test with RDB-only, AOF <code>everysec</code> and AOF <code>always</code>; measure write throughput of each.</li>
+<li>Load 1M keys; compare <code>KEYS</code> and <code>SCAN</code> impact on a concurrent latency probe; find big keys with <code>--bigkeys</code>.</li>
+<li>Configure <code>maxmemory</code> + <code>allkeys-lru</code> vs <code>allkeys-lfu</code>; replay a skewed (Zipf) workload and compare hit rates.</li>
+<li>Implement a token-bucket limiter in Lua with burst and refill rate; test with a precise clock.</li>
+<li>Make an Express middleware that caches GET responses in Redis, with stampede protection, <code>Cache-Control</code>/ETag integration, and graceful fallback when Redis is stopped.</li>
+<li>Build ShopLine&#39;s &quot;best sellers&quot; and &quot;daily uniques&quot; features, backed by Redis but rebuilt from PostgreSQL on startup (the cache is disposable).</li>
+</ol>
+<hr>
+
+<h2 id="19-20-5-interview-questions">19.20 5 Interview Questions</h2>
+<p><strong>1. Why is Redis fast, and what are the consequences of its design?</strong>
+<em>Model answer:</em> Data lives in memory and commands run on a single thread with an event loop, so there&#39;s no lock contention and each operation is microseconds. Consequences: every command is atomic (great for counters/limiters), but slow O(N) commands (<code>KEYS</code>, huge <code>SMEMBERS</code>) block all clients; capacity is bounded by RAM (needs eviction/sharding); durability is optional and must be configured.</p>
+<p><strong>2. Explain cache-aside and how you prevent a cache stampede.</strong>
+<em>Model answer:</em> Read the cache; on a miss load from the DB and set with a TTL; on writes update the DB then invalidate the key. A stampede occurs when a hot key expires and many requests miss at once. Mitigate with single-flight or a rebuild lock so one request loads, TTL jitter so keys don&#39;t expire together, early/background refresh, and negative caching. The cache must be disposable and the app must work when it&#39;s down.</p>
+<p><strong>3. How would you implement a rate limiter with Redis?</strong>
+<em>Model answer:</em> Fixed window: <code>INCR</code> a key per client+window and set <code>EXPIRE</code> on the first hit: simple but bursty at boundaries and non-atomic. Better: a Lua script implementing a sliding window (sorted set of timestamps, trim old, count, add) or a token bucket, executed atomically. Choose the key (IP/user/API key), return <code>429</code> with <code>Retry-After</code>, and fail open or closed deliberately if Redis is unavailable.</p>
+<p><strong>4. Can you use Redis for distributed locking? What are the pitfalls?</strong>
+<em>Model answer:</em> <code>SET key token NX PX ttl</code> to acquire, Lua compare-and-delete to release. Pitfalls: lease expiry while the holder is still working (two holders), releasing someone else&#39;s lock without a token check, failover losing the lock key. So use it for efficiency (avoiding duplicate work); enforce correctness in the database with constraints, atomic updates, or fencing tokens.</p>
+<p><strong>5. Pub/sub vs streams vs lists for messaging?</strong>
+<em>Model answer:</em> Pub/sub: fire-and-forget fan-out to current subscribers, no storage, can lose messages. Lists: simple queue, a popped job is lost if the worker crashes. Streams: durable append-only log with consumer groups, acknowledgements and a pending list for retry (at-least-once), which is the right Redis primitive for work queues; for large-scale or replayable messaging, use Kafka/RabbitMQ/SQS (Ch 28).</p>
+<hr>
+
+<h2 id="19-21-3-real-projects">19.21 3 Real Projects</h2>
+<p><strong>Project 1: Cache Layer with Metrics (beginner–intermediate, ~6 hours).</strong>
+Add a cache-aside layer to the ShopLine product API using the wrapper from §19.11, with hit/miss counters, TTL jitter, single-flight, invalidation on update, and graceful fallback. Load-test with and without it; report p50/p99 and DB queries per second.</p>
+<p><strong>Project 2: Rate Limiter Service (intermediate, ~8 hours).</strong>
+Build a reusable limiter library with fixed window, sliding window and token bucket (Lua), per-route configs, standard <code>RateLimit-*</code> headers, and fail-open/fail-closed options. Property-test it against a reference model and run a distributed test across multiple Node processes.</p>
+<p><strong>Project 3: Reliable Job Queue on Streams (intermediate–advanced, ~12 hours).</strong>
+Implement producers, consumer groups, retries with backoff, a dead-letter stream, <code>XAUTOCLAIM</code> for crashed workers, idempotent handlers and metrics (lag, pending age). Chaos-test by killing workers and Redis (with AOF), and prove at-least-once with no permanent loss.</p>
+<hr>
+
+<h2 id="19-22-further-reading">19.22 Further Reading</h2>
+<ul>
+<li>Redis documentation: data types, <code>SET</code> options, Lua scripting, Streams, Persistence, Eviction, Security, and the <em>Command reference</em> (check complexity notes).</li>
+<li><em>Redis in Action</em> (Josiah Carlson) and the &quot;Redis University&quot; free courses (RU101/RU102JS).</li>
+<li>Martin Kleppmann, <em>How to do distributed locking</em>; Salvatore Sanfilippo&#39;s reply on Redlock.</li>
+<li><em>Designing Data-Intensive Applications</em>, <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a> (stream processing) and the caching discussions.</li>
+<li>Libraries: <code>ioredis</code>, <code>node-redis</code>, <strong>BullMQ</strong> (queues on Redis), <code>rate-limiter-flexible</code>.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-20-other-data-stores-and-choosing-the-right-one">Up next → Chapter 20: Other Data Stores and Choosing the Right One</h3>
+<p>Search engines (Elasticsearch/OpenSearch, and PostgreSQL full-text), columnar/OLAP stores, time-series databases, graph databases, object storage and file uploads (S3-style), message logs, and a practical decision framework for polyglot persistence, with the parts we can run locally tested for real.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Redis: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Is Redis durable?</h3></summary><p>Not by default. With the default configuration a hard kill lost our data; enabling AOF (appendonly yes) kept it. Decide what happens if Redis restarts empty.</p></details>
+<details class="learn-faq-item"><summary><h3>What is a cache stampede?</h3></summary><p>When a popular key expires, many concurrent requests miss at once and all hit the database. In our test 50 concurrent misses caused 50 queries; single-flight reduced it to 1.</p></details>
+<details class="learn-faq-item"><summary><h3>Why not use KEYS in production?</h3></summary><p>KEYS is O(N) and blocks the single-threaded server, delaying every other client. Use SCAN, which iterates in small steps.</p></details>
+<details class="learn-faq-item"><summary><h3>Can I use Redis for distributed locking?</h3></summary><p>Only for efficiency, not correctness. Use SET NX PX with a unique token and a compare-and-delete release, and enforce real invariants in the database.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span>&larr; Previous &middot; Chapter 18</span><strong>MongoDB Data Modeling &amp; Aggregation</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span>Next &middot; Chapter 20 &rarr;</span><strong>Search, OLAP, Time-Series &amp; Object Storage</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#19-0-why-this-chapter-matters">19.0 Why This Chapter Matters</a></li><li><a href="#19-1-what-redis-is-and-isn-t">19.1 What Redis Is (and Isn't)</a></li><li><a href="#19-2-the-core-structures-with-real-output">19.2 The Core Structures, With Real Output</a></li><li><a href="#19-3-caching-cache-aside-and-its-dangers">19.3 Caching: Cache-Aside and Its Dangers</a></li><li><a href="#19-4-atomic-rate-limiting">19.4 Atomic Rate Limiting</a></li><li><a href="#19-5-distributed-locks-subtle">19.5 Distributed Locks (Subtle!)</a></li><li><a href="#19-6-pub-sub-vs-streams">19.6 Pub/Sub vs Streams</a></li><li><a href="#19-7-the-single-thread-rule-don-t-block-the-server">19.7 The Single-Thread Rule: Don't Block the Server</a></li><li><a href="#19-8-persistence-what-survives-a-crash">19.8 Persistence: What Survives a Crash?</a></li><li><a href="#19-9-memory-and-eviction">19.9 Memory and Eviction</a></li><li><a href="#19-10-scaling-and-high-availability-concepts">19.10 Scaling and High Availability (Concepts)</a></li><li><a href="#19-11-shopline-with-redis">19.11 ShopLine with Redis</a></li><li><a href="#19-12-edge-cases-and-gotchas-checklist">19.12 Edge Cases and Gotchas Checklist</a></li><li><a href="#19-13-chapter-summary">19.13 Chapter Summary</a></li><li><a href="#19-14-revision-notes">19.14 Revision Notes</a></li><li><a href="#19-15-mind-map-ascii">19.15 Mind Map (ASCII)</a></li><li><a href="#19-16-cheat-sheet">19.16 Cheat Sheet</a></li><li><a href="#19-17-key-takeaways">19.17 Key Takeaways</a></li><li><a href="#19-18-20-multiple-choice-questions">19.18 20 Multiple Choice Questions</a></li><li><a href="#19-19-20-hands-on-exercises">19.19 20 Hands-on Exercises</a></li><li><a href="#19-20-5-interview-questions">19.20 5 Interview Questions</a></li><li><a href="#19-21-3-real-projects">19.21 3 Real Projects</a></li><li><a href="#19-22-further-reading">19.22 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "redis-tutorial-caching-rate-limiting-streams"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+PostgreSQL max_connections = 100 (each connection is a whole OS process, roughly 5-10 MB)
+
+=== 1. 300 application connections: direct vs through PgBouncer (transaction pooling, pool size 10) ===
+direct to PostgreSQL : 98 connected, 202 REFUSED  ("sorry, too many clients already")
+through PgBouncer    : 300 connected, 0 refused | real PostgreSQL backends in use right now: 9
+300 clients each run a query at the same time:
+  all 300 answered in 6283 ms using 10 PostgreSQL backends
+
+=== 2. throughput: 200 concurrent workers, 25 short transactions each ===
+direct, app pool of 20 connections             781 tx/s | p50 180 ms p99 1241 ms | errors 0
+direct, app pool of 90 connections             640 tx/s | p50 217 ms p99 1527 ms | errors 24
+via PgBouncer, app pool of 200 (pool_size 10)   379 tx/s | p50 484 ms p99 1482 ms | errors 0
+
+=== 3. the price of transaction pooling: SESSION state leaks between clients ===
+client A's query ran on backend 1343; client B's query ran on backend 1343  (the SAME server connection, reused between two different clients)
+A runs "SET app.tenant_id = 'tenant-A'" (session level); B then reads it: B SAW tenant-A in 40 of 40 tries  <- a Chapter 22 RLS bug if you use session-level SET
+with transaction-local set_config(..., true): B saw tenant-A in 0 of 40 tries  <- safe

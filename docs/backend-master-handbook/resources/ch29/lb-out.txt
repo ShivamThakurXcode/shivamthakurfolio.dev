@@ -1,0 +1,24 @@
+=== 1. load-balancing algorithms: 300 sequential requests through nginx (3 identical instances) ===
+round-robin  -> A:100 B:100 C:100
+least_conn   -> A:101 B:100 C:99
+ip_hash      -> B:300
+(ip_hash picks the instance from the CLIENT IP; here every request arrives from the same Docker-NAT address, so one instance gets everything: a classic trap behind NAT/proxies)
+
+=== 2. one instance is SLOW (+300 ms): round-robin vs least_conn under 30 concurrent clients ===
+round-robin  p50   70 ms  p99  456 ms | 600 requests in 3.4 s | share A:200 B:201 C:199
+least_conn   p50   79 ms  p99  496 ms | 600 requests in 2.6 s | share A:278 B:271 C:51
+
+=== 3. an instance DIES under load: no failover vs proxy_next_upstream (200 requests/s for ~3 s, instance B killed after 1 s) ===
+no failover (/nofo)      622 requests, ERRORS 2 (0.3%) | A:271 B:77 C:272 ERR502:2
+failover enabled (/fo)   422 requests, ERRORS 0 (0.0%) | A:180 B:62 C:180
+
+=== 4. STATE: sessions kept in process memory vs in Redis (3 instances, round-robin) ===
+in-memory sessions 30 users x 3 follow-up requests: logged in 26, "logged out" 64  (71% of requests fail)
+Redis sessions     30 users x 3 follow-up requests: logged in 90, "logged out" 0  (0% of requests fail)
+in-memory + ip_hash (sticky) logged in 90, failed 0   <- works, UNTIL that instance restarts or the pool changes (then every session on it is lost)
+
+=== 5. does adding instances add throughput? CPU-bound endpoint (20 ms of CPU per request), 40 connections, 6 s ===
+1 instance(s): 46 req/s | latency p50 841 ms, p99 1148 ms | errors 0
+2 instance(s): 90 req/s | latency p50 424 ms, p99 817 ms | errors 0
+3 instance(s): 137 req/s | latency p50 285 ms, p99 434 ms | errors 0
+speed-up vs 1 instance: 1x -> 1.00x, 2x -> 1.95x, 3x -> 2.96x (machine has 4 cores shared with nginx, Docker and the load generator)

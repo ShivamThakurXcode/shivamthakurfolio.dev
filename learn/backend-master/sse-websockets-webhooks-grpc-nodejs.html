@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>SSE, WebSockets, Webhooks &amp; gRPC | Backend Master</title>
+    <meta name="description" content="Compare real-time options in Node.js: server-sent events, WebSockets, webhooks and gRPC, with chat and webhook examples, reconnection and signature checks.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="server sent events, websockets nodejs, webhooks signature verification, grpc nodejs, real time api, sse vs websocket, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/graphql-api-nodejs-dataloader-security">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/backend-architecture-patterns-modular-monolith">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="server sent events">
+    <meta property="article:tag" content="websockets nodejs">
+    <meta property="article:tag" content="webhooks signature verification">
+    <meta property="article:tag" content="grpc nodejs">
+    <meta property="article:tag" content="real time api">
+    <meta property="article:tag" content="sse vs websocket">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="SSE, WebSockets, Webhooks &amp; gRPC">
+    <meta property="og:description" content="Compare real-time options in Node.js: server-sent events, WebSockets, webhooks and gRPC, with chat and webhook examples, reconnection and signature checks.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/sse-websockets-webhooks-grpc-nodejs.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Real-Time Communication: SSE, WebSockets, Webhooks and gRPC in Node.js: Backend Master chapter 10">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SSE, WebSockets, Webhooks &amp; gRPC">
+    <meta name="twitter:description" content="Compare real-time options in Node.js: server-sent events, WebSockets, webhooks and gRPC, with chat and webhook examples, reconnection and signature checks.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/sse-websockets-webhooks-grpc-nodejs.png">
+    <meta name="twitter:image:alt" content="Real-Time Communication: SSE, WebSockets, Webhooks and gRPC in Node.js: Backend Master chapter 10">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs",
+          "name": "SSE, WebSockets, Webhooks & gRPC | Backend Master",
+          "description": "Compare real-time options in Node.js: server-sent events, WebSockets, webhooks and gRPC, with chat and webhook examples, reconnection and signature checks.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/sse-websockets-webhooks-grpc-nodejs.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Real-Time Communication: SSE, WebSockets, Webhooks and gRPC in Node.js"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#webpage"
+          },
+          "headline": "Real-Time Communication: SSE, WebSockets, Webhooks and gRPC in Node.js",
+          "alternativeHeadline": "Real-Time and Event-Driven Communication — SSE, WebSockets, Webhooks and gRPC",
+          "description": "Compare real-time options in Node.js: server-sent events, WebSockets, webhooks and gRPC, with chat and webhook examples, reconnection and signature checks.",
+          "abstract": "Not every interaction fits request and response. This chapter compares server-sent events, WebSockets, webhooks and gRPC, shows how to build and test each in Node.js, and covers reconnection, heartbeats, signed and idempotent webhook handling and when to pick which.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/sse-websockets-webhooks-grpc-nodejs.png",
+          "url": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 7958,
+          "timeRequired": "PT36M",
+          "articleSection": "Backend Development",
+          "keywords": "server sent events, websockets nodejs, webhooks signature verification, grpc nodejs, real time api, sse vs websocket",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Server-sent events and automatic reconnection",
+            "WebSockets, heartbeats and broadcasting",
+            "Receiving webhooks with signature checks",
+            "gRPC services with Protocol Buffers",
+            "Choosing between SSE, WebSockets, webhooks and gRPC"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "server sent events"
+          },
+          "isAccessibleForFree": true,
+          "position": 10,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/graphql-api-nodejs-dataloader-security#article",
+            "name": "GraphQL with Node.js: Schemas, Resolvers, DataLoader and Query Limits",
+            "url": "https://shivamthakur.me/learn/backend-master/graphql-api-nodejs-dataloader-security"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "SSE, WebSockets, Webhooks & gRPC",
+              "item": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the difference between SSE and WebSockets?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SSE is a one-way stream from server to client over plain HTTP with built-in reconnection. WebSockets are a two-way channel suited to chat and games, but need more handling for scaling and reconnects."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I secure a webhook endpoint?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Verify the sender's signature on the raw body with a constant-time comparison, check a timestamp to prevent replays, respond quickly and process idempotently, because providers retry."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "When should I use gRPC?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "gRPC suits internal service-to-service calls where typed contracts, streaming and low overhead matter. Browsers need a proxy, so REST or GraphQL usually serves public clients better."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do webhooks arrive more than once?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Providers retry when they do not receive a fast success response, so your handler must be idempotent and deduplicate by event id."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#quiz",
+          "name": "SSE, WebSockets, Webhooks & gRPC: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "server sent events"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/sse-websockets-webhooks-grpc-nodejs#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which technique has the client repeatedly asking \"anything new?\" at intervals?",
+              "text": "Which technique has the client repeatedly asking \"anything new?\" at intervals?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Polling"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "SSE"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Webhook"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "gRPC"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "SSE traffic flows:",
+              "text": "SSE traffic flows:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Server to client"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Both directions equally"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Client to server only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Peer to peer"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does Last-Event-ID enable?",
+              "text": "What does Last-Event-ID enable?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Resuming an SSE stream after a reconnect without missing events"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Authentication"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Compression"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CORS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why send a comment line (: keep-alive) periodically on an SSE stream?",
+              "text": "Why send a comment line (: keep-alive) periodically on an SSE stream?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It prevents idle timeouts from proxies and load balancers"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It increases throughput"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It authenticates the user"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It is required by JSON"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which HTTP status code confirms a successful WebSocket upgrade?",
+              "text": "Which HTTP status code confirms a successful WebSocket upgrade?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "101"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "200"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "301"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "204"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Does CORS protect a WebSocket endpoint?",
+              "text": "Does CORS protect a WebSocket endpoint?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No, so you must validate the Origin header yourself"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Yes, completely"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only for binary messages"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only over HTTP/2"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What attack does an Origin check on the WebSocket handshake mitigate?",
+              "text": "What attack does an Origin check on the WebSocket handshake mitigate?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cross-Site WebSocket Hijacking"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "SQL injection"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DNS spoofing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Clickjacking"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why use ping/pong heartbeats on WebSocket servers?",
+              "text": "Why use ping/pong heartbeats on WebSocket servers?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To detect and clean up dead or half-open connections"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "To compress data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To authenticate"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To increase bandwidth"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why add random jitter to client reconnect delays?",
+              "text": "Why add random jitter to client reconnect delays?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To prevent a thundering herd of clients reconnecting simultaneously"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "To look random"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To save bandwidth"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To bypass firewalls"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "With three WebSocket servers behind a load balancer, how does a message from a client on server 1 reach a client on server 2?",
+              "text": "With three WebSocket servers behind a load balancer, how does a message from a client on server 1 reach a client on server 2?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Through a shared pub/sub backplane such as Redis"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It can't"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Through DNS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Through the database primary key"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "For a webhook receiver, why must you verify the signature against the raw request body?",
+              "text": "For a webhook receiver, why must you verify the signature against the raw request body?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Re-serializing parsed JSON can change the bytes and break the signature check"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Raw bodies are smaller"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JSON can't be parsed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It speeds up processing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why use crypto.timingSafeEqual to compare signatures?",
+              "text": "Why use crypto.timingSafeEqual to compare signatures?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Normal comparison leaks information through timing differences"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's shorter"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It encrypts the data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It handles Unicode"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does including a timestamp in the signed content protect against?",
+              "text": "What does including a timestamp in the signed content protect against?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Replay of captured valid requests"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Typos"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Large payloads"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CORS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Providers deliver webhooks \"at least once.\" What must the receiver do?",
+              "text": "Providers deliver webhooks \"at least once.\" What must the receiver do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "De-duplicate using the event id so duplicates are processed once"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Reject all retries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Disable the endpoint"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A webhook sender should retry on which response?",
+              "text": "A webhook sender should retry on which response?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "503"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "400"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "404"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "200"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is SSRF?",
+              "text": "What is SSRF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tricking your server into making requests to internal or unintended addresses"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A browser flaw"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A SQL attack"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A certificate error"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In protobuf, what must you never do to an existing field?",
+              "text": "In protobuf, what must you never do to an existing field?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Change or reuse its field number"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Add a comment"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rename it in docs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Read it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does gRPC status DEADLINE_EXCEEDED mean?",
+              "text": "What does gRPC status DEADLINE_EXCEEDED mean?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The call didn't finish before the deadline"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The caller lacked permission"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The server crashed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The message was too large"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why can a plain L4 load balancer be a problem for gRPC?",
+              "text": "Why can a plain L4 load balancer be a problem for gRPC?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Many calls share one long-lived HTTP/2 connection, so all traffic can pin to one backend"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "gRPC doesn't use TCP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "gRPC needs UDP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Load balancers can't see ports"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A customer needs live order status updates in the browser, with no sending back. The simplest fitting tool is:",
+              "text": "A customer needs live order status updates in the browser, with no sending back. The simplest fitting tool is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "SSE"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "gRPC"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "WebSocket"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A message queue"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">SSE, WebSockets, Webhooks &amp; gRPC</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:27.8%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item active" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" aria-current="page"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 10 of 36 &middot; Intermediate</p>
+                        <h1>Real-Time Communication: SSE, WebSockets, Webhooks and gRPC in Node.js</h1>
+                        <p class="learn-book-title">Real-Time and Event-Driven Communication — SSE, WebSockets, Webhooks and gRPC</p>
+                        <ul class="learn-meta text-caption">
+                            <li>36 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/sse-websockets-webhooks-grpc-nodejs.webp"><img src="../../assets/images/learn/backend-master/sse-websockets-webhooks-grpc-nodejs.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Real-Time Communication: SSE, WebSockets, Webhooks and gRPC in Node.js: Backend Master chapter 10 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Not every interaction fits request and response. This chapter compares server-sent events, WebSockets, webhooks and gRPC, shows how to build and test each in Node.js, and covers reconnection, heartbeats, signed and idempotent webhook handling and when to pick which.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Server-sent events and automatic reconnection</li><li>WebSockets, heartbeats and broadcasting</li><li>Receiving webhooks with signature checks</li><li>gRPC services with Protocol Buffers</li><li>Choosing between SSE, WebSockets, webhooks and gRPC</li></ul>
+                        </section>
+<hr>
+
+<h2 id="10-0-why-this-chapter-matters">10.0 Why This Chapter Matters</h2>
+<p>Everything so far has followed one rhythm: <strong>the client asks, the server answers.</strong> That is perfect for loading a product page. It is clumsy for:</p>
+<ul>
+<li>A customer watching their order move from <em>packed</em> to <em>shipped</em> <strong>without refreshing</strong>.</li>
+<li>A chat message that must appear on the other person&#39;s screen <em>now</em>.</li>
+<li>A payment provider that has to tell <strong>your server</strong> &quot;invoice #9 was paid&quot; (your server is not the one asking).</li>
+<li>Two internal services that exchange thousands of small messages per second and don&#39;t want JSON/HTTP overhead.</li>
+</ul>
+<p>Each of these needs a different tool. This chapter gives you the complete toolbox and, more importantly, the judgment to <strong>pick the simplest tool that works</strong>:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Need</th>
+<th>Tool</th>
+</tr>
+</thead><tbody><tr>
+<td>Server pushes updates to a browser (one direction)</td>
+<td><strong>Server-Sent Events (SSE)</strong></td>
+</tr>
+<tr>
+<td>Two-way, low-latency messaging (chat, games, collaboration)</td>
+<td><strong>WebSockets</strong></td>
+</tr>
+<tr>
+<td>Another <em>company&#39;s</em> server tells you something happened</td>
+<td><strong>Webhooks</strong></td>
+</tr>
+<tr>
+<td>Fast, typed calls between your own services</td>
+<td><strong>gRPC</strong></td>
+</tr>
+<tr>
+<td>Something happens, many systems should react later</td>
+<td><strong>Message queues</strong> (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>)</td>
+</tr>
+</tbody></table></div>
+<p>Every code sample in this chapter was <strong>run</strong> while writing it, and the output shown is real: SSE with resume, a WebSocket chat with authentication, signed webhooks with replay protection and retries, and gRPC with streaming and deadlines.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>WebSockets were standardized in 2011 (RFC 6455) because developers had been faking &quot;push&quot; with hacks like <strong>long polling</strong> and hidden iframes. SSE is older and simpler than most people realize: the browser&#39;s <code>EventSource</code> API has existed since 2009. For many &quot;live update&quot; features, SSE is all you need, yet engineers reach for WebSockets by habit.</p>
+</aside>
+<hr>
+
+<h2 id="10-1-the-communication-map">10.1 The Communication Map</h2>
+<p>Let&#39;s start from the problem: <strong>how can a server tell a client something the client didn&#39;t ask about?</strong></p>
+<pre class="is-plain"><code> Client wants updates. Options, from simplest to most capable:
+
+ 1. POLLING            client asks every N seconds       &quot;any news?&quot; &quot;no&quot; &quot;any news?&quot; &quot;no&quot; ...
+ 2. LONG POLLING       client asks; server holds the     &quot;any news?&quot; ........... &quot;yes!&quot; → asks again
+                       request open until there is news
+ 3. SSE                one long-lived HTTP response;     server ──▶ client ──▶ client ──▶ ...
+                       server streams events down it       (one direction)
+ 4. WEBSOCKET          one long-lived TCP connection,    client ⇄ server ⇄ client ⇄ ...
+                       both sides send anytime             (two directions)
+ 5. WEBHOOK            server-to-server HTTP callback    provider ──POST──▶ your server
+ 6. gRPC STREAMING     HTTP/2 streams with typed         service ⇄ service
+                       messages</code></pre>
+<h3 id="10-1-1-polling-and-long-polling">10.1.1 Polling and long polling</h3>
+<p><strong>Polling</strong> is the baseline and is often good enough:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-built_in">setInterval</span>(<span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> order = <span class="hljs-keyword">await</span> (<span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&#x27;/v1/orders/9&#x27;</span>)).<span class="hljs-title function_">json</span>();
+  <span class="hljs-title function_">render</span>(order.<span class="hljs-property">status</span>);
+}, <span class="hljs-number">5000</span>);</code></pre></div>
+<ul>
+<li>✅ Trivial, works everywhere, cacheable, stateless, no special infrastructure.</li>
+<li>❌ Wasteful (most responses are &quot;nothing new&quot;) and <em>delayed</em> by up to the interval. 10,000 users polling every 5 seconds is 2,000 requests/second of mostly nothing.</li>
+</ul>
+<p>Mitigate with conditional requests (<code>ETag</code> → <code>304</code>, <a href="/learn/backend-master/http-explained-methods-status-codes-headers" title="HTTP Explained: Methods, Status &amp; Headers">Chapter 3</a>) and sensible intervals. For a feature updating a few times per hour, polling every 30 seconds is a perfectly respectable engineering choice.</p>
+<p><strong>Long polling:</strong> the server <em>holds</em> the request open until it has something to say (or ~30 s pass), then the client immediately re-asks. It feels real-time but costs a held connection per client and awkward timeouts. It&#39;s mostly a legacy technique now; SSE does the job better.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Poll if you can, SSE if you must push, WebSocket if you must talk back.&quot;</strong> Climb this ladder only as far as you need.</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;How would you build live notifications?&quot; Strong answer: start with requirements (direction, latency, fan-out, reconnects), propose SSE for server→client, WebSockets only for bidirectional needs, mention scaling (shared pub/sub across instances), authentication, reconnection/replay and backpressure. Weak answer: &quot;WebSockets&quot; with no reasoning.</p>
+</aside>
+<hr>
+
+<h2 id="10-2-server-sent-events-sse">10.2 Server-Sent Events (SSE)</h2>
+<p>SSE is <strong>one ordinary HTTP response that never ends</strong>. The server keeps writing small text messages into it; the browser&#39;s built-in <code>EventSource</code> parses them.</p>
+<h3 id="why-sse-is-underrated">Why SSE is underrated</h3>
+<ul>
+<li><strong>Plain HTTP:</strong> works through proxies, load balancers, auth middleware, and HTTP/2 multiplexing with no special protocol.</li>
+<li><strong>Automatic reconnection</strong> built into the browser, including a &quot;resume from where I left off&quot; mechanism (<code>Last-Event-ID</code>).</li>
+<li><strong>Simple text format</strong>, trivial to produce from any language.</li>
+<li>Limitation: <strong>server → client only</strong> (clients still use normal <code>POST</code>s to send data) and <strong>text only</strong> (JSON is fine).</li>
+</ul>
+<h3 id="the-wire-format">The wire format</h3>
+<pre class="is-plain"><code>retry: 2000                      ← &quot;if disconnected, reconnect after 2000 ms&quot;
+
+id: 1                            ← event id (browser remembers the last one it saw)
+event: order.shipped             ← optional event name (default &quot;message&quot;)
+data: {&quot;orderId&quot;:&quot;7&quot;}            ← payload; a blank line ends the event
+
+: keep-alive                     ← a line starting with &quot;:&quot; is a comment (heartbeat)</code></pre>
+<h3 id="a-complete-sse-server-tested">A complete SSE server (tested)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;express&#x27;</span>;
+
+<span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>();
+<span class="hljs-keyword">const</span> clients = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>();
+<span class="hljs-keyword">let</span> lastId = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">const</span> history = [];                                   <span class="hljs-comment">// small replay buffer</span>
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">write</span> = (<span class="hljs-params">res, { id, event, data }</span>) =&gt;
+  res.<span class="hljs-title function_">write</span>(<span class="hljs-string">`id: <span class="hljs-subst">${id}</span>\nevent: <span class="hljs-subst">${event}</span>\ndata: <span class="hljs-subst">${<span class="hljs-built_in">JSON</span>.stringify(data)}</span>\n\n`</span>);
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">publish</span>(<span class="hljs-params">event, data</span>) {
+  <span class="hljs-keyword">const</span> id = ++lastId;
+  history.<span class="hljs-title function_">push</span>({ id, event, data });
+  <span class="hljs-keyword">if</span> (history.<span class="hljs-property">length</span> &gt; <span class="hljs-number">100</span>) history.<span class="hljs-title function_">shift</span>();
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> res <span class="hljs-keyword">of</span> clients) <span class="hljs-title function_">write</span>(res, { id, event, data });
+}
+
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/events&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  res.<span class="hljs-title function_">set</span>({
+    <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;text/event-stream&#x27;</span>,
+    <span class="hljs-string">&#x27;Cache-Control&#x27;</span>: <span class="hljs-string">&#x27;no-cache&#x27;</span>,
+    <span class="hljs-title class_">Connection</span>: <span class="hljs-string">&#x27;keep-alive&#x27;</span>,
+    <span class="hljs-string">&#x27;X-Accel-Buffering&#x27;</span>: <span class="hljs-string">&#x27;no&#x27;</span>,                        <span class="hljs-comment">// tell NGINX not to buffer the stream</span>
+  });
+  res.<span class="hljs-title function_">flushHeaders</span>();
+  res.<span class="hljs-title function_">write</span>(<span class="hljs-string">&#x27;retry: 2000\n\n&#x27;</span>);
+
+  <span class="hljs-keyword">const</span> last = <span class="hljs-title class_">Number</span>(req.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;Last-Event-ID&#x27;</span>) ?? <span class="hljs-number">0</span>); <span class="hljs-comment">// resume after a dropped connection</span>
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> e <span class="hljs-keyword">of</span> history) <span class="hljs-keyword">if</span> (e.<span class="hljs-property">id</span> &gt; last) <span class="hljs-title function_">write</span>(res, e);
+
+  clients.<span class="hljs-title function_">add</span>(res);
+  <span class="hljs-keyword">const</span> ping = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> res.<span class="hljs-title function_">write</span>(<span class="hljs-string">&#x27;: keep-alive\n\n&#x27;</span>), <span class="hljs-number">15_000</span>);  <span class="hljs-comment">// defeats idle timeouts</span>
+  req.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;close&#x27;</span>, <span class="hljs-function">() =&gt;</span> { <span class="hljs-built_in">clearInterval</span>(ping); clients.<span class="hljs-title function_">delete</span>(res); });   <span class="hljs-comment">// ALWAYS clean up</span>
+});
+
+app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/orders/:id/ship&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-title function_">publish</span>(<span class="hljs-string">&#x27;order.shipped&#x27;</span>, { <span class="hljs-attr">orderId</span>: req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span> });
+  res.<span class="hljs-title function_">status</span>(<span class="hljs-number">202</span>).<span class="hljs-title function_">end</span>();
+});
+
+app.<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);</code></pre></div>
+<p>Client in the browser:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> es = <span class="hljs-keyword">new</span> <span class="hljs-title class_">EventSource</span>(<span class="hljs-string">&#x27;/events&#x27;</span>);
+es.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;order.shipped&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> { orderId } = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(e.<span class="hljs-property">data</span>);
+  <span class="hljs-title function_">showToast</span>(<span class="hljs-string">`Order <span class="hljs-subst">${orderId}</span> shipped!`</span>);
+});
+es.<span class="hljs-property">onerror</span> = <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;connection lost; the browser will retry automatically&#x27;</span>);</code></pre></div>
+<p><strong>Real output</strong> — one client connected, two shipments published; a <em>second</em> client that reconnects claiming it last saw event 1:</p>
+<pre class="is-plain"><code>client 1 stream:
+retry: 2000
+
+id: 1
+event: order.shipped
+data: {&quot;orderId&quot;:&quot;7&quot;}
+
+id: 2
+event: order.shipped
+data: {&quot;orderId&quot;:&quot;8&quot;}
+
+client 2 reconnects with Last-Event-ID: 1  →  receives ONLY event 2:
+id: 2
+event: order.shipped
+data: {&quot;orderId&quot;:&quot;8&quot;}</code></pre>
+<p>That replay-on-reconnect behavior, which you would hand-build with WebSockets, is free with SSE.</p>
+<h3 id="the-production-details-that-bite">The production details that bite</h3>
+<ol>
+<li><strong>Proxy buffering.</strong> NGINX and some CDNs buffer responses, so your &quot;live&quot; events arrive in bursts or never. Disable buffering for this route (<code>X-Accel-Buffering: no</code>, <code>proxy_buffering off</code>).</li>
+<li><strong>Idle timeouts.</strong> Load balancers kill connections with no traffic (often 60 s). Send a comment heartbeat every ~15–30 s (as above).</li>
+<li><strong>Connection limits.</strong> Over HTTP/1.1, browsers allow only ~6 connections per origin; a few open tabs with SSE can starve normal requests. <strong>HTTP/2 multiplexes</strong> them over one connection; use it.</li>
+<li><strong>Authentication.</strong> <code>EventSource</code> cannot set custom headers (no <code>Authorization</code>). Options: cookies (same-origin), a short-lived token in the query string (log scrubbing!), or use <code>fetch()</code> + a streaming reader (libraries like <code>@microsoft/fetch-event-source</code>) which allows headers and POST.</li>
+<li><strong>Memory.</strong> Each client is an open response. Always remove it from your set on <code>close</code> (the leak is a classic).</li>
+<li><strong>Scaling across instances.</strong> A <code>publish</code> on server A only reaches clients connected to A. Use a shared pub/sub (Redis, <a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>) so every instance forwards events to its own clients.</li>
+<li><strong>Authorization per event.</strong> Never broadcast to a <code>Set</code> of everybody; filter by what <em>that user</em> may see.</li>
+</ol>
+<h3 id="when-sse-is-the-right-answer">When SSE is the right answer</h3>
+<p>Order status updates, notifications, live dashboards, progress bars for long jobs (<a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>&#39;s <code>202</code> pattern), streaming AI/LLM responses token by token (SSE is the standard transport for this).</p>
+<hr>
+
+<h2 id="10-3-websockets">10.3 WebSockets</h2>
+<p>When both sides need to <strong>talk freely, at any moment, with low overhead</strong>, you want a WebSocket.</p>
+<h3 id="10-3-1-how-it-works">10.3.1 How it works</h3>
+<p>A WebSocket <strong>starts as an HTTP request</strong> asking to upgrade, then the connection stops being HTTP and becomes a persistent, bidirectional message channel over the same TCP (or TLS) connection:</p>
+<pre class="is-plain"><code> CLIENT                                             SERVER
+   │ GET /chat HTTP/1.1                               │
+   │ Upgrade: websocket                               │
+   │ Connection: Upgrade                              │
+   │ Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==  ──▶ │
+   │                                                  │
+   │ ◀── HTTP/1.1 101 Switching Protocols             │
+   │     Upgrade: websocket                           │
+   │     Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+   │                                                  │
+   │ ◀════ frames in BOTH directions, any time ═════▶ │</code></pre>
+<ul>
+<li><code>101 Switching Protocols</code> means &quot;from now on this connection speaks WebSocket.&quot;</li>
+<li><code>Sec-WebSocket-Accept</code> is derived from the client&#39;s key (<code>base64(SHA-1(key + a fixed GUID))</code>), proving the server really understands WebSockets. It&#39;s a handshake sanity check, <strong>not security</strong>.</li>
+<li>After the upgrade, data travels in lightweight <strong>frames</strong> (text, binary, ping, pong, close), with only 2–14 bytes of overhead, versus hundreds of bytes of headers per HTTP request.</li>
+</ul>
+<h3 id="10-3-2-close-codes-worth-knowing">10.3.2 Close codes worth knowing</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td>1000</td>
+<td>Normal closure</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>Going away (page closed, server shutting down)</td>
+</tr>
+<tr>
+<td>1008</td>
+<td>Policy violation (e.g., failed auth)</td>
+</tr>
+<tr>
+<td>1009</td>
+<td>Message too big</td>
+</tr>
+<tr>
+<td>1011</td>
+<td>Server error</td>
+</tr>
+</tbody></table></div>
+<h3 id="10-3-3-a-chat-server-with-the-ws-library-tested">10.3.3 A chat server with the <code>ws</code> library (tested)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">npm install ws</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> http <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:http&#x27;</span>;
+<span class="hljs-keyword">import</span> { <span class="hljs-title class_">WebSocketServer</span>, <span class="hljs-title class_">WebSocket</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;ws&#x27;</span>;
+
+<span class="hljs-keyword">const</span> server = http.<span class="hljs-title function_">createServer</span>();
+<span class="hljs-keyword">const</span> wss = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WebSocketServer</span>({ <span class="hljs-attr">noServer</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">maxPayload</span>: <span class="hljs-number">16</span> * <span class="hljs-number">1024</span> });   <span class="hljs-comment">// cap message size</span>
+
+<span class="hljs-comment">// Authenticate DURING the HTTP upgrade, before any WebSocket exists</span>
+server.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;upgrade&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, socket, head</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> token = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(req.<span class="hljs-property">url</span>, <span class="hljs-string">&#x27;http://x&#x27;</span>).<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;token&#x27;</span>);
+  <span class="hljs-keyword">const</span> user = { <span class="hljs-attr">secret1</span>: <span class="hljs-string">&#x27;asha&#x27;</span>, <span class="hljs-attr">secret2</span>: <span class="hljs-string">&#x27;ravi&#x27;</span> }[token];        <span class="hljs-comment">// real apps: verify a JWT/session</span>
+  <span class="hljs-keyword">if</span> (!user) {
+    socket.<span class="hljs-title function_">write</span>(<span class="hljs-string">&#x27;HTTP/1.1 401 Unauthorized\r\n\r\n&#x27;</span>);
+    <span class="hljs-keyword">return</span> socket.<span class="hljs-title function_">destroy</span>();
+  }
+  wss.<span class="hljs-title function_">handleUpgrade</span>(req, socket, head, <span class="hljs-function">(<span class="hljs-params">ws</span>) =&gt;</span> {
+    ws.<span class="hljs-property">user</span> = user;
+    wss.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;connection&#x27;</span>, ws, req);
+  });
+});
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">broadcast</span> = (<span class="hljs-params">obj, except</span>) =&gt; {
+  <span class="hljs-keyword">const</span> msg = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(obj);
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> c <span class="hljs-keyword">of</span> wss.<span class="hljs-property">clients</span>) <span class="hljs-keyword">if</span> (c !== except &amp;&amp; c.<span class="hljs-property">readyState</span> === <span class="hljs-title class_">WebSocket</span>.<span class="hljs-property">OPEN</span>) c.<span class="hljs-title function_">send</span>(msg);
+};
+
+wss.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;connection&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">ws</span>) =&gt;</span> {
+  ws.<span class="hljs-property">isAlive</span> = <span class="hljs-literal">true</span>;
+  ws.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;pong&#x27;</span>, <span class="hljs-function">() =&gt;</span> { ws.<span class="hljs-property">isAlive</span> = <span class="hljs-literal">true</span>; });
+  <span class="hljs-title function_">broadcast</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;join&#x27;</span>, <span class="hljs-attr">user</span>: ws.<span class="hljs-property">user</span> }, ws);
+  ws.<span class="hljs-title function_">send</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;welcome&#x27;</span>, <span class="hljs-attr">user</span>: ws.<span class="hljs-property">user</span>, <span class="hljs-attr">online</span>: wss.<span class="hljs-property">clients</span>.<span class="hljs-property">size</span> }));
+
+  ws.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;message&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">raw</span>) =&gt;</span> {
+    <span class="hljs-keyword">let</span> msg;
+    <span class="hljs-keyword">try</span> { msg = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(raw); }
+    <span class="hljs-keyword">catch</span> { <span class="hljs-keyword">return</span> ws.<span class="hljs-title function_">send</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;invalid JSON&#x27;</span> })); }
+
+    <span class="hljs-keyword">if</span> (msg.<span class="hljs-property">type</span> === <span class="hljs-string">&#x27;chat&#x27;</span> &amp;&amp; <span class="hljs-keyword">typeof</span> msg.<span class="hljs-property">text</span> === <span class="hljs-string">&#x27;string&#x27;</span> &amp;&amp; msg.<span class="hljs-property">text</span>.<span class="hljs-property">length</span> &lt;= <span class="hljs-number">500</span>) {
+      <span class="hljs-title function_">broadcast</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;chat&#x27;</span>, <span class="hljs-attr">user</span>: ws.<span class="hljs-property">user</span>, <span class="hljs-attr">text</span>: msg.<span class="hljs-property">text</span> });   <span class="hljs-comment">// NEVER trust a client-sent &quot;user&quot;</span>
+    }
+  });
+  ws.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;close&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">broadcast</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;leave&#x27;</span>, <span class="hljs-attr">user</span>: ws.<span class="hljs-property">user</span> }));
+  ws.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-function">() =&gt;</span> {});
+});
+
+<span class="hljs-comment">// Heartbeat: half-open connections look alive forever without this</span>
+<span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> ws <span class="hljs-keyword">of</span> wss.<span class="hljs-property">clients</span>) {
+    <span class="hljs-keyword">if</span> (!ws.<span class="hljs-property">isAlive</span>) { ws.<span class="hljs-title function_">terminate</span>(); <span class="hljs-keyword">continue</span>; }
+    ws.<span class="hljs-property">isAlive</span> = <span class="hljs-literal">false</span>;
+    ws.<span class="hljs-title function_">ping</span>();
+  }
+}, <span class="hljs-number">30_000</span>).<span class="hljs-title function_">unref</span>();
+
+server.<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);</code></pre></div>
+<p>Test client (Node 22+ has a global <code>WebSocket</code>):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WebSocket</span>(<span class="hljs-string">&#x27;ws://localhost:3000/?token=secret2&#x27;</span>);
+ws.<span class="hljs-property">onmessage</span> = <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(e.<span class="hljs-property">data</span>);
+ws.<span class="hljs-property">onopen</span> = <span class="hljs-function">() =&gt;</span> ws.<span class="hljs-title function_">send</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;chat&#x27;</span>, <span class="hljs-attr">text</span>: <span class="hljs-string">&#x27;hello Asha&#x27;</span>, <span class="hljs-attr">user</span>: <span class="hljs-string">&#x27;admin&#x27;</span> }));  <span class="hljs-comment">// forged!</span></code></pre></div>
+<p><strong>Real results</strong> from the test script:</p>
+<pre class="is-plain"><code>bad token  -&gt; rejected                                        ← 401 during upgrade
+asha saw  -&gt; [{&quot;type&quot;:&quot;welcome&quot;,&quot;user&quot;:&quot;asha&quot;,&quot;online&quot;:1},
+              {&quot;type&quot;:&quot;join&quot;,&quot;user&quot;:&quot;ravi&quot;},
+              {&quot;type&quot;:&quot;chat&quot;,&quot;user&quot;:&quot;ravi&quot;,&quot;text&quot;:&quot;hello Asha&quot;}]    ← server overwrote the forged &quot;admin&quot;
+ravi saw  -&gt; [{&quot;type&quot;:&quot;welcome&quot;,&quot;user&quot;:&quot;ravi&quot;,&quot;online&quot;:2},
+              {&quot;type&quot;:&quot;chat&quot;,&quot;user&quot;:&quot;ravi&quot;,&quot;text&quot;:&quot;hello Asha&quot;},
+              {&quot;type&quot;:&quot;error&quot;,&quot;message&quot;:&quot;invalid JSON&quot;}]</code></pre>
+<p>Notice what the server did: <strong>authenticated before upgrading</strong>, <strong>took the username from the authenticated session</strong> (ignoring the forged <code>&quot;user&quot;:&quot;admin&quot;</code>), <strong>validated</strong> message type and length, <strong>survived invalid JSON</strong>, and <strong>capped</strong> payload size.</p>
+<h3 id="10-3-4-websocket-security-the-part-tutorials-skip">10.3.4 WebSocket security: the part tutorials skip</h3>
+<p>WebSockets bypass several protections you take for granted with HTTP:</p>
+<ol>
+<li><p><strong>Cross-Site WebSocket Hijacking (CSWSH).</strong> Browsers send cookies on WebSocket handshakes, and <strong>the Same-Origin Policy / CORS do not apply to WebSockets</strong>. If you authenticate by cookie, any website can open a WebSocket to your server as the logged-in victim. <strong>Always check the <code>Origin</code> header</strong> during the upgrade against an allow-list:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALLOWED</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&#x27;https://shopline.com&#x27;</span>]);
+<span class="hljs-keyword">if</span> (!<span class="hljs-variable constant_">ALLOWED</span>.<span class="hljs-title function_">has</span>(req.<span class="hljs-property">headers</span>.<span class="hljs-property">origin</span>)) { socket.<span class="hljs-title function_">destroy</span>(); <span class="hljs-keyword">return</span>; }</code></pre></div>
+<p>(This check is shown as a pattern; it wasn&#39;t part of the test run.)</p>
+</li>
+<li><p><strong>Authenticate at the handshake</strong>, not &quot;after connecting.&quot; An unauthenticated open socket is a free resource for attackers. Query-string tokens end up in logs; prefer a cookie (with Origin check) or a one-time ticket: the client first <code>POST</code>s to get a 30-second single-use ticket, then connects with it.</p>
+</li>
+<li><p><strong>Authorize per message/channel</strong>, not only at connect time. &quot;Is this user allowed to join room 7?&quot; is asked <em>every time</em>.</p>
+</li>
+<li><p><strong>Validate every message</strong> like an API request (schema, size, rate). A WebSocket message is untrusted input. Add <strong>per-connection rate limiting</strong> (a client can flood thousands of messages per second).</p>
+</li>
+<li><p><strong>Limit payload size</strong> (<code>maxPayload</code>) and <strong>connections per user/IP</strong>.</p>
+</li>
+<li><p><strong>Use <code>wss://</code> (TLS)</strong>, always, exactly like HTTPS.</p>
+</li>
+<li><p>Re-validate sessions: a token that expires or a user who is banned must be disconnected.</p>
+</li>
+</ol>
+<h3 id="10-3-5-reliability-connections-will-drop">10.3.5 Reliability: connections <em>will</em> drop</h3>
+<p>Phones switch networks, laptops sleep, proxies time out. Design for it:</p>
+<ul>
+<li><strong>Heartbeat</strong> (ping/pong) on the server to detect dead connections (as above) and clean up; otherwise &quot;ghost&quot; users accumulate.</li>
+<li><strong>Client reconnect with exponential backoff + jitter</strong> (don&#39;t make 10,000 clients reconnect simultaneously after a deploy: a &quot;thundering herd&quot;).</li>
+<li><strong>Resume protocol:</strong> the client reports the last message id it saw so the server can replay missed messages (SSE&#39;s <code>Last-Event-ID</code>, done by hand).</li>
+<li><strong>Idempotent messages:</strong> include a client-generated message id so retries after reconnect don&#39;t duplicate.</li>
+</ul>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// client reconnect with backoff + jitter</span>
+<span class="hljs-keyword">let</span> attempt = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">connect</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">const</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WebSocket</span>(url);
+  ws.<span class="hljs-property">onopen</span> = <span class="hljs-function">() =&gt;</span> { attempt = <span class="hljs-number">0</span>; };
+  ws.<span class="hljs-property">onclose</span> = <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> delay = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(<span class="hljs-number">30_000</span>, <span class="hljs-number">500</span> * <span class="hljs-number">2</span> ** attempt++) * (<span class="hljs-number">0.5</span> + <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() / <span class="hljs-number">2</span>);
+    <span class="hljs-built_in">setTimeout</span>(connect, delay);
+  };
+}</code></pre></div>
+<h3 id="10-3-6-backpressure-the-slow-client-problem">10.3.6 Backpressure: the slow client problem</h3>
+<p>If you <code>send()</code> faster than a client can receive (a phone on weak signal), data piles up in your server&#39;s memory. Check <code>ws.bufferedAmount</code> and drop, pause, or disconnect slow consumers. (This is the <a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a> backpressure idea, applied to sockets.)</p>
+<h3 id="10-3-7-scaling-websockets">10.3.7 Scaling WebSockets</h3>
+<p>Each connection is stateful and tied to one process, which makes scaling harder than stateless HTTP:</p>
+<pre class="is-plain"><code> client A ─▶ [server 1] ─┐
+ client B ─▶ [server 2] ─┼─▶ message from A must reach B ... on a DIFFERENT server!
+ client C ─▶ [server 1] ─┘</code></pre>
+<p>Solutions:</p>
+<ol>
+<li><strong>Shared pub/sub backplane</strong> (Redis pub/sub or Streams, NATS, Kafka): every server publishes messages there and subscribes to deliver to its own connected clients.</li>
+<li><strong>Sticky sessions</strong> at the load balancer, only needed for fallbacks like long polling (Socket.IO), not for pure WebSockets after the upgrade.</li>
+<li><strong>Capacity planning:</strong> each idle connection costs memory (tens of KB) and a file descriptor. Raise OS limits (<code>ulimit -n</code>); 10k–100k connections per node is achievable with care.</li>
+<li><strong>Graceful deploys:</strong> servers closing means clients reconnect; stagger with jitter and send close code <code>1001</code>.</li>
+</ol>
+<p><strong>Socket.IO</strong> is a popular library on top of WebSockets adding rooms, acknowledgements, automatic reconnection and fallbacks. It is convenient but uses its <strong>own protocol</strong> (not interoperable with plain WebSocket clients). Use it when you want those features out of the box; use <code>ws</code> when you want plain, standard WebSockets.</p>
+<h3 id="10-3-8-sse-or-websocket">10.3.8 SSE or WebSocket?</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>SSE</th>
+<th>WebSocket</th>
+</tr>
+</thead><tbody><tr>
+<td>Direction</td>
+<td>Server → client</td>
+<td><strong>Both</strong></td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>Plain HTTP (works with all middleware, HTTP/2)</td>
+<td>Upgraded TCP connection (needs proxy support)</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Text</td>
+<td>Text <strong>and binary</strong></td>
+</tr>
+<tr>
+<td>Reconnect + resume</td>
+<td><strong>Built in</strong></td>
+<td>You build it</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Cookies/headers via fetch-based clients</td>
+<td>Handshake only; headers not settable in browser API</td>
+</tr>
+<tr>
+<td>CORS / Origin</td>
+<td>Standard CORS applies</td>
+<td><strong>No CORS; you must check Origin</strong></td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Notifications, feeds, dashboards, progress, LLM streaming</td>
+<td>Chat, multiplayer, collaborative editing, trading UIs</td>
+</tr>
+</tbody></table></div>
+<p><strong>Default to SSE</strong>; reach for WebSockets when the client genuinely needs to send a high-frequency stream of messages back.</p>
+<hr>
+
+<h2 id="10-4-webhooks-when-another-server-tells-you">10.4 Webhooks: When Another Server Tells <em>You</em></h2>
+<p>A <strong>webhook</strong> is an HTTP <code>POST</code> that one system sends to a URL you registered, when something happens. It is how you learn that:</p>
+<ul>
+<li>Stripe/Razorpay says a payment succeeded.</li>
+<li>GitHub says someone pushed code.</li>
+<li>A shipping provider says a parcel was delivered.</li>
+</ul>
+<p>&quot;Don&#39;t call us, we&#39;ll call you.&quot; It&#39;s polling&#39;s opposite, and an <em>event-driven integration</em> between organizations.</p>
+<h3 id="two-roles-two-sets-of-responsibilities">Two roles, two sets of responsibilities</h3>
+<p>You will play <strong>both</strong>: consuming other people&#39;s webhooks (payments) and sending your own (to merchants who integrate ShopLine).</p>
+<pre class="is-plain"><code> PROVIDER (sender)                                      YOU (receiver)
+   event happens ──▶ sign payload ──▶ POST your URL ──▶ verify signature ──▶ ACK 2xx quickly
+                       ▲                                    │                    │
+                       └──── retry with backoff if no 2xx ◀─┘                    └─▶ process async</code></pre>
+<h3 id="10-4-1-receiving-webhooks-safely-tested-end-to-end">10.4.1 Receiving webhooks safely (tested end to end)</h3>
+<p>Anyone on the internet can <code>POST</code> to your public webhook URL. Without verification, an attacker can send <code>{&quot;type&quot;:&quot;payment.succeeded&quot;,&quot;orderId&quot;:&quot;9&quot;}</code> and get a free order. So:</p>
+<ol>
+<li><strong>Verify a signature</strong> (HMAC) computed with a shared secret over the <strong>exact raw body</strong>.</li>
+<li><strong>Check a timestamp</strong> to reject replays of old captured requests.</li>
+<li><strong>De-duplicate by event id</strong>, because providers deliver <em>at least once</em> (you will see duplicates).</li>
+<li><strong>Respond fast with 2xx</strong>, then do heavy work asynchronously (queue). If you take too long, the provider thinks you failed and retries.</li>
+<li><strong>Return non-2xx on genuine failure</strong> so the provider retries.</li>
+</ol>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;express&#x27;</span>;
+<span class="hljs-keyword">import</span> { createHmac, timingSafeEqual } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:crypto&#x27;</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">SECRET</span> = process.<span class="hljs-property">env</span>.<span class="hljs-property">WEBHOOK_SECRET</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">sign</span> = (<span class="hljs-params">ts, body</span>) =&gt; <span class="hljs-title function_">createHmac</span>(<span class="hljs-string">&#x27;sha256&#x27;</span>, <span class="hljs-variable constant_">SECRET</span>).<span class="hljs-title function_">update</span>(<span class="hljs-string">`<span class="hljs-subst">${ts}</span>.<span class="hljs-subst">${body}</span>`</span>).<span class="hljs-title function_">digest</span>(<span class="hljs-string">&#x27;hex&#x27;</span>);
+<span class="hljs-keyword">const</span> processed = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>();                                  <span class="hljs-comment">// a DB unique key in production</span>
+
+<span class="hljs-comment">// IMPORTANT: express.raw, NOT express.json: we need the exact bytes that were signed</span>
+app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/hooks/shopline&#x27;</span>,
+  express.<span class="hljs-title function_">raw</span>({ <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;application/json&#x27;</span>, <span class="hljs-attr">limit</span>: <span class="hljs-string">&#x27;256kb&#x27;</span> }),
+  <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> ts = req.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;X-Signature-Timestamp&#x27;</span>);
+    <span class="hljs-keyword">const</span> sig = req.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;X-Signature&#x27;</span>) ?? <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-keyword">const</span> body = req.<span class="hljs-property">body</span>.<span class="hljs-title function_">toString</span>(<span class="hljs-string">&#x27;utf8&#x27;</span>);
+
+    <span class="hljs-keyword">if</span> (!ts || <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">abs</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() / <span class="hljs-number">1000</span> - <span class="hljs-title class_">Number</span>(ts)) &gt; <span class="hljs-number">300</span>)         <span class="hljs-comment">// 5-minute replay window</span>
+      <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;stale or missing timestamp&#x27;</span> });
+
+    <span class="hljs-keyword">const</span> expected = <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title function_">sign</span>(ts, body));
+    <span class="hljs-keyword">const</span> given = <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(sig);
+    <span class="hljs-keyword">if</span> (given.<span class="hljs-property">length</span> !== expected.<span class="hljs-property">length</span> || !<span class="hljs-title function_">timingSafeEqual</span>(given, expected))   <span class="hljs-comment">// constant-time compare</span>
+      <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">401</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;bad signature&#x27;</span> });
+
+    <span class="hljs-keyword">const</span> event = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(body);
+    <span class="hljs-keyword">if</span> (processed.<span class="hljs-title function_">has</span>(event.<span class="hljs-property">id</span>)) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">200</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;duplicate ignored&#x27;</span> });
+    processed.<span class="hljs-title function_">add</span>(event.<span class="hljs-property">id</span>);
+
+    <span class="hljs-comment">// enqueue(event)  ← do real work in a background job (Chapter 28)</span>
+    res.<span class="hljs-title function_">status</span>(<span class="hljs-number">200</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;ok&#x27;</span> });
+  });</code></pre></div>
+<p>Real results from the test run (sender and receiver in one script):</p>
+<pre class="is-plain"><code>  receiver processed order.paid 1f5041c3
+1 valid       { delivered: true, attempt: 1 }
+2 duplicate   { delivered: true, attempt: 1 }     ← server replied &quot;duplicate ignored&quot; (no double processing)
+3 forged sig  401
+4 replay old  400                                  ← correct signature, but timestamp 1 hour old
+5 dead host   { delivered: false, attempt: 3, gaveUp: true }</code></pre>
+<p>Why each piece matters:</p>
+<ul>
+<li><strong><code>express.raw</code>:</strong> if you parse JSON first and re-serialize it to check the signature, whitespace/key order can differ from the original bytes and valid webhooks fail (the #1 integration bug). Verify the raw bytes.</li>
+<li><strong><code>timingSafeEqual</code>:</strong> a normal <code>===</code> string comparison returns <em>sooner</em> the earlier the strings differ, leaking information through timing. Constant-time compare closes that side channel.</li>
+<li><strong>The timestamp is part of the signed string</strong>, so an attacker cannot reuse a captured signature with a fresh timestamp.</li>
+<li><strong>Event-id de-duplication</strong> (and the database unique constraint behind it) is what makes &quot;at-least-once&quot; delivery safe: the same idea as <code>Idempotency-Key</code> in <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>.</li>
+</ul>
+<h3 id="10-4-2-sending-webhooks-reliably-tested">10.4.2 Sending webhooks reliably (tested)</h3>
+<p>If <em>you</em> expose webhooks, you owe your consumers reliability:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">deliver</span>(<span class="hljs-params">url, event, { maxAttempts = <span class="hljs-number">4</span>, baseMs = <span class="hljs-number">50</span> } = {}</span>) {
+  <span class="hljs-keyword">const</span> body = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(event);
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> attempt = <span class="hljs-number">1</span>; attempt &lt;= maxAttempts; attempt++) {
+    <span class="hljs-keyword">const</span> ts = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() / <span class="hljs-number">1000</span>);
+    <span class="hljs-keyword">try</span> {
+      <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(url, {
+        <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+        <span class="hljs-attr">signal</span>: <span class="hljs-title class_">AbortSignal</span>.<span class="hljs-title function_">timeout</span>(<span class="hljs-number">2000</span>),                    <span class="hljs-comment">// never wait forever on a customer&#x27;s server</span>
+        <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span>,
+                   <span class="hljs-string">&#x27;X-Signature-Timestamp&#x27;</span>: <span class="hljs-title class_">String</span>(ts), <span class="hljs-string">&#x27;X-Signature&#x27;</span>: <span class="hljs-title function_">sign</span>(ts, body) },
+        body,
+      });
+      <span class="hljs-keyword">if</span> (r.<span class="hljs-property">ok</span>) <span class="hljs-keyword">return</span> { <span class="hljs-attr">delivered</span>: <span class="hljs-literal">true</span>, attempt };
+      <span class="hljs-keyword">if</span> (r.<span class="hljs-property">status</span> &lt; <span class="hljs-number">500</span> &amp;&amp; r.<span class="hljs-property">status</span> !== <span class="hljs-number">429</span>) <span class="hljs-keyword">return</span> { <span class="hljs-attr">delivered</span>: <span class="hljs-literal">false</span>, attempt, <span class="hljs-attr">status</span>: r.<span class="hljs-property">status</span> };  <span class="hljs-comment">// 4xx: don&#x27;t hammer</span>
+    } <span class="hljs-keyword">catch</span> { <span class="hljs-comment">/* network error → retry */</span> }
+    <span class="hljs-keyword">const</span> delay = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * baseMs * <span class="hljs-number">2</span> ** attempt;      <span class="hljs-comment">// exponential backoff with FULL JITTER</span>
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> <span class="hljs-built_in">setTimeout</span>(r, delay));
+  }
+  <span class="hljs-keyword">return</span> { <span class="hljs-attr">delivered</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">attempt</span>: maxAttempts, <span class="hljs-attr">gaveUp</span>: <span class="hljs-literal">true</span> };
+}</code></pre></div>
+<p><strong>Backoff with jitter</strong> is essential. If a customer&#39;s server is down for 5 minutes and you retry every second, you hammer an already-struggling system (and when it comes back, <em>all</em> your queued retries hit simultaneously). Doubling delays spreads the load; random jitter prevents many senders synchronizing.</p>
+<p>Production-grade sender checklist:</p>
+<ol>
+<li><strong>Queue the deliveries</strong> (don&#39;t block your request path): one job per (event, endpoint).</li>
+<li><strong>Retry schedule</strong> over hours/days (e.g., 1 min, 5 min, 30 min, 2 h, 12 h, 24 h), then <strong>dead-letter</strong> and alert the customer; allow manual <strong>replay</strong> from a dashboard.</li>
+<li><strong>Sign every payload</strong>; document the verification algorithm with code samples; support <strong>secret rotation</strong> (accept old and new for a transition window).</li>
+<li><strong>Stable event ids</strong> and a <code>type</code> + <code>createdAt</code>; include enough data (or an id to fetch with a signed API call).</li>
+<li><strong>Don&#39;t promise ordering.</strong> Events can arrive out of order after retries. Include timestamps/sequence numbers; receivers should be tolerant (&quot;fetch the current state&quot; beats trusting event order).</li>
+<li><strong>Per-endpoint timeouts and circuit breaking</strong> so one slow customer can&#39;t clog the delivery workers.</li>
+<li><strong>Delivery logs</strong> per attempt (status, latency, response snippet) visible to customers.</li>
+</ol>
+<h3 id="10-4-3-ssrf-the-webhook-sender-s-biggest-security-risk">10.4.3 SSRF: the webhook-sender&#39;s biggest security risk</h3>
+<p>If customers can register <strong>any URL</strong> to receive webhooks, you are making server-side requests to addresses <em>they</em> control. An attacker registers <code>http://169.254.169.254/latest/meta-data/</code> (the cloud metadata endpoint) or <code>http://localhost:5432</code> or <code>http://10.0.0.12/admin</code>, and your server dutifully fetches it from <em>inside</em> your network. This is <strong>Server-Side Request Forgery (SSRF)</strong> and has caused major breaches (the 2019 Capital One breach involved it).</p>
+<p>Defenses:</p>
+<ul>
+<li>Allow only <code>https://</code> and public hostnames; <strong>resolve DNS and reject private/loopback/link-local IPs</strong> (<code>10/8</code>, <code>172.16/12</code>, <code>192.168/16</code>, <code>127/8</code>, <code>169.254/16</code>, IPv6 equivalents), checking the IP <strong>at connect time</strong> (DNS rebinding can change the answer between check and use).</li>
+<li>Disable or re-validate <strong>redirects</strong>.</li>
+<li>Send webhooks from an <strong>egress proxy or isolated network</strong> with no access to internal services.</li>
+<li>Never return response bodies from customer URLs to the user verbatim.</li>
+</ul>
+<p>(<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a> returns to SSRF in depth.)</p>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-2" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;How do you design a webhook system?&quot; → signed payloads with timestamp (replay protection), at-least-once delivery with retries + exponential backoff + jitter, idempotent consumers keyed by event id, fast ACK + async processing, dead-letter queue and replay tooling, per-endpoint isolation, SSRF defenses, no ordering guarantee, delivery observability.</p>
+</aside>
+<hr>
+
+<h2 id="10-5-grpc-fast-typed-service-to-service-calls">10.5 gRPC: Fast, Typed Service-to-Service Calls</h2>
+<p><strong>gRPC</strong> (Google RPC) lets one program call a function on another machine as if it were local, with a strict typed contract and compact binary messages over HTTP/2.</p>
+<h3 id="10-5-1-what-s-different-from-rest-json">10.5.1 What&#39;s different from REST/JSON</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>REST/JSON</th>
+<th>gRPC</th>
+</tr>
+</thead><tbody><tr>
+<td>Contract</td>
+<td>OpenAPI (optional)</td>
+<td><strong><code>.proto</code> file (mandatory)</strong>, source of truth</td>
+</tr>
+<tr>
+<td>Format</td>
+<td>Text JSON</td>
+<td><strong>Protocol Buffers</strong>: compact binary</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>HTTP/1.1 or 2</td>
+<td><strong>HTTP/2</strong> always</td>
+</tr>
+<tr>
+<td>Calls</td>
+<td>Resource + verb</td>
+<td><strong>Named methods</strong> (<code>GetStock</code>)</td>
+</tr>
+<tr>
+<td>Streaming</td>
+<td>Awkward</td>
+<td><strong>First-class</strong> (server, client, bidirectional)</td>
+</tr>
+<tr>
+<td>Code</td>
+<td>Hand-written clients</td>
+<td><strong>Generated</strong> clients/servers in many languages</td>
+</tr>
+<tr>
+<td>Browser</td>
+<td>Native</td>
+<td>Needs grpc-web proxy</td>
+</tr>
+</tbody></table></div>
+<h3 id="10-5-2-the-contract-a-proto-file">10.5.2 The contract: a <code>.proto</code> file</h3>
+<pre class="is-plain"><code>syntax = &quot;proto3&quot;;
+package shopline.inventory.v1;
+
+service Inventory {
+  rpc GetStock   (GetStockRequest) returns (StockReply);           // unary
+  rpc WatchStock (GetStockRequest) returns (stream StockReply);    // server streaming
+}
+
+message GetStockRequest { int32 product_id = 1; }
+message StockReply      { int32 product_id = 1; int32 quantity = 2; }</code></pre>
+<p>Those <code>= 1</code>, <code>= 2</code> are <strong>field numbers</strong>, the identity of each field on the wire. This leads to the cardinal protobuf rule:</p>
+<blockquote>
+<p><strong>Never change or reuse a field number.</strong> You may add new fields (with new numbers) and mark old ones <code>reserved</code>; old and new programs keep interoperating. Renaming a field is safe; renumbering is a corrupting breaking change.</p>
+</blockquote>
+<h3 id="10-5-3-compactness">10.5.3 Compactness</h3>
+<p>The message <code>{ productId: 1, quantity: 50 }</code> encodes in protobuf as four bytes (<code>08 01 10 32</code>: field 1 = 1, field 2 = 50). The same data as JSON is 29 bytes (<code>{&quot;productId&quot;:1,&quot;quantity&quot;:50}</code>; measured). Names aren&#39;t sent; numbers are. At thousands of calls per second across many services, that and the cheaper parsing add up.</p>
+<h3 id="10-5-4-the-four-call-types">10.5.4 The four call types</h3>
+<pre class="is-plain"><code> Unary               client ── request ──▶ server ── response ──▶ client        (like REST)
+ Server streaming    client ── request ──▶ server ══ r1, r2, r3 ═▶ client       (live feed)
+ Client streaming    client ══ m1, m2, m3 ═▶ server ── response ──▶ client      (upload)
+ Bidirectional       client ⇄⇄⇄⇄⇄⇄⇄⇄⇄⇄⇄⇄⇄⇄ server                            (chat-like)</code></pre>
+<h3 id="10-5-5-a-working-client-and-server-in-node-tested">10.5.5 A working client and server in Node (tested)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">npm install @grpc/grpc-js @grpc/proto-loader</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> grpc <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@grpc/grpc-js&#x27;</span>;
+<span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> protoLoader <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@grpc/proto-loader&#x27;</span>;
+
+<span class="hljs-keyword">const</span> def = protoLoader.<span class="hljs-title function_">loadSync</span>(<span class="hljs-string">&#x27;inventory.proto&#x27;</span>, { <span class="hljs-attr">keepCase</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">longs</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">defaults</span>: <span class="hljs-literal">true</span> });
+<span class="hljs-keyword">const</span> { <span class="hljs-title class_">Inventory</span> } = grpc.<span class="hljs-title function_">loadPackageDefinition</span>(def).<span class="hljs-property">shopline</span>.<span class="hljs-property">inventory</span>.<span class="hljs-property">v1</span>;
+
+<span class="hljs-comment">// ---------------- SERVER ----------------</span>
+<span class="hljs-keyword">const</span> stock = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-number">50</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">0</span>]]);
+<span class="hljs-keyword">const</span> server = <span class="hljs-keyword">new</span> grpc.<span class="hljs-title class_">Server</span>();
+
+server.<span class="hljs-title function_">addService</span>(<span class="hljs-title class_">Inventory</span>.<span class="hljs-property">service</span>, {
+  <span class="hljs-title function_">getStock</span>(<span class="hljs-params">call, callback</span>) {
+    <span class="hljs-keyword">const</span> { productId } = call.<span class="hljs-property">request</span>;
+    <span class="hljs-keyword">if</span> (!stock.<span class="hljs-title function_">has</span>(productId))
+      <span class="hljs-keyword">return</span> <span class="hljs-title function_">callback</span>({ <span class="hljs-attr">code</span>: grpc.<span class="hljs-property">status</span>.<span class="hljs-property">NOT_FOUND</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">`product <span class="hljs-subst">${productId}</span> not found`</span> });
+    <span class="hljs-title function_">callback</span>(<span class="hljs-literal">null</span>, { productId, <span class="hljs-attr">quantity</span>: stock.<span class="hljs-title function_">get</span>(productId) });
+  },
+  <span class="hljs-title function_">watchStock</span>(<span class="hljs-params">call</span>) {                                          <span class="hljs-comment">// server streaming</span>
+    <span class="hljs-keyword">const</span> { productId } = call.<span class="hljs-property">request</span>;
+    <span class="hljs-keyword">let</span> n = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> {
+      call.<span class="hljs-title function_">write</span>({ productId, <span class="hljs-attr">quantity</span>: (stock.<span class="hljs-title function_">get</span>(productId) ?? <span class="hljs-number">0</span>) - ++n });
+      <span class="hljs-keyword">if</span> (n === <span class="hljs-number">3</span>) { <span class="hljs-built_in">clearInterval</span>(timer); call.<span class="hljs-title function_">end</span>(); }
+    }, <span class="hljs-number">50</span>);
+    call.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;cancelled&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(timer));         <span class="hljs-comment">// client left: stop working</span>
+  },
+});
+
+server.<span class="hljs-title function_">bindAsync</span>(<span class="hljs-string">&#x27;127.0.0.1:50051&#x27;</span>, grpc.<span class="hljs-property">ServerCredentials</span>.<span class="hljs-title function_">createInsecure</span>(), <span class="hljs-function">() =&gt;</span> {});
+
+<span class="hljs-comment">// ---------------- CLIENT ----------------</span>
+<span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Inventory</span>(<span class="hljs-string">&#x27;127.0.0.1:50051&#x27;</span>, grpc.<span class="hljs-property">credentials</span>.<span class="hljs-title function_">createInsecure</span>());
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">deadline</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() + <span class="hljs-number">1000</span>);           <span class="hljs-comment">// ALWAYS set a deadline</span>
+
+client.<span class="hljs-title function_">getStock</span>({ <span class="hljs-attr">productId</span>: <span class="hljs-number">1</span> }, { <span class="hljs-attr">deadline</span>: <span class="hljs-title function_">deadline</span>() }, <span class="hljs-function">(<span class="hljs-params">err, reply</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(err ?? reply));</code></pre></div>
+<p><strong>Real output:</strong></p>
+<pre class="is-plain"><code>unary ok         { productId: 1, quantity: 50 }
+unary not found  { error: 'NOT_FOUND', message: 'product 99 not found' }
+stream update    { productId: 1, quantity: 49 }
+stream update    { productId: 1, quantity: 48 }
+stream update    { productId: 1, quantity: 47 }
+stream ended
+slow server      DEADLINE_EXCEEDED</code></pre>
+<h3 id="10-5-6-deadlines-errors-and-metadata-the-three-habits">10.5.6 Deadlines, errors and metadata: the three habits</h3>
+<ol>
+<li><p><strong>Always set a deadline.</strong> gRPC has first-class timeouts: the client says &quot;I&#39;ll wait 1 second,&quot; and the deadline <strong>propagates</strong> across the call chain so downstream services stop working on abandoned requests. Calls without deadlines can hang forever (the <a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a> &quot;outbound timeouts&quot; rule, built in).</p>
+</li>
+<li><p><strong>Use gRPC status codes</strong>, not HTTP ones:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>gRPC status</th>
+<th>Meaning</th>
+<th>Rough HTTP analogue</th>
+</tr>
+</thead><tbody><tr>
+<td><code>OK</code></td>
+<td>Success</td>
+<td>200</td>
+</tr>
+<tr>
+<td><code>INVALID_ARGUMENT</code></td>
+<td>Bad request data</td>
+<td>400/422</td>
+</tr>
+<tr>
+<td><code>UNAUTHENTICATED</code></td>
+<td>No/invalid credentials</td>
+<td>401</td>
+</tr>
+<tr>
+<td><code>PERMISSION_DENIED</code></td>
+<td>Not allowed</td>
+<td>403</td>
+</tr>
+<tr>
+<td><code>NOT_FOUND</code></td>
+<td>Doesn&#39;t exist</td>
+<td>404</td>
+</tr>
+<tr>
+<td><code>ALREADY_EXISTS</code></td>
+<td>Conflict</td>
+<td>409</td>
+</tr>
+<tr>
+<td><code>FAILED_PRECONDITION</code></td>
+<td>State doesn&#39;t allow it</td>
+<td>409/412</td>
+</tr>
+<tr>
+<td><code>RESOURCE_EXHAUSTED</code></td>
+<td>Quota/rate limit</td>
+<td>429</td>
+</tr>
+<tr>
+<td><code>DEADLINE_EXCEEDED</code></td>
+<td>Timed out</td>
+<td>504</td>
+</tr>
+<tr>
+<td><code>UNAVAILABLE</code></td>
+<td>Transient; <strong>safe to retry</strong></td>
+<td>503</td>
+</tr>
+<tr>
+<td><code>INTERNAL</code> / <code>UNKNOWN</code></td>
+<td>Server bug</td>
+<td>500</td>
+</tr>
+</tbody></table></div>
+</li>
+<li><p><strong>Metadata</strong> = headers (auth tokens, request ids, trace context). <strong>Interceptors</strong> = middleware (logging, auth, metrics, retries), the same pattern as <a href="/learn/backend-master/nodejs-http-server-routing-middleware-express" title="Build a Node.js Server: Routing &amp; Middleware">Chapter 6</a>.</p>
+</li>
+</ol>
+<h3 id="10-5-7-operating-grpc">10.5.7 Operating gRPC</h3>
+<ul>
+<li><strong>TLS/mTLS</strong> between services (<code>createInsecure</code> above is for local demos only). mTLS (both sides present certificates) is a common service-to-service identity mechanism.</li>
+<li><strong>Load balancing is different:</strong> gRPC multiplexes many calls over one long-lived HTTP/2 connection, so a plain L4 load balancer sends <em>all</em> traffic from a client to one backend. You need <strong>L7/gRPC-aware balancing</strong> (Envoy, a service mesh) or client-side balancing.</li>
+<li><strong>Health checks:</strong> the standard <code>grpc.health.v1</code> protocol.</li>
+<li><strong>Evolve contracts</strong> additively; keep generated code in sync via CI; version packages (<code>inventory.v1</code> → <code>v2</code>).</li>
+<li><strong>Tooling:</strong> <code>grpcurl</code> (curl for gRPC), Postman/BloomRPC alternatives, <code>buf</code> for linting and breaking-change detection.</li>
+</ul>
+<h3 id="10-5-8-when-to-use-grpc">10.5.8 When to use gRPC</h3>
+<p>✅ Internal service-to-service calls where latency, throughput, strong typing and streaming matter; polyglot microservices sharing one contract.
+❌ Public browser-facing APIs (use REST/GraphQL), or small systems where a typed REST client does the job. Don&#39;t adopt gRPC just because it&#39;s fast: network and database latency usually dwarf serialization.</p>
+<hr>
+
+<h2 id="10-6-choosing-the-right-tool-a-decision-guide">10.6 Choosing the Right Tool: A Decision Guide</h2>
+<pre class="is-plain"><code> Who is talking to whom?
+   │
+   ├─ Another company's server → you ................ WEBHOOK (verify signature, idempotent)
+   ├─ Your server → a customer's server ............. WEBHOOK (sign, retry, dead-letter, SSRF-safe)
+   ├─ Your service ⇄ your service (fast, typed) ..... gRPC   (or REST if simple)
+   ├─ Your server → browser (updates only) .......... SSE    (polling if rare)
+   ├─ Browser ⇄ server (chat, collaboration) ........ WebSocket
+   └─ &quot;When X happens, several systems should react&quot; . MESSAGE QUEUE / EVENT BUS (Chapter 28)</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Question</th>
+<th>Answer → tool</th>
+</tr>
+</thead><tbody><tr>
+<td>Does the browser only <em>receive</em>?</td>
+<td>SSE</td>
+</tr>
+<tr>
+<td>Does it need to <em>send</em> frequent messages too?</td>
+<td>WebSocket</td>
+</tr>
+<tr>
+<td>Is the other party a different organization over the internet?</td>
+<td>Webhook</td>
+</tr>
+<tr>
+<td>Is it internal and performance/type-safety critical?</td>
+<td>gRPC</td>
+</tr>
+<tr>
+<td>Must it survive the receiver being offline?</td>
+<td>Queue / webhook with retries</td>
+</tr>
+<tr>
+<td>Is &quot;every 10–30 s&quot; fresh enough?</td>
+<td>Polling</td>
+</tr>
+</tbody></table></div>
+<h3 id="shopline-s-use-of-each">ShopLine&#39;s use of each</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Feature</th>
+<th>Tool</th>
+</tr>
+</thead><tbody><tr>
+<td>Customer sees order status change live</td>
+<td><strong>SSE</strong> (<code>order.shipped</code>, <code>order.paid</code>)</td>
+</tr>
+<tr>
+<td>Payment provider confirms a payment</td>
+<td><strong>Webhook</strong> received (<code>/hooks/payments</code>), signed + idempotent</td>
+</tr>
+<tr>
+<td>Merchants integrate and get <code>order.created</code> events</td>
+<td><strong>Webhook</strong> sent (signed, retried, SSRF-safe)</td>
+</tr>
+<tr>
+<td>Support chat widget (later)</td>
+<td><strong>WebSocket</strong></td>
+</tr>
+<tr>
+<td>Orders service checks stock in Inventory service (if we split them; <a href="/learn/backend-master/microservices-vs-monolith-architecture-decision" title="Microservices vs Monolith: How to Decide">Chapter 33</a>)</td>
+<td><strong>gRPC</strong></td>
+</tr>
+<tr>
+<td>Nightly report generation</td>
+<td>Queue + <code>202</code> (Chapters 8, 28)</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="10-7-edge-cases-and-gotchas-checklist">10.7 Edge Cases and Gotchas Checklist</h2>
+<p><strong>SSE</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Proxy/CDN buffering → events arrive late or in bursts. Disable buffering on that route.</li>
+<li><input disabled="" type="checkbox"> No heartbeat → idle timeout kills the stream every 60 s.</li>
+<li><input disabled="" type="checkbox"> Not removing closed clients from the registry → memory leak.</li>
+<li><input disabled="" type="checkbox"> Broadcasting to everyone instead of filtering by authorization.</li>
+<li><input disabled="" type="checkbox"> Multiple instances without shared pub/sub → some users never receive events.</li>
+<li><input disabled="" type="checkbox"> HTTP/1.1 six-connection limit starving other requests.</li>
+</ul>
+<p><strong>WebSocket</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> No <code>Origin</code> check with cookie auth → Cross-Site WebSocket Hijacking.</li>
+<li><input disabled="" type="checkbox"> Authenticating after connect (or never); authorizing only at connect.</li>
+<li><input disabled="" type="checkbox"> Trusting client-supplied identity fields in messages.</li>
+<li><input disabled="" type="checkbox"> No message validation, size cap, or rate limit per connection.</li>
+<li><input disabled="" type="checkbox"> No heartbeat → ghost connections; no <code>terminate()</code> of dead sockets.</li>
+<li><input disabled="" type="checkbox"> Clients reconnect without backoff/jitter → thundering herd after a deploy.</li>
+<li><input disabled="" type="checkbox"> Ignoring <code>bufferedAmount</code> → memory blow-up from slow clients.</li>
+<li><input disabled="" type="checkbox"> State in one process; no backplane → messages don&#39;t cross servers.</li>
+<li><input disabled="" type="checkbox"> File-descriptor/ulimit exhaustion at scale.</li>
+</ul>
+<p><strong>Webhooks</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Parsing JSON before verifying the signature (body bytes change).</li>
+<li><input disabled="" type="checkbox"> Using <code>===</code> instead of <code>timingSafeEqual</code>.</li>
+<li><input disabled="" type="checkbox"> No timestamp check → replay attacks.</li>
+<li><input disabled="" type="checkbox"> Not de-duplicating by event id → double processing under at-least-once delivery.</li>
+<li><input disabled="" type="checkbox"> Doing heavy work before ACK → provider times out and retries.</li>
+<li><input disabled="" type="checkbox"> Assuming event order.</li>
+<li><input disabled="" type="checkbox"> Sender: no timeout, no jitter, retrying 4xx forever, no dead-letter.</li>
+<li><input disabled="" type="checkbox"> Sender: user-supplied URLs without SSRF protections.</li>
+<li><input disabled="" type="checkbox"> Secrets in code/logs; no rotation path.</li>
+</ul>
+<p><strong>gRPC</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> No deadline → hangs forever.</li>
+<li><input disabled="" type="checkbox"> Reusing/renumbering protobuf field numbers.</li>
+<li><input disabled="" type="checkbox"> L4 load balancer pinning all calls to one backend.</li>
+<li><input disabled="" type="checkbox"> <code>createInsecure()</code> left in production.</li>
+<li><input disabled="" type="checkbox"> Treating all errors as <code>INTERNAL</code>; not using <code>UNAVAILABLE</code> for retryable cases.</li>
+</ul>
+<hr>
+
+<h2 id="10-8-chapter-summary">10.8 Chapter Summary</h2>
+<ul>
+<li>Real-time needs a <strong>ladder of options</strong>: polling → long polling → <strong>SSE</strong> → <strong>WebSockets</strong>; plus <strong>webhooks</strong> for server-to-server events and <strong>gRPC</strong> for fast internal calls. Choose the simplest that meets the requirement.</li>
+<li><strong>SSE</strong> is one never-ending HTTP response with automatic reconnect and <code>Last-Event-ID</code> resume. It&#39;s ideal for one-way pushes (notifications, progress, LLM streaming). Handle proxy buffering, heartbeats, auth limits and multi-instance fan-out.</li>
+<li><strong>WebSockets</strong> upgrade HTTP to a persistent two-way channel. Secure them: authenticate during the upgrade, <strong>check <code>Origin</code></strong> (CORS doesn&#39;t protect you), validate and rate-limit messages, cap sizes, heartbeat, handle backpressure, reconnect with backoff + jitter, and use a pub/sub backplane to scale.</li>
+<li><strong>Webhooks</strong> are signed HTTP callbacks. <strong>Receive</strong> with raw-body HMAC verification, constant-time comparison, timestamp replay windows, event-id idempotency and fast ACK. <strong>Send</strong> with queues, backoff + jitter, dead-lettering, replay tooling and <strong>SSRF defenses</strong>.</li>
+<li><strong>gRPC</strong> gives typed contracts (<code>.proto</code>), compact binary messages, HTTP/2 streaming, deadlines and rich status codes. Never renumber fields; always set deadlines; mind load balancing and TLS.</li>
+</ul>
+<hr>
+
+<h2 id="10-9-revision-notes">10.9 Revision Notes</h2>
+<ul>
+<li>SSE headers: <code>Content-Type: text/event-stream</code>, <code>Cache-Control: no-cache</code>; format <code>id:</code>, <code>event:</code>, <code>data:</code>, blank line; <code>: comment</code> for heartbeat; resume via <code>Last-Event-ID</code>.</li>
+<li>WebSocket: HTTP <code>Upgrade</code> → <code>101 Switching Protocols</code>; no CORS, so <strong>check <code>Origin</code></strong>; heartbeat ping/pong; <code>maxPayload</code>; <code>bufferedAmount</code>.</li>
+<li>Reconnect = exponential backoff × random jitter.</li>
+<li>Webhook verify: <code>HMAC-SHA256(secret, timestamp + &quot;.&quot; + rawBody)</code> → <code>timingSafeEqual</code>; reject if <code>|now − ts| &gt; 5 min</code>; de-dup by <code>event.id</code>; ACK fast.</li>
+<li>Retries: 4xx (except 429) → stop; 5xx/timeouts → retry with backoff + jitter; dead-letter.</li>
+<li>SSRF: block private/loopback/link-local IPs, validate at connect time, restrict redirects.</li>
+<li>gRPC: <code>.proto</code> field numbers are forever; four call types; deadlines; <code>UNAVAILABLE</code> = retry; L7 load balancing; TLS/mTLS.</li>
+</ul>
+<hr>
+
+<h2 id="10-10-mind-map-ascii">10.10 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                    REAL-TIME &amp; EVENT-DRIVEN (Ch. 10)
+                                  │
+   ┌───────────┬───────────┬──────┼──────────┬──────────────┬───────────┐
+ POLLING       SSE      WEBSOCKET       WEBHOOKS          gRPC       CHOOSING
+   │            │           │               │               │            │
+ interval    one-way     two-way         receive:        .proto      browser read-only→SSE
+ ETag/304    text/event- Upgrade 101     raw body        protobuf    browser two-way→WS
+ simple &amp;    stream      Origin check!   HMAC+ts         HTTP/2      other org→webhook
+ cacheable   Last-Event  auth @handshake timingSafeEq    4 call      internal fast→gRPC
+             -ID resume  heartbeat       idempotent id   types       fan-out later→queue
+             heartbeat   backoff+jitter  send: queue,    deadlines
+             no buffering Redis backplane backoff+jitter status codes
+                                          DLQ, SSRF!     never renumber</code></pre>
+<hr>
+
+<h2 id="10-11-cheat-sheet">10.11 Cheat Sheet</h2>
+<pre class="is-plain"><code>POLL        setInterval(fetch...) + ETag/304     →   fine when &quot;every 30 s&quot; is fresh enough
+SSE SERVER  res.set({'Content-Type':'text/event-stream','Cache-Control':'no-cache'}); res.flushHeaders()
+            res.write(`id: ${id}\nevent: ${name}\ndata: ${JSON.stringify(obj)}\n\n`)
+            heartbeat: res.write(': keep-alive\n\n') every 15 s ; req.on('close', cleanup)
+SSE CLIENT  const es = new EventSource('/events'); es.addEventListener('name', e =&gt; JSON.parse(e.data))
+WS SERVER   new WebSocketServer({ noServer:true, maxPayload }) ; server.on('upgrade', auth + Origin check)
+            wss.handleUpgrade(...) ; ping/pong heartbeat ; validate every message ; use auth'd identity
+WS CLIENT   new WebSocket('wss://...') ; reconnect: delay = min(30s, 500ms·2^n) × (0.5..1)
+SCALE WS    Redis pub/sub (or NATS/Kafka) backplane ; ulimit -n ; stagger reconnects
+WEBHOOK RX  express.raw → HMAC-SHA256(ts + '.' + body) → timingSafeEqual → |now−ts| ≤ 300s → dedupe(event.id) → 200 fast
+WEBHOOK TX  queue → POST (timeout 2–10s) → 2xx done | 4xx stop | 5xx/429/timeout retry (backoff+jitter) → DLQ
+SSRF        https only ; resolve → reject private/loopback/link-local IPs at connect ; no/limited redirects
+gRPC        .proto (field numbers immutable) → loadSync → addService / new Client(addr, creds)
+            { deadline } on EVERY call ; status.UNAVAILABLE = retryable ; TLS/mTLS ; L7 balancing
+PICK        SSE (push) | WS (talk) | webhook (other org) | gRPC (internal, fast) | queue (decouple)</code></pre>
+<hr>
+
+<h2 id="10-12-key-takeaways">10.12 Key Takeaways</h2>
+<ol>
+<li><strong>Match the tool to the direction and the audience.</strong> Most &quot;real-time&quot; features are one-way pushes where SSE is enough.</li>
+<li><strong>Connections drop; deliveries repeat; messages arrive out of order.</strong> Build resume, idempotency and tolerance in from day one.</li>
+<li>WebSockets <strong>bypass CORS</strong>, so <code>Origin</code> checks and handshake authentication are your responsibility.</li>
+<li>For webhooks, <strong>verify the raw bytes</strong>, compare in constant time, bound the replay window and de-duplicate by id.</li>
+<li>Any feature that fetches <strong>user-supplied URLs</strong> needs SSRF protection.</li>
+<li>gRPC buys speed and strict contracts at the price of operational complexity. Use it where that trade pays off, and always set deadlines.</li>
+</ol>
+<hr>
+
+<h2 id="10-13-20-multiple-choice-questions">10.13 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Polling = repeated asking."><p class="quiz-text">Which technique has the client repeatedly asking &quot;anything new?&quot; at intervals?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">SSE</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Polling</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Webhook</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">gRPC</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="One direction: server → client."><p class="quiz-text">SSE traffic flows:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Both directions equally</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Server to client</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Client to server only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Peer to peer</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="The browser sends the last id seen; server replays the rest."><p class="quiz-text">What does <code>Last-Event-ID</code> enable?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Authentication</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Resuming an SSE stream after a reconnect without missing events</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Compression</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">CORS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Defeats idle-connection timeouts."><p class="quiz-text">Why send a comment line (<code>: keep-alive</code>) periodically on an SSE stream?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It increases throughput</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It prevents idle timeouts from proxies and load balancers</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It authenticates the user</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It is required by JSON</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="101 Switching Protocols."><p class="quiz-text">Which HTTP status code confirms a successful WebSocket upgrade?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">200</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">101</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">301</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">204</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="CORS/Same-Origin don't apply to WebSockets."><p class="quiz-text">Does CORS protect a WebSocket endpoint?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Yes, completely</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">No, so you must validate the <code>Origin</code> header yourself</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only for binary messages</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only over HTTP/2</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="CSWSH exploits cookies on cross-site handshakes."><p class="quiz-text">What attack does an <code>Origin</code> check on the WebSocket handshake mitigate?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">SQL injection</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Cross-Site WebSocket Hijacking</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">DNS spoofing</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Clickjacking</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Find and terminate dead connections."><p class="quiz-text">Why use ping/pong heartbeats on WebSocket servers?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To compress data</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">To detect and clean up dead or half-open connections</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To authenticate</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To increase bandwidth</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Spreads reconnects over time."><p class="quiz-text">Why add random jitter to client reconnect delays?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To look random</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">To prevent a thundering herd of clients reconnecting simultaneously</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To save bandwidth</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To bypass firewalls</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Each server subscribes and delivers to its own clients."><p class="quiz-text">With three WebSocket servers behind a load balancer, how does a message from a client on server 1 reach a client on server 2?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It can&#39;t</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Through a shared pub/sub backplane such as Redis</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Through DNS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Through the database primary key</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Signature covers exact bytes."><p class="quiz-text">For a webhook receiver, why must you verify the signature against the raw request body?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Raw bodies are smaller</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Re-serializing parsed JSON can change the bytes and break the signature check</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JSON can&#39;t be parsed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It speeds up processing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Constant-time comparison."><p class="quiz-text">Why use <code>crypto.timingSafeEqual</code> to compare signatures?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s shorter</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Normal comparison leaks information through timing differences</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It encrypts the data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It handles Unicode</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Old captures can't be replayed later."><p class="quiz-text">What does including a timestamp in the signed content protect against?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Typos</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Replay of captured valid requests</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Large payloads</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">CORS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Idempotent processing by event id."><p class="quiz-text">Providers deliver webhooks &quot;at least once.&quot; What must the receiver do?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">De-duplicate using the event id so duplicates are processed once</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Reject all retries</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Disable the endpoint</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="5xx (and 429, timeouts) are transient."><p class="quiz-text">A webhook sender should retry on which response?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">400</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">404</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">503</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">200</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Server-Side Request Forgery."><p class="quiz-text">What is SSRF?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A browser flaw</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Tricking your server into making requests to internal or unintended addresses</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A SQL attack</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A certificate error</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Field numbers are the wire identity."><p class="quiz-text">In protobuf, what must you never do to an existing field?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Add a comment</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Change or reuse its field number</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Rename it in docs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Read it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Time limit elapsed."><p class="quiz-text">What does gRPC status <code>DEADLINE_EXCEEDED</code> mean?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The caller lacked permission</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The call didn&#39;t finish before the deadline</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The server crashed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The message was too large</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Connection-level balancing pins traffic."><p class="quiz-text">Why can a plain L4 load balancer be a problem for gRPC?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">gRPC doesn&#39;t use TCP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Many calls share one long-lived HTTP/2 connection, so all traffic can pin to one backend</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">gRPC needs UDP</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Load balancers can&#39;t see ports</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="One-way push → SSE."><p class="quiz-text">A customer needs live order status updates in the browser, with no sending back. The simplest fitting tool is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">gRPC</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">WebSocket</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">SSE</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A message queue</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-c, 16-b, 17-b, 18-b, 19-b, 20-c</p></details>
+</div>
+<h2 id="10-14-20-hands-on-exercises">10.14 20 Hands-on Exercises</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run the SSE server. Connect with <code>curl -N localhost:3000/events</code> and publish events with <code>curl -X POST</code>. Watch them arrive.</li>
+<li>Open two terminals with <code>curl -N</code>; publish an event; confirm both receive it.</li>
+<li>Write the browser page with <code>EventSource</code> that shows each event in a list.</li>
+<li>Run the chat server and connect two clients with the Node 22 global <code>WebSocket</code> (or <code>wscat</code>).</li>
+<li>Connect with a wrong token and read the 401 failure.</li>
+<li>Send invalid JSON over the WebSocket and see your error reply.</li>
+<li>Use <code>grpcurl</code> or the Node client to call <code>GetStock</code> for a missing product and read the <code>NOT_FOUND</code> status.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="8">
+<li>Add <code>Last-Event-ID</code> replay to your SSE server and test it by connecting with a custom header.</li>
+<li>Add per-user filtering to SSE: a user receives only events for <em>their</em> orders (use a token or query parameter for identity).</li>
+<li>Add an <code>Origin</code> allow-list to the WebSocket upgrade handler; test with and without an <code>Origin</code> header.</li>
+<li>Add a per-connection rate limit (max 5 messages per second); disconnect offenders with close code 1008.</li>
+<li>Implement client reconnection with backoff + jitter; kill and restart the server and watch reconnects spread out.</li>
+<li>Build the webhook receiver; test valid, forged-signature, stale-timestamp and duplicate requests.</li>
+<li>Write a protobuf <code>Order</code> message with a <code>repeated Item items</code> field, then add a new optional field without breaking an old client (use two copies of the proto).</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="15">
+<li>Run <strong>two</strong> WebSocket server instances with a Redis pub/sub backplane so a message sent on one reaches clients on the other.</li>
+<li>Implement the sender side: a queue (in memory is fine) with a retry schedule (1 s, 5 s, 30 s), jitter, a dead-letter list and a <code>replay(eventId)</code> function.</li>
+<li>Write an SSRF guard: given a URL, resolve DNS, reject private/loopback/link-local addresses (IPv4 and IPv6), and make the actual request using the <em>resolved IP</em> to defeat DNS rebinding. Test against <code>http://127.0.0.1</code>, <code>http://169.254.169.254</code> and a hostname that resolves to a private IP.</li>
+<li>Implement gRPC server streaming with cancellation: stop work when the client disconnects. Prove it by logging.</li>
+<li>Add a gRPC interceptor (or wrapper) that logs method, duration and status, and one that rejects calls without a valid <code>authorization</code> metadata value.</li>
+<li>Load test: open 5,000 WebSocket (or SSE) connections to your server with a script; measure memory per connection and the OS file-descriptor limit you hit; document the changes needed to reach 20,000.</li>
+</ol>
+<hr>
+
+<h2 id="10-15-5-interview-questions">10.15 5 Interview Questions</h2>
+<p><strong>1. SSE vs WebSockets: when would you choose each?</strong>
+<em>Model answer:</em> SSE for server-to-client streaming over plain HTTP: simple, auto-reconnect with <code>Last-Event-ID</code>, works with HTTP/2, proxies and standard auth/CORS; ideal for notifications, dashboards, progress and LLM token streaming. WebSockets when both sides need low-latency messaging or binary data (chat, games, collaborative editing). I default to SSE and move to WebSockets only when bidirectional, high-frequency traffic is a real requirement, accounting for the extra work (Origin checks, heartbeat, resume, backplane).</p>
+<p><strong>2. How do you scale a WebSocket service horizontally?</strong>
+<em>Model answer:</em> Connections are stateful and pinned to a process, so servers need a shared message backplane (Redis pub/sub/Streams, NATS, Kafka) so events published on any instance reach subscribers on all; stateless auth so any instance can authenticate; raise file-descriptor limits and size memory per connection; heartbeats to clean up; graceful draining on deploy with jittered client reconnects; resume tokens to replay missed messages; and metrics on connections, message rates and backpressure.</p>
+<p><strong>3. Design a secure webhook receiver.</strong>
+<em>Model answer:</em> HTTPS endpoint; read the raw body; verify an HMAC-SHA256 signature over timestamp + body with a per-endpoint secret using constant-time comparison; enforce a short timestamp window; de-duplicate by event id (database unique constraint) because delivery is at-least-once; return 2xx quickly and process asynchronously via a queue; tolerate out-of-order events by re-fetching state when needed; log and alert on verification failures; support secret rotation.</p>
+<p><strong>4. How would you build a reliable outbound webhook system?</strong>
+<em>Model answer:</em> Persist events, enqueue per-subscriber deliveries, sign payloads, set strict timeouts, retry transient failures (5xx/429/timeouts) with exponential backoff and jitter over a long window, stop on permanent 4xx, dead-letter and notify customers, provide replay and delivery logs, isolate slow endpoints (per-endpoint concurrency and circuit breakers), defend against SSRF with egress controls and IP validation, and document ordering/duplication semantics.</p>
+<p><strong>5. When is gRPC a good fit and what operational issues should you expect?</strong>
+<em>Model answer:</em> Internal, performance-sensitive, polyglot service-to-service communication with strict contracts and streaming. Issues: need for L7/gRPC-aware load balancing (long-lived HTTP/2 connections), TLS/mTLS, deadlines and retries/backoff policies, contract evolution rules for protobuf (never renumber fields, use reserved), generated-code distribution, browser access via gRPC-web, and debugging tooling (grpcurl, reflection). Not worth it for simple public APIs.</p>
+<hr>
+
+<h2 id="10-16-3-real-projects">10.16 3 Real Projects</h2>
+<p><strong>Project 1: Live Order Tracker (beginner–intermediate, ~5 hours).</strong>
+Build an SSE endpoint <code>/v1/orders/:id/events</code> and a tiny page that shows an order moving through <code>placed → packed → shipped → delivered</code>. Authenticate with a cookie; filter events per user; replay missed events via <code>Last-Event-ID</code>; send heartbeats; and prove that closing 100 tabs leaves no leaked connections (check an active-clients gauge).</p>
+<p><strong>Project 2: Webhook Delivery Platform (intermediate–advanced, ~10 hours).</strong>
+Both sides: a <strong>receiver</strong> (raw-body HMAC, timestamp window, idempotency, queue) and a <strong>sender service</strong> (subscriptions with secrets, a retry scheduler with backoff + jitter, dead-letter queue, manual replay API, per-delivery log, SSRF-safe HTTP client, secret rotation). Include a chaos test that makes the receiver randomly fail, time out, or reply 4xx, and assert that every event is eventually processed exactly once.</p>
+<p><strong>Project 3: Scalable Chat with Presence (advanced, ~12 hours).</strong>
+WebSocket chat with rooms, authentication at upgrade (single-use ticket), <code>Origin</code> checks, per-connection rate limiting, message ids with resume-on-reconnect, presence (&quot;who&#39;s online&quot;) and typing indicators, running on <strong>three instances</strong> with a Redis backplane behind NGINX. Load test to 10k connections, record memory/CPU, and write up bottlenecks and fixes.</p>
+<hr>
+
+<h2 id="10-17-further-reading">10.17 Further Reading</h2>
+<ul>
+<li>RFC 6455 (<em>The WebSocket Protocol</em>) and the MDN guides <em>Writing WebSocket servers</em> and <em>Server-sent events</em>.</li>
+<li>The WHATWG HTML Living Standard: <em>Server-sent events</em>.</li>
+<li><code>ws</code> library documentation (github.com/websockets/ws), especially the heartbeat and backpressure sections.</li>
+<li>Stripe docs: <em>Webhooks</em> and <em>Best practices for using webhooks</em>; GitHub docs: <em>Validating webhook deliveries</em>. These are the reference designs for signing and retries.</li>
+<li><em>Standard Webhooks</em> specification (standardwebhooks.com).</li>
+<li>gRPC documentation (grpc.io): <em>Core concepts</em>, <em>Deadlines</em>, <em>Status codes</em>, <em>Load balancing</em>; Protocol Buffers <em>Language Guide (proto3)</em>.</li>
+<li>OWASP: <em>Server-Side Request Forgery Prevention Cheat Sheet</em> and <em>WebSocket Security Cheat Sheet</em>.</li>
+<li>AWS Architecture Blog: <em>Exponential Backoff And Jitter</em>.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-11-architecture-patterns">Up next → Chapter 11: Architecture Patterns</h3>
+<p>You now know how to <em>build</em> endpoints and <em>deliver</em> events. As ShopLine grows past a handful of files, a different question dominates: <strong>where does each piece of logic live?</strong> Layers, services and repositories, dependency injection, feature folders, and the modular monolith: how to organize code so a team can change it for years without fear.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">SSE, WebSockets, Webhooks: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is the difference between SSE and WebSockets?</h3></summary><p>SSE is a one-way stream from server to client over plain HTTP with built-in reconnection. WebSockets are a two-way channel suited to chat and games, but need more handling for scaling and reconnects.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I secure a webhook endpoint?</h3></summary><p>Verify the sender's signature on the raw body with a constant-time comparison, check a timestamp to prevent replays, respond quickly and process idempotently, because providers retry.</p></details>
+<details class="learn-faq-item"><summary><h3>When should I use gRPC?</h3></summary><p>gRPC suits internal service-to-service calls where typed contracts, streaming and low overhead matter. Browsers need a proxy, so REST or GraphQL usually serves public clients better.</p></details>
+<details class="learn-faq-item"><summary><h3>Why do webhooks arrive more than once?</h3></summary><p>Providers retry when they do not receive a fast success response, so your handler must be idempotent and deduplicate by event id.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span>&larr; Previous &middot; Chapter 9</span><strong>GraphQL with Node.js: DataLoader &amp; Limits</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span>Next &middot; Chapter 11 &rarr;</span><strong>Backend Architecture: Modular Monolith</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#10-0-why-this-chapter-matters">10.0 Why This Chapter Matters</a></li><li><a href="#10-1-the-communication-map">10.1 The Communication Map</a></li><li><a href="#10-2-server-sent-events-sse">10.2 Server-Sent Events (SSE)</a></li><li><a href="#10-3-websockets">10.3 WebSockets</a></li><li><a href="#10-4-webhooks-when-another-server-tells-you">10.4 Webhooks: When Another Server Tells You</a></li><li><a href="#10-5-grpc-fast-typed-service-to-service-calls">10.5 gRPC: Fast, Typed Service-to-Service Calls</a></li><li><a href="#10-6-choosing-the-right-tool-a-decision-guide">10.6 Choosing the Right Tool: A Decision Guide</a></li><li><a href="#10-7-edge-cases-and-gotchas-checklist">10.7 Edge Cases and Gotchas Checklist</a></li><li><a href="#10-8-chapter-summary">10.8 Chapter Summary</a></li><li><a href="#10-9-revision-notes">10.9 Revision Notes</a></li><li><a href="#10-10-mind-map-ascii">10.10 Mind Map (ASCII)</a></li><li><a href="#10-11-cheat-sheet">10.11 Cheat Sheet</a></li><li><a href="#10-12-key-takeaways">10.12 Key Takeaways</a></li><li><a href="#10-13-20-multiple-choice-questions">10.13 20 Multiple Choice Questions</a></li><li><a href="#10-14-20-hands-on-exercises">10.14 20 Hands-on Exercises</a></li><li><a href="#10-15-5-interview-questions">10.15 5 Interview Questions</a></li><li><a href="#10-16-3-real-projects">10.16 3 Real Projects</a></li><li><a href="#10-17-further-reading">10.17 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "sse-websockets-webhooks-grpc-nodejs"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

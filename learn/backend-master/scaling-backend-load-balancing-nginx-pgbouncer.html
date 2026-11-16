@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Scaling Backends: Load Balancing &amp; PgBouncer</title>
+    <meta name="description" content="Scale a Node.js backend: stateless instances, nginx load balancing algorithms, failover, sessions across servers, PgBouncer pooling and replication lag.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="scaling nodejs backend, nginx load balancing, stateless services, pgbouncer connection pooling, read replicas replication lag, horizontal scaling, autoscaling, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="scaling nodejs backend">
+    <meta property="article:tag" content="nginx load balancing">
+    <meta property="article:tag" content="stateless services">
+    <meta property="article:tag" content="pgbouncer connection pooling">
+    <meta property="article:tag" content="read replicas replication lag">
+    <meta property="article:tag" content="horizontal scaling">
+    <meta property="article:tag" content="autoscaling">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Scaling Backends: Load Balancing &amp; PgBouncer">
+    <meta property="og:description" content="Scale a Node.js backend: stateless instances, nginx load balancing algorithms, failover, sessions across servers, PgBouncer pooling and replication lag.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Scaling and Load Balancing: Stateless Services, nginx, PgBouncer and Read Replicas: Backend Master chapter 29">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Scaling Backends: Load Balancing &amp; PgBouncer">
+    <meta name="twitter:description" content="Scale a Node.js backend: stateless instances, nginx load balancing algorithms, failover, sessions across servers, PgBouncer pooling and replication lag.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer.png">
+    <meta name="twitter:image:alt" content="Scaling and Load Balancing: Stateless Services, nginx, PgBouncer and Read Replicas: Backend Master chapter 29">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer",
+          "name": "Scaling Backends: Load Balancing & PgBouncer",
+          "description": "Scale a Node.js backend: stateless instances, nginx load balancing algorithms, failover, sessions across servers, PgBouncer pooling and replication lag.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Scaling and Load Balancing: Stateless Services, nginx, PgBouncer and Read Replicas"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#webpage"
+          },
+          "headline": "Scaling and Load Balancing: Stateless Services, nginx, PgBouncer and Read Replicas",
+          "alternativeHeadline": "Scaling and Load Balancing — From One Server to Many",
+          "description": "Scale a Node.js backend: stateless instances, nginx load balancing algorithms, failover, sessions across servers, PgBouncer pooling and replication lag.",
+          "abstract": "Scaling mostly means removing what stops you adding a second server, usually state. This chapter puts three Node instances behind nginx, measures algorithms, failover, sessions and throughput scaling, shows PgBouncer serving 300 clients with 10 database connections and its session-state trap, and explains read replicas and autoscaling.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer.png",
+          "url": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6245,
+          "timeRequired": "PT28M",
+          "articleSection": "Backend Development",
+          "keywords": "scaling nodejs backend, nginx load balancing, stateless services, pgbouncer connection pooling, read replicas replication lag, horizontal scaling, autoscaling",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "Stateless services and shared sessions",
+            "L4 and L7 load balancing and algorithms",
+            "Health checks, retries and failover",
+            "Connection pooling with PgBouncer",
+            "Read replicas, replication lag and capacity planning"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "scaling nodejs backend"
+          },
+          "isAccessibleForFree": true,
+          "position": 29,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs#article",
+            "name": "Asynchronous Processing: Message Queues, Background Jobs and the Outbox Pattern",
+            "url": "https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Scaling Backends: Load Balancing & PgBouncer",
+              "item": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why do in-memory sessions break when scaling?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each instance has its own memory, so a user logged in on one instance looks logged out on another. In our test about 71 percent of follow-up requests failed until sessions moved to Redis."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does PgBouncer do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It multiplexes many client connections onto a small pool of database connections. It protects max_connections but does not speed queries, and transaction pooling breaks session-level state."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is replication lag?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Replicas apply changes slightly after the primary, so reading right after a write can return old data. Read the primary after writes, route by criticality or wait for the replica to catch up. Note this chapter's replica section was not run."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How many database connections should each instance use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A small pool: more connections do not add throughput, and instances times pool size must stay under max_connections. A pool of 20 beat a pool of 90 in our test."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#quiz",
+          "name": "Scaling Backends: Load Balancing & PgBouncer: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "scaling nodejs backend"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Horizontal scaling means:",
+              "text": "Horizontal scaling means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "More instances behind a load balancer"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A bigger server"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Faster disks"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "More RAM"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The main prerequisite for horizontal scaling is:",
+              "text": "The main prerequisite for horizontal scaling is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Stateless instances"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Kubernetes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Microservices"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A CDN"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "With in-memory sessions across 3 round-robin instances, about what share of follow-up requests failed in our test?",
+              "text": "With in-memory sessions across 3 round-robin instances, about what share of follow-up requests failed in our test?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "~71%"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "0%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "10%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100%"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is sticky routing a fragile fix for sessions?",
+              "text": "Why is sticky routing a fragile fix for sessions?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sessions are lost when that instance restarts, and load becomes uneven"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It is slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It breaks HTTPS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It needs Redis"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "L7 load balancers can, unlike L4:",
+              "text": "L7 load balancers can, unlike L4:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Route by URL/header and terminate TLS"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Balance TCP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Run faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Avoid health checks"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "ip_hash sent 100% of traffic to one instance because:",
+              "text": "ip_hash sent 100% of traffic to one instance because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "All requests came from one client address (NAT), so they hashed to the same instance"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A bug"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The instance was faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Round-robin was off"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "least_conn is most useful when:",
+              "text": "least_conn is most useful when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Request durations vary or an instance is slow"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Requests take uniformly equal time"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using IP hash"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Zero errors during an instance kill in our test came from:",
+              "text": "Zero errors during an instance kill in our test came from:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "proxy_next_upstream retries plus passive health checks"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Luck only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bigger instances"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sticky sessions"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Retrying a failed request on another instance is safe mainly for:",
+              "text": "Retrying a failed request on another instance is safe mainly for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Idempotent requests"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Any request"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Payments"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Uploads only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Throughput with 1, 2, 3 instances in our CPU-bound test was about:",
+              "text": "Throughput with 1, 2, 3 instances in our CPU-bound test was about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "46, 90, 137 req/s"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "46, 46, 46 req/s"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "46, 200, 500 req/s"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "137, 90, 46 req/s"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Direct connections stopped at about 98 of 300 because:",
+              "text": "Direct connections stopped at about 98 of 300 because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PostgreSQL max_connections (100) was reached"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Node limited it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "nginx blocked them"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis was full"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "PgBouncer in transaction mode lets:",
+              "text": "PgBouncer in transaction mode lets:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Many clients share a small pool of server connections"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Each client have its own backend"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replicas sync"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Queries run faster always"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our test the PgBouncer path had:",
+              "text": "In our test the PgBouncer path had:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Lower throughput here (an extra hop and 10 backends); its purpose is connection-count control"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Higher throughput than a pool of 20"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No errors possible"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "10× throughput"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A session-level SET under transaction pooling:",
+              "text": "A session-level SET under transaction pooling:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Can leak to another client reusing the same server connection"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is isolated per client"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is rejected"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is faster"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The safe alternative for tenant context is:",
+              "text": "The safe alternative for tenant context is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "set_config('app.tenant_id', $1, true) inside a transaction"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "SET app.tenant_id outside a transaction"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A global variable"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A cookie"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Replication lag causes:",
+              "text": "Replication lag causes:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A read-your-writes violation when reading from a replica right after writing"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Faster writes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Lost writes on the primary"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No effect"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A remedy for read-your-writes problems is:",
+              "text": "A remedy for read-your-writes problems is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reading from the primary for the user's recent writes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "More replicas"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Longer TTLs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bigger pools"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Amdahl's law says that with 5% serial work the maximum speed-up is about:",
+              "text": "Amdahl's law says that with 5% serial work the maximum speed-up is about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "20×"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "5×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unlimited"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A good autoscaling policy:",
+              "text": "A good autoscaling policy:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Scales out fast, in slowly, with min/max and warm-up awareness"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Scales out slowly and in quickly"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Has no maximum"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Uses no metrics"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Sharding should generally be:",
+              "text": "Sharding should generally be:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Delayed until caching, replicas and vertical scaling are exhausted"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The first thing you do"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Done by user agent"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Avoided in all cases"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Scaling Backends: Load Balancing &amp; PgBouncer</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:80.6%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item active" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" aria-current="page"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 29 of 36 &middot; Advanced</p>
+                        <h1>Scaling and Load Balancing: Stateless Services, nginx, PgBouncer and Read Replicas</h1>
+                        <p class="learn-book-title">Scaling and Load Balancing — From One Server to Many</p>
+                        <ul class="learn-meta text-caption">
+                            <li>28 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer.webp"><img src="../../assets/images/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Scaling and Load Balancing: Stateless Services, nginx, PgBouncer and Read Replicas: Backend Master chapter 29 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Scaling mostly means removing what stops you adding a second server, usually state. This chapter puts three Node instances behind nginx, measures algorithms, failover, sessions and throughput scaling, shows PgBouncer serving 300 clients with 10 database connections and its session-state trap, and explains read replicas and autoscaling.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Stateless services and shared sessions</li><li>L4 and L7 load balancing and algorithms</li><li>Health checks, retries and failover</li><li>Connection pooling with PgBouncer</li><li>Read replicas, replication lag and capacity planning</li></ul>
+                        </section>
+<hr>
+
+<h2 id="29-0-why-this-chapter-matters">29.0 Why This Chapter Matters</h2>
+<p>Your ShopLine runs beautifully on one laptop. Then a marketing campaign lands and ten thousand people arrive at once. One Node process, which uses one CPU core (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>), saturates; response times climb; timeouts begin; the retry storm of <a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a> starts. <strong>Scaling</strong> is the set of techniques for serving more load: more users, more data, more requests per second.</p>
+<p>The central insight of this chapter is that <strong>scaling is mostly about removing the one thing that stops you from adding a second server.</strong> Usually that thing is <strong>state</strong>: a session in process memory, a file on local disk, a cache only one server can see, a cron job that assumes it is alone. We&#39;ll <em>prove</em> that with a real nginx load balancer in front of three Node instances.</p>
+<p>You will learn:</p>
+<ul>
+<li><strong>Vertical vs horizontal scaling</strong>, and why horizontal needs <strong>stateless</strong> services.</li>
+<li><strong>Load balancers</strong>: L4 vs L7, algorithms (round-robin, least-connections, hash), health checks, and what happens when an instance dies mid-traffic.</li>
+<li><strong>Sessions and state</strong> across instances (our measured result: 71% of requests failed with in-memory sessions).</li>
+<li><strong>Connection management</strong>: why a database cannot take 300 connections, and what <strong>PgBouncer</strong> does (and breaks).</li>
+<li><strong>Read replicas</strong> and <strong>replication lag</strong> (and the read-your-writes trap).</li>
+<li><strong>Autoscaling</strong>, <strong>capacity planning</strong>, and the law of diminishing returns (Amdahl&#39;s law).</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run-read-this" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run (read this)</span></h3>
+<p><strong>Tested for real</strong> (outputs captured in <a href="/learn/backend-master/resources/ch29/README.txt">resources/ch29/</a>): three Node instances behind <strong>nginx</strong> in Docker (algorithms, slow instance, instance failure, sessions, throughput scaling on a 4-core laptop), and <strong>PgBouncer 1.26.1</strong> in transaction-pooling mode against PostgreSQL 17 (connection limits, throughput, session-state leakage).</p>
+<p><strong>NOT run</strong> (written in &quot;fast mode&quot;; may contain mistakes): PostgreSQL streaming replication, replication lag figures, read-your-writes fixes, Kubernetes/cloud autoscaling, HAProxy, Envoy, DNS load balancing, and every other example marked <em>(not run)</em>. I wrote a replica lab (<a href="/learn/backend-master/resources/ch29/replica-lab.mjs">replica-lab.mjs</a>) but never completed its setup, so <strong>no replication number in this chapter is measured</strong>; the replica sections describe expected behaviour from the PostgreSQL documentation.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>In 2008, Amazon found that <strong>every 100 ms of added latency cost about 1% of sales</strong>; Google found that an extra half second dropped search traffic by about 20%. Performance and scale aren&#39;t just engineering goals: they&#39;re revenue.</p>
+</aside>
+<hr>
+
+<h2 id="29-1-scaling-vocabulary">29.1 Scaling Vocabulary</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Vertical scaling</strong> (scale up)</td>
+<td>A bigger machine: more CPU/RAM/disk</td>
+</tr>
+<tr>
+<td><strong>Horizontal scaling</strong> (scale out)</td>
+<td>More machines running the same service</td>
+</tr>
+<tr>
+<td><strong>Throughput</strong></td>
+<td>Requests handled per second</td>
+</tr>
+<tr>
+<td><strong>Latency</strong></td>
+<td>Time per request (look at p95/p99, <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>)</td>
+</tr>
+<tr>
+<td><strong>Capacity</strong></td>
+<td>The load a system handles within its SLO</td>
+</tr>
+<tr>
+<td><strong>Bottleneck</strong></td>
+<td>The one resource that limits the whole system <em>right now</em></td>
+</tr>
+<tr>
+<td><strong>Stateless</strong></td>
+<td>Any instance can serve any request; no instance remembers anything between requests</td>
+</tr>
+<tr>
+<td><strong>Elasticity</strong></td>
+<td>Adding/removing capacity automatically with demand</td>
+</tr>
+</tbody></table></div>
+<h3 id="vertical-vs-horizontal">Vertical vs horizontal</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Vertical</strong></th>
+<th><strong>Horizontal</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>How</td>
+<td>Bigger server</td>
+<td>More servers + load balancer</td>
+</tr>
+<tr>
+<td>Code changes</td>
+<td>None</td>
+<td>Must be stateless; cope with many instances</td>
+</tr>
+<tr>
+<td>Limit</td>
+<td>The biggest machine you can buy</td>
+<td>Practically very high</td>
+</tr>
+<tr>
+<td>Failure</td>
+<td>One machine = single point of failure</td>
+<td>Survives instance loss (if designed for it)</td>
+</tr>
+<tr>
+<td>Cost curve</td>
+<td>Gets expensive quickly at the top</td>
+<td>Roughly linear; cheap commodity machines</td>
+</tr>
+<tr>
+<td>Downtime to scale</td>
+<td>Often (restart/resize)</td>
+<td>None (add instances)</td>
+</tr>
+</tbody></table></div>
+<p><strong>Practical advice:</strong> scale vertically first (it&#39;s the cheapest <em>engineering</em> effort; a bigger database often postpones a hard problem for years), but design your <strong>application tier to be horizontally scalable from the start</strong>, because that costs little if you do it early and a lot if you retrofit.</p>
+<h3 id="node-specific-note">Node-specific note</h3>
+<p>A single Node process uses <strong>one core</strong> for your JavaScript (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>). On a 16-core server, run 16 processes (the <code>cluster</code> module, PM2, or 16 containers), or you pay for cores you never use. Horizontal scaling of Node <em>starts on one machine</em>.</p>
+<hr>
+
+<h2 id="29-2-the-stateless-service">29.2 The Stateless Service</h2>
+<p>A service is <strong>stateless</strong> if a request can be handled by <em>any</em> instance, because everything needed lives either <strong>in the request</strong> or in <strong>shared storage</strong> (database, Redis, object storage). Common state that breaks scaling, and where to move it:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>State kept in the instance</th>
+<th>What goes wrong</th>
+<th>Move it to</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Sessions</strong> in memory</td>
+<td>User &quot;logged out&quot; when the next request hits another instance</td>
+<td>Redis/DB session store, or signed tokens (<a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a>)</td>
+</tr>
+<tr>
+<td><strong>Uploaded files</strong> on local disk</td>
+<td>File missing on other instances</td>
+<td>Object storage (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>)</td>
+</tr>
+<tr>
+<td><strong>In-process caches</strong></td>
+<td>Inconsistent data across instances</td>
+<td>Redis, plus broadcast invalidation (<a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>)</td>
+</tr>
+<tr>
+<td><strong>In-memory queues/jobs</strong></td>
+<td>Lost on restart</td>
+<td>A durable queue (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>)</td>
+</tr>
+<tr>
+<td><strong>Cron jobs</strong> in every instance</td>
+<td>Runs N times</td>
+<td>Claim/lock or a single scheduler (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>)</td>
+</tr>
+<tr>
+<td><strong>WebSocket connections</strong></td>
+<td>Messages must reach the instance that holds the socket</td>
+<td>Pub/sub fan-out (Redis) or a sticky + broadcast design (<a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a>)</td>
+</tr>
+<tr>
+<td><strong>Local config/secrets</strong></td>
+<td>Drift between instances</td>
+<td>Environment/secret manager (Chapters <a href="/learn/backend-master/linux-terminal-git-for-backend-developers" title="Linux, Terminal &amp; Git for Backend Devs">4</a>, 23)</td>
+</tr>
+<tr>
+<td><strong>Rate-limit counters</strong> in memory</td>
+<td>Each instance counts separately (limit × N)</td>
+<td>Redis counters (<a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>)</td>
+</tr>
+</tbody></table></div>
+<h3 id="measured-in-memory-vs-redis-sessions-across-3-instances">Measured: in-memory vs Redis sessions across 3 instances</h3>
+<p>Three identical Node instances sit behind nginx with round-robin. A user &quot;logs in&quot; (the instance stores a session) and then makes three more requests. 30 users × 3 follow-up requests:</p>
+<pre class="is-plain"><code>in-memory sessions   30 users x 3 follow-up requests: logged in 26, &quot;logged out&quot; 64   (71% of requests fail)
+Redis sessions       30 users x 3 follow-up requests: logged in 90, &quot;logged out&quot; 0    (0% of requests fail)
+in-memory + ip_hash  logged in 90, failed 0     &lt;- works, UNTIL that instance restarts or the pool changes</code></pre>
+<p>With in-memory sessions the login succeeded on one instance and <strong>two thirds of follow-up requests landed on instances that had never heard of the user</strong> (71% failed overall; the ones that &quot;worked&quot; happened to hit the same instance). With the session in <strong>Redis</strong>, <em>every</em> instance saw it. <strong>Sticky routing</strong> (<code>ip_hash</code>) also &quot;fixes&quot; it by sending a client to the same instance each time, but it&#39;s a trap: when that instance restarts, deploys, or is removed, <strong>all its users lose their sessions</strong>, load can become uneven, and many users behind one NAT address all pile on one instance (§29.3). Prefer shared state or tokens; use stickiness only as an optimisation, never for correctness.</p>
+<h3 id="the-twelve-factor-view">The twelve-factor view</h3>
+<p>The <strong>twelve-factor app</strong> principles (12factor.net) formalise this: config in the environment, <strong>stateless processes</strong>, backing services as attached resources, logs as event streams, <strong>disposability</strong> (fast startup, graceful shutdown), dev/prod parity. A service that follows them scales and deploys almost for free.</p>
+<hr>
+
+<h2 id="29-3-load-balancers">29.3 Load Balancers</h2>
+<p>A <strong>load balancer</strong> receives client traffic and spreads it across <strong>backend instances</strong>, health-checking them and removing the dead ones.</p>
+<pre class="is-plain"><code>                     ┌──────────────┐        ┌─► instance A
+ clients ──► DNS ──► │ LOAD BALANCER│────────┼─► instance B
+                     │ (nginx, HAProxy,      └─► instance C
+                     │  AWS ALB/NLB, Envoy)
+                     └──────────────┘</code></pre>
+<h3 id="layer-4-vs-layer-7">Layer 4 vs Layer 7</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>L4</strong> (transport: TCP/UDP)</th>
+<th><strong>L7</strong> (application: HTTP)</th>
+</tr>
+</thead><tbody><tr>
+<td>Sees</td>
+<td>IPs and ports</td>
+<td>URLs, headers, cookies, methods</td>
+</tr>
+<tr>
+<td>Speed</td>
+<td>Very fast, minimal CPU</td>
+<td>Slower (parses HTTP)</td>
+</tr>
+<tr>
+<td>Features</td>
+<td>Connection balancing, TLS passthrough</td>
+<td>Path routing (<code>/api</code>, <code>/static</code>), TLS termination, header rewriting, caching, retries, rate limits, WAF</td>
+</tr>
+<tr>
+<td>Examples</td>
+<td>AWS NLB, HAProxy (tcp mode), LVS</td>
+<td>nginx, AWS ALB, Envoy, Traefik, HAProxy (http mode)</td>
+</tr>
+</tbody></table></div>
+<p>Most web backends use an <strong>L7</strong> balancer, which also <strong>terminates TLS</strong> (the certificate lives on the balancer; backends speak plain HTTP on a private network, <a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a>) and sets <code>X-Forwarded-For</code>/<code>X-Forwarded-Proto</code> headers (configure Express <code>trust proxy</code> accordingly, or your rate limiter and logs see only the balancer&#39;s address; <a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>).</p>
+<h3 id="our-test-setup">Our test setup</h3>
+<p>Three Node instances (<code>A</code>, <code>B</code>, <code>C</code>) on different ports; nginx in Docker with named upstreams (full config in <a href="/learn/backend-master/resources/ch29/lb-lab.mjs">lb-lab.mjs</a>):</p>
+<pre class="is-plain"><code>upstream rr    { server 192.168.65.254:54361; server 192.168.65.254:54362; server 192.168.65.254:54363; keepalive 64; }
+upstream lc    { least_conn; server …; keepalive 64; }
+upstream iph   { ip_hash; server …; }
+upstream rr_fo { server … max_fails=1 fail_timeout=3s; keepalive 64; }
+server { listen 8080;
+  proxy_http_version 1.1; proxy_set_header Connection &quot;&quot;; proxy_connect_timeout 1s;
+  location /rr/ { proxy_pass http://rr/;  proxy_next_upstream off; }
+  location /fo/ { proxy_pass http://rr_fo/; proxy_next_upstream error timeout http_502 http_503; proxy_next_upstream_tries 3; }
+}</code></pre>
+<p><strong>A networking gotcha that cost me an afternoon of confusing results:</strong> I first pointed nginx at <code>host.docker.internal</code>. That name resolves to <strong>both an IPv6 and an IPv4 address</strong> on Docker Desktop; nginx made <em>two peers per server</em>, and the IPv6 one wasn&#39;t reachable, so a steady <strong>2% of requests returned 502</strong> even though all instances were healthy. Using the IPv4 address (<code>192.168.65.254</code>) removed the errors. (PgBouncer, similarly, couldn&#39;t resolve the name at all.) Lesson: <strong>a load balancer&#39;s upstream definition decides how many &quot;servers&quot; it thinks it has; check DNS results (A and AAAA), and check the error rate on a healthy system before trusting any experiment.</strong></p>
+<h3 id="algorithms">Algorithms</h3>
+<p>300 sequential requests to 3 identical instances:</p>
+<pre class="is-plain"><code>round-robin  -&gt; A:100 B:100 C:100
+least_conn   -&gt; A:101 B:100 C:99
+ip_hash      -&gt; B:300           &lt;- every request from the same client address goes to ONE instance</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Algorithm</th>
+<th>How it picks</th>
+<th>Good for</th>
+<th>Watch out</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Round-robin</strong></td>
+<td>A, B, C, A, B, C…</td>
+<td>Equal instances and similar requests</td>
+<td>Ignores load and slow instances</td>
+</tr>
+<tr>
+<td><strong>Weighted round-robin</strong></td>
+<td>Proportional to weights</td>
+<td>Mixed instance sizes, canary releases (5% to new version)</td>
+<td>Manual tuning</td>
+</tr>
+<tr>
+<td><strong>Least connections</strong></td>
+<td>Instance with fewest active requests</td>
+<td>Variable request durations</td>
+<td>Needs connection counting; new instances get a burst</td>
+</tr>
+<tr>
+<td><strong>IP hash / consistent hash</strong></td>
+<td>Hash of client IP (or a header/cookie/URL)</td>
+<td>Session affinity, cache locality</td>
+<td><strong>Uneven when many clients share an IP</strong> (NAT, corporate proxy, mobile carriers, or, here, one Docker NAT address, so 100% went to one instance)</td>
+</tr>
+<tr>
+<td><strong>Random (power of two choices)</strong></td>
+<td>Pick two at random, choose the less loaded</td>
+<td>Large fleets with cheap, good balance</td>
+<td>Needs load info</td>
+</tr>
+</tbody></table></div>
+<h3 id="a-slow-instance-round-robin-vs-least-connections">A slow instance: round-robin vs least-connections</h3>
+<p>Instance C was made slow (+300 ms per request); 30 concurrent clients sent 600 requests:</p>
+<pre class="is-plain"><code>round-robin  p50  96 ms  p99 471 ms | 600 requests in 3.8 s | share A:200 B:200 C:200
+least_conn   p50 114 ms  p99 583 ms | 600 requests in 3.5 s | share A:268 B:270 C:62</code></pre>
+<p>Round-robin kept feeding the slow instance a third of the traffic. <code>least_conn</code> noticed it had requests piling up and sent it only <strong>62 requests (10%)</strong>, finishing the whole batch sooner (3.5 s vs 3.8 s). <strong>But the p50 and p99 were not better in this run</strong> (they were slightly worse); with only 30 clients and a 300 ms slowdown the difference is small and the measurements are noisy. The honest summary: <code>least_conn</code> redistributes load sensibly, its advantage grows with greater variance in request time and larger fleets, and you should measure rather than assume.</p>
+<h3 id="health-checks-and-failover-an-instance-dies-mid-traffic">Health checks and failover: an instance dies mid-traffic</h3>
+<p>Six clients sent ~200 requests/second; <strong>instance B was killed after one second</strong>.</p>
+<pre class="is-plain"><code>no failover (proxy_next_upstream off)   622 requests, ERRORS 2 (0.3%) | A:271 B:77 C:272 ERR502:2
+failover enabled (/fo)                  422 requests, ERRORS 0 (0.0%) | A:180 B:62 C:180</code></pre>
+<p>Without failover, the requests that were routed to B in the instant after it died failed (<code>502</code>). With <strong><code>proxy_next_upstream</code></strong> (retry the request on another instance when the first fails to connect or errors) plus <strong>passive health checking</strong> (<code>max_fails=1 fail_timeout=3s</code>: stop sending traffic to an instance that just failed), there were <strong>zero errors</strong>: nginx quietly retried on A or C and marked B as down. The numbers are small because B died cleanly and nginx noticed fast, but the <strong>mechanism</strong> is what matters: <strong>retries and health checks at the load balancer turn instance crashes into non-events</strong>, <em>for idempotent requests</em> (retrying a non-idempotent <code>POST</code> risks double execution: nginx by default won&#39;t retry non-idempotent methods after the request was sent; Chapters <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">16</a> and 26).</p>
+<p>Types of health check:</p>
+<ul>
+<li><strong>Passive</strong>: infer health from real traffic (failures/timeouts), as nginx open-source does.</li>
+<li><strong>Active</strong>: the balancer probes <code>/readyz</code> (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>) every few seconds (nginx Plus, HAProxy, ALB, Kubernetes).</li>
+<li><strong>Readiness vs liveness</strong>: remove an instance from rotation (readiness) without restarting it (liveness), and <strong>drain</strong> (finish in-flight requests) on shutdown (Chapter 25).</li>
+</ul>
+<h3 id="does-adding-instances-add-throughput">Does adding instances add throughput?</h3>
+<p>A CPU-bound endpoint (20 ms of CPU per request), 40 concurrent connections, 6 seconds, through nginx:</p>
+<pre class="is-plain"><code>1 instance(s):  46 req/s | latency p50 841 ms, p99 1148 ms
+2 instance(s):  90 req/s | latency p50 424 ms, p99  817 ms
+3 instance(s): 137 req/s | latency p50 285 ms, p99  434 ms
+speed-up: 1x -&gt; 1.00x, 2x -&gt; 1.95x, 3x -&gt; 2.96x   (4 cores shared with nginx, Docker and the load generator)</code></pre>
+<p>Near-<strong>linear scaling</strong>: because the instances are independent and stateless, doubling them roughly doubled throughput and <strong>halved latency</strong> (the queueing delay at 40 connections vs one 20 ms core: 40 × 20 ms ≈ 800 ms ≈ the 841 ms measured with one instance). This is the ideal case. It stops being linear the moment the instances share a bottleneck (the database, §29.4) or the machine runs out of cores (a 4th instance here would have competed with nginx and the load generator).</p>
+<h3 id="other-load-balancing-layers">Other load-balancing layers</h3>
+<ul>
+<li><strong>DNS load balancing</strong> (multiple A records, GeoDNS, Route 53 latency routing): coarse, cached by clients; great for multi-region.</li>
+<li><strong>Client-side balancing</strong> (gRPC, service discovery with Consul/Kubernetes): the client chooses among instances. <em>(Not run.)</em></li>
+<li><strong>Global/anycast</strong> (CDNs, Cloudflare, AWS Global Accelerator) route users to the nearest healthy region.</li>
+<li><strong>Managed</strong>: AWS ALB/NLB, GCP Load Balancing, Azure Front Door; Kubernetes <code>Service</code>/<code>Ingress</code> (<a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>). <em>(Not run.)</em></li>
+</ul>
+<hr>
+
+<h2 id="29-4-the-database-becomes-the-bottleneck">29.4 The Database Becomes the Bottleneck</h2>
+<p>Scaling the stateless app tier is easy. The <strong>database</strong> is the shared, stateful piece, so it&#39;s where scaling gets hard. Work through the cheap fixes first, in this order:</p>
+<ol>
+<li><strong>Fix the queries</strong>: indexes, N+1, pagination (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>). The cheapest 100×.</li>
+<li><strong>Cache</strong> hot reads (<a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>).</li>
+<li><strong>Move work off the request</strong> (Chapter 28).</li>
+<li><strong>Manage connections</strong> (below).</li>
+<li><strong>Scale vertically</strong> (more CPU/RAM/IOPS).</li>
+<li><strong>Read replicas</strong> for read-heavy load (§29.5).</li>
+<li><strong>Partition/shard</strong> write-heavy or huge data (§29.6; <a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">Chapter 30</a>).</li>
+</ol>
+<h3 id="connection-management-and-pgbouncer-tested">Connection management and PgBouncer (tested)</h3>
+<p>Every PostgreSQL connection is a <strong>separate operating-system process</strong> costing several megabytes, and the server has a hard <code>max_connections</code> (100 by default). With 10 app instances each holding a pool of 20 connections, you&#39;ve used 200 connections: <strong>more than the database allows.</strong> We tested the failure on our container (<code>max_connections = 100</code>), opening 300 simultaneous client connections:</p>
+<pre class="is-plain"><code>direct to PostgreSQL : 98 connected, 202 REFUSED  (&quot;sorry, too many clients already&quot;)
+through PgBouncer    : 300 connected, 0 refused | real PostgreSQL backends in use right now: 9
+300 clients each run a query at the same time:
+  all 300 answered in 6283 ms using 10 PostgreSQL backends</code></pre>
+<p><strong>PgBouncer</strong>, a lightweight connection pooler, sat in front: 300 client connections were multiplexed onto a <strong>pool of 10</strong> real backends (<code>POOL_MODE=transaction</code>, <code>DEFAULT_POOL_SIZE=10</code>). All 300 clients connected and got answers, using <strong>10 backends</strong>. (The 6.3 s is the cost of funnelling 300 simultaneous 50k-row counts through 10 backends: connection pooling protects the database, it doesn&#39;t make it faster.)</p>
+<p>Pooling modes: <strong>session</strong> (a client keeps a server connection for its whole session: safe, saves little), <strong>transaction</strong> (a server connection is lent only for the duration of a transaction: the usual choice, high multiplexing), <strong>statement</strong> (rarely used).</p>
+<h4 id="throughput-a-pooler-is-not-a-speed-up">Throughput: a pooler is not a speed-up</h4>
+<p>200 concurrent workers, 25 short queries each:</p>
+<pre class="is-plain"><code>direct, app pool of 20 connections               781 tx/s | p50 180 ms p99 1241 ms | errors 0
+direct, app pool of 90 connections               640 tx/s | p50 217 ms p99 1527 ms | errors 24
+via PgBouncer, app pool of 200 (pool_size 10)    379 tx/s | p50 484 ms p99 1482 ms | errors 0</code></pre>
+<p>Three honest lessons: <strong>(1)</strong> a pool of <strong>20</strong> beat a pool of <strong>90</strong>: on a 4-core machine, more concurrent backends mean more context switching and lock contention, not more work (a good rule of thumb is a pool near <code>cores × 2 + effective spindles</code>; the <code>24 errors</code> for 90 were &quot;too many clients&quot; hits, because other connections also counted against the limit). <strong>(2)</strong> <strong>PgBouncer reduced throughput here</strong> (379 vs 781 tx/s): it adds a network hop (through Docker on Windows) and a 10-connection ceiling. Its purpose is <strong>connection-count control</strong>, not speed. <strong>(3)</strong> The answer to &quot;I have 50 app instances&quot; is <em>a small pool per instance</em> or <em>PgBouncer</em>, not <em>a pool of 100 per instance</em>.</p>
+<h4 id="the-price-session-state-breaks-in-transaction-mode">The price: session state breaks in transaction mode</h4>
+<p>In transaction pooling, <strong>two different clients can share one server connection</strong> (between their transactions), so anything that lives in the <em>session</em> leaks or disappears:</p>
+<pre class="is-plain"><code>client A's query ran on backend 1343; client B's query ran on backend 1343 (the SAME server connection, reused between two different clients)
+A runs &quot;SET app.tenant_id = 'tenant-A'&quot; (session level); B then reads it: B SAW tenant-A in 40 of 40 tries   &lt;- a Chapter 22 RLS bug
+with transaction-local set_config(..., true): B saw tenant-A in 0 of 40 tries   &lt;- safe</code></pre>
+<p>A session-level <code>SET</code> made by client A was <strong>visible to client B 40 out of 40 times</strong>: with Row-Level Security (<a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a>) that would show one tenant&#39;s data to another. Things that don&#39;t survive transaction pooling: session-level <code>SET</code>/<code>RESET</code>, <strong>session advisory locks</strong> (Chapters <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">14</a>, 16), <code>LISTEN/NOTIFY</code>, <code>WITH HOLD</code> cursors, temporary tables, and (depending on version/config) <strong>protocol-level prepared statements</strong> (PgBouncer ≥ 1.21 can support them with <code>max_prepared_statements</code>). <strong>Use <code>SET LOCAL</code>/<code>set_config(…, true)</code> inside transactions</strong> and avoid session features, or use session pooling for the few connections that need them.</p>
+<hr>
+
+<h2 id="29-5-read-replicas-and-replication-lag-not-run-written-from-documentation">29.5 Read Replicas and Replication Lag <em>(not run: written from documentation)</em></h2>
+<p>When reads dominate (browsing the catalogue vs placing orders), add <strong>read replicas</strong>: copies of the database that stream changes from the <strong>primary</strong> and serve read-only queries.</p>
+<pre class="is-plain"><code>   writes ──► PRIMARY ──WAL stream──► REPLICA 1 ◄── reads
+                         └──────────► REPLICA 2 ◄── reads</code></pre>
+<p>PostgreSQL&#39;s <strong>streaming replication</strong> ships the write-ahead log (<a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">Chapter 12</a>) to standbys that continuously replay it; a standby accepts only reads (<code>pg_is_in_recovery()</code> is true; writes fail with <em>&quot;cannot execute INSERT in a read-only transaction&quot;</em>). Cloud databases (RDS, Cloud SQL, Aurora) provision replicas with a click.</p>
+<h3 id="the-catch-replication-lag-and-read-your-writes">The catch: replication lag and read-your-writes</h3>
+<p>Replication is normally <strong>asynchronous</strong>: the primary commits, then streams the change; the replica applies it a moment later (typically milliseconds, but seconds or minutes under heavy write load or a network problem). So:</p>
+<blockquote>
+<p>A customer adds an item to the cart (write → primary), the page reloads and reads the cart from a replica, <strong>and the item isn&#39;t there yet.</strong></p>
+</blockquote>
+<p>This is a <strong>read-your-writes (read-after-write) consistency</strong> violation. <em>(I wrote a lab to measure lag and the stale-read rate, but never got the replica running, so I have no measured figures; expect both to be small on an idle system and to grow with write load.)</em></p>
+<p>Remedies, from simplest to most precise:</p>
+<ol>
+<li><strong>Read from the primary after a write</strong>: for a short window (say 5 s) or for the specific entities the user just changed, route that user&#39;s reads to the primary (a flag in the session/cookie, or per-request routing).</li>
+<li><strong>Route by criticality</strong>: cart, checkout, order status, account → primary; catalogue, search, reports, recommendations → replicas.</li>
+<li><strong>Wait for the replica to catch up</strong> to the write&#39;s position: record the primary&#39;s <code>pg_current_wal_lsn()</code> after the write; before reading from the replica, wait until its <code>pg_last_wal_replay_lsn()</code> ≥ that LSN (or use <code>pg_wal_lsn_diff</code>). Precise but adds complexity.</li>
+<li><strong>Synchronous replication</strong> (<code>synchronous_commit = remote_apply</code>): the primary waits for replica(s) before acknowledging a commit: no stale reads, but <strong>higher write latency and reduced availability</strong> if the replica is down.</li>
+<li>Monitor lag (<code>pg_stat_replication</code>, <code>now() - pg_last_xact_replay_timestamp()</code>) and <strong>alert</strong>; remove a lagging replica from rotation (Chapter 25).</li>
+</ol>
+<p>Other gotchas: <strong>long-running queries on a replica can be cancelled</strong> by replay conflicts (tuning: <code>hot_standby_feedback</code>, <code>max_standby_streaming_delay</code>); a replica is also a <strong>failover candidate</strong> (promotion; split-brain risks with a manual process; use Patroni/managed HA; <a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">Chapter 30</a>); and replicas <strong>don&#39;t scale writes</strong>.</p>
+<hr>
+
+<h2 id="29-6-scaling-writes-and-data-partitioning-and-sharding">29.6 Scaling Writes and Data: Partitioning and Sharding</h2>
+<p>When one primary can&#39;t handle the write volume or the dataset size:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Technique</th>
+<th>What</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Vertical scale</strong> the primary</td>
+<td>Bigger instance, faster disks</td>
+<td>Simplest; has a ceiling</td>
+</tr>
+<tr>
+<td><strong>Partitioning</strong> (single server)</td>
+<td>Split a big table by range/hash (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>: time partitions)</td>
+<td>Maintenance and pruning wins; not more write capacity per se</td>
+</tr>
+<tr>
+<td><strong>Sharding</strong> (multiple servers)</td>
+<td>Split data across databases by a <strong>shard key</strong> (e.g., <code>tenant_id</code>, <code>user_id</code>)</td>
+<td>Writes scale horizontally; cross-shard queries/transactions become hard</td>
+</tr>
+<tr>
+<td><strong>Functional split</strong></td>
+<td>Different databases for different domains (orders vs catalogue vs analytics)</td>
+<td>Matches microservice boundaries (<a href="/learn/backend-master/microservices-vs-monolith-architecture-decision" title="Microservices vs Monolith: How to Decide">Chapter 33</a>)</td>
+</tr>
+<tr>
+<td><strong>Distributed SQL/NoSQL</strong></td>
+<td>CockroachDB, YugabyteDB, Spanner, MongoDB sharding, Cassandra, DynamoDB</td>
+<td>Built-in sharding with tradeoffs (Chapter 30)</td>
+</tr>
+</tbody></table></div>
+<p><strong>Choosing a shard key</strong> is the critical decision: it should spread load evenly (avoid <strong>hot shards</strong>), keep most queries within one shard (a customer&#39;s orders together), and be immutable. <strong>Consistent hashing</strong> (Chapter 30) lets you add shards while moving only a fraction of the data. Re-sharding later is painful: delay sharding as long as vertical scaling, caching, replicas and good schema design allow. <em>(None of these were run in this chapter.)</em></p>
+<hr>
+
+<h2 id="29-7-autoscaling-and-capacity-planning">29.7 Autoscaling and Capacity Planning</h2>
+<h3 id="autoscaling">Autoscaling</h3>
+<p>Add/remove instances automatically based on a <strong>signal</strong>. Good signals (from Chapter 25):</p>
+<ul>
+<li><strong>CPU utilisation</strong> (simple; fine for CPU-bound services).</li>
+<li><strong>Requests per instance</strong> or <strong>queue depth / oldest-job age</strong> (better for workers: scale on backlog, Chapter 28).</li>
+<li><strong>Event-loop lag</strong> (Node saturation) and p95 latency.</li>
+<li>Schedules (predictable daily/seasonal peaks).</li>
+</ul>
+<p>Rules: scale <strong>out fast, in slowly</strong> (to avoid flapping); set <strong>min and max</strong> (max protects your database and your bill); allow for <strong>warm-up time</strong> (an instance isn&#39;t useful until it&#39;s started, connected, and cache-warm: seconds to minutes) so autoscaling reacts <em>late</em> to spikes: <strong>pre-scale for known events</strong> (a sale); and remember <strong>scaling the app tier shifts the bottleneck to the database</strong> (more instances → more connections → exceed <code>max_connections</code>; pool limits, PgBouncer, §29.4). <em>(Kubernetes HPA, AWS Auto Scaling groups: described, not run; <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>.)</em></p>
+<h3 id="capacity-planning-with-a-back-of-envelope">Capacity planning, with a back-of-envelope</h3>
+<p>Suppose a peak of <strong>500 requests/second</strong>, each costing about <strong>20 ms of CPU</strong> in Node:</p>
+<ul>
+<li>One core serves ≈ <code>1000 ms / 20 ms = 50 req/s</code> (we measured 46 req/s through nginx).</li>
+<li>At 500 req/s you need ≈ <strong>10 cores</strong>; with a 60% target utilisation, ≈ <strong>17 cores</strong>, i.e., ~5 instances × 4 cores.</li>
+<li><strong>N+1 / N+2 redundancy</strong>: size for the peak with one or two instances <em>down</em> (deploys, failures, an availability zone outage).</li>
+<li>Database: 500 req/s × 3 queries = 1,500 queries/s; at ~1 ms each that&#39;s ~1.5 cores of DB CPU, comfortable <em>if indexed</em> (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>).</li>
+</ul>
+<p>Always <strong>load-test</strong> (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>) to find the actual saturation point instead of trusting arithmetic, and keep <strong>headroom</strong> (running at 90% utilisation leaves no room for a spike and makes latency explode: queueing theory says latency grows sharply as utilisation approaches 100%).</p>
+<h3 id="amdahl-s-law-and-the-universal-scalability-law">Amdahl&#39;s law and the Universal Scalability Law</h3>
+<p>If a fraction <strong>s</strong> of the work is serial (can&#39;t be parallelised: a database lock, a single queue, one hot row as in <a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>&#39;s load test), the maximum speed-up with N workers is <code>1 / (s + (1 − s)/N)</code>. With <strong>5%</strong> serial work, 100 servers give at most <strong>~17×</strong>, and no amount of hardware passes <strong>20×</strong>. The <strong>USL</strong> adds a <em>coherence</em> (crosstalk) cost that makes throughput <strong>decrease</strong> beyond a point (we saw it: a pool of 90 was slower than a pool of 20). <strong>Find the serial fraction and the shared resource</strong>; scaling is the art of shrinking them.</p>
+<hr>
+
+<h2 id="29-8-shopline-at-100-scale-an-architecture-design-not-built-or-run-here">29.8 ShopLine at 100× Scale: An Architecture <em>(design; not built or run here)</em></h2>
+<pre class="is-plain"><code> users ─► CDN (static + cacheable API, Ch 27) ─► L7 load balancer (TLS) ─► N × stateless API instances (autoscaled)
+                                                          │                     │
+                                      sessions/cache/rate-limit: Redis          ├─► PgBouncer ─► PostgreSQL primary (writes, critical reads)
+                                      queues + workers (Ch 28)                  │                └► read replicas (catalogue, search, reports)
+                                      object storage (images, invoices, Ch 20)  └─► search engine / analytics store (Ch 20)</code></pre>
+<p>Checklist before scaling out: stateless instances (sessions in Redis, files in object storage); config from the environment; graceful shutdown and readiness (Chapter 25); a connection budget (<code>instances × pool ≤ max_connections</code>, or PgBouncer); idempotent jobs and a claimed scheduler (Chapter 28); read-your-writes policy for replicas; trust-proxy configured; and <strong>load tests</strong> that prove each step.</p>
+<hr>
+
+<h2 id="29-9-edge-cases-and-gotchas-checklist">29.9 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> State in instance memory (sessions, caches, counters, uploads, cron, WebSocket rooms).</li>
+<li><input disabled="" type="checkbox"> Sticky sessions used for correctness; NAT/proxy making <code>ip_hash</code> unbalanced; no plan for instance restarts.</li>
+<li><input disabled="" type="checkbox"> Load balancer upstreams resolving to unreachable addresses (IPv6/AAAA surprises); no baseline error check on a healthy system.</li>
+<li><input disabled="" type="checkbox"> No health checks, no drain on deploy, no retry of idempotent requests; retrying non-idempotent ones.</li>
+<li><input disabled="" type="checkbox"> Forgetting <code>trust proxy</code>/forwarded headers; losing real client IPs (rate limiting, logs, geo).</li>
+<li><input disabled="" type="checkbox"> <code>instances × pool size</code> larger than <code>max_connections</code>; pools of 100 per instance.</li>
+<li><input disabled="" type="checkbox"> Transaction pooling with session <code>SET</code>, advisory locks, <code>LISTEN</code>, temp tables, or incompatible prepared statements.</li>
+<li><input disabled="" type="checkbox"> Assuming a pooler adds throughput; assuming more connections adds throughput.</li>
+<li><input disabled="" type="checkbox"> Reading from replicas right after writes; no lag monitoring; replica conflicts cancelling long queries.</li>
+<li><input disabled="" type="checkbox"> Sharding too early; poor shard key (hot shard, cross-shard joins everywhere).</li>
+<li><input disabled="" type="checkbox"> Autoscaling on a lagging signal; no max; no warm-up time; the database as the unscaled bottleneck.</li>
+<li><input disabled="" type="checkbox"> Capacity planned for averages, not peaks, with no N+1 headroom; no load test.</li>
+</ul>
+<hr>
+
+<h2 id="29-10-chapter-summary">29.10 Chapter Summary</h2>
+<ul>
+<li><strong>Scale vertically first, but design the app tier to scale horizontally</strong>: that requires <strong>stateless</strong> instances (sessions, files, caches, counters, schedules, sockets in shared services).</li>
+<li><strong>Tested:</strong> with 3 instances behind nginx, <strong>in-memory sessions failed 71% of follow-up requests</strong>; Redis sessions failed 0%; <code>ip_hash</code> &quot;worked&quot; but is fragile.</li>
+<li><strong>Load balancers:</strong> L4 vs L7; algorithms (round-robin 100/100/100; <code>least_conn</code> sent a slow instance 62 of 600 requests vs 200 under round-robin; <code>ip_hash</code> sent 100% to one instance behind a shared NAT address). Failover with <code>proxy_next_upstream</code> + passive health checks made an instance death a <strong>0-error</strong> event. Throughput scaled <strong>1.00× → 1.95× → 2.96×</strong> with 1, 2, 3 instances. An upstream DNS name resolving to an unreachable IPv6 address caused a steady 2% of 502s: check your baseline.</li>
+<li><strong>Database connections:</strong> direct connections stopped at <strong>98 of 300</strong>; <strong>PgBouncer</strong> served all 300 with <strong>10 backends</strong>. It reduced throughput here (379 vs 781 tx/s), a pool of 20 beat a pool of 90, and in <strong>transaction mode a session-level <code>SET</code> leaked to another client 40 of 40 times</strong>: use <code>set_config(…, true)</code>.</li>
+<li><strong>Read replicas</strong> <em>(not run)</em>: scale reads, introduce <strong>replication lag</strong> and <strong>read-your-writes</strong> problems (fixes: read the primary after writes, route by criticality, wait for LSN, synchronous replication).</li>
+<li><strong>Sharding</strong> is the last resort; pick the shard key carefully. <strong>Autoscale</strong> on good signals with min/max and warm-up; <strong>plan capacity</strong> with headroom and N+1; remember <strong>Amdahl&#39;s law</strong>.</li>
+</ul>
+<hr>
+
+<h2 id="29-11-revision-notes">29.11 Revision Notes</h2>
+<ul>
+<li>Stateless: sessions → Redis/tokens; files → object storage; caches → Redis + invalidation; cron → claimed; sockets → pub/sub.</li>
+<li>L7 balancer: TLS termination, path routing, health checks, <code>X-Forwarded-*</code> + <code>trust proxy</code>.</li>
+<li>Algorithms: round-robin, weighted, least-conn, hash (NAT trap), power-of-two-choices.</li>
+<li>Failover = health checks + retry of idempotent requests on another instance.</li>
+<li>DB: <code>instances × pool ≤ max_connections</code>; PgBouncer transaction mode → no session state; <code>SET LOCAL</code>.</li>
+<li>Pool size ≈ cores×2 (not hundreds); more connections ≠ more throughput.</li>
+<li>Replicas: async lag; read-your-writes remedies; monitor lag.</li>
+<li>Autoscale: out fast/in slow, min/max, warm-up, pre-scale events; capacity = peak ÷ per-instance rate ÷ target utilisation + N+1.</li>
+<li>Amdahl: speed-up ≤ 1/s.</li>
+</ul>
+<hr>
+
+<h2 id="29-12-mind-map-ascii">29.12 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                               SCALING
+                                  │
+      ┌────────────┬──────────────┼───────────────┬───────────────┐
+   APP TIER     LOAD BALANCER    DATABASE        ELASTICITY     LIMITS
+      │              │              │                │             │
+  stateless      L4 / L7        connections      autoscale     Amdahl / USL
+  sessions→Redis algorithms     PgBouncer        signals       hot rows
+  files→objects  health checks  read replicas    min/max       bottleneck moves
+  cron claimed   failover       lag / RYW        warm-up       load test
+  12-factor      trust proxy    sharding (last)  capacity N+1</code></pre>
+<hr>
+
+<h2 id="29-13-cheat-sheet">29.13 Cheat Sheet</h2>
+<pre class="is-plain"><code>upstream api { least_conn; server 10.0.0.11:3000 max_fails=2 fail_timeout=5s; server 10.0.0.12:3000; keepalive 64; }
+server { location / { proxy_pass http://api; proxy_http_version 1.1; proxy_set_header Connection &quot;&quot;;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_next_upstream error timeout http_502 http_503; proxy_next_upstream_tries 2; } }</code></pre>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;trust proxy&#x27;</span>, <span class="hljs-number">1</span>);                                   <span class="hljs-comment">// behind ONE proxy: real client IP from X-Forwarded-For</span>
+<span class="hljs-comment">// DB budget:  instances × poolMax  ≤  max_connections − admin headroom   (or use PgBouncer)</span>
+<span class="hljs-comment">// in transaction pooling:  await c.query(&quot;SELECT set_config(&#x27;app.tenant_id&#x27;, $1, true)&quot;, [id]);   // never plain SET</span>
+<span class="hljs-comment">// capacity:    instances = ceil(peak_rps × cpu_seconds_per_request / (cores_per_instance × target_utilisation)) + spare</span></code></pre></div>
+<hr>
+
+<h2 id="29-14-key-takeaways">29.14 Key Takeaways</h2>
+<ol>
+<li><strong>Statelessness is the prerequisite for horizontal scale.</strong> Hunt down every piece of instance-local state.</li>
+<li><strong>A load balancer without health checks and safe retries is just a single point of failure with extra steps.</strong></li>
+<li><strong>The database is the shared bottleneck</strong>: queries, cache, queues, connection budget, then vertical scale, replicas, and only then sharding.</li>
+<li><strong>More connections and more instances stop helping at some point.</strong> Measure the knee.</li>
+<li><strong>Replicas buy read capacity and cost you consistency.</strong> Decide per feature.</li>
+<li><strong>Test your scaling claims with load tests</strong>, including failure of an instance.</li>
+</ol>
+<hr>
+
+<h2 id="29-15-20-multiple-choice-questions">29.15 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Scale out."><p class="quiz-text">Horizontal scaling means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A bigger server</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">More instances behind a load balancer</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Faster disks</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">More RAM</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Stateless."><p class="quiz-text">The main prerequisite for horizontal scaling is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Kubernetes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Stateless instances</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Microservices</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A CDN</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="71% measured."><p class="quiz-text">With in-memory sessions across 3 round-robin instances, about what share of follow-up requests failed in our test?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">0%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">~71%</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">10%</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">100%</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Fragile."><p class="quiz-text">Why is sticky routing a fragile fix for sessions?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It is slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Sessions are lost when that instance restarts, and load becomes uneven</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It breaks HTTPS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It needs Redis</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Application-aware."><p class="quiz-text">L7 load balancers can, unlike L4:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Balance TCP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Route by URL/header and terminate TLS</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Run faster</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Avoid health checks</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="NAT address."><p class="quiz-text"><code>ip_hash</code> sent 100% of traffic to one instance because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A bug</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">All requests came from one client address (NAT), so they hashed to the same instance</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The instance was faster</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Round-robin was off</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Variable durations."><p class="quiz-text"><code>least_conn</code> is most useful when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Requests take uniformly equal time</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Request durations vary or an instance is slow</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Using IP hash</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Never</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Failover + health."><p class="quiz-text">Zero errors during an instance kill in our test came from:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Luck only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>proxy_next_upstream</code> retries plus passive health checks</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Bigger instances</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sticky sessions</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Idempotent."><p class="quiz-text">Retrying a failed request on another instance is safe mainly for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Any request</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Idempotent requests</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Payments</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Uploads only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="46/90/137."><p class="quiz-text">Throughput with 1, 2, 3 instances in our CPU-bound test was about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">46, 46, 46 req/s</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">46, 90, 137 req/s</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">46, 200, 500 req/s</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">137, 90, 46 req/s</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="max_connections."><p class="quiz-text">Direct connections stopped at about 98 of 300 because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Node limited it</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">PostgreSQL <code>max_connections</code> (100) was reached</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">nginx blocked them</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Redis was full</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Multiplexing."><p class="quiz-text">PgBouncer in transaction mode lets:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Each client have its own backend</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Many clients share a small pool of server connections</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Replicas sync</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Queries run faster always</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="379 vs 781 tx/s."><p class="quiz-text">In our test the PgBouncer path had:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Higher throughput than a pool of 20</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Lower throughput here (an extra hop and 10 backends); its purpose is connection-count control</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No errors possible</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">10× throughput</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Shared backend."><p class="quiz-text">A session-level <code>SET</code> under transaction pooling:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is isolated per client</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Can leak to another client reusing the same server connection</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Is rejected</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Is faster</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Transaction-local."><p class="quiz-text">The safe alternative for tenant context is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>SET app.tenant_id</code> outside a transaction</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>set_config(&#39;app.tenant_id&#39;, $1, true)</code> inside a transaction</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A global variable</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A cookie</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Stale read after write."><p class="quiz-text">Replication lag causes:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Faster writes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A read-your-writes violation when reading from a replica right after writing</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Lost writes on the primary</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No effect</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Read primary after writes."><p class="quiz-text">A remedy for read-your-writes problems is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Reading from the primary for the user&#39;s recent writes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">More replicas</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Longer TTLs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Bigger pools</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="1/s = 20."><p class="quiz-text">Amdahl&#39;s law says that with 5% serial work the maximum speed-up is about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">5×</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">20×</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">100×</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Unlimited</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Out fast, in slow."><p class="quiz-text">A good autoscaling policy:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Scales out slowly and in quickly</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Scales out fast, in slowly, with min/max and warm-up awareness</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Has no maximum</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Uses no metrics</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Last resort."><p class="quiz-text">Sharding should generally be:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The first thing you do</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Delayed until caching, replicas and vertical scaling are exhausted</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Done by user agent</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Avoided in all cases</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-a, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="29-16-20-hands-on-exercises">29.16 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch29/README.txt">resources/ch29/</a>; items marked * were not run by me.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run three instances and nginx; confirm round-robin distribution.</li>
+<li>Break sessions with in-memory storage; fix with Redis.</li>
+<li>Kill one instance and watch nginx&#39;s behaviour with and without failover.</li>
+<li>Configure <code>trust proxy</code> and log the real client IP via <code>X-Forwarded-For</code>.</li>
+<li>Compute the instance count for a given peak RPS and per-request CPU time.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Compare round-robin and least_conn with variable-duration requests; plot p50/p99.</li>
+<li>Add an active health check (HAProxy or nginx Plus trial) against <code>/readyz</code>.</li>
+<li>Implement graceful draining on deploy: readiness 503, finish in-flight, exit.</li>
+<li>Put PgBouncer in front of PostgreSQL; reproduce the <code>SET</code> leak; fix with <code>set_config(…, true)</code>.</li>
+<li>Find the best pool size for your machine by load-testing 5, 10, 20, 40, 80.</li>
+<li>Make cron safe across instances (Chapter 28) and verify with three instances.</li>
+<li>Move uploads to object storage and verify any instance can serve them.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<p>13.* Set up a PostgreSQL streaming replica; measure lag idle and under write load.
+14.* Implement read/write splitting with a &quot;read your writes for N seconds&quot; rule; test staleness.
+15.* Implement wait-for-LSN reads and compare cost with primary reads.
+16.* Add Kubernetes HPA on CPU and on a custom queue-age metric; load-test the scale-out time.
+17. Reproduce Amdahl: add a global lock to the endpoint and measure scaling flatten.
+18.* Choose a shard key for ShopLine orders and simulate hot-shard behaviour with skewed traffic.
+19.* Run a game day: kill an instance, saturate the DB connections, add replica lag; verify alerts and degraded modes.
+20.* Design and load-test a 10× flash-sale plan: CDN, pre-scaling, queue-based checkout, connection budget.</p>
+<hr>
+
+<h2 id="29-17-5-interview-questions">29.17 5 Interview Questions</h2>
+<p><strong>1. How do you scale a stateless web service?</strong>
+<em>Model answer:</em> Make instances stateless (sessions in Redis/tokens, files in object storage, caches shared or invalidated), put them behind a load balancer with health checks and graceful draining, autoscale on good signals, ensure the database and connections can handle more instances (pools, PgBouncer), and load test to find the next bottleneck.</p>
+<p><strong>2. Round-robin vs least-connections vs IP hash?</strong>
+<em>Model answer:</em> Round-robin is simple and fine for uniform requests; least-connections adapts to varying durations and slow instances; IP/consistent hash gives affinity but is uneven behind NAT and breaks when the pool changes. In my test IP hash sent all traffic to one instance behind a single NAT address.</p>
+<p><strong>3. Why can&#39;t you just give every instance a pool of 100 database connections?</strong>
+<em>Model answer:</em> PostgreSQL&#39;s <code>max_connections</code> is a hard limit and each connection is a process; instances × pool must fit. More concurrent backends also reduce throughput due to contention (a pool of 20 beat 90 in my test). Use small pools, PgBouncer in transaction mode (mind session state), and cache/queue to reduce DB load.</p>
+<p><strong>4. What does a read replica give you and what does it cost?</strong>
+<em>Model answer:</em> Read capacity and a failover candidate, at the cost of replication lag: stale reads, read-your-writes violations, and conflicts for long queries. Mitigate by routing by criticality, reading the primary after writes, waiting for the LSN, or synchronous replication, and monitor lag.</p>
+<p><strong>5. What is Amdahl&#39;s law and why does it matter?</strong>
+<em>Model answer:</em> Speed-up from N workers is limited by the serial fraction s: at most 1/s. A 5% serial section (a hot row lock, a single queue) caps scaling at ~20× regardless of hardware. It tells you to find and shrink the shared bottleneck rather than add servers.</p>
+<hr>
+
+<h2 id="29-18-3-real-projects">29.18 3 Real Projects</h2>
+<p><strong>Project 1: Horizontally Scalable ShopLine (intermediate, ~12 hours).</strong>
+Make the API stateless (Redis sessions, object-storage uploads), run N instances behind nginx/HAProxy with health checks and draining, and prove scaling and failure tolerance with load tests (throughput vs instance count, zero-error rolling restart).</p>
+<p><strong>Project 2: Database Connection and Replica Layer (advanced, ~14 hours).</strong>
+Add PgBouncer and one or more read replicas; build a router (primary vs replica by criticality) with read-your-writes handling, lag monitoring and fallback to the primary; chaos-test lag, replica loss and connection exhaustion.</p>
+<p><strong>Project 3: Autoscaling Lab (advanced, ~12 hours).</strong>
+Deploy to Kubernetes (kind/minikube) with HPA on CPU and queue age; run a load profile with a sudden spike; tune min/max/stabilisation windows; report time-to-scale, p99 during scale-out, and the database&#39;s connection usage.</p>
+<hr>
+
+<h2 id="29-19-further-reading">29.19 Further Reading</h2>
+<ul>
+<li><em>Designing Data-Intensive Applications</em>, Chapters <a href="/learn/backend-master/what-is-backend-development" title="What Is Backend Development? Start Here">1</a> (scalability) and 5–6 (replication, partitioning).</li>
+<li><em>The Twelve-Factor App</em> (12factor.net).</li>
+<li>nginx and HAProxy documentation (load balancing, health checks); AWS <em>Elastic Load Balancing</em> docs; Google SRE Book, <em>Load Balancing at the Frontend / in the Datacenter</em>.</li>
+<li>PgBouncer documentation (pool modes, feature compatibility); PostgreSQL docs: <em>High Availability, Load Balancing, and Replication</em>; &quot;How many connections?&quot; analyses (the &quot;cores × 2&quot; heuristic from the HikariCP wiki, <em>About Pool Sizing</em>).</li>
+<li>Neil Gunther, <em>Universal Scalability Law</em>; Martin Thompson, mechanical sympathy.</li>
+<li><em>Systems Performance</em> (Brendan Gregg) for USE-style bottleneck analysis.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-30-distributed-systems">Up next → Chapter 30: Distributed Systems</h3>
+<p>Once you have multiple machines, new problems appear that no single machine has: partial failure, unreliable clocks, network partitions, and the impossibility of agreeing without cost. Next: CAP and PACELC in practice, consistency models, quorums, consensus and leader election (Raft), consistent hashing, two-phase commit vs sagas, distributed locks and fencing, and CRDTs, with the ideas shown in small code (written in the fast mode; marked <em>not run</em>).</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Scaling Backends: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Why do in-memory sessions break when scaling?</h3></summary><p>Each instance has its own memory, so a user logged in on one instance looks logged out on another. In our test about 71 percent of follow-up requests failed until sessions moved to Redis.</p></details>
+<details class="learn-faq-item"><summary><h3>What does PgBouncer do?</h3></summary><p>It multiplexes many client connections onto a small pool of database connections. It protects max_connections but does not speed queries, and transaction pooling breaks session-level state.</p></details>
+<details class="learn-faq-item"><summary><h3>What is replication lag?</h3></summary><p>Replicas apply changes slightly after the primary, so reading right after a write can return old data. Read the primary after writes, route by criticality or wait for the replica to catch up. Note this chapter's replica section was not run.</p></details>
+<details class="learn-faq-item"><summary><h3>How many database connections should each instance use?</h3></summary><p>A small pool: more connections do not add throughput, and instances times pool size must stay under max_connections. A pool of 20 beat a pool of 90 in our test.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span>&larr; Previous &middot; Chapter 28</span><strong>Message Queues &amp; Background Jobs: Outbox</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span>Next &middot; Chapter 30 &rarr;</span><strong>Distributed Systems: CAP, Raft &amp; Sagas</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#29-0-why-this-chapter-matters">29.0 Why This Chapter Matters</a></li><li><a href="#29-1-scaling-vocabulary">29.1 Scaling Vocabulary</a></li><li><a href="#29-2-the-stateless-service">29.2 The Stateless Service</a></li><li><a href="#29-3-load-balancers">29.3 Load Balancers</a></li><li><a href="#29-4-the-database-becomes-the-bottleneck">29.4 The Database Becomes the Bottleneck</a></li><li><a href="#29-5-read-replicas-and-replication-lag-not-run-written-from-documentation">29.5 Read Replicas and Replication Lag (not run: written from documentation)</a></li><li><a href="#29-6-scaling-writes-and-data-partitioning-and-sharding">29.6 Scaling Writes and Data: Partitioning and Sharding</a></li><li><a href="#29-7-autoscaling-and-capacity-planning">29.7 Autoscaling and Capacity Planning</a></li><li><a href="#29-8-shopline-at-100-scale-an-architecture-design-not-built-or-run-here">29.8 ShopLine at 100× Scale: An Architecture (design; not built or run here)</a></li><li><a href="#29-9-edge-cases-and-gotchas-checklist">29.9 Edge Cases and Gotchas Checklist</a></li><li><a href="#29-10-chapter-summary">29.10 Chapter Summary</a></li><li><a href="#29-11-revision-notes">29.11 Revision Notes</a></li><li><a href="#29-12-mind-map-ascii">29.12 Mind Map (ASCII)</a></li><li><a href="#29-13-cheat-sheet">29.13 Cheat Sheet</a></li><li><a href="#29-14-key-takeaways">29.14 Key Takeaways</a></li><li><a href="#29-15-20-multiple-choice-questions">29.15 20 Multiple Choice Questions</a></li><li><a href="#29-16-20-hands-on-exercises">29.16 20 Hands-on Exercises</a></li><li><a href="#29-17-5-interview-questions">29.17 5 Interview Questions</a></li><li><a href="#29-18-3-real-projects">29.18 3 Real Projects</a></li><li><a href="#29-19-further-reading">29.19 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "scaling-backend-load-balancing-nginx-pgbouncer"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Docker for Node.js: Dockerfile &amp; Compose | Backend Master</title>
+    <meta name="description" content="Containerise a Node.js backend: multi-stage Dockerfile, non-root users, Compose, graceful shutdown on SIGTERM, resource limits, security and Kubernetes basics.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="docker nodejs dockerfile, multi stage build, docker compose, docker pid 1 sigterm, container security, kubernetes deployment probes, dockerignore, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="docker nodejs dockerfile">
+    <meta property="article:tag" content="multi stage build">
+    <meta property="article:tag" content="docker compose">
+    <meta property="article:tag" content="docker pid 1 sigterm">
+    <meta property="article:tag" content="container security">
+    <meta property="article:tag" content="kubernetes deployment probes">
+    <meta property="article:tag" content="dockerignore">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Docker for Node.js: Dockerfile &amp; Compose">
+    <meta property="og:description" content="Containerise a Node.js backend: multi-stage Dockerfile, non-root users, Compose, graceful shutdown on SIGTERM, resource limits, security and Kubernetes basics.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Docker and Containers for Node.js: Dockerfile, Compose, Signals and Kubernetes Basics: Backend Master chapter 31">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Docker for Node.js: Dockerfile &amp; Compose">
+    <meta name="twitter:description" content="Containerise a Node.js backend: multi-stage Dockerfile, non-root users, Compose, graceful shutdown on SIGTERM, resource limits, security and Kubernetes basics.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes.png">
+    <meta name="twitter:image:alt" content="Docker and Containers for Node.js: Dockerfile, Compose, Signals and Kubernetes Basics: Backend Master chapter 31">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes",
+          "name": "Docker for Node.js: Dockerfile & Compose | Backend Master",
+          "description": "Containerise a Node.js backend: multi-stage Dockerfile, non-root users, Compose, graceful shutdown on SIGTERM, resource limits, security and Kubernetes basics.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Docker and Containers for Node.js: Dockerfile, Compose, Signals and Kubernetes Basics"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#webpage"
+          },
+          "headline": "Docker and Containers for Node.js: Dockerfile, Compose, Signals and Kubernetes Basics",
+          "alternativeHeadline": "Docker and Containers — Packaging ShopLine So It Runs the Same Everywhere",
+          "description": "Containerise a Node.js backend: multi-stage Dockerfile, non-root users, Compose, graceful shutdown on SIGTERM, resource limits, security and Kubernetes basics.",
+          "abstract": "A container packages your application with its runtime so it runs the same everywhere. This chapter explains what containers are, writes a production Dockerfile with multi-stage builds, a non-root user and tini, a Compose file for the local stack, signals and graceful shutdown, resource limits, security hardening and Kubernetes basics. The Dockerfiles and manifests were not run.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes.png",
+          "url": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 5580,
+          "timeRequired": "PT25M",
+          "articleSection": "Backend Development",
+          "keywords": "docker nodejs dockerfile, multi stage build, docker compose, docker pid 1 sigterm, container security, kubernetes deployment probes, dockerignore",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Images, layers, containers and volumes",
+            "A production multi-stage Dockerfile",
+            "Docker Compose for a local stack",
+            "PID 1, SIGTERM and graceful shutdown",
+            "Container security and Kubernetes probes and rollouts"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "docker nodejs dockerfile"
+          },
+          "isAccessibleForFree": true,
+          "position": 31,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas#article",
+            "name": "Distributed Systems: CAP, Consistency, Consensus, Consistent Hashing and Sagas",
+            "url": "https://shivamthakur.me/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Docker for Node.js: Dockerfile & Compose",
+              "item": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why use a multi-stage Dockerfile?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Build tools and dev dependencies stay in earlier stages, so the final image is smaller, faster to pull and has fewer vulnerabilities."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why should containers not run as root?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "If the app is compromised the attacker would be root inside the container, which makes escaping easier. Use USER node and drop unneeded capabilities."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does docker stop sometimes take 10 seconds?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "If Node is not PID 1 or the command runs through npm or a shell, SIGTERM may not reach it, so Docker waits and then sends SIGKILL. Use exec-form CMD, tini and a SIGTERM handler."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are the Dockerfiles in this chapter tested?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. They were written in fast mode and not built or run, so build and test them before relying on them."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#quiz",
+          "name": "Docker for Node.js: Dockerfile & Compose: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "docker nodejs dockerfile"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A container is best described as:",
+              "text": "A container is best described as:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An isolated process sharing the host kernel"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A lightweight VM with its own kernel"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A zip file"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A hypervisor"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What provides resource limits for containers?",
+              "text": "What provides resource limits for containers?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "cgroups"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Namespaces"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Registries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Layers"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Data written to a container's writable layer:",
+              "text": "Data written to a container's writable layer:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Is lost when the container is removed unless stored in a volume"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Persists forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is replicated"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is encrypted"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why copy package.json and run npm ci before copying source?",
+              "text": "Why copy package.json and run npm ci before copying source?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "So the dependency layer stays cached until dependencies change"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Style"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "npm requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Security"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "npm ci differs from npm install by:",
+              "text": "npm ci differs from npm install by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Installing exactly the lockfile versions and failing on mismatch"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Being slower"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ignoring the lockfile"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Installing globally"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A multi-stage build mainly:",
+              "text": "A multi-stage build mainly:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Keeps build tools and dev deps out of the final image"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Runs stages in parallel only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Encrypts layers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Starts faster at runtime"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why run as a non-root user?",
+              "text": "Why run as a non-root user?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Limits damage if the app is compromised"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Required by Docker"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Saves memory"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": ".dockerignore should exclude .env because:",
+              "text": ".dockerignore should exclude .env because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Anything in the image can be read by those who can pull it"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It is large"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Docker can't read it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It slows builds"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "CMD [\"npm\",\"start\"] as PID 1 is a problem because:",
+              "text": "CMD [\"npm\",\"start\"] as PID 1 is a problem because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "npm may not forward SIGTERM to Node, so shutdown isn't graceful"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "npm is slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It uses root"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It breaks caching"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "tini provides:",
+              "text": "tini provides:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Proper signal forwarding and zombie reaping as PID 1"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A web server"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Node updates"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "TLS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Inside Compose, a service reaches Postgres at:",
+              "text": "Inside Compose, a service reaches Postgres at:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The service name (db)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "localhost"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "host.docker.internal always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "127.0.0.1"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "depends_on: condition: service_healthy guarantees:",
+              "text": "depends_on: condition: service_healthy guarantees:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The dependency passed its healthcheck at startup, but later restarts still happen"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The app never needs retries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Zero downtime"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ordering of shutdown only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Exit code 137 usually means:",
+              "text": "Exit code 137 usually means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Killed by SIGKILL, often OOM"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Clean exit"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SIGTERM handled"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Syntax error"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A Node heap limit larger than the container memory limit leads to:",
+              "text": "A Node heap limit larger than the container memory limit leads to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The kernel OOM-killing the process"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A catchable JS error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Faster GC"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is safest for secrets?",
+              "text": "Which is safest for secrets?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Runtime-injected secrets (Secret objects/secret manager), not baked into images"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "ENV in the Dockerfile"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Build args"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Committed .env"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Kubernetes liveness vs readiness: readiness failure causes:",
+              "text": "Kubernetes liveness vs readiness: readiness failure causes:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Removal from Service endpoints without restart"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A restart"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Deletion of the pod"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Scaling"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "maxUnavailable: 0, maxSurge: 1 with a readiness probe gives:",
+              "text": "maxUnavailable: 0, maxSurge: 1 with a readiness probe gives:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A rolling update without dropping capacity"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Downtime"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Blue/green"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Canary only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why tag images with the git SHA?",
+              "text": "Why tag images with the git SHA?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Immutable, traceable versions; deploy exactly what CI built"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Looks nice"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Required by registries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Faster pulls"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Mounting /var/run/docker.sock into an app container is dangerous because:",
+              "text": "Mounting /var/run/docker.sock into an app container is dangerous because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It grants root-equivalent control of the host"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It breaks networking"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It disables logs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What should a Dockerfile HEALTHCHECK for liveness avoid?",
+              "text": "What should a Dockerfile HEALTHCHECK for liveness avoid?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Depending on the database (restart storms during DB blips)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Checking /livez"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Timeouts"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using node"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Docker for Node.js: Dockerfile &amp; Compose</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:86.1%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item active" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" aria-current="page"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 31 of 36 &middot; Intermediate</p>
+                        <h1>Docker and Containers for Node.js: Dockerfile, Compose, Signals and Kubernetes Basics</h1>
+                        <p class="learn-book-title">Docker and Containers — Packaging ShopLine So It Runs the Same Everywhere</p>
+                        <ul class="learn-meta text-caption">
+                            <li>25 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes.webp"><img src="../../assets/images/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Docker and Containers for Node.js: Dockerfile, Compose, Signals and Kubernetes Basics: Backend Master chapter 31 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>A container packages your application with its runtime so it runs the same everywhere. This chapter explains what containers are, writes a production Dockerfile with multi-stage builds, a non-root user and tini, a Compose file for the local stack, signals and graceful shutdown, resource limits, security hardening and Kubernetes basics. The Dockerfiles and manifests were not run.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Images, layers, containers and volumes</li><li>A production multi-stage Dockerfile</li><li>Docker Compose for a local stack</li><li>PID 1, SIGTERM and graceful shutdown</li><li>Container security and Kubernetes probes and rollouts</li></ul>
+                        </section>
+<hr>
+
+<h2 id="31-0-why-this-chapter-matters">31.0 Why This Chapter Matters</h2>
+<p>&quot;It works on my machine&quot; is the oldest excuse in software, and it has a real cause: your laptop has a particular Node version, particular OS libraries, particular environment variables, and a Postgres you installed two years ago. Production has <em>different</em> ones. Every difference is a bug waiting for a Friday deploy.</p>
+<p>A <strong>container</strong> packages your application <strong>together with its runtime, libraries and configuration</strong> into a single image that runs identically on your laptop, on the CI server, and in production. Containers are the unit of deployment for almost every modern backend, and the foundation under Kubernetes, ECS, Cloud Run, Fly.io, and most PaaS products.</p>
+<p>Throughout this book you have already <em>used</em> Docker as a tool: the throwaway PostgreSQL, Redis, MongoDB, Elasticsearch, nginx and PgBouncer containers in earlier chapters. This chapter teaches you to <strong>build and run your own</strong> images properly:</p>
+<ul>
+<li>What containers are (and aren&#39;t), and how images work.</li>
+<li>Writing a <strong>production-grade Dockerfile</strong> for ShopLine: multi-stage, small, non-root, cache-friendly.</li>
+<li><strong>Docker Compose</strong> for a local multi-service environment (API + worker + PostgreSQL + Redis).</li>
+<li>Configuration, secrets, networking, volumes, health checks.</li>
+<li><strong>Signals and graceful shutdown</strong> inside containers (finally the Linux part of <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>&#39;s shutdown).</li>
+<li><strong>Resource limits</strong> and the Node.js memory settings that interact with them.</li>
+<li><strong>Security</strong> hardening and image scanning.</li>
+<li>A first look at <strong>Kubernetes</strong>: Deployments, Services, probes, autoscaling.</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run-fast-mode" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run (fast mode)</span></h3>
+<p><strong>None of the Dockerfiles, Compose files or Kubernetes manifests in this chapter were built or run.</strong> They were written in &quot;fast mode&quot; at your request, from established best practices; they may contain mistakes (a wrong flag, a path, a version). The only Docker commands I actually ran in this project were the <code>docker run</code>/<code>start</code>/<code>exec</code>/<code>kill</code>/<code>rm</code> commands for the test databases and nginx/PgBouncer in earlier chapters, including these <strong>verified</strong> facts: <code>-p 127.0.0.1:HOST:CONTAINER</code> binds a port to localhost only; <code>docker kill</code> (SIGKILL) loses un-persisted Redis data while <code>docker stop</code> allows a clean save (<a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>); <code>host.docker.internal</code> resolves to both IPv6 and IPv4 on Docker Desktop and can cause intermittent failures (<a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>); and an image&#39;s entrypoint (<code>su-exec</code>) may not exist in the variant you expect (I hit this with <code>postgres:17-alpine</code>). <strong>Build and test every file here before trusting it.</strong></p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The container technology under Docker (Linux <strong>namespaces</strong> and <strong>cgroups</strong>) existed years before Docker. Docker&#39;s 2013 contribution wasn&#39;t the isolation, it was the <strong>developer experience</strong>: a simple <code>Dockerfile</code>, a layered image format, and a registry to share them. That packaging, not the kernel features, is what changed how software ships.</p>
+</aside>
+<hr>
+
+<h2 id="31-1-what-a-container-is-and-isn-t">31.1 What a Container Is (and Isn&#39;t)</h2>
+<p>A container is <strong>an ordinary Linux process</strong> that the kernel isolates:</p>
+<ul>
+<li><strong>Namespaces</strong> give it its own view of the system: its own process tree (PID 1 inside), network stack, filesystem mounts, hostname, users.</li>
+<li><strong>cgroups</strong> limit how much CPU, memory and I/O it may use.</li>
+<li>It <strong>shares the host&#39;s kernel</strong>; that&#39;s why containers start in milliseconds and use far less memory than virtual machines.</li>
+</ul>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Virtual machine</strong></th>
+<th><strong>Container</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Includes</td>
+<td>A full guest OS + kernel</td>
+<td>App + libraries; shares the host kernel</td>
+</tr>
+<tr>
+<td>Start time</td>
+<td>Seconds–minutes</td>
+<td>Milliseconds–seconds</td>
+</tr>
+<tr>
+<td>Size</td>
+<td>GBs</td>
+<td>MBs–hundreds of MB</td>
+</tr>
+<tr>
+<td>Isolation</td>
+<td>Strong (hypervisor)</td>
+<td>Weaker (shared kernel), hardened with extra controls</td>
+</tr>
+<tr>
+<td>Density</td>
+<td>Tens per host</td>
+<td>Hundreds per host</td>
+</tr>
+</tbody></table></div>
+<p>(On Windows/macOS, Docker Desktop runs a small Linux VM, and containers run inside it; that&#39;s why networking details like <code>host.docker.internal</code> exist.)</p>
+<h3 id="images-layers-containers-registries">Images, layers, containers, registries</h3>
+<ul>
+<li>An <strong>image</strong> is a read-only template: a stack of <strong>layers</strong> (each Dockerfile instruction creates one), identified by a content hash.</li>
+<li>A <strong>container</strong> is a <em>running instance</em> of an image, with a thin writable layer on top. When the container is deleted, that layer (and anything you wrote there) <strong>disappears</strong>; persistent data belongs in <strong>volumes</strong>.</li>
+<li>A <strong>registry</strong> (Docker Hub, GitHub Container Registry, AWS ECR, Google Artifact Registry) stores and distributes images by <code>name:tag</code> or immutable <code>name@sha256:digest</code>.</li>
+<li><strong>Layers are cached and shared.</strong> Docker rebuilds only the layers <em>after</em> the first instruction that changed: this is the key to fast builds (§31.3).</li>
+</ul>
+<p>Core commands (basic Docker usage; you&#39;ve run several already):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">docker build -t shopline-api:1.0 .                 <span class="hljs-comment"># build an image from ./Dockerfile</span>
+docker run -d --name api -p 127.0.0.1:3000:3000 --env-file .<span class="hljs-built_in">env</span> shopline-api:1.0
+docker logs -f api       docker <span class="hljs-built_in">exec</span> -it api sh      docker stop api      docker <span class="hljs-built_in">rm</span> -f api
+docker ps                docker images               docker system <span class="hljs-built_in">df</span>     docker image prune</code></pre></div>
+<hr>
+
+<h2 id="31-2-a-first-dockerfile-and-why-it-s-bad">31.2 A First Dockerfile (and Why It&#39;s Bad)</h2>
+<pre class="is-plain"><code>FROM node:22
+WORKDIR /app
+COPY . .
+RUN npm install
+EXPOSE 3000
+CMD [&quot;node&quot;, &quot;src/server.js&quot;]</code></pre>
+<p>It works, and it has at least six problems:</p>
+<ol>
+<li><strong><code>COPY . .</code> before <code>npm install</code></strong>: any source change invalidates the cache, so <em>every build reinstalls all dependencies</em>.</li>
+<li><strong><code>node:22</code> is huge</strong> (~1 GB with build tools and a full Debian) and includes things you don&#39;t need at runtime.</li>
+<li><strong>Installs dev dependencies</strong> (test frameworks, linters) into production.</li>
+<li><strong>Runs as root</strong>: a compromised app has root inside the container.</li>
+<li><strong>Copies everything</strong>, including <code>node_modules</code>, <code>.git</code>, <code>.env</code> (secrets!), logs.</li>
+<li><strong><code>CMD node …</code> as PID 1</strong>: signals and zombie reaping misbehave (§31.5).</li>
+</ol>
+<hr>
+
+<h2 id="31-3-a-production-grade-dockerfile-for-shopline-not-built-or-run">31.3 A Production-Grade Dockerfile for ShopLine <em>(not built or run)</em></h2>
+<pre class="is-plain"><code># syntax=docker/dockerfile:1
+
+############ 1) dependencies (cached unless package*.json change) ############
+FROM node:22-slim AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev          # reproducible install, production deps only
+
+############ 2) build (TypeScript/bundling, only if you have a build step) ############
+FROM node:22-slim AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci                      # includes devDependencies for the build
+COPY . .
+RUN npm run build &amp;&amp; npm prune --omit=dev                            # produce dist/, then drop dev deps
+
+############ 3) runtime: small, non-root ############
+FROM node:22-slim AS runtime
+ENV NODE_ENV=production \
+    NODE_OPTIONS=&quot;--enable-source-maps&quot;
+WORKDIR /app
+# tini = a tiny init process: forwards signals, reaps zombies
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends tini &amp;&amp; rm -rf /var/lib/apt/lists/*
+COPY --from=deps  --chown=node:node /app/node_modules ./node_modules
+COPY --from=build --chown=node:node /app/dist ./dist
+COPY --chown=node:node package.json ./
+USER node                                                           # never run as root
+EXPOSE 3000
+HEALTHCHECK --interval=15s --timeout=3s --start-period=20s --retries=3 \
+  CMD node -e &quot;fetch('http://127.0.0.1:3000/livez').then(r=&gt;process.exit(r.ok?0:1)).catch(()=&gt;process.exit(1))&quot;
+ENTRYPOINT [&quot;/usr/bin/tini&quot;, &quot;--&quot;]
+CMD [&quot;node&quot;, &quot;dist/server.js&quot;]</code></pre>
+<p>What each decision buys you:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Decision</th>
+<th>Why</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Pin the base image</strong> (<code>node:22-slim</code>; better <code>node:22.17-slim@sha256:…</code>)</td>
+<td>Reproducible builds; <code>latest</code> changes under you</td>
+</tr>
+<tr>
+<td><strong>Copy <code>package*.json</code> first, then install</strong></td>
+<td>The expensive <code>npm ci</code> layer is <strong>cached</strong> until dependencies change</td>
+</tr>
+<tr>
+<td><strong><code>npm ci</code></strong> (not <code>npm install</code>)</td>
+<td>Exact versions from the lockfile; fails if lockfile and <code>package.json</code> disagree (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>)</td>
+</tr>
+<tr>
+<td><strong>Multi-stage build</strong></td>
+<td>Compilers, dev deps and caches stay in earlier stages; the final image contains only what runs</td>
+</tr>
+<tr>
+<td><strong><code>-slim</code> (or <code>distroless</code>/<code>alpine</code>)</strong></td>
+<td>Smaller attack surface and faster pulls. (Alpine uses musl libc: some native modules misbehave; <code>-slim</code> Debian is the safe default; distroless has no shell, smallest and safest, harder to debug)</td>
+</tr>
+<tr>
+<td><strong><code>USER node</code></strong></td>
+<td>Least privilege (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>). If the app is compromised, the attacker is not root</td>
+</tr>
+<tr>
+<td><strong><code>HEALTHCHECK</code></strong></td>
+<td>Lets Docker/orchestrators know when the app is unhealthy (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>&#39;s <code>/livez</code>). Kubernetes ignores it and uses its own probes (§31.9)</td>
+</tr>
+<tr>
+<td><strong><code>tini</code> as PID 1</strong></td>
+<td>Correct signal forwarding and zombie reaping (§31.5)</td>
+</tr>
+<tr>
+<td><strong><code>NODE_ENV=production</code></strong></td>
+<td>Express and many libraries enable optimisations and disable verbose errors</td>
+</tr>
+</tbody></table></div>
+<h3 id="dockerignore-as-important-as-gitignore"><code>.dockerignore</code> (as important as <code>.gitignore</code>)</h3>
+<pre class="is-plain"><code>node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+.env.*
+Dockerfile
+docker-compose*.yml
+coverage
+dist
+*.md
+.github
+test</code></pre>
+<p>It keeps the <strong>build context</strong> small (faster builds), keeps <code>node_modules</code> from your host out of the image (wrong OS binaries!), and, most importantly, keeps <strong>secrets (<code>.env</code>)</strong> out of the image, since <strong>anything copied into an image is readable by anyone who can pull it, including from deleted layers&#39; history.</strong></p>
+<h3 id="layer-caching-rules-of-thumb">Layer-caching rules of thumb</h3>
+<p>Order instructions from <strong>least to most frequently changing</strong>: base image → system packages → dependency manifests → install → source code → build. Combine related <code>RUN</code> steps and clean caches in the <em>same</em> layer (<code>apt-get … &amp;&amp; rm -rf /var/lib/apt/lists/*</code>) or the deleted files still occupy an earlier layer. <strong>Never <code>RUN</code> something that embeds a secret</strong> (a build-time token) into a layer: use BuildKit <strong>secret mounts</strong> (<code>RUN --mount=type=secret,id=npmrc …</code>).</p>
+<h3 id="image-size-indicative-not-measured-here">Image size, indicative <em>(not measured here)</em></h3>
+<p>Typical figures from experience: <code>node:22</code> ≈ 1 GB; <code>node:22-slim</code> ≈ 230 MB; <code>node:22-alpine</code> ≈ 150 MB; a multi-stage app image on <code>slim</code> ≈ 250–300 MB; on distroless ≈ 150–200 MB. Smaller images pull faster (scaling events, <a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>), have fewer vulnerabilities, and cost less to store. Measure yours with <code>docker image ls</code> and <code>docker history</code>.</p>
+<hr>
+
+<h2 id="31-4-configuration-secrets-and-state">31.4 Configuration, Secrets and State</h2>
+<h3 id="configuration-environment-variables">Configuration: environment variables</h3>
+<p>Follow twelve-factor (Chapter 29): the <strong>same image</strong> runs in dev, staging and production; only the <strong>environment</strong> differs.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">docker run -d -p 127.0.0.1:3000:3000 \
+  -e NODE_ENV=production -e PORT=3000 \
+  -e DATABASE_URL=postgres://shopline:***@db:5432/shopline \
+  -e REDIS_URL=redis://cache:6379 \
+  --env-file ./prod.env shopline-api:1.0</code></pre></div>
+<p>Validate configuration <strong>at startup</strong> (<a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>&#39;s Zod) and refuse to start if something is missing, rather than failing on the first request.</p>
+<h3 id="secrets">Secrets</h3>
+<ul>
+<li><strong>Don&#39;t bake secrets into images</strong> or commit them (<code>.env</code> is in <code>.dockerignore</code> and <code>.gitignore</code>).</li>
+<li>Inject at runtime: <strong>orchestrator secrets</strong> (Kubernetes <code>Secret</code>, Docker/Swarm secrets mounted as files at <code>/run/secrets/…</code>), a <strong>secret manager</strong> (AWS Secrets Manager, Vault) with short-lived credentials, or the platform&#39;s env settings.</li>
+<li>Environment variables are visible via <code>docker inspect</code> and <code>/proc/&lt;pid&gt;/environ</code> to anyone with host access, and are inherited by child processes; <strong>files mounted from a secret store</strong> are the more careful option for high-value secrets.</li>
+<li>Rotate secrets; never log them (Chapter 25).</li>
+</ul>
+<h3 id="state-volumes">State: volumes</h3>
+<p>A container&#39;s writable layer is <strong>ephemeral</strong>. Persistent data lives in:</p>
+<ul>
+<li><strong>Named volumes</strong> (<code>-v pgdata:/var/lib/postgresql/data</code>): managed by Docker; the right choice for databases in development.</li>
+<li><strong>Bind mounts</strong> (<code>-v ./src:/app/src</code>): a host folder; handy for live-reload in development, avoid in production.</li>
+<li><strong>tmpfs</strong>: in-memory, for scratch data.</li>
+</ul>
+<p>For ShopLine&#39;s API containers, the rule is <strong>no local state</strong>: uploads go to object storage, sessions to Redis (Chapter 29). In production, run databases as <strong>managed services</strong> (RDS, Cloud SQL, Atlas, Elasticache) rather than containers you babysit; containers for stateful stores are fine for development and tests (as we&#39;ve done throughout).</p>
+<hr>
+
+<h2 id="31-5-signals-pid-1-and-graceful-shutdown">31.5 Signals, PID 1 and Graceful Shutdown</h2>
+<p>When <code>docker stop</code> (or Kubernetes) wants your container gone it sends <strong><code>SIGTERM</code></strong>, waits a grace period (10 s by default in Docker, 30 s in Kubernetes), then sends <strong><code>SIGKILL</code></strong>. Chapter 25&#39;s graceful shutdown handler only works if that signal reaches Node.</p>
+<p><strong>The PID 1 problem:</strong> the first process in a container is PID 1, which the Linux kernel treats specially: it <strong>doesn&#39;t get default signal handlers</strong> (a plain <code>SIGTERM</code> is ignored unless the process installs a handler), and it&#39;s responsible for <strong>reaping zombie</strong> child processes. Two failure modes:</p>
+<ol>
+<li><code>CMD [&quot;npm&quot;, &quot;start&quot;]</code> makes <strong>npm</strong> PID 1, and npm doesn&#39;t forward signals to Node → <code>docker stop</code> hangs 10 s then <code>SIGKILL</code>s your app mid-request. (Use <code>CMD [&quot;node&quot;, &quot;dist/server.js&quot;]</code> directly, never via npm/shell scripts.)</li>
+<li><code>CMD node server.js</code> (shell form) runs <code>/bin/sh -c node server.js</code>; the shell is PID 1 and may not forward signals. (Use the <strong>exec form</strong> JSON array.)</li>
+</ol>
+<p>Fix: run Node directly in exec form <strong>and</strong> use <strong><code>tini</code></strong> (or <code>docker run --init</code>, Kubernetes <code>shareProcessNamespace</code>) as PID 1, <strong>and</strong> handle <code>SIGTERM</code> in your code:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> server = app.<span class="hljs-title function_">listen</span>(<span class="hljs-variable constant_">PORT</span>);
+<span class="hljs-keyword">let</span> shuttingDown = <span class="hljs-literal">false</span>;
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;SIGTERM&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-keyword">if</span> (shuttingDown) <span class="hljs-keyword">return</span>; shuttingDown = <span class="hljs-literal">true</span>;
+  logger.<span class="hljs-title function_">info</span>(<span class="hljs-string">&#x27;SIGTERM received: draining&#x27;</span>);
+  readiness.<span class="hljs-property">ok</span> = <span class="hljs-literal">false</span>;                                  <span class="hljs-comment">// /readyz → 503: the balancer stops sending traffic</span>
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {                                      <span class="hljs-comment">// give the load balancer time to notice (≈ probe interval)</span>
+    server.<span class="hljs-title function_">close</span>(<span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">end</span>(); <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">quit</span>(); logger.<span class="hljs-title function_">flush</span>(); process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">0</span>); });
+    server.<span class="hljs-title function_">closeIdleConnections</span>();
+  }, <span class="hljs-number">5000</span>);
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>), <span class="hljs-number">25_000</span>).<span class="hljs-title function_">unref</span>();     <span class="hljs-comment">// hard deadline below the platform&#x27;s grace period</span>
+});</code></pre></div>
+<p><em>(This is the pattern from Chapter 25, repeated here; I never ran signal handling because Windows doesn&#39;t deliver <code>SIGTERM</code> to Node like Linux; test it in a Linux container with <code>docker stop</code> and watch the exit code and log line.)</em> Set the platform&#39;s <strong>grace period longer than your drain</strong> (<code>stop_grace_period</code> in Compose, <code>terminationGracePeriodSeconds</code> in Kubernetes).</p>
+<hr>
+
+<h2 id="31-6-docker-compose-shopline-locally-not-run">31.6 Docker Compose: ShopLine Locally <em>(not run)</em></h2>
+<p><strong>Compose</strong> describes a multi-container environment in one YAML file: ideal for local development and integration tests (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>).</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">YAML</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-yaml"><span class="hljs-comment"># compose.yaml</span>
+<span class="hljs-attr">services:</span>
+  <span class="hljs-attr">api:</span>
+    <span class="hljs-attr">build:</span> <span class="hljs-string">.</span>
+    <span class="hljs-attr">ports:</span> [<span class="hljs-string">&quot;127.0.0.1:3000:3000&quot;</span>]
+    <span class="hljs-attr">environment:</span>
+      <span class="hljs-attr">NODE_ENV:</span> <span class="hljs-string">development</span>
+      <span class="hljs-attr">DATABASE_URL:</span> <span class="hljs-string">postgres://postgres:devpass@db:5432/shopline</span>
+      <span class="hljs-attr">REDIS_URL:</span> <span class="hljs-string">redis://cache:6379</span>
+    <span class="hljs-attr">depends_on:</span>
+      <span class="hljs-attr">db:</span>    { <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span> }
+      <span class="hljs-attr">cache:</span> { <span class="hljs-attr">condition:</span> <span class="hljs-string">service_healthy</span> }
+    <span class="hljs-attr">stop_grace_period:</span> <span class="hljs-string">30s</span>
+    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span>
+
+  <span class="hljs-attr">worker:</span>
+    <span class="hljs-attr">build:</span> <span class="hljs-string">.</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">&quot;node&quot;</span>, <span class="hljs-string">&quot;dist/worker.js&quot;</span>]            <span class="hljs-comment"># same image, different entry point (Chapter 28)</span>
+    <span class="hljs-attr">environment:</span> <span class="hljs-string">*api-env</span>                           <span class="hljs-comment"># (use a YAML anchor, or repeat the variables)</span>
+    <span class="hljs-attr">depends_on:</span> [<span class="hljs-string">db</span>, <span class="hljs-string">cache</span>]
+
+  <span class="hljs-attr">db:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:17-alpine</span>
+    <span class="hljs-attr">environment:</span> { <span class="hljs-attr">POSTGRES_PASSWORD:</span> <span class="hljs-string">devpass</span>, <span class="hljs-attr">POSTGRES_DB:</span> <span class="hljs-string">shopline</span> }
+    <span class="hljs-attr">volumes:</span> [<span class="hljs-string">pgdata:/var/lib/postgresql/data</span>, <span class="hljs-string">./db/init:/docker-entrypoint-initdb.d:ro</span>]
+    <span class="hljs-attr">healthcheck:</span> { <span class="hljs-attr">test:</span> [<span class="hljs-string">&quot;CMD-SHELL&quot;</span>, <span class="hljs-string">&quot;pg_isready -U postgres&quot;</span>], <span class="hljs-attr">interval:</span> <span class="hljs-string">5s</span>, <span class="hljs-attr">timeout:</span> <span class="hljs-string">3s</span>, <span class="hljs-attr">retries:</span> <span class="hljs-number">10</span> }
+    <span class="hljs-attr">ports:</span> [<span class="hljs-string">&quot;127.0.0.1:54329:5432&quot;</span>]
+
+  <span class="hljs-attr">cache:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">redis:7.2-alpine</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">&quot;redis-server&quot;</span>, <span class="hljs-string">&quot;--appendonly&quot;</span>, <span class="hljs-string">&quot;yes&quot;</span>]       <span class="hljs-comment"># durable enough for sessions/queues (Chapter 19)</span>
+    <span class="hljs-attr">healthcheck:</span> { <span class="hljs-attr">test:</span> [<span class="hljs-string">&quot;CMD&quot;</span>, <span class="hljs-string">&quot;redis-cli&quot;</span>, <span class="hljs-string">&quot;ping&quot;</span>], <span class="hljs-attr">interval:</span> <span class="hljs-string">5s</span>, <span class="hljs-attr">timeout:</span> <span class="hljs-string">3s</span>, <span class="hljs-attr">retries:</span> <span class="hljs-number">10</span> }
+
+  <span class="hljs-attr">nginx:</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx:alpine</span>
+    <span class="hljs-attr">ports:</span> [<span class="hljs-string">&quot;127.0.0.1:8080:80&quot;</span>]
+    <span class="hljs-attr">volumes:</span> [<span class="hljs-string">&quot;./nginx.conf:/etc/nginx/nginx.conf:ro&quot;</span>]
+    <span class="hljs-attr">depends_on:</span> [<span class="hljs-string">api</span>]
+
+<span class="hljs-attr">volumes:</span>
+  <span class="hljs-attr">pgdata:</span></code></pre></div>
+<p>Key ideas:</p>
+<ul>
+<li><strong>Service names are DNS names</strong> on Compose&#39;s private network: the API reaches Postgres at host <strong><code>db</code></strong>, Redis at <strong><code>cache</code></strong>; no IPs or <code>localhost</code>. (Inside a container, <code>localhost</code> is <em>the container itself</em>, a classic beginner error.)</li>
+<li><strong><code>depends_on</code> with <code>condition: service_healthy</code></strong> waits for the database to be <em>ready</em>, not just <em>started</em>, but your app should still <strong>retry its connections</strong> on startup (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>): dependencies restart independently in real life.</li>
+<li><strong>Bind ports to <code>127.0.0.1</code></strong> (as we did for every test container) so a development database isn&#39;t exposed to your network.</li>
+<li><strong>Scale a stateless service</strong>: <code>docker compose up --scale api=3</code> runs three API containers (put nginx in front, Chapter 29 <em>(not run here)</em>). </li>
+<li><strong>Same image for API and worker</strong>, different <code>command</code>.</li>
+<li>Compose is great for dev and CI; for production you&#39;d typically use Kubernetes, ECS, Cloud Run or a PaaS.</li>
+</ul>
+<h3 id="development-workflow-tips">Development workflow tips</h3>
+<ul>
+<li><strong>Bind-mount source + a file watcher</strong> (<code>node --watch</code>) for live reload, but keep <code>node_modules</code> in a volume so the host&#39;s don&#39;t overwrite the container&#39;s.</li>
+<li>A separate <code>compose.override.yaml</code> for dev-only settings (debug port <code>9229</code> bound to localhost, <strong>never</strong> exposed publicly: Chapter 25).</li>
+<li>Run <strong>migrations</strong> as a one-shot service or a deploy step (<a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>): <code>docker compose run --rm api node dist/migrate.js</code>.</li>
+</ul>
+<hr>
+
+<h2 id="31-7-resource-limits-and-node-js-in-containers">31.7 Resource Limits and Node.js in Containers</h2>
+<p>A container with <strong>no limits</strong> can consume the whole host. Set them:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">docker run --memory=512m --cpus=1.0 shopline-api:1.0          <span class="hljs-comment"># Compose: deploy.resources / mem_limit</span></code></pre></div>
+<p>Node-specific interactions (from Chapter 25&#39;s memory discussion):</p>
+<ul>
+<li><strong>Memory:</strong> by default V8 sets its heap limit from <em>system</em> memory, historically ignoring cgroup limits in older versions. Modern Node (≥ 12-ish) respects container limits to a degree, but <strong>set it explicitly</strong>: <code>NODE_OPTIONS=&quot;--max-old-space-size=384&quot;</code> for a 512 MB container (leave headroom for buffers, native memory and the OS). A heap limit <strong>above</strong> the container limit means the kernel <strong>OOM-kills</strong> the process silently (exit code 137) instead of Node throwing a catchable heap error.</li>
+<li><strong>CPU:</strong> a container limited to <code>--cpus=1.0</code> can still see all host cores via <code>os.cpus()</code>; libraries sizing worker pools from <code>os.cpus().length</code> will oversubscribe. Use <code>os.availableParallelism()</code> (Node ≥ 18.14, container-aware) and set <code>UV_THREADPOOL_SIZE</code> deliberately (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>). <strong>CPU throttling</strong> (hitting the cgroup quota) shows up as latency spikes and event-loop lag (Chapter 25); watch the throttled-time metric.</li>
+<li><strong>One process per container</strong>, one Node main thread per core: to use 4 cores, run 4 containers (or 4 cluster workers), not one container with a 4-CPU limit and one Node process.</li>
+<li><strong>Exit code 137</strong> = killed by SIGKILL (OOM or <code>docker kill</code>); <strong>143</strong> = terminated by SIGTERM; <strong>0</strong> clean; <strong>1</strong> error. These are the first things to check on a restart loop.</li>
+</ul>
+<hr>
+
+<h2 id="31-8-container-security">31.8 Container Security</h2>
+<p>Containers share a kernel, so hardening matters (Chapter 23&#39;s principles applied):</p>
+<ul>
+<li><strong>Run as a non-root user</strong> (<code>USER node</code>); drop capabilities (<code>--cap-drop=ALL</code>); <code>--security-opt no-new-privileges</code>; <strong>read-only root filesystem</strong> (<code>--read-only</code> + <code>tmpfs</code> for <code>/tmp</code>).</li>
+<li><strong>Minimal images</strong> (slim/distroless): fewer packages = fewer CVEs and nothing for an attacker to use (no shell, no curl).</li>
+<li><strong>Scan images</strong> for known vulnerabilities in CI: <strong>Trivy</strong>, Grype, Docker Scout, Snyk (<code>trivy image shopline-api:1.0</code>) <em>(not run)</em>. Fail the build on critical findings in the runtime layer, rebuild regularly to pick up base-image patches.</li>
+<li><strong>Pin and verify</strong>: base images by digest; sign images (<strong>cosign</strong>/Sigstore) and verify in the cluster; generate an <strong>SBOM</strong> (software bill of materials); pull only from trusted registries.</li>
+<li><strong>Never</strong> <code>--privileged</code>, never mount the Docker socket (<code>/var/run/docker.sock</code>) into an app container (it&#39;s root on the host), never expose the Docker daemon on TCP without TLS.</li>
+<li><strong>No secrets in images or build args</strong>; use BuildKit secrets.</li>
+<li><strong>Network policy</strong>: containers shouldn&#39;t reach what they don&#39;t need (the API → DB and Redis only); egress filtering also blunts SSRF (Chapter 23).</li>
+<li>Keep the <strong>host and runtime patched</strong>; consider rootless Docker/Podman and sandboxed runtimes (gVisor, Kata) for untrusted workloads.</li>
+</ul>
+<hr>
+
+<h2 id="31-9-kubernetes-the-orchestrator-in-one-section-not-run">31.9 Kubernetes: The Orchestrator, in One Section <em>(not run)</em></h2>
+<p>When one machine isn&#39;t enough (Chapter 29), an <strong>orchestrator</strong> schedules containers across a cluster, restarts failures, scales, load-balances and rolls out new versions. <strong>Kubernetes (K8s)</strong> is the standard. Core objects:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Object</th>
+<th>Purpose</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Pod</strong></td>
+<td>One or more containers scheduled together (usually one app container)</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>Declares &quot;run N replicas of this pod&quot;; handles rolling updates and rollbacks</td>
+</tr>
+<tr>
+<td><strong>Service</strong></td>
+<td>A stable virtual IP/DNS name load-balancing across a deployment&#39;s pods</td>
+</tr>
+<tr>
+<td><strong>Ingress / Gateway</strong></td>
+<td>HTTP(S) routing from outside (host/path rules, TLS)</td>
+</tr>
+<tr>
+<td><strong>ConfigMap / Secret</strong></td>
+<td>Configuration and secrets injected as env vars or files</td>
+</tr>
+<tr>
+<td><strong>HorizontalPodAutoscaler (HPA)</strong></td>
+<td>Scales replicas on CPU or custom metrics (Chapter 29)</td>
+</tr>
+<tr>
+<td><strong>Job / CronJob</strong></td>
+<td>Run-to-completion tasks and schedules (migrations, nightly reports, <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>)</td>
+</tr>
+<tr>
+<td><strong>StatefulSet / PersistentVolume</strong></td>
+<td>Stateful workloads with stable identity and storage</td>
+</tr>
+<tr>
+<td><strong>Namespace, RBAC, NetworkPolicy</strong></td>
+<td>Isolation, permissions (<a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a>), traffic rules</td>
+</tr>
+</tbody></table></div>
+<p>A minimal ShopLine Deployment + Service <em>(not run)</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">YAML</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Deployment</span>
+<span class="hljs-attr">metadata:</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">shopline-api</span> }
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">replicas:</span> <span class="hljs-number">3</span>
+  <span class="hljs-attr">strategy:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">RollingUpdate</span>, <span class="hljs-attr">rollingUpdate:</span> { <span class="hljs-attr">maxUnavailable:</span> <span class="hljs-number">0</span>, <span class="hljs-attr">maxSurge:</span> <span class="hljs-number">1</span> } }   <span class="hljs-comment"># zero-downtime rollout</span>
+  <span class="hljs-attr">selector:</span> { <span class="hljs-attr">matchLabels:</span> { <span class="hljs-attr">app:</span> <span class="hljs-string">shopline-api</span> } }
+  <span class="hljs-attr">template:</span>
+    <span class="hljs-attr">metadata:</span> { <span class="hljs-attr">labels:</span> { <span class="hljs-attr">app:</span> <span class="hljs-string">shopline-api</span> } }
+    <span class="hljs-attr">spec:</span>
+      <span class="hljs-attr">terminationGracePeriodSeconds:</span> <span class="hljs-number">30</span>
+      <span class="hljs-attr">containers:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">api</span>
+          <span class="hljs-attr">image:</span> <span class="hljs-string">registry.example.com/shopline-api:1.4.2</span>           <span class="hljs-comment"># immutable tag (the git SHA), never :latest</span>
+          <span class="hljs-attr">ports:</span> [{ <span class="hljs-attr">containerPort:</span> <span class="hljs-number">3000</span> }]
+          <span class="hljs-attr">envFrom:</span> [{ <span class="hljs-attr">configMapRef:</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">shopline-config</span> } }, { <span class="hljs-attr">secretRef:</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">shopline-secrets</span> } }]
+          <span class="hljs-attr">resources:</span> { <span class="hljs-attr">requests:</span> { <span class="hljs-attr">cpu:</span> <span class="hljs-string">250m</span>, <span class="hljs-attr">memory:</span> <span class="hljs-string">256Mi</span> }, <span class="hljs-attr">limits:</span> { <span class="hljs-attr">memory:</span> <span class="hljs-string">512Mi</span> } }
+          <span class="hljs-attr">startupProbe:</span>   { <span class="hljs-attr">httpGet:</span> { <span class="hljs-attr">path:</span> <span class="hljs-string">/livez</span>,  <span class="hljs-attr">port:</span> <span class="hljs-number">3000</span> }, <span class="hljs-attr">failureThreshold:</span> <span class="hljs-number">30</span>, <span class="hljs-attr">periodSeconds:</span> <span class="hljs-number">2</span> }
+          <span class="hljs-attr">livenessProbe:</span>  { <span class="hljs-attr">httpGet:</span> { <span class="hljs-attr">path:</span> <span class="hljs-string">/livez</span>,  <span class="hljs-attr">port:</span> <span class="hljs-number">3000</span> }, <span class="hljs-attr">periodSeconds:</span> <span class="hljs-number">10</span> }     <span class="hljs-comment"># cheap, no dependencies (Ch 25)</span>
+          <span class="hljs-attr">readinessProbe:</span> { <span class="hljs-attr">httpGet:</span> { <span class="hljs-attr">path:</span> <span class="hljs-string">/readyz</span>, <span class="hljs-attr">port:</span> <span class="hljs-number">3000</span> }, <span class="hljs-attr">periodSeconds:</span> <span class="hljs-number">5</span> }      <span class="hljs-comment"># checks DB/Redis with timeouts</span>
+          <span class="hljs-attr">lifecycle:</span> { <span class="hljs-attr">preStop:</span> { <span class="hljs-attr">exec:</span> { <span class="hljs-attr">command:</span> [<span class="hljs-string">&quot;sleep&quot;</span>, <span class="hljs-string">&quot;5&quot;</span>] } } }                     <span class="hljs-comment"># let the LB drain first</span>
+          <span class="hljs-attr">securityContext:</span> { <span class="hljs-attr">runAsNonRoot:</span> <span class="hljs-literal">true</span>, <span class="hljs-attr">readOnlyRootFilesystem:</span> <span class="hljs-literal">true</span>, <span class="hljs-attr">allowPrivilegeEscalation:</span> <span class="hljs-literal">false</span> }
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Service</span>
+<span class="hljs-attr">metadata:</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">shopline-api</span> }
+<span class="hljs-attr">spec:</span> { <span class="hljs-attr">selector:</span> { <span class="hljs-attr">app:</span> <span class="hljs-string">shopline-api</span> }, <span class="hljs-attr">ports:</span> [{ <span class="hljs-attr">port:</span> <span class="hljs-number">80</span>, <span class="hljs-attr">targetPort:</span> <span class="hljs-number">3000</span> }] }
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">autoscaling/v2</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">HorizontalPodAutoscaler</span>
+<span class="hljs-attr">metadata:</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">shopline-api</span> }
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">scaleTargetRef:</span> { <span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>, <span class="hljs-attr">kind:</span> <span class="hljs-string">Deployment</span>, <span class="hljs-attr">name:</span> <span class="hljs-string">shopline-api</span> }
+  <span class="hljs-attr">minReplicas:</span> <span class="hljs-number">3</span>
+  <span class="hljs-attr">maxReplicas:</span> <span class="hljs-number">12</span>
+  <span class="hljs-attr">metrics:</span> [{ <span class="hljs-attr">type:</span> <span class="hljs-string">Resource</span>, <span class="hljs-attr">resource:</span> { <span class="hljs-attr">name:</span> <span class="hljs-string">cpu</span>, <span class="hljs-attr">target:</span> { <span class="hljs-attr">type:</span> <span class="hljs-string">Utilization</span>, <span class="hljs-attr">averageUtilization:</span> <span class="hljs-number">60</span> } } }]</code></pre></div>
+<p>Things to internalise: <strong>requests</strong> (what the scheduler reserves) vs <strong>limits</strong> (the ceiling; exceeding memory = OOM kill); <strong>three probes</strong> (startup, liveness, readiness) map exactly to Chapter 25&#39;s ideas; <code>maxUnavailable: 0</code> + <code>maxSurge: 1</code> + a readiness probe = a <strong>rolling update with no dropped requests</strong> (<a href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud" title="CI/CD &amp; Cloud: GitHub Actions Deployments">Chapter 32</a>); and Kubernetes has a steep learning curve: <strong>managed Kubernetes</strong> (EKS, GKE, AKS) or simpler platforms (Cloud Run, ECS Fargate, Fly.io, Render, Railway) are often the right choice for small teams. You can run ShopLine well without ever touching Kubernetes.</p>
+<hr>
+
+<h2 id="31-10-containers-in-the-development-and-ci-workflow">31.10 Containers in the Development and CI Workflow</h2>
+<ul>
+<li><strong>Same image everywhere</strong>: build once in CI, tag with the <strong>git SHA</strong>, promote the <em>same</em> image from staging to production (<a href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud" title="CI/CD &amp; Cloud: GitHub Actions Deployments">Chapter 32</a>). Never rebuild per environment.</li>
+<li>Use <strong>BuildKit</strong> (default in modern Docker) for cache mounts and parallel stages; use <strong>registry layer caching</strong> in CI (<code>--cache-from</code>/<code>--cache-to</code>).</li>
+<li>Run <strong>tests inside the container</strong> (or against Compose services) so CI mirrors production.</li>
+<li><strong>Tag policy</strong>: <code>:1.4.2</code> (semver), <code>:sha-ab12cd3</code>, and a moving <code>:stable</code>/<code>:latest</code> only for humans, never in deployment manifests.</li>
+<li><strong>Prune</strong> old images in CI runners and registries (lifecycle policies) so storage and scan noise don&#39;t grow forever.</li>
+</ul>
+<hr>
+
+<h2 id="31-11-edge-cases-and-gotchas-checklist">31.11 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>COPY . .</code> before dependency install; no <code>.dockerignore</code>; secrets/<code>.env</code>/<code>.git</code> in the image or build context.</li>
+<li><input disabled="" type="checkbox"> Unpinned/<code>latest</code> base images; no lockfile or <code>npm install</code> instead of <code>npm ci</code>; dev dependencies in production.</li>
+<li><input disabled="" type="checkbox"> Single-stage images with compilers and caches; huge images.</li>
+<li><input disabled="" type="checkbox"> Running as root; <code>--privileged</code>; Docker socket mounted; secrets as build args or <code>ENV</code>.</li>
+<li><input disabled="" type="checkbox"> <code>CMD npm start</code> / shell-form <code>CMD</code>; no init process; no <code>SIGTERM</code> handler; grace period shorter than drain.</li>
+<li><input disabled="" type="checkbox"> <code>localhost</code> used to reach other containers; ports bound to <code>0.0.0.0</code> for dev databases.</li>
+<li><input disabled="" type="checkbox"> State written to the container filesystem; no volumes for stateful containers; databases in production containers without ops expertise.</li>
+<li><input disabled="" type="checkbox"> No memory/CPU limits; Node heap limit above the container limit (silent OOM, exit 137); <code>os.cpus()</code> sizing pools.</li>
+<li><input disabled="" type="checkbox"> App assumes dependencies are up at startup (no connection retry); <code>depends_on</code> treated as readiness.</li>
+<li><input disabled="" type="checkbox"> Health checks that depend on the database used for liveness (restart storms; Chapter 25).</li>
+<li><input disabled="" type="checkbox"> Images never scanned or rebuilt; no SBOM/signing; mutable tags in deployments.</li>
+<li><input disabled="" type="checkbox"> Debug/inspector ports exposed beyond localhost.</li>
+</ul>
+<hr>
+
+<h2 id="31-12-chapter-summary">31.12 Chapter Summary</h2>
+<ul>
+<li>A <strong>container</strong> is an isolated Linux process (namespaces + cgroups) sharing the host kernel; an <strong>image</strong> is layered and immutable; containers are ephemeral, so persistent state goes in <strong>volumes</strong> or managed services.</li>
+<li>A good Dockerfile: <strong>pinned slim base, multi-stage, dependency-manifest-first caching, <code>npm ci --omit=dev</code>, <code>.dockerignore</code>, non-root user, <code>tini</code>/exec-form CMD, <code>HEALTHCHECK</code></strong>.</li>
+<li><strong>Config via environment, secrets injected at runtime</strong>, never baked into images.</li>
+<li><strong>PID 1 and signals</strong>: <code>SIGTERM</code> must reach Node; handle it to drain (readiness off → close server → close pools → flush logs), with a grace period longer than the drain.</li>
+<li><strong>Compose</strong> models ShopLine locally (API, worker, Postgres, Redis, nginx) with service-name DNS, health-gated dependencies, localhost-bound ports.</li>
+<li><strong>Limits and Node:</strong> set container memory/CPU limits and <code>--max-old-space-size</code> below them; exit code 137 = SIGKILL/OOM.</li>
+<li><strong>Security:</strong> non-root, minimal images, scanning, pinning/signing, read-only filesystems, no privileged mode or Docker socket.</li>
+<li><strong>Kubernetes</strong> basics: Deployments, Services, probes (startup/liveness/readiness), requests vs limits, rolling updates, HPA, but prefer simpler managed platforms until you need it.</li>
+<li><strong>Nothing here was built or run</strong> (fast mode): validate before use.</li>
+</ul>
+<hr>
+
+<h2 id="31-13-revision-notes">31.13 Revision Notes</h2>
+<ul>
+<li>Cache order: base → deps manifest → install → source → build.</li>
+<li><code>npm ci --omit=dev</code>; multi-stage; slim; <code>USER node</code>; <code>.dockerignore</code> includes <code>.env</code>, <code>.git</code>, <code>node_modules</code>.</li>
+<li><code>ENTRYPOINT [&quot;tini&quot;,&quot;--&quot;]</code>, <code>CMD [&quot;node&quot;,&quot;dist/server.js&quot;]</code> (exec form; never <code>npm start</code>).</li>
+<li><code>SIGTERM</code> → readiness 503 → drain → close pools → flush → exit; grace &gt; drain.</li>
+<li>Service names are DNS; <code>localhost</code> = this container; bind dev ports to 127.0.0.1.</li>
+<li>Limits: <code>--memory</code>, <code>--cpus</code>; <code>--max-old-space-size</code> &lt; memory; 137 = KILL, 143 = TERM.</li>
+<li>Scan (Trivy), pin by digest, sign (cosign), SBOM; no privileged/socket.</li>
+<li>K8s: requests/limits, 3 probes, <code>maxUnavailable: 0</code>, preStop sleep, HPA, immutable SHA tags.</li>
+</ul>
+<hr>
+
+<h2 id="31-14-mind-map-ascii">31.14 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                                DOCKER &amp; CONTAINERS
+                                         │
+     ┌───────────┬───────────┬───────────┼────────────┬───────────────┬─────────────┐
+   CONCEPTS   DOCKERFILE   RUNTIME     COMPOSE      SECURITY       KUBERNETES     CI/CD
+      │           │           │           │            │               │            │
+  namespaces   multi-stage  PID 1      services     non-root       Deployment    build once
+  cgroups      cache order  SIGTERM    DNS names    slim/distroless Service       tag = SHA
+  layers       .dockerignore drain     healthchecks scan/sign      probes         scan in CI
+  volumes      tini         limits     volumes      read-only fs   HPA, rollouts  promote image</code></pre>
+<hr>
+
+<h2 id="31-15-cheat-sheet">31.15 Cheat Sheet</h2>
+<pre class="is-plain"><code>FROM node:22-slim AS deps  → COPY package*.json → RUN npm ci --omit=dev
+FROM node:22-slim AS runtime → COPY --from=deps …  USER node  ENTRYPOINT [&quot;/usr/bin/tini&quot;,&quot;--&quot;]  CMD [&quot;node&quot;,&quot;dist/server.js&quot;]</code></pre>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">docker build -t app:$(git rev-parse --short HEAD) .      docker run --init --read-only --memory=512m --cpus=1 -p 127.0.0.1:3000:3000 app
+docker compose up -d --build        docker compose logs -f api        docker compose run --<span class="hljs-built_in">rm</span> api node dist/migrate.js
+docker stop -t 30 api               docker inspect -f <span class="hljs-string">&#x27;{{.State.ExitCode}}&#x27;</span> api        trivy image app:1.0</code></pre></div>
+<pre class="is-plain"><code>Exit codes: 0 ok · 1 error · 137 SIGKILL/OOM · 143 SIGTERM.     In-container: db:5432 not localhost:5432.</code></pre>
+<hr>
+
+<h2 id="31-16-key-takeaways">31.16 Key Takeaways</h2>
+<ol>
+<li><strong>Build once, run anywhere</strong>: one immutable image per commit, configured by environment.</li>
+<li><strong>Order the Dockerfile for caching and keep the runtime image minimal and non-root.</strong></li>
+<li><strong>Handle <code>SIGTERM</code>, and make sure it reaches Node</strong>: no <code>npm start</code>, use <code>tini</code>.</li>
+<li><strong>Containers are ephemeral</strong>: no local state; secrets injected at runtime.</li>
+<li><strong>Set limits and make Node aware of them</strong>; learn the exit codes.</li>
+<li><strong>Scan, pin and sign images</strong>; never run privileged.</li>
+</ol>
+<hr>
+
+<h2 id="31-17-20-multiple-choice-questions">31.17 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Process + namespaces."><p class="quiz-text">A container is best described as:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A lightweight VM with its own kernel</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An isolated process sharing the host kernel</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A zip file</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A hypervisor</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="cgroups."><p class="quiz-text">What provides resource limits for containers?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Namespaces</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">cgroups</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Registries</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Layers</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Ephemeral layer."><p class="quiz-text">Data written to a container&#39;s writable layer:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Persists forever</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Is lost when the container is removed unless stored in a volume</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Is replicated</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Is encrypted</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Layer cache."><p class="quiz-text">Why copy <code>package*.json</code> and run <code>npm ci</code> before copying source?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Style</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">So the dependency layer stays cached until dependencies change</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">npm requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Security</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Reproducible."><p class="quiz-text"><code>npm ci</code> differs from <code>npm install</code> by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Being slower</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Installing exactly the lockfile versions and failing on mismatch</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Ignoring the lockfile</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Installing globally</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Smaller final image."><p class="quiz-text">A multi-stage build mainly:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Runs stages in parallel only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Keeps build tools and dev deps out of the final image</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Encrypts layers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Starts faster at runtime</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Least privilege."><p class="quiz-text">Why run as a non-root user?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Limits damage if the app is compromised</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Required by Docker</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Saves memory</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Images are readable."><p class="quiz-text"><code>.dockerignore</code> should exclude <code>.env</code> because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It is large</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Anything in the image can be read by those who can pull it</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Docker can&#39;t read it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It slows builds</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Signals not forwarded."><p class="quiz-text"><code>CMD [&quot;npm&quot;,&quot;start&quot;]</code> as PID 1 is a problem because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">npm is slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">npm may not forward <code>SIGTERM</code> to Node, so shutdown isn&#39;t graceful</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It uses root</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It breaks caching</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Init process."><p class="quiz-text"><code>tini</code> provides:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A web server</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Proper signal forwarding and zombie reaping as PID 1</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Node updates</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">TLS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="DNS service name."><p class="quiz-text">Inside Compose, a service reaches Postgres at:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>localhost</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The service name (<code>db</code>)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>host.docker.internal</code> always</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>127.0.0.1</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Startup only."><p class="quiz-text"><code>depends_on: condition: service_healthy</code> guarantees:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The app never needs retries</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The dependency passed its healthcheck at startup, but later restarts still happen</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Zero downtime</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Ordering of shutdown only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="SIGKILL/OOM."><p class="quiz-text">Exit code 137 usually means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Clean exit</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Killed by SIGKILL, often OOM</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">SIGTERM handled</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Syntax error</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Silent OOM kill."><p class="quiz-text">A Node heap limit larger than the container memory limit leads to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A catchable JS error</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The kernel OOM-killing the process</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Faster GC</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Runtime secrets."><p class="quiz-text">Which is safest for secrets?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>ENV</code> in the Dockerfile</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Build args</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Runtime-injected secrets (Secret objects/secret manager), not baked into images</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Committed <code>.env</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Stops traffic only."><p class="quiz-text">Kubernetes liveness vs readiness: readiness failure causes:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A restart</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Removal from Service endpoints without restart</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Deletion of the pod</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Scaling</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Rolling, no loss."><p class="quiz-text"><code>maxUnavailable: 0, maxSurge: 1</code> with a readiness probe gives:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Downtime</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A rolling update without dropping capacity</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Blue/green</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Canary only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Immutable traceability."><p class="quiz-text">Why tag images with the git SHA?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Looks nice</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Immutable, traceable versions; deploy exactly what CI built</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Required by registries</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Faster pulls</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Host takeover."><p class="quiz-text">Mounting <code>/var/run/docker.sock</code> into an app container is dangerous because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It grants root-equivalent control of the host</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It breaks networking</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It disables logs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Dependency-free liveness."><p class="quiz-text">What should a Dockerfile <code>HEALTHCHECK</code> for liveness avoid?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Checking <code>/livez</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Depending on the database (restart storms during DB blips)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Timeouts</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using node</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-c, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="31-18-20-hands-on-exercises">31.18 20 Hands-on Exercises</h2>
+<p><em>(Suggestions; none were run by me.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Write the naive Dockerfile, build it, and note the image size and build time.</li>
+<li>Add <code>.dockerignore</code>; compare context size.</li>
+<li>Rebuild after a one-line source change and observe which layers are cached.</li>
+<li>Run the container as root, then as <code>node</code>; check with <code>docker exec … id</code>.</li>
+<li>Stop a container and read its exit code.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Convert to a multi-stage build; compare sizes (<code>docker image ls</code>).</li>
+<li>Add <code>tini</code> and a <code>SIGTERM</code> handler; verify with <code>docker stop</code> that in-flight requests finish.</li>
+<li>Reproduce the <code>npm start</code> PID 1 problem and measure the stop time.</li>
+<li>Write a Compose file with API, worker, Postgres, Redis; verify service-name DNS.</li>
+<li>Add healthchecks and <code>depends_on: condition: service_healthy</code>; kill the DB and watch the app retry.</li>
+<li>Limit memory to 256 MB, set <code>--max-old-space-size</code>, then trigger a leak and observe exit codes.</li>
+<li>Run Trivy on the image; fix a finding by updating the base image.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Build with BuildKit cache mounts and measure CI speed-up.</li>
+<li>Produce a distroless runtime image and document debugging without a shell (ephemeral debug containers).</li>
+<li>Run with <code>--read-only</code>, <code>--cap-drop=ALL</code>, <code>no-new-privileges</code>; fix what breaks.</li>
+<li>Deploy to a local Kubernetes (kind): Deployment, Service, probes, HPA; perform a rolling update under load with zero errors.</li>
+<li>Implement a <code>preStop</code> + readiness drain and prove no 502s during rollout.</li>
+<li>Sign the image with cosign and enforce verification with an admission policy.</li>
+<li>Compare Compose, ECS Fargate and Cloud Run for ShopLine: cost, ops, cold starts.</li>
+<li>Write a runbook for &quot;container restart loop&quot;: exit codes, logs, OOM, probe failures.</li>
+</ol>
+<hr>
+
+<h2 id="31-19-5-interview-questions">31.19 5 Interview Questions</h2>
+<p><strong>1. What is a container and how does it differ from a VM?</strong>
+<em>Model answer:</em> An isolated process using kernel namespaces and cgroups on a shared host kernel; images are layered and immutable. VMs virtualise hardware and run a full guest OS: stronger isolation, heavier. Containers start fast and are dense but share the kernel, so they need extra hardening.</p>
+<p><strong>2. How do you make Docker builds fast and images small?</strong>
+<em>Model answer:</em> Order instructions by change frequency (manifests → install → source), use <code>.dockerignore</code>, <code>npm ci --omit=dev</code>, multi-stage builds, slim/distroless bases, BuildKit cache mounts and registry caching, clean package caches in the same layer, and avoid copying build artefacts into the final stage.</p>
+<p><strong>3. Why is PID 1 special in a container and how do you shut down gracefully?</strong>
+<em>Model answer:</em> PID 1 has no default signal handlers and must reap zombies; shell-form or npm entrypoints may swallow <code>SIGTERM</code>. Use exec-form <code>node</code> with <code>tini</code>, handle <code>SIGTERM</code> by failing readiness, draining in-flight requests, closing pools, flushing logs, and exiting before the grace period ends.</p>
+<p><strong>4. How do you manage configuration and secrets for containers?</strong>
+<em>Model answer:</em> One immutable image configured by environment; validate config at startup; inject secrets at runtime from a secret manager or orchestrator secrets (preferably as files), never bake them into images or commit them; rotate and avoid logging them.</p>
+<p><strong>5. Explain liveness, readiness and startup probes.</strong>
+<em>Model answer:</em> Liveness decides restarts (cheap, dependency-free), readiness decides whether to route traffic (checks dependencies with timeouts), startup gives slow-booting apps time before the other probes begin. Misusing liveness for dependency checks creates restart storms during outages.</p>
+<hr>
+
+<h2 id="31-20-3-real-projects">31.20 3 Real Projects</h2>
+<p><strong>Project 1: Containerise ShopLine (intermediate, ~8 hours).</strong>
+Write the Dockerfile and <code>.dockerignore</code>, Compose stack (API, worker, Postgres, Redis, nginx), migration job, health checks, and graceful shutdown; prove a rolling restart under load drops no requests; document image size and build-time optimisations.</p>
+<p><strong>Project 2: Hardened Image Pipeline (intermediate–advanced, ~10 hours).</strong>
+CI job that builds with BuildKit caching, scans with Trivy (fail on high/critical), generates an SBOM, signs with cosign, pushes with SHA tags, and a deploy check that only signed images run.</p>
+<p><strong>Project 3: Kubernetes Deployment (advanced, ~14 hours).</strong>
+Deploy ShopLine to a local/managed cluster with Helm or Kustomize: Deployments for API/worker, Ingress with TLS, ConfigMap/Secret, probes, HPA on CPU and queue age, PodDisruptionBudget, NetworkPolicy; run a game day (kill pods, node drain, DB outage) and record behaviour.</p>
+<hr>
+
+<h2 id="31-21-further-reading">31.21 Further Reading</h2>
+<ul>
+<li>Docker docs: <em>Dockerfile best practices</em>, <em>Multi-stage builds</em>, <em>BuildKit</em>, <em>Compose</em>; Docker&#39;s <em>Node.js</em> containerisation guide.</li>
+<li>Node.js Docker Team: <em>Docker and Node.js Best Practices</em> (github.com/nodejs/docker-node).</li>
+<li>Kubernetes docs: <em>Deployments</em>, <em>Probes</em>, <em>Pod lifecycle (termination)</em>, <em>HPA</em>; <em>Kubernetes Patterns</em> (Ibryam &amp; Huß).</li>
+<li>Liz Rice, <em>Container Security</em>; CIS Docker Benchmark; Trivy and Sigstore/cosign docs.</li>
+<li><em>The Twelve-Factor App</em>; Julia Evans&#39; zines on containers and Linux.</li>
+<li><em>Docker Deep Dive</em> (Nigel Poulton); <em>Kubernetes Up &amp; Running</em>.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-32-ci-cd-and-cloud-basics">Up next → Chapter 32: CI/CD and Cloud Basics</h3>
+<p>An image is only useful once it gets to production safely. Next: continuous integration and delivery pipelines (GitHub Actions), environments and promotion, deployment strategies (rolling, blue/green, canary), database migrations in deploys, feature flags and rollbacks, infrastructure as code, and a practical map of the cloud services you&#39;ll meet, written in fast mode.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Docker for Node.js: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Why use a multi-stage Dockerfile?</h3></summary><p>Build tools and dev dependencies stay in earlier stages, so the final image is smaller, faster to pull and has fewer vulnerabilities.</p></details>
+<details class="learn-faq-item"><summary><h3>Why should containers not run as root?</h3></summary><p>If the app is compromised the attacker would be root inside the container, which makes escaping easier. Use USER node and drop unneeded capabilities.</p></details>
+<details class="learn-faq-item"><summary><h3>Why does docker stop sometimes take 10 seconds?</h3></summary><p>If Node is not PID 1 or the command runs through npm or a shell, SIGTERM may not reach it, so Docker waits and then sends SIGKILL. Use exec-form CMD, tini and a SIGTERM handler.</p></details>
+<details class="learn-faq-item"><summary><h3>Are the Dockerfiles in this chapter tested?</h3></summary><p>No. They were written in fast mode and not built or run, so build and test them before relying on them.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span>&larr; Previous &middot; Chapter 30</span><strong>Distributed Systems: CAP, Raft &amp; Sagas</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span>Next &middot; Chapter 32 &rarr;</span><strong>CI/CD &amp; Cloud: GitHub Actions Deployments</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#31-0-why-this-chapter-matters">31.0 Why This Chapter Matters</a></li><li><a href="#31-1-what-a-container-is-and-isn-t">31.1 What a Container Is (and Isn't)</a></li><li><a href="#31-2-a-first-dockerfile-and-why-it-s-bad">31.2 A First Dockerfile (and Why It's Bad)</a></li><li><a href="#31-3-a-production-grade-dockerfile-for-shopline-not-built-or-run">31.3 A Production-Grade Dockerfile for ShopLine (not built or run)</a></li><li><a href="#31-4-configuration-secrets-and-state">31.4 Configuration, Secrets and State</a></li><li><a href="#31-5-signals-pid-1-and-graceful-shutdown">31.5 Signals, PID 1 and Graceful Shutdown</a></li><li><a href="#31-6-docker-compose-shopline-locally-not-run">31.6 Docker Compose: ShopLine Locally (not run)</a></li><li><a href="#31-7-resource-limits-and-node-js-in-containers">31.7 Resource Limits and Node.js in Containers</a></li><li><a href="#31-8-container-security">31.8 Container Security</a></li><li><a href="#31-9-kubernetes-the-orchestrator-in-one-section-not-run">31.9 Kubernetes: The Orchestrator, in One Section (not run)</a></li><li><a href="#31-10-containers-in-the-development-and-ci-workflow">31.10 Containers in the Development and CI Workflow</a></li><li><a href="#31-11-edge-cases-and-gotchas-checklist">31.11 Edge Cases and Gotchas Checklist</a></li><li><a href="#31-12-chapter-summary">31.12 Chapter Summary</a></li><li><a href="#31-13-revision-notes">31.13 Revision Notes</a></li><li><a href="#31-14-mind-map-ascii">31.14 Mind Map (ASCII)</a></li><li><a href="#31-15-cheat-sheet">31.15 Cheat Sheet</a></li><li><a href="#31-16-key-takeaways">31.16 Key Takeaways</a></li><li><a href="#31-17-20-multiple-choice-questions">31.17 20 Multiple Choice Questions</a></li><li><a href="#31-18-20-hands-on-exercises">31.18 20 Hands-on Exercises</a></li><li><a href="#31-19-5-interview-questions">31.19 5 Interview Questions</a></li><li><a href="#31-20-3-real-projects">31.20 3 Real Projects</a></li><li><a href="#31-21-further-reading">31.21 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "docker-for-nodejs-dockerfile-compose-kubernetes"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

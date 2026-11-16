@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Logging, Monitoring &amp; Tracing in Node.js | Backend Master</title>
+    <meta name="description" content="Make a Node.js backend observable: structured pino logs with request ids, Prometheus RED metrics, OpenTelemetry traces, health checks, SLOs and profiling.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="nodejs logging pino, prometheus metrics nodejs, opentelemetry tracing, observability, liveness readiness probe, slo error budget, nodejs memory leak debugging, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="nodejs logging pino">
+    <meta property="article:tag" content="prometheus metrics nodejs">
+    <meta property="article:tag" content="opentelemetry tracing">
+    <meta property="article:tag" content="observability">
+    <meta property="article:tag" content="liveness readiness probe">
+    <meta property="article:tag" content="slo error budget">
+    <meta property="article:tag" content="nodejs memory leak debugging">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Logging, Monitoring &amp; Tracing in Node.js">
+    <meta property="og:description" content="Make a Node.js backend observable: structured pino logs with request ids, Prometheus RED metrics, OpenTelemetry traces, health checks, SLOs and profiling.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/logging-monitoring-tracing-nodejs-observability.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Logging, Monitoring, Tracing and Debugging a Live Node.js Service: Backend Master chapter 25">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Logging, Monitoring &amp; Tracing in Node.js">
+    <meta name="twitter:description" content="Make a Node.js backend observable: structured pino logs with request ids, Prometheus RED metrics, OpenTelemetry traces, health checks, SLOs and profiling.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/logging-monitoring-tracing-nodejs-observability.png">
+    <meta name="twitter:image:alt" content="Logging, Monitoring, Tracing and Debugging a Live Node.js Service: Backend Master chapter 25">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability",
+          "name": "Logging, Monitoring & Tracing in Node.js | Backend Master",
+          "description": "Make a Node.js backend observable: structured pino logs with request ids, Prometheus RED metrics, OpenTelemetry traces, health checks, SLOs and profiling.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/logging-monitoring-tracing-nodejs-observability.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Logging, Monitoring, Tracing and Debugging a Live Node.js Service"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#webpage"
+          },
+          "headline": "Logging, Monitoring, Tracing and Debugging a Live Node.js Service",
+          "alternativeHeadline": "Logging, Monitoring and Debugging — Seeing Inside a Running System",
+          "description": "Make a Node.js backend observable: structured pino logs with request ids, Prometheus RED metrics, OpenTelemetry traces, health checks, SLOs and profiling.",
+          "abstract": "You cannot attach a debugger to production, so the system must explain itself. This chapter builds structured logs with correlation ids and redaction, RED metrics with route labels, a trace across two services, liveness and readiness checks, SLO maths, and diagnoses event-loop blocking, a memory leak and a CPU hotspot.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/logging-monitoring-tracing-nodejs-observability.png",
+          "url": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 7063,
+          "timeRequired": "PT32M",
+          "articleSection": "Backend Development",
+          "keywords": "nodejs logging pino, prometheus metrics nodejs, opentelemetry tracing, observability, liveness readiness probe, slo error budget, nodejs memory leak debugging",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Structured logging with correlation ids and redaction",
+            "Metrics: RED, USE and label cardinality",
+            "Distributed tracing and trace context",
+            "Liveness and readiness probes and graceful shutdown",
+            "Profiling event-loop lag, memory and CPU"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs logging pino"
+          },
+          "isAccessibleForFree": true,
+          "position": 25,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property#article",
+            "name": "Backend Testing Strategy: Unit, Integration, Property-Based and Mutation Tests",
+            "url": "https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Logging, Monitoring & Tracing in Node.js",
+              "item": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is a correlation id?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A unique id attached to every log line and response for one request, so you can find the whole story with a single query. Node's AsyncLocalStorage carries it without passing it through every function."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is label cardinality in metrics?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each distinct combination of label values is a separate time series. Labelling by raw URL or user id explodes memory; our test produced 12,000 series lines instead of 6 by using the route template."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between liveness and readiness?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Liveness decides whether to restart a process and must not depend on external services. Readiness decides whether to send traffic and checks dependencies with timeouts."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I find a memory leak in Node.js?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Watch heap growth after garbage collection, take two heap snapshots under load and compare them to find what retains memory, commonly an unbounded cache."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#quiz",
+          "name": "Logging, Monitoring & Tracing in Node.js: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs logging pino"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why prefer structured (JSON) logs?",
+              "text": "Why prefer structured (JSON) logs?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "They can be filtered and aggregated by field"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They're prettier"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They're smaller than text"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They avoid levels"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The main purpose of a request/correlation id is to:",
+              "text": "The main purpose of a request/correlation id is to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tie together every log line and error for one request"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Authenticate users"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Speed up routing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cache responses"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "AsyncLocalStorage lets you:",
+              "text": "AsyncLocalStorage lets you:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Carry request context through async calls without passing it as an argument"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Store data in a database"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Share memory between processes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Encrypt logs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "pino's redact failed to hide password=hunter2 in our error log because:",
+              "text": "pino's redact failed to hide password=hunter2 in our error log because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Redaction works on field paths, not on secrets embedded in message text"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's disabled by default"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The password was too short"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Errors can't be redacted"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is the correct way to log an exception?",
+              "text": "Which is the correct way to log an exception?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "logger.error({ err }, 'unhandled error')"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "logger.error('error: ' + err.message)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "console.log(err) twice"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Don't log it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why return the request id to the client in an error body?",
+              "text": "Why return the request id to the client in an error body?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "So a customer can quote it and you can find the full server-side log"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "For caching"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To hide the error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HTTP requires it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Buffered asynchronous pino was roughly how much faster than console.log in our run?",
+              "text": "Buffered asynchronous pino was roughly how much faster than console.log in our run?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "~4.5×"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Same"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Slower"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The RED method stands for:",
+              "text": "The RED method stands for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Rate, Errors, Duration"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Read, Execute, Delete"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Requests, Events, Data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Response, Error, Delay"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why use req.route.path (the template) as a metric label?",
+              "text": "Why use req.route.path (the template) as a metric label?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Raw URLs have unbounded values and explode the number of series"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's shorter"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Prometheus requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's faster to type"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Our cardinality test (2,000 requests) produced how many series lines for the raw-URL+user histogram?",
+              "text": "Our cardinality test (2,000 requests) produced how many series lines for the raw-URL+user histogram?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "12,000"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "6"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "120"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "2,000,000"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A histogram bucket with le=\"0.25\" and count 12 means:",
+              "text": "A histogram bucket with le=\"0.25\" and count 12 means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "12 requests took ≤ 250 ms (cumulative)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "12 requests took exactly 250 ms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "12 errors"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "12 buckets"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why look at p99 instead of the average?",
+              "text": "Why look at p99 instead of the average?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A few very slow requests can hide behind a good average"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Averages are expensive"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "p99 is always lower"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Prometheus can't average"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In tracing, the traceparent header carries:",
+              "text": "In tracing, the traceparent header carries:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "trace id, parent span id and sampling flags"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The user's password"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The SQL statement"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The response time"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our trace, which child span was the slowest?",
+              "text": "In our trace, which child span was the slowest?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "INSERT INTO orders (92 ms)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "check stock (86 ms)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SELECT stock (30 ms)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "GET /stock/:id"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Liveness probes should:",
+              "text": "Liveness probes should:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Be cheap and not depend on external services"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Check the database"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Return 500 when busy"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Run SQL"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "If the database is down, the correct behaviour is:",
+              "text": "If the database is down, the correct behaviour is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "/readyz 503 (stop traffic) while /livez stays 200"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "/livez 503 and restart"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Both 200"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Crash the app"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A 99.9% SLO over 30 days allows about:",
+              "text": "A 99.9% SLO over 30 days allows about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "43.2 minutes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "4.3 minutes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "7.2 hours"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0 minutes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Good alerts are based on:",
+              "text": "Good alerts are based on:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "User-visible symptoms and error-budget burn rate"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "CPU > 80%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Log volume"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Every error"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The synchronous hash route produced an event-loop delay of about:",
+              "text": "The synchronous hash route produced an event-loop delay of about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "840 ms"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "33 ms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "3 ms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0 ms"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best first step for a suspected memory leak is:",
+              "text": "The best first step for a suspected memory leak is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Observe heap growth over time and take two heap snapshots to compare"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Restart nightly"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Increase the heap limit"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Add more logging"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Logging, Monitoring &amp; Tracing in Node.js</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:69.4%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item active" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" aria-current="page"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 25 of 36 &middot; Intermediate</p>
+                        <h1>Logging, Monitoring, Tracing and Debugging a Live Node.js Service</h1>
+                        <p class="learn-book-title">Logging, Monitoring and Debugging — Seeing Inside a Running System</p>
+                        <ul class="learn-meta text-caption">
+                            <li>32 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/logging-monitoring-tracing-nodejs-observability.webp"><img src="../../assets/images/learn/backend-master/logging-monitoring-tracing-nodejs-observability.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Logging, Monitoring, Tracing and Debugging a Live Node.js Service: Backend Master chapter 25 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>You cannot attach a debugger to production, so the system must explain itself. This chapter builds structured logs with correlation ids and redaction, RED metrics with route labels, a trace across two services, liveness and readiness checks, SLO maths, and diagnoses event-loop blocking, a memory leak and a CPU hotspot.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Structured logging with correlation ids and redaction</li><li>Metrics: RED, USE and label cardinality</li><li>Distributed tracing and trace context</li><li>Liveness and readiness probes and graceful shutdown</li><li>Profiling event-loop lag, memory and CPU</li></ul>
+                        </section>
+<hr>
+
+<h2 id="25-0-why-this-chapter-matters">25.0 Why This Chapter Matters</h2>
+<p>Tests (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>) tell you the code was right <em>before</em> it shipped. Production is where the real questions arrive, usually at 3 a.m., from a customer, a manager, or a pager:</p>
+<ul>
+<li><em>&quot;Checkout is slow for some people. Why?&quot;</em></li>
+<li><em>&quot;Did the deploy break something?&quot;</em></li>
+<li><em>&quot;Why did this one order fail?&quot;</em></li>
+<li><em>&quot;Memory keeps climbing and then the server restarts.&quot;</em></li>
+<li><em>&quot;Is it the database, the cache, or us?&quot;</em></li>
+</ul>
+<p>You cannot attach a debugger to a server handling 500 requests per second. <strong>Observability</strong> is the discipline of building a system so you can answer questions about its behaviour <em>from the outside</em>, using the data it emits. It has three classic pillars, and this chapter implements and measures each on a ShopLine service:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Pillar</th>
+<th>Question it answers</th>
+<th>Shape of data</th>
+<th>Tool here</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Logs</strong></td>
+<td><em>What happened</em> in this request?</td>
+<td>Discrete events with detail</td>
+<td><code>pino</code> JSON logs</td>
+</tr>
+<tr>
+<td><strong>Metrics</strong></td>
+<td><em>How is the system behaving</em> overall, and is it getting worse?</td>
+<td>Numbers over time</td>
+<td><code>prom-client</code> (Prometheus format)</td>
+</tr>
+<tr>
+<td><strong>Traces</strong></td>
+<td><em>Where did the time go</em> across services?</td>
+<td>A tree of timed spans</td>
+<td>OpenTelemetry</td>
+</tr>
+</tbody></table></div>
+<p>Then we cover <strong>health checks</strong>, <strong>alerting and SLOs</strong>, and <strong>debugging a live Node.js process</strong>: event-loop lag, memory leaks with heap snapshots, and CPU profiling, each reproduced and measured.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>Everything shown was executed on Node 22.17: <strong>pino 10.4.0, prom-client 15.1.3, OpenTelemetry API 1.9.1 / SDK-trace-base 2.12.1</strong>, Express 5.3.0, with a real PostgreSQL and Redis for the readiness checks. Code is in <a href="/learn/backend-master/resources/ch25/README.txt">resources/ch25/</a>. <strong>Not run:</strong> the full OpenTelemetry Node SDK with auto-instrumentation and an OTLP collector; Prometheus, Grafana, Loki, Jaeger, Sentry, Datadog or any hosted backend; alert delivery; production-scale log pipelines. Where I describe those, it&#39;s from documentation and marked as such. Timings come from a Windows laptop with Docker, so <strong>compare ratios, not absolute numbers</strong>.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The term <strong>observability</strong> comes from control theory (Rudolf Kálmán, 1960): a system is observable if you can infer its internal state from its outputs. Google&#39;s SRE book popularised the practical version: <em>&quot;if you can&#39;t measure it, you can&#39;t improve it,&quot;</em> and the corollary: <em>&quot;if you can&#39;t explain why it&#39;s slow from your telemetry, you don&#39;t have observability, you have dashboards.&quot;</em></p>
+</aside>
+<hr>
+
+<h2 id="25-1-logging-what-to-log-and-how">25.1 Logging: What to Log, and How</h2>
+<h3 id="25-1-1-console-log-is-not-logging">25.1.1 <code>console.log</code> is not logging</h3>
+<p><code>console.log(&#39;order created&#39;, order)</code> is fine for learning and awful for production:</p>
+<ul>
+<li><strong>Unstructured text</strong> can&#39;t be filtered or aggregated (&quot;show all failed payments over ₹10,000 in the last hour&quot;).</li>
+<li><strong>No levels</strong>, so you can&#39;t turn verbosity down in production or up while debugging.</li>
+<li><strong>No context</strong>: which request? which user? which server?</li>
+<li><strong>Synchronous</strong> writes (when stdout is a pipe or file) can slow the event loop.</li>
+<li><strong>Secrets leak</strong> into it.</li>
+</ul>
+<h3 id="25-1-2-structured-logging-with-pino">25.1.2 Structured logging with pino</h3>
+<p>Emit <strong>one JSON object per line</strong>, with consistent field names. A log aggregator (Loki, Elasticsearch/OpenSearch, CloudWatch, Datadog) can then index and query every field. Our tested ShopLine app logs each request like this (real output, one line):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JSON</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;level&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">30</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;time&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;2026-11-16T10:16:18.433Z&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;service&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;shopline-api&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;env&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;test&quot;</span><span class="hljs-punctuation">,</span>
+ <span class="hljs-attr">&quot;requestId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;req-abc-123&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;traceId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;adccaa866e6c2068b7f50ffb554ae070&quot;</span><span class="hljs-punctuation">,</span>
+ <span class="hljs-attr">&quot;req&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;method&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;GET&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;/products/42&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;headers&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">{</span><span class="hljs-attr">&quot;authorization&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;[REDACTED]&quot;</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+ <span class="hljs-attr">&quot;route&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;/products/:id&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;status&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">200</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;duration_ms&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">6.2</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;msg&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;request completed&quot;</span><span class="hljs-punctuation">}</span></code></pre></div>
+<p>Notice what&#39;s there: <strong>who/where</strong> (<code>service</code>, <code>env</code>), <strong>correlation</strong> (<code>requestId</code>, <code>traceId</code>), <strong>what</strong> (<code>method</code>, <code>route</code>, <code>status</code>), <strong>how long</strong> (<code>duration_ms</code>), and a <strong>redacted</strong> <code>authorization</code> header.</p>
+<p>The setup that produces it:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> logger = <span class="hljs-title function_">pino</span>({
+  <span class="hljs-attr">level</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">LOG_LEVEL</span> ?? <span class="hljs-string">&#x27;info&#x27;</span>,
+  <span class="hljs-attr">base</span>: { <span class="hljs-attr">service</span>: <span class="hljs-string">&#x27;shopline-api&#x27;</span>, <span class="hljs-attr">env</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span> },
+  <span class="hljs-attr">timestamp</span>: pino.<span class="hljs-property">stdTimeFunctions</span>.<span class="hljs-property">isoTime</span>,
+  <span class="hljs-attr">redact</span>: { <span class="hljs-attr">paths</span>: [<span class="hljs-string">&#x27;req.headers.authorization&#x27;</span>, <span class="hljs-string">&#x27;req.headers.cookie&#x27;</span>, <span class="hljs-string">&#x27;*.password&#x27;</span>, <span class="hljs-string">&#x27;password&#x27;</span>, <span class="hljs-string">&#x27;*.token&#x27;</span>, <span class="hljs-string">&#x27;card.number&#x27;</span>], <span class="hljs-attr">censor</span>: <span class="hljs-string">&#x27;[REDACTED]&#x27;</span> },
+  <span class="hljs-attr">mixin</span>: <span class="hljs-function">() =&gt;</span> { <span class="hljs-keyword">const</span> c = als.<span class="hljs-title function_">getStore</span>(); <span class="hljs-keyword">return</span> c ? { <span class="hljs-attr">requestId</span>: c.<span class="hljs-property">requestId</span>, <span class="hljs-attr">traceId</span>: c.<span class="hljs-property">traceId</span> } : {}; },   <span class="hljs-comment">// add request context to EVERY line</span>
+  <span class="hljs-attr">serializers</span>: { <span class="hljs-attr">err</span>: pino.<span class="hljs-property">stdSerializers</span>.<span class="hljs-property">err</span> },
+});</code></pre></div>
+<h3 id="25-1-3-log-levels">25.1.3 Log levels</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Level</th>
+<th>Use for</th>
+<th>Production default</th>
+</tr>
+</thead><tbody><tr>
+<td><code>fatal</code></td>
+<td>The process cannot continue</td>
+<td>on</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>An operation failed and needs attention (a 5xx, an unhandled exception)</td>
+<td>on</td>
+</tr>
+<tr>
+<td><code>warn</code></td>
+<td>Unexpected but handled (a 4xx, a retry, a slow query, a deprecated call)</td>
+<td>on</td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td>Normal business events (request completed, order created)</td>
+<td>on</td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td>Detail for developers</td>
+<td><strong>off</strong> (enable per-service when diagnosing)</td>
+</tr>
+<tr>
+<td><code>trace</code></td>
+<td>Very verbose internals</td>
+<td>off</td>
+</tr>
+</tbody></table></div>
+<p>Our access-log middleware picks the level from the status code: <code>5xx → error</code>, <code>4xx → warn</code>, else <code>info</code>, so a dashboard of <code>level &gt;= 50</code> is your &quot;something is broken&quot; feed without alerting on every user typo (<code>400</code>).</p>
+<h3 id="25-1-4-correlation-ids-one-request-one-thread-through-every-line">25.1.4 Correlation IDs: one request, one thread through every line</h3>
+<p>The most valuable field in your logs is a <strong>request ID</strong>. Every line produced while handling a request carries the same one, so you can pull the whole story with one query. Passing it through every function argument is miserable, so Node&#39;s <strong><code>AsyncLocalStorage</code></strong> (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>) carries it implicitly:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">use</span>(<span class="hljs-function">(<span class="hljs-params">req, res, next</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> requestId = req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;x-request-id&#x27;</span>]?.<span class="hljs-title function_">toString</span>().<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, <span class="hljs-number">64</span>) || crypto.<span class="hljs-title function_">randomUUID</span>();   <span class="hljs-comment">// honour the caller&#x27;s id, else mint one</span>
+  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;x-request-id&#x27;</span>, requestId);                                                           <span class="hljs-comment">// give it back to the client</span>
+  als.<span class="hljs-title function_">run</span>({ requestId, traceId }, next);                                                              <span class="hljs-comment">// everything downstream sees it</span>
+});</code></pre></div>
+<p>The <code>mixin</code> above then stamps <code>requestId</code> onto every <code>logger.info(...)</code> call anywhere in the request&#39;s call tree, without any function taking a <code>requestId</code> parameter. When a customer reports &quot;my order failed,&quot; support asks for the <code>x-request-id</code> header (or shows it in the error page), and you search for exactly that.</p>
+<p><strong>Always return the id to the client in error responses.</strong> Ours:</p>
+<pre class="is-plain"><code>client sees: 500 {&quot;title&quot;:&quot;Internal error&quot;,&quot;requestId&quot;:&quot;req-boom-1&quot;}</code></pre>
+<p>The customer sends &quot;req-boom-1&quot; and you find the full stack trace in one query, without ever having shown the stack to the customer.</p>
+<h3 id="25-1-5-what-to-log-and-what-never-to-log">25.1.5 What to log, and what <em>never</em> to log</h3>
+<p><strong>Log:</strong> request summaries (method, route <em>template</em>, status, duration), business events (order created, payment failed with reason code), security events (login failure, permission denied, token reuse: <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a>), external-call outcomes (target, latency, status), retries and circuit-breaker changes, startup configuration (non-secret), and unhandled errors <strong>with the full error object and stack</strong>.</p>
+<p><strong>Never log:</strong> passwords, tokens, API keys, session ids, full card numbers/CVV, government ids, health data, or raw request bodies by default. Treat logs as a <strong>data store with a long life and a wide audience</strong>: they&#39;re copied to vendors, searched by many engineers, and retained for months.</p>
+<h3 id="25-1-6-redaction-test-it-and-know-its-limits">25.1.6 Redaction: test it, and know its limits</h3>
+<p>pino&#39;s <code>redact</code> censors fields <strong>by path</strong> before writing. We tested it:</p>
+<pre class="is-plain"><code>{&quot;... &quot;body&quot;:{&quot;email&quot;:&quot;a@b.com&quot;,&quot;password&quot;:&quot;[REDACTED]&quot;},&quot;msg&quot;:&quot;login attempt&quot;}
+&quot;hunter2&quot; or &quot;SECRET-TOKEN&quot; anywhere in those log lines? false</code></pre>
+<p>But the test of the <em>error</em> path exposed a limit, and I think this is the most important logging-security lesson in the chapter. A handler threw:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;database exploded: password=hunter2 at 10.0.0.5&#x27;</span>);</code></pre></div>
+<p>and the error log line contained exactly that text:</p>
+<pre class="is-plain"><code>log has  : {&quot;level&quot;:50,&quot;requestId&quot;:&quot;req-boom-1&quot;,&quot;errType&quot;:&quot;Error&quot;,&quot;errMessage&quot;:&quot;database exploded: password=hunter2 at 10.0.0.5&quot;,&quot;stack0&quot;:&quot;at file:///…&quot;}</code></pre>
+<p><strong>Path-based redaction cannot see secrets embedded in free-text messages.</strong> <code>redact</code> knew <code>password</code> was a <em>field name</em>; it had no idea a <em>string</em> contained one. Real-world sources of this: database drivers that include connection strings or SQL with literal values in error messages, HTTP client errors that include the URL (with <code>?api_key=…</code>), and <code>JSON.stringify(req.body)</code> inside a message. Defences, in order: <strong>(1)</strong> never put sensitive values in error messages or interpolated log text; <strong>(2)</strong> log structured fields, not concatenated strings, so redaction paths apply; <strong>(3)</strong> scrub known patterns (URLs with credentials, <code>Bearer …</code>, long hex/base64 tokens, card-number regexes) in a custom serializer or at the log pipeline; <strong>(4)</strong> apply <strong>least-access</strong> to the log system; <strong>(5)</strong> have a test with canary secrets that fails the build if they appear in output.</p>
+<h3 id="25-1-7-errors-log-the-object-not-the-message">25.1.7 Errors: log the object, not the message</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">logger.<span class="hljs-title function_">error</span>({ err }, <span class="hljs-string">&#x27;unhandled error&#x27;</span>);       <span class="hljs-comment">// pino&#x27;s err serializer records type, message AND stack</span>
+<span class="hljs-comment">// not:  logger.error(&#x27;error: &#x27; + err.message)  // loses the stack and the type</span></code></pre></div>
+<p>Log an error <strong>once</strong>, at the boundary that handles it (the error middleware), not at every layer it passes through (that produces five copies of one failure and makes error counts meaningless).</p>
+<h3 id="25-1-8-logging-performance">25.1.8 Logging performance</h3>
+<p>Logging sits in the hot path. We wrote 200,000 identical lines to a file three ways:</p>
+<pre class="is-plain"><code>console.log (stdout redirected to a file)   200000 lines: 15344 ms  (13,034 lines/s)
+pino, synchronous destination               200000 lines: 11519 ms  (17,363 lines/s)
+pino, asynchronous destination (buffered)   200000 lines:  3425 ms  (58,401 lines/s)</code></pre>
+<p>Buffered asynchronous pino was about <strong>4.5× faster than <code>console.log</code></strong> and 3.4× faster than synchronous pino (a slow disk and Windows exaggerate the absolute times; the ratio is the lesson). The trade-off with asynchronous logging is that <strong>a crash can lose the last buffered lines</strong>; call <code>logger.flush()</code> on shutdown and in <code>uncaughtException</code>/<code>SIGTERM</code> handlers, and for the most critical events consider synchronous writes. (My event-loop-delay readings during the synchronous runs showed 0, because the monitor could not even <em>sample</em> while the loop was blocked: the synchronous loop hid its own blocking.) In containers the usual rule is <strong>write JSON to stdout and let the platform collect it</strong> (<a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>); don&#39;t write log files or rotate them inside the container.</p>
+<h3 id="25-1-9-sampling-and-volume">25.1.9 Sampling and volume</h3>
+<p>At high traffic, logging every successful request is expensive in CPU and money. Typical policy: <strong>log every error and warning; sample successes</strong> (1%); keep <code>debug</code> off; set <strong>retention</strong> by value (7–30 days hot, longer archived). Don&#39;t alert on log <em>volume</em>; alert on <strong>metrics</strong> (§25.2).</p>
+<hr>
+
+<h2 id="25-2-metrics-numbers-over-time">25.2 Metrics: Numbers Over Time</h2>
+<p>Logs describe single events. <strong>Metrics</strong> aggregate behaviour: counters, gauges, and histograms sampled over time and cheap to store, so you can see <em>trends</em>, set <em>alerts</em>, and compare <em>before/after a deploy</em>.</p>
+<h3 id="25-2-1-the-metric-types">25.2.1 The metric types</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Type</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Counter</strong></td>
+<td>Only goes up (resets on restart)</td>
+<td><code>shopline_orders_created_total</code>; query as a rate</td>
+</tr>
+<tr>
+<td><strong>Gauge</strong></td>
+<td>Goes up and down</td>
+<td><code>http_requests_in_flight</code>, queue depth, heap used</td>
+</tr>
+<tr>
+<td><strong>Histogram</strong></td>
+<td>Distribution into buckets (latency!)</td>
+<td><code>http_request_duration_seconds</code>; compute p50/p95/p99</td>
+</tr>
+<tr>
+<td><strong>Summary</strong></td>
+<td>Client-side quantiles (not aggregatable across servers)</td>
+<td>rarely preferred over histograms</td>
+</tr>
+</tbody></table></div>
+<h3 id="25-2-2-what-to-measure-the-red-and-use-methods">25.2.2 What to measure: the RED and USE methods</h3>
+<ul>
+<li><strong>RED</strong> (for <em>services</em>): <strong>R</strong>ate (requests/second), <strong>E</strong>rrors (failed requests/second), <strong>D</strong>uration (latency distribution). The golden question for every endpoint.</li>
+<li><strong>USE</strong> (for <em>resources</em>: CPU, memory, disk, DB connections, queue): <strong>U</strong>tilisation, <strong>S</strong>aturation (queueing/waiting), <strong>E</strong>rrors.</li>
+<li>Google&#39;s <strong>four golden signals</strong>: latency, traffic, errors, saturation. RED + saturation.</li>
+</ul>
+<p>Our tested instrumentation records the three RED signals for every route with one histogram, plus an in-flight gauge and a <strong>business metric</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> httpDuration = <span class="hljs-keyword">new</span> client.<span class="hljs-title class_">Histogram</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;http_request_duration_seconds&#x27;</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">&#x27;HTTP latency&#x27;</span>,
+  <span class="hljs-attr">labelNames</span>: [<span class="hljs-string">&#x27;method&#x27;</span>, <span class="hljs-string">&#x27;route&#x27;</span>, <span class="hljs-string">&#x27;status&#x27;</span>], <span class="hljs-attr">buckets</span>: [<span class="hljs-number">0.005</span>, <span class="hljs-number">0.01</span>, <span class="hljs-number">0.025</span>, <span class="hljs-number">0.05</span>, <span class="hljs-number">0.1</span>, <span class="hljs-number">0.25</span>, <span class="hljs-number">0.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2.5</span>] });
+<span class="hljs-keyword">const</span> orders = <span class="hljs-keyword">new</span> client.<span class="hljs-title class_">Counter</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;shopline_orders_created_total&#x27;</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">&#x27;business metric: orders&#x27;</span>, <span class="hljs-attr">labelNames</span>: [<span class="hljs-string">&#x27;payment_method&#x27;</span>] });</code></pre></div>
+<p>After 30 product requests, 12 slow ones, a few orders, a crash and a 404, the <code>/metrics</code> endpoint (Prometheus text format) showed:</p>
+<pre class="is-plain"><code>http_request_duration_seconds_count{method=&quot;GET&quot;,route=&quot;/products/:id&quot;,status=&quot;200&quot;} 32
+http_request_duration_seconds_count{method=&quot;POST&quot;,route=&quot;/login&quot;,status=&quot;200&quot;} 1
+http_request_duration_seconds_count{method=&quot;GET&quot;,route=&quot;/boom&quot;,status=&quot;500&quot;} 2
+http_request_duration_seconds_count{method=&quot;GET&quot;,route=&quot;/slow&quot;,status=&quot;200&quot;} 12
+http_request_duration_seconds_count{method=&quot;POST&quot;,route=&quot;/orders&quot;,status=&quot;201&quot;} 2
+http_request_duration_seconds_count{method=&quot;GET&quot;,route=&quot;unmatched&quot;,status=&quot;404&quot;} 1
+
+shopline_orders_created_total{payment_method=&quot;upi&quot;} 1
+shopline_orders_created_total{payment_method=&quot;card&quot;} 1</code></pre>
+<p>One metric yields <strong>rate</strong> (<code>count</code> over time), <strong>errors</strong> (<code>status=~&quot;5..&quot;</code>), and <strong>duration</strong>. The default <code>collectDefaultMetrics()</code> also exports <code>process_cpu_seconds_total</code>, <code>process_resident_memory_bytes</code>, <code>nodejs_heap_size_used_bytes</code>, and <strong><code>nodejs_eventloop_lag_seconds</code></strong> (all present in our run): your first-line saturation signals for Node.</p>
+<h3 id="25-2-3-reading-a-histogram">25.2.3 Reading a histogram</h3>
+<p>Buckets are <strong>cumulative</strong> (&quot;≤ this value&quot;). For <code>/slow</code> (which sleeps 40–240 ms), 12 requests:</p>
+<pre class="is-plain"><code>http_request_duration_seconds_bucket{le=&quot;0.05&quot;, route=&quot;/slow&quot;,…} 0      ← none finished within 50 ms
+http_request_duration_seconds_bucket{le=&quot;0.1&quot;,  route=&quot;/slow&quot;,…} 3      ← 3 within 100 ms
+http_request_duration_seconds_bucket{le=&quot;0.25&quot;, route=&quot;/slow&quot;,…} 12     ← all 12 within 250 ms
+http_request_duration_seconds_bucket{le=&quot;+Inf&quot;, route=&quot;/slow&quot;,…} 12</code></pre>
+<p>So the <strong>median lies between 100 and 250 ms</strong>, and Prometheus estimates percentiles by interpolating within buckets (<code>histogram_quantile(0.99, rate(..._bucket[5m]))</code>). <strong>Choose bucket boundaries around your latency targets</strong>: if your SLO is &quot;95% under 300 ms&quot;, you need a bucket edge at 0.3. <strong>Averages lie</strong>: a service where 99% of requests take 20 ms and 1% take 5 s has a 70 ms average but ruins 1% of your users&#39; day, so always look at <strong>p95/p99</strong>.</p>
+<h3 id="25-2-4-label-discipline-the-cardinality-explosion">25.2.4 Label discipline: the cardinality explosion</h3>
+<p>Every distinct combination of label values creates a <strong>separate time series</strong> stored in memory (in your app <em>and</em> in Prometheus). Two rules:</p>
+<ol>
+<li><strong>Use the route template (<code>/products/:id</code>), never the raw URL</strong> (<code>req.route.path</code>, as we did). The raw URL has unbounded values.</li>
+<li><strong>Never use unbounded values as labels</strong>: user ids, order ids, emails, IPs, trace ids, error messages.</li>
+</ol>
+<p>We demonstrated the damage with 2,000 requests:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">bad.<span class="hljs-title function_">observe</span>({ <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;/products/&#x27;</span> + i, <span class="hljs-attr">user_id</span>: <span class="hljs-string">&#x27;u&#x27;</span> + (i % <span class="hljs-number">500</span>) }, <span class="hljs-number">0.05</span>);   <span class="hljs-comment">// labels: url + user_id</span>
+good.<span class="hljs-title function_">observe</span>({ <span class="hljs-attr">route</span>: <span class="hljs-string">&#x27;/products/:id&#x27;</span> }, <span class="hljs-number">0.05</span>);                            <span class="hljs-comment">// label: route template</span></code></pre></div>
+<pre class="is-plain"><code>series lines for bad_latency : 12000   (2000 distinct label sets × (3 buckets + Inf + sum + count))
+series lines for good_latency: 6
+exposition size grew from 251 to 12257 lines | heap + 6.2 MB in this process</code></pre>
+<p>Two thousand requests created <strong>12,000 time-series lines</strong> instead of 6, in just this one process; at a million products or users, a monitoring system falls over (managed vendors bill by series). Use <strong>logs or traces</strong> for high-cardinality detail (&quot;which user?&quot;), and metrics for aggregates.</p>
+<hr>
+
+<h2 id="25-3-distributed-tracing-where-did-the-time-go">25.3 Distributed Tracing: Where Did the Time Go?</h2>
+<p>A single &quot;place order&quot; request may touch the API, an inventory service, a payment provider, PostgreSQL and Redis. Logs from each service don&#39;t show how they <strong>nest in time</strong>, and averages can&#39;t say which hop is slow. <strong>Tracing</strong> records each unit of work as a <strong>span</strong> (name, start, duration, attributes) with a parent, forming a tree under one <strong>trace id</strong> that flows across service boundaries.</p>
+<h3 id="context-propagation-the-w3c-traceparent-header">Context propagation: the W3C <code>traceparent</code> header</h3>
+<p>Services pass the trace context in an HTTP header:</p>
+<pre class="is-plain"><code>traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
+             │  └────── trace id (32 hex) ───────┘ └ parent span id ┘ └ flags (sampled)</code></pre>
+<p>Our app honours it: with that header, the log line&#39;s <code>traceId</code> was <code>4bf92f3577b34da6a3ce929d0e0e4736</code>, so a log line can be linked to its trace (and vice versa).</p>
+<h3 id="a-real-trace-across-two-services">A real trace across two services</h3>
+<p>We built two HTTP services (<code>orders</code> → <code>inventory</code>) with the OpenTelemetry API, the <code>AsyncLocalStorageContextManager</code>, and the W3C propagator. The orders service <strong>injects</strong> the context into its outgoing request; inventory <strong>extracts</strong> it and creates child spans. The spans (exported to memory and printed as a tree):</p>
+<pre class="is-plain"><code>trace id (shared by every span, across BOTH services): [ '614b52cfc1cde52f710997a3bdfdbc1a' ]
+POST /orders                       start +  0 ms  duration 184 ms  kind=SERVER
+  check stock (HTTP client)        start +  2 ms  duration  86 ms  kind=CLIENT
+      SELECT stock FROM products   start + 13 ms  duration  30 ms  kind=INTERNAL        (inventory service)
+    GET /stock/:id                 start + 13 ms  duration  54 ms  kind=SERVER          (inventory service)
+  INSERT INTO orders               start + 92 ms  duration  92 ms  kind=INTERNAL
+where did the time go? slowest child span -&gt; INSERT INTO orders (92 ms of the 184 ms request)</code></pre>
+<p>A glance answers <em>&quot;where did the time go?&quot;</em>: the 184 ms request spent 86 ms waiting for the inventory service (of which 30 ms was its database query) and 92 ms in the order insert. The child <code>SELECT</code> appears under inventory&#39;s server span even though it ran in a different &quot;service&quot; (different HTTP server), proof that the context crossed the network via the header. (Spans started at the same millisecond print in arbitrary order; the tree indentation is what matters.)</p>
+<h3 id="in-production">In production</h3>
+<p>Use the <strong>OpenTelemetry Node SDK with auto-instrumentation</strong> (<code>@opentelemetry/auto-instrumentations-node</code>) so HTTP, Express, <code>pg</code>, <code>ioredis</code> and many libraries create spans automatically, exporting via <strong>OTLP</strong> to a collector and a backend (Jaeger, Tempo, Honeycomb, Datadog, Grafana Cloud). <em>(I tested the API, context propagation and span model; I did not run the auto-instrumentation SDK, a collector or a UI.)</em> Practical points:</p>
+<ul>
+<li><strong>Sampling</strong>: record 100% of errors and slow traces but a small percentage of the rest; head-based (decide at the start) is simple, tail-based (decide at the end) is smarter.</li>
+<li><strong>Put the <code>traceId</code> in every log line</strong> (our <code>mixin</code> does) so you can jump between a trace and its logs.</li>
+<li><strong>Propagate the context through queues</strong> (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>) by storing <code>traceparent</code> in the message headers, or traces break at every async boundary.</li>
+<li>Add <strong>useful attributes</strong> (<code>order.total_minor</code>, <code>db.statement</code> without values) but not secrets or personal data.</li>
+</ul>
+<hr>
+
+<h2 id="25-4-health-checks-liveness-vs-readiness">25.4 Health Checks: Liveness vs Readiness</h2>
+<p>Orchestrators (Kubernetes, ECS, load balancers, <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>) need to ask your process two <em>different</em> questions:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Probe</th>
+<th>Question</th>
+<th>If it fails…</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Liveness</strong> <code>/livez</code></td>
+<td>&quot;Is the process stuck beyond recovery?&quot;</td>
+<td><strong>Restart</strong> the container</td>
+</tr>
+<tr>
+<td><strong>Readiness</strong> <code>/readyz</code></td>
+<td>&quot;Can I send you traffic right now?&quot;</td>
+<td><strong>Stop routing</strong> to it (but don&#39;t restart)</td>
+</tr>
+</tbody></table></div>
+<p>The classic mistake is one <code>/health</code> endpoint that checks the database, used for liveness: when the database blips, <strong>every instance fails liveness and is restarted simultaneously</strong>, turning a database hiccup into a full outage. Ours, tested with a simulated Postgres failure:</p>
+<pre class="is-plain"><code>/livez  200 {&quot;status&quot;:&quot;alive&quot;}
+/readyz 200 {&quot;status&quot;:&quot;ready&quot;,&quot;checks&quot;:{&quot;postgres&quot;:{&quot;ok&quot;:true,&quot;ms&quot;:267},&quot;redis&quot;:{&quot;ok&quot;:true,&quot;ms&quot;:8}}}
+/readyz with Postgres &quot;down&quot;: 503 {&quot;status&quot;:&quot;not ready&quot;,&quot;checks&quot;:{&quot;postgres&quot;:{&quot;ok&quot;:false,&quot;error&quot;:&quot;connection refused&quot;},&quot;redis&quot;:{&quot;ok&quot;:true,&quot;ms&quot;:8}}}
+/livez  with Postgres &quot;down&quot;: 200   (must stay alive: restarting the app would not fix the database)</code></pre>
+<p>Rules: <strong>liveness is dumb and cheap</strong> (no dependency calls); <strong>readiness checks dependencies the instance needs, each with a timeout</strong> (ours uses <code>Promise.race</code> with 1 s), reports <em>which</em> check failed, and is fast. Add a <strong>startup probe</strong> for slow boots, return <code>503</code> while draining on shutdown, and never expose detailed dependency information on a public route (it helps attackers).</p>
+<h3 id="graceful-shutdown">Graceful shutdown</h3>
+<p>On deploy or scale-in the platform sends <code>SIGTERM</code>. A good service stops accepting new connections, <strong>finishes in-flight requests</strong>, closes the DB pool and flushes logs, then exits (within the platform&#39;s grace period, e.g., 30 s):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;SIGTERM&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  readiness = <span class="hljs-literal">false</span>;                       <span class="hljs-comment">// /readyz → 503 so the load balancer stops sending traffic</span>
+  server.<span class="hljs-title function_">close</span>(<span class="hljs-keyword">async</span> () =&gt; { <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">end</span>(); <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">quit</span>(); logger.<span class="hljs-title function_">flush</span>(); process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">0</span>); });
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>), <span class="hljs-number">25_000</span>).<span class="hljs-title function_">unref</span>();   <span class="hljs-comment">// hard deadline</span>
+});</code></pre></div>
+<p><em>(Shown as the standard pattern; I did not run signal handling here because Windows doesn&#39;t deliver <code>SIGTERM</code> to Node like Linux does. Test it in a Linux container: Chapter 31.)</em></p>
+<hr>
+
+<h2 id="25-5-alerting-slis-and-slos">25.5 Alerting, SLIs and SLOs</h2>
+<p>Dashboards are for investigating; <strong>alerts</strong> are for waking a human, so they must be rare, actionable and tied to <strong>user impact</strong>.</p>
+<h3 id="vocabulary">Vocabulary</h3>
+<ul>
+<li><strong>SLI</strong> (Service Level <em>Indicator</em>): a measurable signal of good service, e.g., &quot;the proportion of <code>POST /orders</code> requests that return non-5xx in under 500 ms.&quot;</li>
+<li><strong>SLO</strong> (<em>Objective</em>): the target for the SLI over a window, e.g., &quot;<strong>99.9%</strong> over 30 days.&quot;</li>
+<li><strong>SLA</strong> (<em>Agreement</em>): a contractual promise (with penalties) usually looser than the SLO.</li>
+<li><strong>Error budget</strong>: <code>100% − SLO</code>: the amount of unreliability you&#39;re <em>allowed</em>. Spending it on features and deploys is fine; running out means slow down and fix reliability.</li>
+</ul>
+<p>What an SLO means in numbers (30-day month; computed):</p>
+<div class="table-wrap"><table><thead><tr>
+<th>SLO</th>
+<th>Allowed downtime / 30 days</th>
+<th>Errors allowed per 1,000,000 requests</th>
+</tr>
+</thead><tbody><tr>
+<td>99%</td>
+<td>432 min (7.2 h)</td>
+<td>10,000</td>
+</tr>
+<tr>
+<td>99.5%</td>
+<td>216 min</td>
+<td>5,000</td>
+</tr>
+<tr>
+<td><strong>99.9%</strong></td>
+<td><strong>43.2 min</strong></td>
+<td><strong>1,000</strong></td>
+</tr>
+<tr>
+<td>99.95%</td>
+<td>21.6 min</td>
+<td>500</td>
+</tr>
+<tr>
+<td>99.99%</td>
+<td>4.3 min</td>
+<td>100</td>
+</tr>
+</tbody></table></div>
+<p>Each extra nine costs roughly an order of magnitude more engineering effort. <strong>Pick the SLO your users actually need</strong>, not the most impressive one.</p>
+<h3 id="alert-on-symptoms-and-burn-rate-not-causes">Alert on symptoms and burn rate, not causes</h3>
+<ul>
+<li><strong>Alert on user-visible symptoms</strong> (error ratio, p99 latency, &quot;orders per minute dropped 80%&quot;), not on causes like &quot;CPU &gt; 80%&quot; (which may be perfectly fine).</li>
+<li><strong>Burn-rate alerts</strong> compare how fast you&#39;re spending the budget to the &quot;sustainable&quot; rate: a burn rate of <strong>1</strong> exhausts the budget in exactly 30 days; <strong>14.4× sustained for 1 hour consumes 2% of the monthly budget</strong> (page someone); <strong>6× for 6 hours consumes 5%</strong> (page or ticket); slow burns become tickets. Combining a short and a long window avoids flapping. (Numbers are arithmetic from the table above.)</li>
+<li>Every page should have a <strong>runbook</strong> (&quot;what to check first&quot;) and be <strong>actionable</strong>; if an alert is routinely ignored, delete or fix it. <strong>Alert fatigue</strong> is the main way monitoring fails.</li>
+<li>Also monitor the <strong>monitoring</strong>: an always-firing &quot;heartbeat&quot; alert that pages you when <em>it stops</em> catches a dead pipeline.</li>
+</ul>
+<p><em>(Prometheus/Alertmanager/Grafana configuration is described, not run.)</em></p>
+<hr>
+
+<h2 id="25-6-debugging-a-live-node-js-process">25.6 Debugging a Live Node.js Process</h2>
+<p>Three classic production problems, each reproduced in <a href="/learn/backend-master/resources/ch25/debug-lab.mjs">debug-lab.mjs</a>.</p>
+<h3 id="25-6-1-event-loop-blocking-the-invisible-latency">25.6.1 Event-loop blocking (the invisible latency)</h3>
+<p>Node runs your JavaScript on one thread (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>). CPU-heavy synchronous code freezes <strong>every</strong> request. We used <code>perf_hooks.monitorEventLoopDelay</code> while one route did a synchronous PBKDF2 hash and another did the same hash asynchronously on the libuv thread pool:</p>
+<pre class="is-plain"><code>/hash        (sync)    event-loop delay p99 840 ms, max 840 ms
+/hash-async  (thread pool)  event-loop delay p99  33 ms, max  33 ms</code></pre>
+<p>The synchronous version held the loop for <strong>840 ms</strong>, during which <em>no other request</em> could even be accepted. The asynchronous one kept the loop&#39;s worst delay to 33 ms. (My concurrent <code>/ping</code> timings were not meaningful because the ping couldn&#39;t be issued until the loop was free, which is itself the symptom.) <strong>Metric to alert on: <code>nodejs_eventloop_lag_seconds</code> (p99).</strong> Fixes: use async crypto/fs/zlib APIs, move CPU work to <strong>worker threads</strong> (Chapter 5), cap input sizes (ReDoS, <a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>), and avoid giant <code>JSON.parse</code>/sorts on the request path.</p>
+<h3 id="25-6-2-memory-leaks-and-heap-snapshots">25.6.2 Memory leaks and heap snapshots</h3>
+<p>A leak is memory that&#39;s <em>reachable but no longer needed</em>, most often <strong>an unbounded cache or map</strong> keyed by something that grows (session ids, URLs, user agents), event listeners that are never removed, or closures holding large objects. Symptoms: RSS/heap climbs steadily, GC runs more often, latency spikes, then an out-of-memory kill (often with a container restart that <em>hides</em> the leak).</p>
+<p>We simulated 100,000 requests that each add a new key:</p>
+<pre class="is-plain"><code>unbounded Map (the leak)          entries=100000 | heap growth after 25k/50k/75k/100k requests: +9.1, +18.4, +28.7, +37.1 MB
+bounded Map + TTL/LRU eviction    entries=  5000 | heap growth after 25k/50k/75k/100k requests: +2.1, +2.2, +2.2, +2.2 MB</code></pre>
+<p>The unbounded cache grows <strong>linearly forever</strong> (~0.37 KB per entry here); the bounded one levels off at <strong>+2.2 MB</strong>. (Forced GC (<code>--expose-gc</code>) before each reading ensures we measured <em>retained</em> memory, not garbage waiting to be collected.) <strong>The shape of the graph is the diagnosis:</strong> a sawtooth that returns to a baseline is healthy GC; a baseline that rises with every GC is a leak.</p>
+<p><strong>Finding the culprit in production:</strong></p>
+<ol>
+<li>Watch <code>nodejs_heap_size_used_bytes</code> / RSS trending upward.</li>
+<li>Capture <strong>heap snapshots</strong> (<code>v8.writeHeapSnapshot()</code> or <code>node --heapsnapshot-signal=SIGUSR2</code> on Linux), at least two, minutes apart, under load. Ours wrote an 8.2 MB <code>.heapsnapshot</code> file.</li>
+<li>Open them in <strong>Chrome DevTools → Memory</strong>, compare snapshots (&quot;objects allocated between snapshot 1 and 2&quot;), and follow the <strong>retainers</strong> chain to the variable holding them. <em>(I produced the file but did not walk through the DevTools UI here.)</em></li>
+<li>Fix: bound the structure (LRU/TTL: use <code>lru-cache</code>), remove listeners (<code>emitter.off</code>), or key by a bounded value.</li>
+</ol>
+<p>Also know Node&#39;s heap limit (<code>v8.getHeapStatistics().heap_size_limit</code>: <strong>4,345 MB</strong> on this machine; tune with <code>--max-old-space-size</code>) and that <strong>a container memory limit smaller than the heap limit</strong> causes silent OOM kills; set them consistently.</p>
+<h3 id="25-6-3-cpu-profiling-find-the-hot-function">25.6.3 CPU profiling: find the hot function</h3>
+<p>&quot;The endpoint is slow, but where?&quot; Don&#39;t guess; <strong>profile</strong>. <code>node --cpu-prof</code> writes a <code>.cpuprofile</code> (also openable in DevTools / speedscope) recording what the CPU was executing every ~1 ms. We profiled a &quot;report&quot; function with an accidentally quadratic de-duplication step (<code>findIndex</code> inside <code>filter</code>) and heavy JSON:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-title function_">dedupe</span> = (<span class="hljs-params">xs</span>) =&gt; xs.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">x, i</span>) =&gt;</span> xs.<span class="hljs-title function_">findIndex</span>(<span class="hljs-function">(<span class="hljs-params">y</span>) =&gt;</span> y.<span class="hljs-property">id</span> === x.<span class="hljs-property">id</span>) === i);   <span class="hljs-comment">// O(n²)</span></code></pre></div>
+<p>A tiny script aggregating the profile&#39;s samples by <strong>self time</strong> produced:</p>
+<pre class="is-plain"><code>profile: 283 samples, 521 ms sampled
+ 48.0 %    250 ms  (anonymous)  debug-lab.mjs:57      ← the findIndex callback inside dedupe
+ 17.4 %     91 ms  (anonymous)  debug-lab.mjs:58      ← JSON.stringify in render
+  3.9 %     20 ms  render       debug-lab.mjs:58</code></pre>
+<p>The profile points at <strong>line 57</strong>, 48% of all CPU time, and the fix is one data-structure change:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-title function_">dedupe</span> = (<span class="hljs-params">xs</span>) =&gt; { <span class="hljs-keyword">const</span> seen = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(); <span class="hljs-keyword">return</span> xs.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> !seen.<span class="hljs-title function_">has</span>(x.<span class="hljs-property">id</span>) &amp;&amp; seen.<span class="hljs-title function_">add</span>(x.<span class="hljs-property">id</span>)); };   <span class="hljs-comment">// O(n)</span></code></pre></div>
+<p>Timings are noisy on this machine, so I repeated each version seven times: <strong>before</strong> 429, 488, 492, 487, 453, 588, 401 ms (median <strong>488 ms</strong>); <strong>after</strong> 249, 415, 485, 175, 184, 161, 207 ms (median <strong>207 ms</strong>), roughly <strong>2.4× faster</strong>. (The remaining time is JSON and hashing, visible in the profile&#39;s next lines. The lesson is the <em>method</em>: measure → profile → change one thing → measure again.) Flame graphs (<code>0x</code>, <code>clinic flame</code>, Chrome DevTools) display the same data visually; <strong>continuous profiling</strong> services (Pyroscope, Datadog Profiler) do it in production at low overhead <em>(not run)</em>.</p>
+<h3 id="25-6-4-other-debugging-tools">25.6.4 Other debugging tools</h3>
+<ul>
+<li><code>node --inspect</code> / <code>--inspect-brk</code>: attach Chrome DevTools or VS Code to a running process (<strong>never expose the inspector port publicly</strong>, it&#39;s remote code execution).</li>
+<li><strong>Source maps</strong> (<code>--enable-source-maps</code>) for readable TypeScript stack traces.</li>
+<li><code>process.on(&#39;unhandledRejection&#39; | &#39;uncaughtException&#39;)</code>: log with full context, then <strong>exit</strong> (the process state is undefined); let the supervisor restart you (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>).</li>
+<li><strong>Reproduce before fixing:</strong> capture the failing <code>requestId</code>&#39;s logs, the inputs, and write a failing test (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>) first.</li>
+<li><strong>Core dumps / diagnostic reports</strong> (<code>--report-on-fatalerror</code>, <code>process.report.writeReport()</code>) for crashes you can&#39;t reproduce.</li>
+<li><strong><code>EXPLAIN ANALYZE</code></strong> and <code>pg_stat_statements</code> for slow queries (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>); <strong>slow-query logs</strong> (<code>log_min_duration_statement</code>); <code>redis-cli --latency</code>, <code>SLOWLOG</code> (<a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>).</li>
+</ul>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Metrics tell you <em>that</em>, traces tell you <em>where</em>, logs tell you <em>why</em>.&quot;</strong> Start from an alert (metric), find the slow hop (trace), read the specifics (log), reproduce (test), fix, and add the missing signal so you find it faster next time.</p>
+</aside>
+<hr>
+
+<h2 id="25-7-an-incident-playbook">25.7 An Incident Playbook</h2>
+<p>When something breaks in production:</p>
+<ol>
+<li><strong>Acknowledge and assess impact</strong> (who&#39;s affected? how many? since when?): use your RED dashboards.</li>
+<li><strong>Check what changed</strong>: deploys, config, flags, traffic, dependency status. Most incidents follow a change.</li>
+<li><strong>Mitigate first, diagnose second</strong>: roll back, disable the feature flag, scale up, shed load. Restore service <em>then</em> find the root cause.</li>
+<li><strong>Narrow with the three pillars</strong>: metric (which endpoint/route/region?) → trace (which hop?) → logs by <code>requestId</code> (which error?).</li>
+<li><strong>Communicate</strong> on a status page / channel at regular intervals.</li>
+<li><strong>Write a blameless post-mortem</strong>: timeline, impact, root cause(s), what detection failed, and <strong>action items</strong> (the missing alert, the missing test, the missing runbook).</li>
+</ol>
+<hr>
+
+<h2 id="25-8-shopline-observability-checklist">25.8 ShopLine Observability Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> JSON logs to stdout; <code>requestId</code>/<code>traceId</code> on every line; secrets redacted <em>and canary-tested</em>; errors logged once with stack.</li>
+<li><input disabled="" type="checkbox"> <code>x-request-id</code> accepted, generated, returned; <code>traceparent</code> propagated through HTTP <strong>and queues</strong>.</li>
+<li><input disabled="" type="checkbox"> RED metrics per <strong>route template</strong>; business metrics (orders, payment failures); event-loop lag, heap, RSS, DB pool usage, queue depth.</li>
+<li><input disabled="" type="checkbox"> No unbounded label values; bucket edges around SLO thresholds.</li>
+<li><input disabled="" type="checkbox"> <code>/livez</code> (no dependencies) and <code>/readyz</code> (dependencies with timeouts); graceful shutdown with log flush.</li>
+<li><input disabled="" type="checkbox"> SLOs for checkout and browse; burn-rate alerts that page; runbooks; weekly alert review.</li>
+<li><input disabled="" type="checkbox"> Heap/CPU profiling procedure documented; inspector never public.</li>
+<li><input disabled="" type="checkbox"> Dashboards: per-service RED, dependency health, saturation, deploy markers.</li>
+</ul>
+<hr>
+
+<h2 id="25-9-edge-cases-and-gotchas-checklist">25.9 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>console.log</code> in production; unstructured, un-levelled, no request context.</li>
+<li><input disabled="" type="checkbox"> Secrets in logs: in messages, URLs, stack traces, headers, request bodies. Redaction by path only.</li>
+<li><input disabled="" type="checkbox"> Logging the same error at every layer; logging full bodies/PII by default.</li>
+<li><input disabled="" type="checkbox"> No correlation id; id not returned to the client; id not propagated to downstream calls and queues.</li>
+<li><input disabled="" type="checkbox"> Metrics labelled by raw URL, user id, order id or error message (cardinality explosion).</li>
+<li><input disabled="" type="checkbox"> Averages instead of percentiles; histogram buckets that don&#39;t bracket the SLO.</li>
+<li><input disabled="" type="checkbox"> Liveness probe that checks the database (restart storms); readiness without timeouts.</li>
+<li><input disabled="" type="checkbox"> No graceful shutdown; async log buffers lost on crash; no flush.</li>
+<li><input disabled="" type="checkbox"> Alerts on causes (CPU) instead of symptoms; pages without runbooks; alert fatigue.</li>
+<li><input disabled="" type="checkbox"> Unbounded in-memory caches/maps; listeners added per request and never removed.</li>
+<li><input disabled="" type="checkbox"> CPU-heavy sync work on the request path; no event-loop-lag metric.</li>
+<li><input disabled="" type="checkbox"> Container memory limit lower than the Node heap limit.</li>
+<li><input disabled="" type="checkbox"> Inspector (<code>--inspect</code>) exposed on a public interface.</li>
+<li><input disabled="" type="checkbox"> Debugging by guessing instead of profiling/tracing; &quot;fixing&quot; a leak by restarting nightly.</li>
+<li><input disabled="" type="checkbox"> Trace context lost across queue/worker boundaries; no sampling policy.</li>
+</ul>
+<hr>
+
+<h2 id="25-10-chapter-summary">25.10 Chapter Summary</h2>
+<ul>
+<li><strong>Observability</strong> = logs (what happened), metrics (how it&#39;s behaving), traces (where the time went), tied together by correlation ids.</li>
+<li><strong>Logs:</strong> structured JSON (pino), levels chosen by outcome, <strong><code>AsyncLocalStorage</code></strong> to stamp a <code>requestId</code>/<code>traceId</code> on every line, return the id to clients. <strong>Redaction works by field path and missed a secret inside an error message</strong> (<code>password=hunter2</code>): never interpolate secrets into text; scrub and canary-test. Buffered pino was <strong>~4.5× faster</strong> than <code>console.log</code> to a file (58k vs 13k lines/s) at the cost of possibly losing the last lines on a crash.</li>
+<li><strong>Metrics:</strong> counters, gauges, histograms; <strong>RED</strong> for services, <strong>USE</strong> for resources; use route templates and <strong>bounded labels</strong>: a raw-URL + user-id label produced <strong>12,000 series lines vs 6</strong> for 2,000 requests. Judge latency by <strong>percentiles</strong>, with bucket edges at your SLO.</li>
+<li><strong>Traces:</strong> W3C <code>traceparent</code> propagation produced one trace across two services (184 ms request: 86 ms waiting on inventory, 92 ms inserting). Put <code>traceId</code> in logs; propagate through queues; sample.</li>
+<li><strong>Health:</strong> <strong>liveness</strong> (cheap, no dependencies) vs <strong>readiness</strong> (dependencies with timeouts); a DB outage correctly flipped readiness to 503 while liveness stayed 200; graceful shutdown drains requests and flushes logs.</li>
+<li><strong>SLOs:</strong> SLI → SLO → error budget; 99.9% = 43.2 min/month; alert on symptoms and <strong>burn rate</strong>; every page needs a runbook.</li>
+<li><strong>Debugging:</strong> blocking the event loop held it for <strong>840 ms</strong> (vs 33 ms async); an unbounded cache grew <strong>+37 MB per 100k requests</strong> while a bounded one stayed at <strong>+2.2 MB</strong>; a CPU profile pinpointed a quadratic <code>findIndex</code> (48% of CPU) and fixing it gave ~<strong>2.4×</strong> (median 488 → 207 ms).</li>
+<li>Have an <strong>incident playbook</strong>: mitigate first, diagnose with metric → trace → log, write a blameless post-mortem.</li>
+</ul>
+<hr>
+
+<h2 id="25-11-revision-notes">25.11 Revision Notes</h2>
+<ul>
+<li>pino JSON to stdout; <code>redact</code> paths; <code>mixin</code> + <code>AsyncLocalStorage</code> for <code>requestId</code>; log the <code>err</code> object once.</li>
+<li>Levels: 5xx→error, 4xx→warn; debug off in prod; sample successes.</li>
+<li>Metrics: counter (rate), gauge, histogram (p95/p99); RED + saturation; route template labels; no unbounded labels.</li>
+<li><code>traceparent: 00-&lt;traceId&gt;-&lt;spanId&gt;-&lt;flags&gt;</code>; inject on outgoing, extract on incoming; trace id in logs.</li>
+<li><code>/livez</code> no deps; <code>/readyz</code> deps + timeouts; SIGTERM → stop accepting, drain, close pools, flush logs.</li>
+<li>SLO budget: 99.9% = 43.2 min/30 d; burn 14.4× for 1 h = 2% budget.</li>
+<li>Event-loop lag: <code>monitorEventLoopDelay</code>; fix with async APIs/workers.</li>
+<li>Leaks: rising baseline after GC; heap snapshots (two, compare); bound caches.</li>
+<li>CPU: <code>node --cpu-prof</code> → self-time by function; change one thing; measure repeatedly (median).</li>
+</ul>
+<hr>
+
+<h2 id="25-12-mind-map-ascii">25.12 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                              OBSERVABILITY
+                                    │
+    ┌──────────┬───────────┬────────┼─────────┬────────────┬────────────┐
+   LOGS      METRICS     TRACES   HEALTH    ALERTING     DEBUGGING    INCIDENTS
+    │           │          │        │           │            │             │
+ pino JSON   counter     spans   /livez     SLI/SLO      event-loop     mitigate first
+ levels      gauge       W3C     /readyz    error budget  lag           metric→trace→log
+ requestId   histogram   traceparent graceful burn rate   leaks+heap     post-mortem
+ redaction   RED/USE     sampling shutdown  runbooks     snapshots      action items
+ (limits!)   cardinality otel                             CPU profile</code></pre>
+<hr>
+
+<h2 id="25-13-cheat-sheet">25.13 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> logger = <span class="hljs-title function_">pino</span>({ <span class="hljs-attr">redact</span>: [...], <span class="hljs-attr">mixin</span>: <span class="hljs-function">() =&gt;</span> als.<span class="hljs-title function_">getStore</span>() ?? {}, <span class="hljs-attr">serializers</span>: { <span class="hljs-attr">err</span>: pino.<span class="hljs-property">stdSerializers</span>.<span class="hljs-property">err</span> } });
+logger.<span class="hljs-title function_">error</span>({ err, orderId }, <span class="hljs-string">&#x27;payment failed&#x27;</span>);                         <span class="hljs-comment">// object first, message second</span>
+als.<span class="hljs-title function_">run</span>({ requestId, traceId }, next);                                    <span class="hljs-comment">// correlation context</span>
+<span class="hljs-keyword">new</span> client.<span class="hljs-title class_">Histogram</span>({ <span class="hljs-attr">name</span>:<span class="hljs-string">&#x27;http_request_duration_seconds&#x27;</span>, <span class="hljs-attr">labelNames</span>:[<span class="hljs-string">&#x27;method&#x27;</span>,<span class="hljs-string">&#x27;route&#x27;</span>,<span class="hljs-string">&#x27;status&#x27;</span>], <span class="hljs-attr">buckets</span>:[…] });
+httpDuration.<span class="hljs-title function_">observe</span>({ method, <span class="hljs-attr">route</span>: req.<span class="hljs-property">route</span>?.<span class="hljs-property">path</span> ?? <span class="hljs-string">&#x27;unmatched&#x27;</span>, status }, seconds);
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/livez&#x27;</span>, …); app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/readyz&#x27;</span>, …checks <span class="hljs-keyword">with</span> timeouts…); app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/metrics&#x27;</span>, …);
+propagation.<span class="hljs-title function_">inject</span>(context.<span class="hljs-title function_">active</span>(), headers);  <span class="hljs-comment">/* ... */</span>  propagation.<span class="hljs-title function_">extract</span>(context.<span class="hljs-title function_">active</span>(), req.<span class="hljs-property">headers</span>);
+<span class="hljs-title function_">monitorEventLoopDelay</span>({ <span class="hljs-attr">resolution</span>: <span class="hljs-number">10</span> }).<span class="hljs-title function_">enable</span>();
+<span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;v8&#x27;</span>).<span class="hljs-title function_">writeHeapSnapshot</span>();     node --cpu-prof app.<span class="hljs-property">js</span>     node --inspect app.<span class="hljs-property">js</span>   (never public)</code></pre></div>
+<hr>
+
+<h2 id="25-14-key-takeaways">25.14 Key Takeaways</h2>
+<ol>
+<li><strong>Correlation ids everywhere</strong>: one id threads logs, error responses, and traces.</li>
+<li><strong>Log structured, redact deliberately, and never trust redaction alone.</strong></li>
+<li><strong>Metrics on route templates with bounded labels; alert on symptoms and burn rate.</strong></li>
+<li><strong>Liveness is dumb; readiness is smart.</strong> Never let a dependency outage trigger restarts.</li>
+<li><strong>Profile, don&#39;t guess</strong>: event-loop lag, heap growth and CPU samples each have a precise tool.</li>
+<li><strong>Every incident should leave behind a missing alert, test, or runbook, now written.</strong></li>
+</ol>
+<hr>
+
+<h2 id="25-15-20-multiple-choice-questions">25.15 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Queryable fields."><p class="quiz-text">Why prefer structured (JSON) logs?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They&#39;re prettier</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">They can be filtered and aggregated by field</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They&#39;re smaller than text</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They avoid levels</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Correlation."><p class="quiz-text">The main purpose of a request/correlation id is to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Authenticate users</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Tie together every log line and error for one request</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Speed up routing</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cache responses</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Implicit async context."><p class="quiz-text"><code>AsyncLocalStorage</code> lets you:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Store data in a database</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Carry request context through async calls without passing it as an argument</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Share memory between processes</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Encrypt logs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Path-based, not text scanning."><p class="quiz-text">pino&#39;s <code>redact</code> failed to hide <code>password=hunter2</code> in our error log because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s disabled by default</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Redaction works on field paths, not on secrets embedded in message text</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The password was too short</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Errors can&#39;t be redacted</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Keep type and stack."><p class="quiz-text">Which is the correct way to log an exception?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>logger.error(&#39;error: &#39; + err.message)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>logger.error({ err }, &#39;unhandled error&#39;)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>console.log(err)</code> twice</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Don&#39;t log it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Support can find the log."><p class="quiz-text">Why return the request id to the client in an error body?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">For caching</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">So a customer can quote it and you can find the full server-side log</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To hide the error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">HTTP requires it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="58k vs 13k lines/s."><p class="quiz-text">Buffered asynchronous pino was roughly how much faster than <code>console.log</code> in our run?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Same</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">~4.5×</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">100×</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Slower</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Rate, Errors, Duration."><p class="quiz-text">The RED method stands for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Read, Execute, Delete</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Rate, Errors, Duration</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Requests, Events, Data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Response, Error, Delay</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Bounded cardinality."><p class="quiz-text">Why use <code>req.route.path</code> (the template) as a metric label?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s shorter</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Raw URLs have unbounded values and explode the number of series</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Prometheus requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s faster to type</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="12,000 lines."><p class="quiz-text">Our cardinality test (2,000 requests) produced how many series lines for the raw-URL+user histogram?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">6</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">120</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">12,000</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">2,000,000</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Buckets are cumulative."><p class="quiz-text">A histogram bucket with <code>le=&quot;0.25&quot;</code> and count 12 means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">12 requests took exactly 250 ms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">12 requests took ≤ 250 ms (cumulative)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">12 errors</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">12 buckets</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Tail latency."><p class="quiz-text">Why look at p99 instead of the average?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Averages are expensive</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A few very slow requests can hide behind a good average</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">p99 is always lower</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Prometheus can&#39;t average</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="W3C trace context."><p class="quiz-text">In tracing, the <code>traceparent</code> header carries:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The user&#39;s password</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">trace id, parent span id and sampling flags</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The SQL statement</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The response time</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="92 ms insert."><p class="quiz-text">In our trace, which child span was the slowest?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">check stock (86 ms)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">INSERT INTO orders (92 ms)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">SELECT stock (30 ms)</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">GET /stock/:id</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No dependencies."><p class="quiz-text">Liveness probes should:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Check the database</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Be cheap and not depend on external services</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Return 500 when busy</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Run SQL</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Readiness only."><p class="quiz-text">If the database is down, the correct behaviour is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>/livez</code> 503 and restart</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>/readyz</code> 503 (stop traffic) while <code>/livez</code> stays 200</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Both 200</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Crash the app</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="43.2 min."><p class="quiz-text">A 99.9% SLO over 30 days allows about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">4.3 minutes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">43.2 minutes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">7.2 hours</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0 minutes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Symptoms + burn rate."><p class="quiz-text">Good alerts are based on:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">CPU &gt; 80%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">User-visible symptoms and error-budget burn rate</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Log volume</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Every error</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="840 ms measured."><p class="quiz-text">The synchronous hash route produced an event-loop delay of about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">33 ms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">840 ms</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">3 ms</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0 ms</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Trend + snapshot diff."><p class="quiz-text">The best first step for a suspected memory leak is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Restart nightly</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Observe heap growth over time and take two heap snapshots to compare</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Increase the heap limit</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Add more logging</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-c, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="25-16-20-hands-on-exercises">25.16 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch25/README.txt">resources/ch25/</a>.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>obs-test.mjs</code>; find the access-log line and identify every field.</li>
+<li>Send a request with your own <code>x-request-id</code> and find it in the log and in the response header.</li>
+<li>Add a new route and confirm its metrics appear with the route <em>template</em>.</li>
+<li>Hit <code>/readyz</code> with Redis stopped and observe the response.</li>
+<li>Compute the downtime budget for a 99.95% SLO.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Write a canary test: log a request containing <code>SECRET-CANARY-123</code> in the body, headers, URL and error message and fail if it appears in output; fix leaks with a serializer.</li>
+<li>Add a custom pino serializer that scrubs <code>Bearer …</code> and <code>api_key=</code> patterns from messages and URLs.</li>
+<li>Add a histogram bucket edge at your SLO threshold and compute p95 from the bucket counts by hand.</li>
+<li>Reproduce the cardinality explosion with a user-id label; measure <code>/metrics</code> size and memory.</li>
+<li>Instrument a database query duration metric with a <code>query_name</code> label (bounded!) and a slow-query warning log.</li>
+<li>Propagate <code>traceparent</code> through a queue message and continue the trace in a worker.</li>
+<li>Implement graceful shutdown and test it in a Linux container with <code>docker stop</code>.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Add the OpenTelemetry Node SDK auto-instrumentations and export to a local Jaeger/Tempo; find the slowest span in a real checkout.</li>
+<li>Run Prometheus and Grafana locally; build a RED dashboard and a burn-rate alert for the orders endpoint.</li>
+<li>Leak memory deliberately via an event-listener-per-request bug; find it with two heap snapshots in Chrome DevTools.</li>
+<li>Use <code>clinic flame</code>/<code>0x</code> to profile an endpoint and produce a before/after flame graph for an optimisation.</li>
+<li>Build an event-loop-lag alert and trigger it with a ReDoS input (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>).</li>
+<li>Implement tail-based sampling: keep all error and slow traces, 1% of the rest.</li>
+<li>Write a chaos drill: kill Postgres under load, watch metrics/logs/readiness, and write the post-mortem with action items.</li>
+<li>Create a log-pipeline test that proves redaction, retention and access controls for logs containing PII.</li>
+</ol>
+<hr>
+
+<h2 id="25-17-5-interview-questions">25.17 5 Interview Questions</h2>
+<p><strong>1. What are the three pillars of observability and how do you use them together?</strong>
+<em>Model answer:</em> Logs (discrete events with detail), metrics (aggregated numbers over time), traces (the tree of timed spans across services). A metric-based alert says <em>something is wrong</em> (error rate or p99), a trace shows <em>which hop</em> is slow or failing, and logs filtered by the request/trace id show <em>why</em>. Correlation ids tie them together.</p>
+<p><strong>2. How do you propagate a request id through an async Node.js application?</strong>
+<em>Model answer:</em> Use <code>AsyncLocalStorage</code> to hold the request context, set it in a middleware (honouring or generating <code>x-request-id</code>), and have the logger&#39;s mixin read it so every log line carries the id. Return it in response headers/error bodies and forward it (and <code>traceparent</code>) on outbound HTTP calls and queue messages.</p>
+<p><strong>3. What is label cardinality and why does it matter in metrics?</strong>
+<em>Model answer:</em> Each unique combination of label values is a separate time series. Labels like raw URL, user id or error message are unbounded and can create millions of series, exhausting memory/storage and cost. Use route templates and small enumerations as labels; put high-cardinality detail in logs or traces. In my test, 2,000 requests produced 12,000 lines vs 6.</p>
+<p><strong>4. Explain liveness vs readiness probes.</strong>
+<em>Model answer:</em> Liveness answers &quot;should this process be restarted?&quot; and must be cheap and independent of dependencies; readiness answers &quot;should it receive traffic?&quot; and checks dependencies with timeouts. Putting dependency checks in liveness causes mass restarts during a database blip. On shutdown, fail readiness first, drain in-flight requests, then exit.</p>
+<p><strong>5. A Node service&#39;s memory grows until it&#39;s OOM-killed. How do you diagnose it?</strong>
+<em>Model answer:</em> Confirm with heap/RSS metrics that the baseline rises after GC. Take two or more heap snapshots under load, compare allocations and inspect retainers in DevTools to find what holds the objects (typically an unbounded Map/cache, listener accumulation, or closures). Fix by bounding/evicting, removing listeners, then verify via the metric. Also check container limits vs heap limit; don&#39;t mask it with scheduled restarts.</p>
+<hr>
+
+<h2 id="25-18-3-real-projects">25.18 3 Real Projects</h2>
+<p><strong>Project 1: Observability Starter Kit (intermediate, ~10 hours).</strong>
+A reusable Express/Fastify plugin: request id + <code>AsyncLocalStorage</code>, pino config with redaction and canary tests, RED metrics with route templates, <code>/livez</code> <code>/readyz</code> <code>/metrics</code>, graceful shutdown, and OpenTelemetry tracing, with a README and tests proving each guarantee.</p>
+<p><strong>Project 2: Dashboards and Alerts (intermediate, ~10 hours).</strong>
+Docker Compose with Prometheus, Grafana, Loki, Tempo for ShopLine; dashboards per service (RED), dependency health and saturation; SLO burn-rate alerts with runbooks; a load test (Chapter 24) that triggers and resolves an alert.</p>
+<p><strong>Project 3: Debugging Gym (advanced, ~12 hours).</strong>
+Create a deliberately broken service with five production problems (event-loop block, memory leak, N+1 queries, slow regex, connection-pool exhaustion). Write a guide for diagnosing each with metrics, traces, profiles and heap snapshots; have a colleague solve them and time it; improve the tooling where they struggled.</p>
+<hr>
+
+<h2 id="25-19-further-reading">25.19 Further Reading</h2>
+<ul>
+<li><strong>Google SRE Book / SRE Workbook</strong>: <em>Monitoring Distributed Systems</em>, <em>Service Level Objectives</em>, <em>Alerting on SLOs</em> (burn-rate alerting).</li>
+<li>Charity Majors et al., <em>Observability Engineering</em>; Brendan Gregg, <em>Systems Performance</em> (USE method).</li>
+<li>OpenTelemetry docs (JavaScript): API, SDK, auto-instrumentation, semantic conventions; W3C <em>Trace Context</em> specification.</li>
+<li>Prometheus docs: <em>Metric and label naming</em>, <em>Histograms and summaries</em>; <code>prom-client</code> README.</li>
+<li>pino docs: <em>Redaction</em>, <em>Asynchronous logging</em>, <em>Transports</em>; Node.js docs: <em>Diagnostics</em> (heap snapshots, CPU profiles, <code>perf_hooks</code>), and the <strong>Clinic.js</strong> documentation.</li>
+<li>Tom Wilkie, <em>The RED Method</em>; Google, <em>The Four Golden Signals</em>.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-26-error-handling-and-resilience">Up next → Chapter 26: Error Handling and Resilience</h3>
+<p>You can now see failures. Next: surviving them. Error taxonomies and operational vs programmer errors, timeouts everywhere, retries with exponential backoff and jitter, circuit breakers, bulkheads, idempotency, graceful degradation, <code>uncaughtException</code> policy, and chaos testing, with each pattern implemented and put through a simulated failing dependency to prove it works.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Logging, Monitoring: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is a correlation id?</h3></summary><p>A unique id attached to every log line and response for one request, so you can find the whole story with a single query. Node's AsyncLocalStorage carries it without passing it through every function.</p></details>
+<details class="learn-faq-item"><summary><h3>What is label cardinality in metrics?</h3></summary><p>Each distinct combination of label values is a separate time series. Labelling by raw URL or user id explodes memory; our test produced 12,000 series lines instead of 6 by using the route template.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the difference between liveness and readiness?</h3></summary><p>Liveness decides whether to restart a process and must not depend on external services. Readiness decides whether to send traffic and checks dependencies with timeouts.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I find a memory leak in Node.js?</h3></summary><p>Watch heap growth after garbage collection, take two heap snapshots under load and compare them to find what retains memory, commonly an unbounded cache.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span>&larr; Previous &middot; Chapter 24</span><strong>Backend Testing Strategy: Node.js Guide</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span>Next &middot; Chapter 26 &rarr;</span><strong>Error Handling &amp; Resilience: Retries</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#25-0-why-this-chapter-matters">25.0 Why This Chapter Matters</a></li><li><a href="#25-1-logging-what-to-log-and-how">25.1 Logging: What to Log, and How</a></li><li><a href="#25-2-metrics-numbers-over-time">25.2 Metrics: Numbers Over Time</a></li><li><a href="#25-3-distributed-tracing-where-did-the-time-go">25.3 Distributed Tracing: Where Did the Time Go?</a></li><li><a href="#25-4-health-checks-liveness-vs-readiness">25.4 Health Checks: Liveness vs Readiness</a></li><li><a href="#25-5-alerting-slis-and-slos">25.5 Alerting, SLIs and SLOs</a></li><li><a href="#25-6-debugging-a-live-node-js-process">25.6 Debugging a Live Node.js Process</a></li><li><a href="#25-7-an-incident-playbook">25.7 An Incident Playbook</a></li><li><a href="#25-8-shopline-observability-checklist">25.8 ShopLine Observability Checklist</a></li><li><a href="#25-9-edge-cases-and-gotchas-checklist">25.9 Edge Cases and Gotchas Checklist</a></li><li><a href="#25-10-chapter-summary">25.10 Chapter Summary</a></li><li><a href="#25-11-revision-notes">25.11 Revision Notes</a></li><li><a href="#25-12-mind-map-ascii">25.12 Mind Map (ASCII)</a></li><li><a href="#25-13-cheat-sheet">25.13 Cheat Sheet</a></li><li><a href="#25-14-key-takeaways">25.14 Key Takeaways</a></li><li><a href="#25-15-20-multiple-choice-questions">25.15 20 Multiple Choice Questions</a></li><li><a href="#25-16-20-hands-on-exercises">25.16 20 Hands-on Exercises</a></li><li><a href="#25-17-5-interview-questions">25.17 5 Interview Questions</a></li><li><a href="#25-18-3-real-projects">25.18 3 Real Projects</a></li><li><a href="#25-19-further-reading">25.19 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "logging-monitoring-tracing-nodejs-observability"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

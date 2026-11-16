@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>HTTP Explained: Methods, Status &amp; Headers | Backend Master</title>
+    <meta name="description" content="A deep dive into HTTP for backend developers: methods, status codes, headers, cookies, content negotiation, caching and HTTP/1.1 vs HTTP/2 vs HTTP/3.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="http methods, http status codes, http headers, http cookies, idempotent methods, http caching, http/2 vs http/3, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/linux-terminal-git-for-backend-developers">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="http methods">
+    <meta property="article:tag" content="http status codes">
+    <meta property="article:tag" content="http headers">
+    <meta property="article:tag" content="http cookies">
+    <meta property="article:tag" content="idempotent methods">
+    <meta property="article:tag" content="http caching">
+    <meta property="article:tag" content="http/2 vs http/3">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="HTTP Explained: Methods, Status &amp; Headers">
+    <meta property="og:description" content="A deep dive into HTTP for backend developers: methods, status codes, headers, cookies, content negotiation, caching and HTTP/1.1 vs HTTP/2 vs HTTP/3.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/http-explained-methods-status-codes-headers.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="HTTP Explained: Methods, Status Codes, Headers, Cookies and Caching: Backend Master chapter 3">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HTTP Explained: Methods, Status &amp; Headers">
+    <meta name="twitter:description" content="A deep dive into HTTP for backend developers: methods, status codes, headers, cookies, content negotiation, caching and HTTP/1.1 vs HTTP/2 vs HTTP/3.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/http-explained-methods-status-codes-headers.png">
+    <meta name="twitter:image:alt" content="HTTP Explained: Methods, Status Codes, Headers, Cookies and Caching: Backend Master chapter 3">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers",
+          "name": "HTTP Explained: Methods, Status & Headers | Backend Master",
+          "description": "A deep dive into HTTP for backend developers: methods, status codes, headers, cookies, content negotiation, caching and HTTP/1.1 vs HTTP/2 vs HTTP/3.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/http-explained-methods-status-codes-headers.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "HTTP Explained: Methods, Status Codes, Headers, Cookies and Caching"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#webpage"
+          },
+          "headline": "HTTP Explained: Methods, Status Codes, Headers, Cookies and Caching",
+          "alternativeHeadline": "HTTP Deep Dive — The Language Every API Speaks",
+          "description": "A deep dive into HTTP for backend developers: methods, status codes, headers, cookies, content negotiation, caching and HTTP/1.1 vs HTTP/2 vs HTTP/3.",
+          "abstract": "HTTP is the request-response protocol every web API speaks. This chapter covers requests and responses on the wire, safe and idempotent methods, the status code families, essential headers, cookies, caching and the differences between HTTP/1.1, HTTP/2 and HTTP/3, with runnable examples.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/http-explained-methods-status-codes-headers.png",
+          "url": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6893,
+          "timeRequired": "PT31M",
+          "articleSection": "Backend Development",
+          "keywords": "http methods, http status codes, http headers, http cookies, idempotent methods, http caching, http/2 vs http/3",
+          "proficiencyLevel": "Beginner",
+          "educationalLevel": "Beginner",
+          "teaches": [
+            "The structure of an HTTP request and response",
+            "Methods, safety and idempotency",
+            "Status code families and when to use each",
+            "Headers, cookies and content negotiation",
+            "HTTP caching basics and protocol versions"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "http methods"
+          },
+          "isAccessibleForFree": true,
+          "position": 3,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls#article",
+            "name": "How the Internet Works: IP, DNS, TCP, TLS and Latency",
+            "url": "https://shivamthakur.me/learn/backend-master/how-the-internet-works-dns-tcp-tls"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "HTTP Explained: Methods, Status & Headers",
+              "item": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the difference between GET and POST?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "GET retrieves data and is safe and idempotent, so it can be cached and retried. POST sends data to create or process something and is neither safe nor idempotent, so repeating it can repeat the effect."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between 401 and 403?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "401 means the request is not authenticated: the server does not know who you are. 403 means you are authenticated but not allowed to do that action."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does idempotent mean?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An operation is idempotent if doing it several times has the same effect as doing it once. GET, PUT and DELETE are idempotent by definition; POST is not, which is why retries need idempotency keys."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What changed in HTTP/2 and HTTP/3?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "HTTP/2 multiplexes many requests over one connection and compresses headers. HTTP/3 runs over QUIC (UDP) to avoid head-of-line blocking at the transport layer and speed up connection setup."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#quiz",
+          "name": "HTTP Explained: Methods, Status & Headers: 20 multiple choice questions",
+          "educationalLevel": "Beginner",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "http methods"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/http-explained-methods-status-codes-headers#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does \"stateless\" mean for HTTP?",
+              "text": "What does \"stateless\" mean for HTTP?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each request is independent; the server keeps no memory of previous requests by protocol"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Servers never store data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Requests can't have bodies"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No cookies are allowed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which method is both safe and idempotent?",
+              "text": "Which method is both safe and idempotent?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "GET"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "POST"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "PATCH"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DELETE"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which status code should a successful POST that creates a resource return?",
+              "text": "Which status code should a successful POST that creates a resource return?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "201"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "200"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "204"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "302"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A user is logged in but tries to open another user's private page. Best response?",
+              "text": "A user is logged in but tries to open another user's private page. Best response?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "403"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "401"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "200 with an error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "301"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which part of a URL is never sent to the server?",
+              "text": "Which part of a URL is never sent to the server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Fragment"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Query string"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Path"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Host"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is PUT primarily for?",
+              "text": "What is PUT primarily for?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Replace a resource entirely"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Partial update"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Delete"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Read headers"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Cache-Control: no-cache means:",
+              "text": "Cache-Control: no-cache means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Store it, but revalidate with the server before reuse"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Never store the response"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cache for one year"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cache only on CDN"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What response does a server give when a client's If-None-Match matches the current ETag?",
+              "text": "What response does a server give when a client's If-None-Match matches the current ETag?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "304"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "200"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "404"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "412"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which cookie flag prevents JavaScript from reading the cookie?",
+              "text": "Which cookie flag prevents JavaScript from reading the cookie?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "HttpOnly"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Secure"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SameSite"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Path"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "CORS errors are enforced by:",
+              "text": "CORS errors are enforced by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The browser"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The server"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The DNS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The database"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why does a preflight request exist?",
+              "text": "Why does a preflight request exist?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To ask permission before sending a potentially state-changing cross-origin request"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "To compress data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To authenticate"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To measure latency"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which HTTP method is used for a CORS preflight?",
+              "text": "Which HTTP method is used for a CORS preflight?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OPTIONS"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "GET"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "POST"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HEAD"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Two URLs have the same origin if they share:",
+              "text": "Two URLs have the same origin if they share:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Scheme, host and port"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only the host"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only the path"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only the port"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a valid reason to return 409?",
+              "text": "Which is a valid reason to return 409?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Creating a user with an email that already exists"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Malformed JSON"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Server crash"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Missing auth token"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why should res.status(200).json({ error }) be avoided?",
+              "text": "Why should res.status(200).json({ error }) be avoided?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It hides failures from clients and monitoring"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slower"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JSON can't contain error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Node forbids it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which header tells the server the format of the request body?",
+              "text": "Which header tells the server the format of the request body?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Content-Type"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Accept"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Host"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Location"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What problem does HTTP/2 multiplexing solve?",
+              "text": "What problem does HTTP/2 multiplexing solve?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Needing many parallel connections due to HTTP/1.1 head-of-line blocking"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "DNS delays"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Certificate cost"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cookie size"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "HTTP/3 is built on:",
+              "text": "HTTP/3 is built on:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "QUIC over UDP"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "TCP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SMTP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SSH"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What's wrong with Access-Control-Allow-Origin:  on an authenticated API using cookies?",
+              "text": "What's wrong with Access-Control-Allow-Origin:  on an authenticated API using cookies?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Browsers reject wildcard with credentials, and a reflected-any-origin workaround is insecure"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It disables HTTPS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It slows queries"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is idempotency important for payment endpoints?",
+              "text": "Why is idempotency important for payment endpoints?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Safe retries without double-charging"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It makes them faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It encrypts the card"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It enables caching"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">HTTP Explained: Methods, Status &amp; Headers</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:8.3%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item active" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers" aria-current="page"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 3 of 36 &middot; Beginner</p>
+                        <h1>HTTP Explained: Methods, Status Codes, Headers, Cookies and Caching</h1>
+                        <p class="learn-book-title">HTTP Deep Dive — The Language Every API Speaks</p>
+                        <ul class="learn-meta text-caption">
+                            <li>31 min read</li>
+                            <li>Beginner</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/http-explained-methods-status-codes-headers.webp"><img src="../../assets/images/learn/backend-master/http-explained-methods-status-codes-headers.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="HTTP Explained: Methods, Status Codes, Headers, Cookies and Caching: Backend Master chapter 3 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>HTTP is the request-response protocol every web API speaks. This chapter covers requests and responses on the wire, safe and idempotent methods, the status code families, essential headers, cookies, caching and the differences between HTTP/1.1, HTTP/2 and HTTP/3, with runnable examples.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>The structure of an HTTP request and response</li><li>Methods, safety and idempotency</li><li>Status code families and when to use each</li><li>Headers, cookies and content negotiation</li><li>HTTP caching basics and protocol versions</li></ul>
+                        </section>
+<hr>
+
+<h2 id="3-0-why-this-chapter-matters">3.0 Why This Chapter Matters</h2>
+<p>HTTP is the single most important protocol in a backend engineer&#39;s life. REST, GraphQL, webhooks, OAuth, cookies, caching, CORS, load balancers: all of them are HTTP concepts wearing different hats. If you truly understand HTTP, a huge fraction of backend work stops being mysterious.</p>
+<p>After this chapter you&#39;ll be able to:</p>
+<ul>
+<li>Read and write raw HTTP messages by eye.</li>
+<li>Choose the right <strong>method</strong> and <strong>status code</strong> every time.</li>
+<li>Explain exactly how <strong>headers</strong>, <strong>cookies</strong>, <strong>caching</strong> and <strong>CORS</strong> work (and why CORS errors happen).</li>
+<li>Choose between HTTP/1.1, HTTP/2 and HTTP/3 and explain what changed.</li>
+<li>Debug any API call with <code>curl</code>.</li>
+</ul>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>HTTP was created by Tim Berners-Lee in 1989–1991. HTTP/0.9 had exactly <strong>one</strong> method (<code>GET</code>) and no headers or status codes. The version we use most (HTTP/1.1) was standardized in 1997, and its core is still running most of the web nearly three decades later. That&#39;s how good a simple, text-based design can be.</p>
+</aside>
+<hr>
+
+<h2 id="3-1-http-in-one-sentence">3.1 HTTP in One Sentence</h2>
+<blockquote>
+<p><strong>HTTP is a request-response protocol where a client sends a text-based message describing what it wants, and the server replies with a text-based message describing the result.</strong></p>
+</blockquote>
+<p>Two properties define its character:</p>
+<ol>
+<li><strong>Request-response.</strong> Always one question, one answer. The client asks first.</li>
+<li><strong>Stateless.</strong> The server treats every request as brand new; it doesn&#39;t remember previous ones. &quot;Who are you again?&quot; is answered by sending identity (a cookie, a token) <em>with every request</em>.</li>
+</ol>
+<h3 id="why-stateless">Why stateless?</h3>
+<p>Because it makes servers <strong>easy to scale</strong>. If request #2 doesn&#39;t depend on a particular server remembering request #1, <em>any</em> of 50 servers can answer it. Statelessness is the single biggest reason the web scaled. (Where state does need to exist, we move it to a database, a cache, or the client itself. Chapters <a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">19</a>, 21, 29.)</p>
+<h3 id="real-life-analogy-a-drive-through-with-amnesia">Real-Life Analogy: A Drive-Through With Amnesia</h3>
+<p>Every time you pull up, the person at the window has zero memory of you. So each time you must say who you are and what you want (&quot;Member #123, one coffee&quot;). It&#39;s repetitive, but any window, at any branch, can serve you, and no one has to maintain a customer-memory system.</p>
+<hr>
+
+<h2 id="3-2-anatomy-of-an-http-message">3.2 Anatomy of an HTTP Message</h2>
+<h3 id="the-request">The request</h3>
+<pre class="is-plain"><code>POST /orders?source=app HTTP/1.1            ← request line: METHOD, target, version
+Host: api.shopline.com                      ┐
+Content-Type: application/json              │ headers: &quot;Name: value&quot;
+Authorization: Bearer eyJhbGciOi...         │
+Content-Length: 41                          ┘
+                                            ← blank line: headers end
+{&quot;productId&quot;: 7, &quot;quantity&quot;: 2}             ← body (optional)</code></pre>
+<h3 id="the-response">The response</h3>
+<pre class="is-plain"><code>HTTP/1.1 201 Created                        ← status line: version, code, reason
+Content-Type: application/json              ┐ headers
+Location: /orders/9912                      │
+Content-Length: 58                          ┘
+                                            ← blank line
+{&quot;id&quot;: 9912, &quot;productId&quot;: 7, &quot;quantity&quot;: 2} ← body</code></pre>
+<p>Each line ends with <code>\r\n</code> (CRLF). A blank line separates headers from the body. That is the entire format.</p>
+<h3 id="anatomy-of-a-url">Anatomy of a URL</h3>
+<pre class="is-plain"><code>  https://user@api.shopline.com:8443/v1/products/42?color=red&amp;sort=price#reviews
+  └─┬──┘   └──┬─┘ └──────┬──────┘└─┬─┘└──────┬───────┘└────────┬────────┘└──┬───┘
+ scheme   userinfo     host      port     path             query        fragment</code></pre>
+<ul>
+<li><strong>Scheme:</strong> protocol (<code>http</code>, <code>https</code>).</li>
+<li><strong>Host + port:</strong> where to connect (port defaults: 80 / 443).</li>
+<li><strong>Path:</strong> which resource.</li>
+<li><strong>Query string:</strong> key=value options, <code>&amp;</code>-separated. Must be URL-encoded (<code>a b</code> → <code>a%20b</code>).</li>
+<li><strong>Fragment (<code>#reviews</code>):</strong> processed <em>only by the browser</em>; <strong>never sent to the server.</strong></li>
+</ul>
+<h3 id="seeing-it-in-node-read-everything-the-client-sent">Seeing it in Node: read everything the client sent</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// inspector.js</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+
+http.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> url = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(req.<span class="hljs-property">url</span>, <span class="hljs-string">`http://<span class="hljs-subst">${req.headers.host}</span>`</span>);
+
+  <span class="hljs-keyword">let</span> body = <span class="hljs-string">&#x27;&#x27;</span>;
+  req.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;data&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">chunk</span>) =&gt;</span> (body += chunk));
+  req.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;end&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> info = {
+      <span class="hljs-attr">method</span>: req.<span class="hljs-property">method</span>,
+      <span class="hljs-attr">path</span>: url.<span class="hljs-property">pathname</span>,
+      <span class="hljs-attr">query</span>: <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(url.<span class="hljs-property">searchParams</span>),
+      <span class="hljs-attr">headers</span>: req.<span class="hljs-property">headers</span>,
+      body,
+    };
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Content-Type&#x27;</span>, <span class="hljs-string">&#x27;application/json&#x27;</span>);
+    res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(info, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+  });
+}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Inspector on 3000&#x27;</span>));</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -X POST <span class="hljs-string">&quot;http://localhost:3000/orders?source=app&quot;</span> \
+     -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> \
+     -d <span class="hljs-string">&#x27;{&quot;productId&quot;:7,&quot;quantity&quot;:2}&#x27;</span></code></pre></div>
+<p>Output (abridged):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JSON</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;method&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;POST&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/orders&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;query&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;source&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;app&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;headers&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;host&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;localhost:3000&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;user-agent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;curl/8.4.0&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;accept&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;*/*&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;content-type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;application/json&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;content-length&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;31&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;{\&quot;productId\&quot;:7,\&quot;quantity\&quot;:2}&quot;</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<p>Notice Node lower-cases header names. HTTP header names are case-insensitive.</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip</span></h3>
+<p>Keep this &quot;inspector&quot; server around. When you can&#39;t tell what a client is <em>really</em> sending (a mobile app, a webhook provider, a browser), point it at your inspector.</p>
+</aside>
+<hr>
+
+<h2 id="3-3-http-methods">3.3 HTTP Methods</h2>
+<p>The method tells the server the <strong>intent</strong>.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Intent</th>
+<th>Has body?</th>
+<th>Safe?</th>
+<th>Idempotent?</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>GET</strong></td>
+<td>Read a resource</td>
+<td>No</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>HEAD</strong></td>
+<td>Like GET but headers only</td>
+<td>No</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>POST</strong></td>
+<td>Create / trigger an action</td>
+<td>Yes</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><strong>PUT</strong></td>
+<td>Replace a resource entirely</td>
+<td>Yes</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>PATCH</strong></td>
+<td>Modify part of a resource</td>
+<td>Yes</td>
+<td>❌</td>
+<td>Not guaranteed</td>
+</tr>
+<tr>
+<td><strong>DELETE</strong></td>
+<td>Remove a resource</td>
+<td>Usually no</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>OPTIONS</strong></td>
+<td>&quot;What can I do here?&quot; (CORS preflight)</td>
+<td>No</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody></table></div>
+<h3 id="two-critical-definitions">Two critical definitions</h3>
+<ul>
+<li><strong>Safe:</strong> doesn&#39;t change server state. A crawler or prefetcher may call it freely. <em>That&#39;s why you must never delete things with a GET link:</em> a search-engine bot will happily &quot;click&quot; every link.</li>
+<li><strong>Idempotent:</strong> doing it once or ten times leaves the server in the same state. <code>DELETE /orders/5</code> ten times → the order is gone (after the first). <code>POST /orders</code> ten times → ten orders (usually).</li>
+</ul>
+<h3 id="why-idempotency-is-a-big-deal">Why idempotency is a big deal</h3>
+<p>Networks fail. A client sends <code>POST /payments</code>, the connection drops, and it doesn&#39;t know whether the payment happened. Should it retry? If the operation isn&#39;t idempotent, a retry may <strong>charge the customer twice</strong>. The industry solution is the <strong>idempotency key</strong>, a unique ID the client sends so the server can recognize duplicates (Chapters <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">8</a> and 26). Keep this in mind; it&#39;s a favorite interview topic.</p>
+<h3 id="put-vs-patch">PUT vs PATCH</h3>
+<pre class="is-plain"><code>Existing:  { &quot;name&quot;: &quot;Pen&quot;, &quot;price&quot;: 15, &quot;stock&quot;: 100 }
+
+PUT   /products/2   { &quot;name&quot;: &quot;Pen&quot;, &quot;price&quot;: 18 }
+  → replaces the whole thing:  { &quot;name&quot;: &quot;Pen&quot;, &quot;price&quot;: 18 }     (stock is gone!)
+
+PATCH /products/2   { &quot;price&quot;: 18 }
+  → changes only price:        { &quot;name&quot;: &quot;Pen&quot;, &quot;price&quot;: 18, &quot;stock&quot;: 100 }</code></pre>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>G</strong>et = <strong>G</strong>ive me. <strong>P</strong>ost = <strong>P</strong>ut it in a new place (create). <strong>P</strong>ut = <strong>P</strong>lace exactly this here (replace). <strong>P</strong>atch = tweak a bit. <strong>D</strong>elete = <strong>D</strong>estroy.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-using-post-for-everything" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Using POST for everything</span></h3>
+<p>Many beginners use <code>POST</code> for reads &quot;because it can carry a body.&quot; This loses caching (GET responses can be cached; POST&#39;s generally aren&#39;t), breaks retry safety, and confuses tools. Use the method that matches the intent.</p>
+</aside>
+<hr>
+
+<h2 id="3-4-status-codes">3.4 Status Codes</h2>
+<p>The status code is a 3-digit number whose <strong>first digit is the class</strong>:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Class</th>
+<th>Meaning</th>
+<th>Think</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>1xx</strong></td>
+<td>Informational</td>
+<td>&quot;Hold on…&quot;</td>
+</tr>
+<tr>
+<td><strong>2xx</strong></td>
+<td>Success</td>
+<td>&quot;Done.&quot;</td>
+</tr>
+<tr>
+<td><strong>3xx</strong></td>
+<td>Redirection</td>
+<td>&quot;Look over there.&quot;</td>
+</tr>
+<tr>
+<td><strong>4xx</strong></td>
+<td>Client error</td>
+<td>&quot;<strong>You</strong> messed up.&quot;</td>
+</tr>
+<tr>
+<td><strong>5xx</strong></td>
+<td>Server error</td>
+<td>&quot;<strong>I</strong> messed up.&quot;</td>
+</tr>
+</tbody></table></div>
+<h3 id="the-ones-you-must-know-cold">The ones you must know cold</h3>
+<p><strong>2xx: Success</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Code</th>
+<th>Name</th>
+<th>Use when</th>
+</tr>
+</thead><tbody><tr>
+<td>200</td>
+<td>OK</td>
+<td>Successful read / update with a response body</td>
+</tr>
+<tr>
+<td>201</td>
+<td>Created</td>
+<td>A resource was created (include <code>Location</code> header)</td>
+</tr>
+<tr>
+<td>202</td>
+<td>Accepted</td>
+<td>Request accepted for <em>background</em> processing (not done yet)</td>
+</tr>
+<tr>
+<td>204</td>
+<td>No Content</td>
+<td>Success, nothing to return (typical for DELETE)</td>
+</tr>
+</tbody></table></div>
+<p><strong>3xx: Redirects</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Code</th>
+<th>Name</th>
+<th>Use when</th>
+</tr>
+</thead><tbody><tr>
+<td>301</td>
+<td>Moved Permanently</td>
+<td>URL changed forever (SEO transfers)</td>
+</tr>
+<tr>
+<td>302</td>
+<td>Found</td>
+<td>Temporary redirect</td>
+</tr>
+<tr>
+<td>304</td>
+<td>Not Modified</td>
+<td>Cached copy is still valid (see §3.8)</td>
+</tr>
+<tr>
+<td>307 / 308</td>
+<td>Temp / Permanent Redirect</td>
+<td>Like 302/301, but <strong>preserve the method</strong> (POST stays POST)</td>
+</tr>
+</tbody></table></div>
+<p><strong>4xx: The client&#39;s fault</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Code</th>
+<th>Name</th>
+<th>Use when</th>
+</tr>
+</thead><tbody><tr>
+<td>400</td>
+<td>Bad Request</td>
+<td>Malformed JSON, failed validation</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized</td>
+<td>Not authenticated (missing/invalid credentials). Really means &quot;unauthenticated&quot;</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden</td>
+<td>Authenticated, but <strong>not allowed</strong></td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found</td>
+<td>Resource doesn&#39;t exist</td>
+</tr>
+<tr>
+<td>405</td>
+<td>Method Not Allowed</td>
+<td>Wrong method for this path (send <code>Allow</code> header)</td>
+</tr>
+<tr>
+<td>409</td>
+<td>Conflict</td>
+<td>State conflict: duplicate email, edit conflict</td>
+</tr>
+<tr>
+<td>413</td>
+<td>Payload Too Large</td>
+<td>Body exceeds limit</td>
+</tr>
+<tr>
+<td>415</td>
+<td>Unsupported Media Type</td>
+<td>Wrong <code>Content-Type</code></td>
+</tr>
+<tr>
+<td>422</td>
+<td>Unprocessable Content</td>
+<td>Syntactically valid but semantically invalid</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Too Many Requests</td>
+<td>Rate limited (send <code>Retry-After</code>)</td>
+</tr>
+</tbody></table></div>
+<p><strong>5xx: The server&#39;s fault</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Code</th>
+<th>Name</th>
+<th>Use when</th>
+</tr>
+</thead><tbody><tr>
+<td>500</td>
+<td>Internal Server Error</td>
+<td>Unhandled bug</td>
+</tr>
+<tr>
+<td>502</td>
+<td>Bad Gateway</td>
+<td>A proxy got an invalid response from your app</td>
+</tr>
+<tr>
+<td>503</td>
+<td>Service Unavailable</td>
+<td>Overloaded or down for maintenance (send <code>Retry-After</code>)</td>
+</tr>
+<tr>
+<td>504</td>
+<td>Gateway Timeout</td>
+<td>A proxy waited too long for your app</td>
+</tr>
+</tbody></table></div>
+<h3 id="401-vs-403-the-classic-confusion">401 vs 403: the classic confusion</h3>
+<ul>
+<li><strong>401:</strong> &quot;I don&#39;t know who you are.&quot; → <em>log in</em>.</li>
+<li><strong>403:</strong> &quot;I know exactly who you are, and the answer is no.&quot; → logging in again won&#39;t help.</li>
+</ul>
+<pre class="is-plain"><code>No token sent                  → 401
+Valid token, but regular user
+  tries to open the admin page → 403</code></pre>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-2" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>4xx = &quot;you&quot; (the client). 5xx = &quot;us&quot; (the server).</strong> If your <em>monitoring</em> shows a spike of 5xx, page the on-call. A spike of 4xx usually means a bad client release or an attack, not your bug (though sometimes it&#39;s your confusing API).</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;What status code do you return when…&quot; appears constantly: duplicate signup (409), validation error (400/422), accessing another user&#39;s order (403, or 404 to avoid leaking existence), creating a resource (201), deleting (204), rate limit (429). Having these reflexively ready signals real experience.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-200-ok-with-error" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: <code>200 OK</code> with <code>{ &quot;error&quot;: &quot;...&quot; }</code></span></h3>
+<p>Returning HTTP 200 for failures forces every client to parse the body to learn it failed, and breaks monitoring (your dashboards say &quot;100% success&quot; during an outage). Use the right status code; put details in the body.</p>
+</aside>
+<hr>
+
+<h2 id="3-5-headers">3.5 Headers</h2>
+<p>Headers are the metadata of HTTP. They fall into a few groups.</p>
+<h3 id="request-headers-client-server">Request headers (client → server)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Header</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><code>Host</code></td>
+<td>Which site (lets one IP host many domains). <strong>Required in HTTP/1.1</strong></td>
+<td><code>Host: api.shopline.com</code></td>
+</tr>
+<tr>
+<td><code>User-Agent</code></td>
+<td>Who is calling</td>
+<td><code>curl/8.4.0</code></td>
+</tr>
+<tr>
+<td><code>Accept</code></td>
+<td>Formats the client can handle</td>
+<td><code>Accept: application/json</code></td>
+</tr>
+<tr>
+<td><code>Accept-Language</code></td>
+<td>Preferred languages</td>
+<td><code>en-IN, hi;q=0.8</code></td>
+</tr>
+<tr>
+<td><code>Accept-Encoding</code></td>
+<td>Compression supported</td>
+<td><code>gzip, br</code></td>
+</tr>
+<tr>
+<td><code>Authorization</code></td>
+<td>Credentials</td>
+<td><code>Bearer &lt;token&gt;</code></td>
+</tr>
+<tr>
+<td><code>Cookie</code></td>
+<td>Cookies the browser sends back</td>
+<td><code>session=abc123</code></td>
+</tr>
+<tr>
+<td><code>Content-Type</code></td>
+<td>Format of the <strong>request body</strong></td>
+<td><code>application/json</code></td>
+</tr>
+<tr>
+<td><code>Content-Length</code></td>
+<td>Body size in bytes</td>
+<td><code>41</code></td>
+</tr>
+<tr>
+<td><code>Origin</code></td>
+<td>Where a cross-origin request came from (CORS)</td>
+<td><code>https://shopline.com</code></td>
+</tr>
+<tr>
+<td><code>If-None-Match</code></td>
+<td>Conditional request using an ETag</td>
+<td><code>&quot;v42&quot;</code></td>
+</tr>
+</tbody></table></div>
+<h3 id="response-headers-server-client">Response headers (server → client)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Header</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><code>Content-Type</code></td>
+<td>Format of the <strong>response body</strong></td>
+<td><code>application/json; charset=utf-8</code></td>
+</tr>
+<tr>
+<td><code>Content-Length</code></td>
+<td>Size of body</td>
+<td><code>58</code></td>
+</tr>
+<tr>
+<td><code>Content-Encoding</code></td>
+<td>Compression applied</td>
+<td><code>gzip</code></td>
+</tr>
+<tr>
+<td><code>Set-Cookie</code></td>
+<td>Ask the client to store a cookie</td>
+<td><code>sid=abc; HttpOnly; Secure</code></td>
+</tr>
+<tr>
+<td><code>Location</code></td>
+<td>Where to go (redirects, 201)</td>
+<td><code>/orders/9912</code></td>
+</tr>
+<tr>
+<td><code>Cache-Control</code></td>
+<td>Caching rules</td>
+<td><code>public, max-age=3600</code></td>
+</tr>
+<tr>
+<td><code>ETag</code></td>
+<td>Version fingerprint of the content</td>
+<td><code>&quot;33a64df5&quot;</code></td>
+</tr>
+<tr>
+<td><code>Retry-After</code></td>
+<td>When to retry (429/503)</td>
+<td><code>120</code></td>
+</tr>
+<tr>
+<td><code>Access-Control-Allow-Origin</code></td>
+<td>CORS permission</td>
+<td><code>https://shopline.com</code></td>
+</tr>
+<tr>
+<td><code>Strict-Transport-Security</code></td>
+<td>&quot;Only use HTTPS for this site&quot;</td>
+<td><code>max-age=31536000</code></td>
+</tr>
+</tbody></table></div>
+<h3 id="custom-headers">Custom headers</h3>
+<p>You may invent your own: <code>X-Request-Id: 8f3a...</code>. The old convention prefixed these with <code>X-</code>; the prefix is no longer required, but you&#39;ll see it everywhere. A <strong>request ID</strong> header that you generate, log and return is gold for debugging (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>).</p>
+<h3 id="content-negotiation">Content negotiation</h3>
+<p>The client says what it accepts; the server picks:</p>
+<pre class="is-plain"><code>Accept: application/json         → server replies JSON
+Accept: text/html                → server replies HTML
+Accept-Encoding: gzip, br        → server may compress
+Accept-Language: hi              → server may reply in Hindi</code></pre>
+<h3 id="content-type-is-the-translator">Content-Type is the translator</h3>
+<p>The same bytes mean different things depending on <code>Content-Type</code>. Common ones:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Content-Type</th>
+<th>Body looks like</th>
+</tr>
+</thead><tbody><tr>
+<td><code>application/json</code></td>
+<td><code>{&quot;a&quot;:1}</code></td>
+</tr>
+<tr>
+<td><code>application/x-www-form-urlencoded</code></td>
+<td><code>a=1&amp;b=2</code> (classic HTML form)</td>
+</tr>
+<tr>
+<td><code>multipart/form-data</code></td>
+<td>File uploads (boundary-separated parts)</td>
+</tr>
+<tr>
+<td><code>text/plain</code>, <code>text/html</code></td>
+<td>Text / HTML</td>
+</tr>
+<tr>
+<td><code>application/octet-stream</code></td>
+<td>Raw binary</td>
+</tr>
+</tbody></table></div>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-missing-content-type-on-request" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Missing <code>Content-Type</code> on request</span></h3>
+<p><code>curl -d &#39;{&quot;a&quot;:1}&#39; url</code> sends <code>application/x-www-form-urlencoded</code> by default! Your JSON-parsing middleware then sees nothing. Always add <code>-H &quot;Content-Type: application/json&quot;</code> (or use <code>curl --json &#39;{&quot;a&quot;:1}&#39; url</code> in modern curl, which sets both the header and the method).</p>
+</aside>
+<hr>
+
+<h2 id="3-6-query-path-and-body-where-does-data-go">3.6 Query, Path and Body: Where Does Data Go?</h2>
+<p>Three places to put input. Choosing wisely keeps APIs predictable.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Place</th>
+<th>Use for</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Path</strong></td>
+<td><em>Identifying</em> a resource</td>
+<td><code>/products/42</code></td>
+</tr>
+<tr>
+<td><strong>Query string</strong></td>
+<td><em>Filtering, sorting, paging, options</em></td>
+<td><code>/products?category=pens&amp;sort=price&amp;page=2</code></td>
+</tr>
+<tr>
+<td><strong>Body</strong></td>
+<td><em>The data being created/updated</em> (large or sensitive)</td>
+<td><code>POST /orders</code> + JSON</td>
+</tr>
+<tr>
+<td><strong>Headers</strong></td>
+<td><em>Metadata about the request</em> (auth, format, tracing)</td>
+<td><code>Authorization</code>, <code>Accept</code></td>
+</tr>
+</tbody></table></div>
+<p>Rules of thumb:</p>
+<ul>
+<li><strong>Never put secrets in the URL</strong> (passwords, tokens). URLs end up in browser history, server logs, proxies and the <code>Referer</code> header.</li>
+<li>GET requests shouldn&#39;t have bodies (many tools drop them).</li>
+<li>URL length has practical limits (~2,000 chars is safe); large payloads go in the body.</li>
+</ul>
+<hr>
+
+<h2 id="3-7-cookies-statelessness-s-workaround">3.7 Cookies: Statelessness&#39;s Workaround</h2>
+<p>HTTP forgets you. How does a shop remember your cart or that you&#39;re logged in? <strong>Cookies</strong>: small key-value pieces of data the server asks the browser to store and send back on every later request to that site.</p>
+<pre class="is-plain"><code> 1. POST /login  (credentials)
+ 2. ◀── 200 OK
+        Set-Cookie: sid=abc123; HttpOnly; Secure; SameSite=Lax; Max-Age=86400
+
+ 3. GET /orders
+        Cookie: sid=abc123          ← browser attaches it automatically
+ 4. ◀── server looks up &quot;abc123&quot; → &quot;this is Asha&quot; → returns her orders</code></pre>
+<h3 id="the-attributes-that-keep-cookies-safe">The attributes that keep cookies safe</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Attribute</th>
+<th>Meaning</th>
+<th>Why it matters</th>
+</tr>
+</thead><tbody><tr>
+<td><code>HttpOnly</code></td>
+<td>JavaScript can&#39;t read it</td>
+<td>Stops XSS from stealing the session</td>
+</tr>
+<tr>
+<td><code>Secure</code></td>
+<td>Sent only over HTTPS</td>
+<td>Prevents sniffing</td>
+</tr>
+<tr>
+<td><code>SameSite=Lax</code> / <code>Strict</code> / <code>None</code></td>
+<td>Controls sending on cross-site requests</td>
+<td>Main defense against CSRF</td>
+</tr>
+<tr>
+<td><code>Max-Age</code> / <code>Expires</code></td>
+<td>Lifetime</td>
+<td>Session vs persistent</td>
+</tr>
+<tr>
+<td><code>Domain</code> / <code>Path</code></td>
+<td>Scope</td>
+<td>Which hosts/paths receive it</td>
+</tr>
+</tbody></table></div>
+<p><strong>Defaults to remember: a session cookie should be <code>HttpOnly; Secure; SameSite=Lax</code> (or <code>Strict</code>) unless you have a reason not to.</strong></p>
+<h3 id="setting-and-reading-cookies-in-raw-node">Setting and reading cookies in raw Node</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// cookies.js</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+
+http.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> cookies = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(
+    (req.<span class="hljs-property">headers</span>.<span class="hljs-property">cookie</span> || <span class="hljs-string">&#x27;&#x27;</span>)
+      .<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;; &#x27;</span>)
+      .<span class="hljs-title function_">filter</span>(<span class="hljs-title class_">Boolean</span>)
+      .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">c</span>) =&gt;</span> c.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27;=&#x27;</span>))
+  );
+
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-property">url</span> === <span class="hljs-string">&#x27;/login&#x27;</span>) {
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Set-Cookie&#x27;</span>, <span class="hljs-string">&#x27;sid=abc123; HttpOnly; SameSite=Lax; Max-Age=3600; Path=/&#x27;</span>);
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">end</span>(<span class="hljs-string">&#x27;logged in\n&#x27;</span>);
+  }
+
+  res.<span class="hljs-title function_">end</span>(cookies.<span class="hljs-property">sid</span> ? <span class="hljs-string">`hello, session <span class="hljs-subst">${cookies.sid}</span>\n`</span> : <span class="hljs-string">&#x27;who are you?\n&#x27;</span>);
+}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -i -c jar.txt http://localhost:3000/login      <span class="hljs-comment"># -c saves cookies to a &quot;jar&quot;</span>
+curl -b jar.txt http://localhost:3000/              <span class="hljs-comment"># -b sends them back</span></code></pre></div>
+<p>Output of the second command:</p>
+<pre class="is-plain"><code>hello, session abc123</code></pre>
+<p>(Production code must never use a guessable value like <code>abc123</code>; <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a> covers secure session IDs.)</p>
+<h3 id="cookies-vs-tokens-preview">Cookies vs tokens (preview)</h3>
+<p>Cookies are sent automatically by browsers; mobile apps and other servers usually send an explicit <code>Authorization: Bearer &lt;token&gt;</code> header. We compare both in <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a>.</p>
+<hr>
+
+<h2 id="3-8-http-caching">3.8 HTTP Caching</h2>
+<p>The fastest request is the one never made. HTTP has caching built into the protocol, so browsers, CDNs and proxies can reuse responses without bothering your server.</p>
+<h3 id="3-8-1-cache-control">3.8.1 <code>Cache-Control</code></h3>
+<pre class="is-plain"><code>Cache-Control: public, max-age=3600     → anyone may cache for 1 hour
+Cache-Control: private, max-age=600     → only the user's browser may cache (personalized)
+Cache-Control: no-store                 → never store (sensitive data)
+Cache-Control: no-cache                 → may store, but MUST revalidate before use
+Cache-Control: max-age=31536000, immutable   → fingerprinted static assets (app.9f3a.js)</code></pre>
+<p>Beginners confuse <code>no-cache</code> and <code>no-store</code>: <strong><code>no-cache</code> does <em>not</em> mean &quot;don&#39;t cache.&quot;</strong> It means &quot;check with the server before reusing.&quot; <code>no-store</code> means &quot;do not keep a copy at all.&quot;</p>
+<h3 id="3-8-2-revalidation-with-etag-conditional-requests">3.8.2 Revalidation with ETag (conditional requests)</h3>
+<p>After the cache lifetime expires, the client doesn&#39;t need to re-download an unchanged file. It <em>asks</em>:</p>
+<pre class="is-plain"><code> FIRST REQUEST
+   GET /products/42
+   ◀── 200 OK
+       ETag: &quot;v7&quot;
+       Cache-Control: max-age=60
+       { ...2 KB of JSON... }
+
+ LATER (after 60 s)
+   GET /products/42
+   If-None-Match: &quot;v7&quot;             ← &quot;I have version v7; changed?&quot;
+   ◀── 304 Not Modified            ← &quot;No. Use your copy.&quot; (no body, tiny)</code></pre>
+<p>A 304 saves bandwidth and processing. (You still pay the round trip, but not the payload and, if designed well, not the DB work.)</p>
+<h3 id="3-8-3-try-it">3.8.3 Try it</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// etag-server.js</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+<span class="hljs-keyword">const</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:crypto&#x27;</span>);
+
+<span class="hljs-keyword">const</span> product = { <span class="hljs-attr">id</span>: <span class="hljs-number">42</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Notebook&#x27;</span>, <span class="hljs-attr">price</span>: <span class="hljs-number">120</span> };
+
+http.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> body = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(product);
+  <span class="hljs-keyword">const</span> etag = <span class="hljs-string">`&quot;<span class="hljs-subst">${crypto.createHash(<span class="hljs-string">&#x27;md5&#x27;</span>).update(body).digest(<span class="hljs-string">&#x27;hex&#x27;</span>)}</span>&quot;`</span>;
+
+  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Content-Type&#x27;</span>, <span class="hljs-string">&#x27;application/json&#x27;</span>);
+  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;ETag&#x27;</span>, etag);
+  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Cache-Control&#x27;</span>, <span class="hljs-string">&#x27;public, max-age=10&#x27;</span>);
+
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-property">headers</span>[<span class="hljs-string">&#x27;if-none-match&#x27;</span>] === etag) {
+    res.<span class="hljs-property">statusCode</span> = <span class="hljs-number">304</span>;
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">end</span>();
+  }
+  res.<span class="hljs-title function_">end</span>(body);
+}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -i http://localhost:3000/
+<span class="hljs-comment"># → 200 OK, ETag: &quot;5b1c...&quot;</span>
+curl -i -H <span class="hljs-string">&#x27;If-None-Match: &quot;5b1c...&quot;&#x27;</span> http://localhost:3000/    <span class="hljs-comment"># paste the real etag</span>
+<span class="hljs-comment"># → 304 Not Modified   (no body)</span></code></pre></div>
+<p>(MD5 here is just a fingerprint, not a security feature.)</p>
+<h3 id="3-8-4-who-caches">3.8.4 Who caches?</h3>
+<pre class="is-plain"><code> browser cache ──▶ CDN / shared proxy cache ──▶ your reverse proxy ──▶ app ──▶ DB cache
+   private          public (shared)</code></pre>
+<p><code>private</code> vs <code>public</code> decides whether <em>shared</em> caches (CDNs) may store a response. <strong>Caching a personalized response as <code>public</code> can leak one user&#39;s data to another.</strong> That bug has caused real data breaches.</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip-2" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip</span></h3>
+<p>For static assets, use <strong>content-hashed filenames</strong> (<code>app.9f3a1c.js</code>) with <code>max-age=31536000, immutable</code>. When the file changes, its name changes, so you never need to &quot;invalidate.&quot; For HTML and API responses, use short lifetimes plus ETags.</p>
+</aside>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern-2" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;There are only two hard things in computer science: cache invalidation and naming things.&quot; Expect questions on how you&#39;d handle stale data. HTTP gives you: short <code>max-age</code>, ETag revalidation, versioned URLs, and <code>Vary</code>. <a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a> goes deeper.</p>
+</aside>
+<hr>
+
+<h2 id="3-9-cors-the-most-misunderstood-error-in-web-development">3.9 CORS: The Most Misunderstood Error in Web Development</h2>
+<p>You build a frontend at <code>http://localhost:5173</code> and call your API at <code>http://localhost:3000</code>. The browser blocks it:</p>
+<pre class="is-plain"><code>Access to fetch at 'http://localhost:3000/products' from origin 'http://localhost:5173'
+has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present.</code></pre>
+<h3 id="3-9-1-first-the-same-origin-policy">3.9.1 First: the Same-Origin Policy</h3>
+<p>A browser lets a page read responses only from <strong>its own origin</strong>. An <strong>origin</strong> is <code>scheme + host + port</code>:</p>
+<pre class="is-plain"><code>https://shopline.com        ← origin A
+https://shopline.com/cart   ← same origin as A
+http://shopline.com         ← different (scheme)
+https://api.shopline.com    ← different (host)
+https://shopline.com:8443   ← different (port)</code></pre>
+<p>Why does this rule exist? Without it, any website you visit could run JavaScript that calls <code>https://yourbank.com/transfer</code> <em>using your logged-in cookies</em> and read the results. The Same-Origin Policy is a pillar of web security.</p>
+<h3 id="3-9-2-what-cors-is">3.9.2 What CORS is</h3>
+<p><strong>CORS (Cross-Origin Resource Sharing)</strong> is the <em>controlled loosening</em> of that rule. The <strong>server</strong> tells the browser which other origins may read its responses, through headers.</p>
+<p>Crucial facts:</p>
+<ol>
+<li><strong>CORS is enforced by the browser, not the server.</strong> <code>curl</code> and Postman ignore it. If &quot;it works in Postman but not in the browser,&quot; it&#39;s CORS.</li>
+<li><strong>CORS protects users, not your API.</strong> It doesn&#39;t stop attackers calling your API directly; that&#39;s what authentication is for.</li>
+<li><strong>The fix lives on the server</strong> (your backend sets headers), never in the frontend code.</li>
+</ol>
+<h3 id="3-9-3-simple-vs-preflighted-requests">3.9.3 Simple vs preflighted requests</h3>
+<p>For &quot;simple&quot; requests (GET/HEAD/POST with basic content types and no custom headers), the browser just sends the request with an <code>Origin</code> header and checks the response for permission.</p>
+<p>For anything else (<code>PUT</code>, <code>DELETE</code>, <code>PATCH</code>, <code>Content-Type: application/json</code>, custom headers like <code>Authorization</code>), the browser first sends a <strong>preflight</strong> <code>OPTIONS</code> request, a polite &quot;may I?&quot;:</p>
+<pre class="is-plain"><code> PREFLIGHT
+   OPTIONS /orders
+   Origin: http://localhost:5173
+   Access-Control-Request-Method: POST
+   Access-Control-Request-Headers: content-type, authorization
+   ◀── 204 No Content
+       Access-Control-Allow-Origin: http://localhost:5173
+       Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+       Access-Control-Allow-Headers: content-type, authorization
+       Access-Control-Max-Age: 600          ← cache this permission for 10 min
+
+ ACTUAL REQUEST (only if preflight passed)
+   POST /orders   Origin: http://localhost:5173
+   ◀── 201 Created
+       Access-Control-Allow-Origin: http://localhost:5173</code></pre>
+<h3 id="3-9-4-a-correct-cors-handler-in-raw-node">3.9.4 A correct CORS handler in raw Node</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// cors-server.js</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+
+<span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALLOWED</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">&#x27;http://localhost:5173&#x27;</span>, <span class="hljs-string">&#x27;https://shopline.com&#x27;</span>]);
+
+http.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> origin = req.<span class="hljs-property">headers</span>.<span class="hljs-property">origin</span>;
+
+  <span class="hljs-keyword">if</span> (origin &amp;&amp; <span class="hljs-variable constant_">ALLOWED</span>.<span class="hljs-title function_">has</span>(origin)) {
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Access-Control-Allow-Origin&#x27;</span>, origin);
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Vary&#x27;</span>, <span class="hljs-string">&#x27;Origin&#x27;</span>);   <span class="hljs-comment">// response differs by Origin → caches must know</span>
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Access-Control-Allow-Credentials&#x27;</span>, <span class="hljs-string">&#x27;true&#x27;</span>);
+  }
+
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-property">method</span> === <span class="hljs-string">&#x27;OPTIONS&#x27;</span>) {      <span class="hljs-comment">// preflight</span>
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Access-Control-Allow-Methods&#x27;</span>, <span class="hljs-string">&#x27;GET,POST,PUT,PATCH,DELETE&#x27;</span>);
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Access-Control-Allow-Headers&#x27;</span>, <span class="hljs-string">&#x27;Content-Type, Authorization&#x27;</span>);
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Access-Control-Max-Age&#x27;</span>, <span class="hljs-string">&#x27;600&#x27;</span>);
+    res.<span class="hljs-property">statusCode</span> = <span class="hljs-number">204</span>;
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">end</span>();
+  }
+
+  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Content-Type&#x27;</span>, <span class="hljs-string">&#x27;application/json&#x27;</span>);
+  res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>([{ <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Notebook&#x27;</span> }]));
+}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>);</code></pre></div>
+<p>(In Express you&#39;ll use the <code>cors</code> package, which does exactly this; <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>.)</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-access-control-allow-origin-with-credentials" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: <code>Access-Control-Allow-Origin: *</code> with credentials</span></h3>
+<p>Wildcard <code>*</code> means &quot;any website may read this.&quot; It is fine for truly public data. With cookies or auth (<code>credentials: &#39;include&#39;</code>), browsers <strong>refuse</strong> <code>*</code>; you must echo a specific allowed origin. And never reflect <em>any</em> incoming <code>Origin</code> blindly into the header; that is equivalent to <code>*</code> and is a classic vulnerability. Always check against an allow-list.</p>
+</aside>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-3" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>CORS = <strong>the club bouncer is the browser, but the guest list is written by the server.</strong></p>
+</aside>
+<hr>
+
+<h2 id="3-10-redirects-compression-and-connections">3.10 Redirects, Compression and Connections</h2>
+<h3 id="redirects">Redirects</h3>
+<pre class="is-plain"><code>GET /old-page
+◀── 301 Moved Permanently
+    Location: /new-page
+(client automatically requests /new-page)</code></pre>
+<p>Use <code>301/308</code> for permanent moves and <code>302/307</code> for temporary ones. Redirecting <code>http://</code> → <code>https://</code> is a 301/308 handled at the proxy.</p>
+<h3 id="compression">Compression</h3>
+<p>JSON and HTML compress very well. The client says <code>Accept-Encoding: gzip, br</code>; the server replies with <code>Content-Encoding: gzip</code>. This often cuts payloads by 70–90%. Usually the reverse proxy/CDN handles it. Never compress already-compressed data (images, video).</p>
+<h3 id="persistent-connections-keep-alive">Persistent connections (keep-alive)</h3>
+<p>In HTTP/1.0 every request opened a new TCP (+TLS) connection, the expensive handshakes from <a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a>. HTTP/1.1 keeps connections open by default (<code>Connection: keep-alive</code>) so multiple requests share one. When your backend calls other services, <strong>use an HTTP agent with keep-alive</strong> (Node 19+ enables it by default for the global agent; older code needs <code>new http.Agent({ keepAlive: true })</code>).</p>
+<hr>
+
+<h2 id="3-11-http-1-1-vs-http-2-vs-http-3">3.11 HTTP/1.1 vs HTTP/2 vs HTTP/3</h2>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>HTTP/1.1</th>
+<th>HTTP/2</th>
+<th>HTTP/3</th>
+</tr>
+</thead><tbody><tr>
+<td>Format</td>
+<td>Text</td>
+<td><strong>Binary frames</strong></td>
+<td>Binary frames</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>TCP</td>
+<td>TCP</td>
+<td><strong>QUIC (UDP)</strong></td>
+</tr>
+<tr>
+<td>Parallel requests</td>
+<td>One at a time per connection (browsers open ~6 connections)</td>
+<td><strong>Multiplexed</strong>: many streams on one connection</td>
+<td>Multiplexed, <strong>no TCP head-of-line blocking</strong></td>
+</tr>
+<tr>
+<td>Header handling</td>
+<td>Repeated plain text</td>
+<td><strong>HPACK compression</strong></td>
+<td>QPACK compression</td>
+</tr>
+<tr>
+<td>TLS</td>
+<td>Optional</td>
+<td>Practically required by browsers</td>
+<td>Built into QUIC</td>
+</tr>
+<tr>
+<td>Setup cost</td>
+<td>TCP + TLS</td>
+<td>TCP + TLS</td>
+<td>~1 RTT (0-RTT on resumption)</td>
+</tr>
+</tbody></table></div>
+<h3 id="the-problems-each-version-fixed">The problems each version fixed</h3>
+<ul>
+<li><strong>HTTP/1.1&#39;s pain: head-of-line blocking.</strong> A slow response blocks the ones behind it on that connection. Workarounds (multiple connections, sprite sheets, bundling files) were hacks.</li>
+<li><strong>HTTP/2</strong> multiplexes many requests over one TCP connection, compresses headers, and removes the need for most hacks. But a lost TCP packet stalls <em>all</em> streams (TCP-level head-of-line blocking).</li>
+<li><strong>HTTP/3</strong> moves to QUIC over UDP, so a lost packet only stalls its own stream, and connection setup is faster. It also survives network changes (Wi-Fi → mobile data) via connection IDs.</li>
+</ul>
+<p><strong>What changes for you as a backend developer?</strong> Almost nothing in your <em>application code</em>. The semantics (methods, headers, status codes) are identical across versions. Usually the reverse proxy or CDN speaks HTTP/2/3 to browsers, and plain HTTP/1.1 to your Node app. Know the differences conceptually; interviewers love them.</p>
+<hr>
+
+<h2 id="3-12-talking-http-with-curl-your-best-debugging-friend">3.12 Talking HTTP With curl (Your Best Debugging Friend)</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl URL                                  <span class="hljs-comment"># GET, print body</span>
+curl -i URL                               <span class="hljs-comment"># include response headers</span>
+curl -I URL                               <span class="hljs-comment"># HEAD request (headers only)</span>
+curl -v URL                               <span class="hljs-comment"># verbose: DNS/TCP/TLS + both messages</span>
+curl -X DELETE URL                        <span class="hljs-comment"># custom method</span>
+curl -H <span class="hljs-string">&quot;Authorization: Bearer TOKEN&quot;</span> URL <span class="hljs-comment"># add header</span>
+curl --json <span class="hljs-string">&#x27;{&quot;name&quot;:&quot;Pen&quot;}&#x27;</span> URL          <span class="hljs-comment"># POST JSON (sets Content-Type &amp; Accept)</span>
+curl -d <span class="hljs-string">&#x27;a=1&amp;b=2&#x27;</span> URL                     <span class="hljs-comment"># POST form data</span>
+curl -F <span class="hljs-string">&#x27;file=@photo.jpg&#x27;</span> URL             <span class="hljs-comment"># multipart file upload</span>
+curl -L URL                               <span class="hljs-comment"># follow redirects</span>
+curl -o out.json URL                      <span class="hljs-comment"># save body to a file</span>
+curl -s URL | jq .                        <span class="hljs-comment"># pretty-print JSON (needs jq)</span>
+curl -w <span class="hljs-string">&quot;%{http_code} %{time_total}s\n&quot;</span> -o /dev/null -s URL   <span class="hljs-comment"># status + timing only</span></code></pre></div>
+<p>Windows PowerShell note: <code>curl</code> is an alias for <code>Invoke-WebRequest</code>. Use <code>curl.exe</code> to get the real thing.</p>
+<p><strong>Postman / Insomnia / Thunder Client</strong> give you a GUI, saved collections and environments. Great for exploration; but learn curl too, because it works in scripts, servers, docs and CI.</p>
+<hr>
+
+<h2 id="3-13-putting-it-together-a-tiny-well-behaved-products-api">3.13 Putting It Together: A Tiny, Well-Behaved Products API</h2>
+<p>A raw-Node API applying everything: correct methods, status codes, headers, validation, errors.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// products-api.js</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;node:http&#x27;</span>);
+
+<span class="hljs-keyword">let</span> products = [
+  { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Notebook&#x27;</span>, <span class="hljs-attr">price</span>: <span class="hljs-number">120</span> },
+  { <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Pen&#x27;</span>, <span class="hljs-attr">price</span>: <span class="hljs-number">15</span> },
+];
+<span class="hljs-keyword">let</span> nextId = <span class="hljs-number">3</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">send</span> = (<span class="hljs-params">res, status, data, headers = {}</span>) =&gt; {
+  res.<span class="hljs-title function_">writeHead</span>(status, { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span>, ...headers });
+  res.<span class="hljs-title function_">end</span>(data === <span class="hljs-literal">undefined</span> ? <span class="hljs-string">&#x27;&#x27;</span> : <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(data));
+};
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">readJson</span> = (<span class="hljs-params">req</span>) =&gt;
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    <span class="hljs-keyword">let</span> raw = <span class="hljs-string">&#x27;&#x27;</span>;
+    req.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;data&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">c</span>) =&gt;</span> {
+      raw += c;
+      <span class="hljs-keyword">if</span> (raw.<span class="hljs-property">length</span> &gt; <span class="hljs-number">1e6</span>) { <span class="hljs-title function_">reject</span>({ <span class="hljs-attr">status</span>: <span class="hljs-number">413</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Body too large&#x27;</span> }); req.<span class="hljs-title function_">destroy</span>(); }
+    });
+    req.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;end&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+      <span class="hljs-keyword">try</span> { <span class="hljs-title function_">resolve</span>(raw ? <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(raw) : {}); }
+      <span class="hljs-keyword">catch</span> { <span class="hljs-title function_">reject</span>({ <span class="hljs-attr">status</span>: <span class="hljs-number">400</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Invalid JSON&#x27;</span> }); }
+    });
+  });
+
+http.<span class="hljs-title function_">createServer</span>(<span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> url = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(req.<span class="hljs-property">url</span>, <span class="hljs-string">`http://<span class="hljs-subst">${req.headers.host}</span>`</span>);
+    <span class="hljs-keyword">const</span> match = url.<span class="hljs-property">pathname</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/^\/products(?:\/(\d+))?$/</span>);
+    <span class="hljs-keyword">if</span> (!match) <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(res, <span class="hljs-number">404</span>, { <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Not found&#x27;</span> });
+    <span class="hljs-keyword">const</span> id = match[<span class="hljs-number">1</span>] ? <span class="hljs-title class_">Number</span>(match[<span class="hljs-number">1</span>]) : <span class="hljs-literal">null</span>;
+
+    <span class="hljs-comment">// GET /products</span>
+    <span class="hljs-keyword">if</span> (req.<span class="hljs-property">method</span> === <span class="hljs-string">&#x27;GET&#x27;</span> &amp;&amp; id === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(res, <span class="hljs-number">200</span>, products);
+
+    <span class="hljs-comment">// GET /products/:id</span>
+    <span class="hljs-keyword">if</span> (req.<span class="hljs-property">method</span> === <span class="hljs-string">&#x27;GET&#x27;</span>) {
+      <span class="hljs-keyword">const</span> p = products.<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> x.<span class="hljs-property">id</span> === id);
+      <span class="hljs-keyword">return</span> p ? <span class="hljs-title function_">send</span>(res, <span class="hljs-number">200</span>, p) : <span class="hljs-title function_">send</span>(res, <span class="hljs-number">404</span>, { <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Product not found&#x27;</span> });
+    }
+
+    <span class="hljs-comment">// POST /products</span>
+    <span class="hljs-keyword">if</span> (req.<span class="hljs-property">method</span> === <span class="hljs-string">&#x27;POST&#x27;</span> &amp;&amp; id === <span class="hljs-literal">null</span>) {
+      <span class="hljs-keyword">const</span> { name, price } = <span class="hljs-keyword">await</span> <span class="hljs-title function_">readJson</span>(req);
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> name !== <span class="hljs-string">&#x27;string&#x27;</span> || !name.<span class="hljs-title function_">trim</span>() || <span class="hljs-keyword">typeof</span> price !== <span class="hljs-string">&#x27;number&#x27;</span> || price &lt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(res, <span class="hljs-number">422</span>, { <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;name (string) and price (number &gt;= 0) are required&#x27;</span> });
+      }
+      <span class="hljs-keyword">const</span> product = { <span class="hljs-attr">id</span>: nextId++, <span class="hljs-attr">name</span>: name.<span class="hljs-title function_">trim</span>(), price };
+      products.<span class="hljs-title function_">push</span>(product);
+      <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(res, <span class="hljs-number">201</span>, product, { <span class="hljs-title class_">Location</span>: <span class="hljs-string">`/products/<span class="hljs-subst">${product.id}</span>`</span> });
+    }
+
+    <span class="hljs-comment">// DELETE /products/:id</span>
+    <span class="hljs-keyword">if</span> (req.<span class="hljs-property">method</span> === <span class="hljs-string">&#x27;DELETE&#x27;</span> &amp;&amp; id !== <span class="hljs-literal">null</span>) {
+      <span class="hljs-keyword">const</span> before = products.<span class="hljs-property">length</span>;
+      products = products.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> x.<span class="hljs-property">id</span> !== id);
+      <span class="hljs-keyword">return</span> products.<span class="hljs-property">length</span> &lt; before ? <span class="hljs-title function_">send</span>(res, <span class="hljs-number">204</span>) : <span class="hljs-title function_">send</span>(res, <span class="hljs-number">404</span>, { <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Product not found&#x27;</span> });
+    }
+
+    <span class="hljs-comment">// Right path, wrong method</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(res, <span class="hljs-number">405</span>, { <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Method not allowed&#x27;</span> }, { <span class="hljs-title class_">Allow</span>: <span class="hljs-string">&#x27;GET, POST, DELETE&#x27;</span> });
+  } <span class="hljs-keyword">catch</span> (err) {
+    <span class="hljs-keyword">if</span> (err.<span class="hljs-property">status</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(res, err.<span class="hljs-property">status</span>, { <span class="hljs-attr">error</span>: err.<span class="hljs-property">message</span> });
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(err);
+    <span class="hljs-keyword">return</span> <span class="hljs-title function_">send</span>(res, <span class="hljs-number">500</span>, { <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;Internal server error&#x27;</span> });  <span class="hljs-comment">// never leak internals</span>
+  }
+}).<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Products API on 3000&#x27;</span>));</code></pre></div>
+<p>Exercise it:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -i http://localhost:3000/products/1
+<span class="hljs-comment"># HTTP/1.1 200 OK ... {&quot;id&quot;:1,&quot;name&quot;:&quot;Notebook&quot;,&quot;price&quot;:120}</span>
+
+curl -i --json <span class="hljs-string">&#x27;{&quot;name&quot;:&quot;Eraser&quot;,&quot;price&quot;:5}&#x27;</span> http://localhost:3000/products
+<span class="hljs-comment"># HTTP/1.1 201 Created</span>
+<span class="hljs-comment"># Location: /products/3</span>
+
+curl -i --json <span class="hljs-string">&#x27;{&quot;name&quot;:&quot;&quot;,&quot;price&quot;:-1}&#x27;</span> http://localhost:3000/products
+<span class="hljs-comment"># HTTP/1.1 422 ... {&quot;error&quot;:&quot;name (string) and price (number &gt;= 0) are required&quot;}</span>
+
+curl -i -X DELETE http://localhost:3000/products/3
+<span class="hljs-comment"># HTTP/1.1 204 No Content</span>
+
+curl -i -X PUT http://localhost:3000/products/1
+<span class="hljs-comment"># HTTP/1.1 405 Method Not Allowed   Allow: GET, POST, DELETE</span></code></pre></div>
+<p>Count the concepts in just ~50 lines: methods, 200/201/204/404/405/413/422/500, <code>Location</code>, <code>Allow</code>, JSON handling, body limit, centralized error handling. Frameworks (Express, Fastify) shrink the boilerplate, but these decisions remain yours.</p>
+<hr>
+
+<h2 id="3-14-edge-cases-and-gotchas-checklist">3.14 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>Content-Type</code> missing or wrong → body ignored or mis-parsed.</li>
+<li><input disabled="" type="checkbox"> <code>res.end()</code> forgotten → client hangs.</li>
+<li><input disabled="" type="checkbox"> Setting headers <em>after</em> the body started → <code>ERR_HTTP_HEADERS_SENT</code>.</li>
+<li><input disabled="" type="checkbox"> No body-size limit → memory exhaustion by a malicious client.</li>
+<li><input disabled="" type="checkbox"> Invalid JSON crashes the process → always <code>try/catch</code> the parse.</li>
+<li><input disabled="" type="checkbox"> 200 on errors → breaks clients and monitoring.</li>
+<li><input disabled="" type="checkbox"> Leaking stack traces in 500 responses → information disclosure.</li>
+<li><input disabled="" type="checkbox"> Secrets in URLs/query strings → end up in logs.</li>
+<li><input disabled="" type="checkbox"> GET with side effects → crawlers, prefetchers and link previews trigger them.</li>
+<li><input disabled="" type="checkbox"> CORS <code>*</code> + credentials, or reflecting any <code>Origin</code> → security hole.</li>
+<li><input disabled="" type="checkbox"> Caching personalized data as <code>public</code> → data leakage between users.</li>
+<li><input disabled="" type="checkbox"> Forgetting <code>Vary</code> (e.g., <code>Vary: Origin</code>, <code>Accept-Encoding</code>) → caches serve wrong variants.</li>
+<li><input disabled="" type="checkbox"> Case-sensitivity: paths are case-sensitive; header names are not.</li>
+<li><input disabled="" type="checkbox"> Trailing slash: <code>/products</code> vs <code>/products/</code> are different paths unless you normalize.</li>
+<li><input disabled="" type="checkbox"> Non-idempotent endpoints retried by clients/proxies → duplicate orders/payments.</li>
+</ul>
+<hr>
+
+<h2 id="3-15-chapter-summary">3.15 Chapter Summary</h2>
+<ul>
+<li>HTTP is a <strong>stateless, text-based request-response</strong> protocol; statelessness enables horizontal scaling.</li>
+<li>A message = start line + headers + blank line + optional body. URLs have scheme, host, port, path, query, fragment (fragment never reaches the server).</li>
+<li><strong>Methods</strong> express intent; know <strong>safe</strong> and <strong>idempotent</strong>. GET reads, POST creates/acts, PUT replaces, PATCH modifies, DELETE removes.</li>
+<li><strong>Status codes</strong> speak for outcome: 2xx success, 3xx redirect, 4xx client error, 5xx server error. 401 = unauthenticated, 403 = forbidden.</li>
+<li><strong>Headers</strong> carry metadata: content negotiation, auth, caching, cookies, CORS.</li>
+<li><strong>Cookies</strong> give state to a stateless protocol; protect with <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite</code>.</li>
+<li><strong>Caching</strong> (<code>Cache-Control</code>, <code>ETag</code>, 304) is the cheapest performance win; <code>private</code> vs <code>public</code> matters for security.</li>
+<li><strong>CORS</strong> is a browser-enforced relaxation of the same-origin policy, configured by the server with an allow-list.</li>
+<li>HTTP/2 multiplexes; HTTP/3 uses QUIC. Application semantics stay the same.</li>
+<li><code>curl -v</code> is the universal debugger.</li>
+</ul>
+<hr>
+
+<h2 id="3-16-revision-notes">3.16 Revision Notes</h2>
+<ul>
+<li>Request: <code>METHOD /path HTTP/1.1</code> + headers + blank line + body. Response: <code>HTTP/1.1 CODE Reason</code> + headers + blank + body.</li>
+<li>Safe = no state change (GET, HEAD, OPTIONS). Idempotent = repeat-safe (GET, PUT, DELETE, HEAD, OPTIONS).</li>
+<li>200 OK, 201 Created (+Location), 204 No Content, 301/308 permanent, 302/307 temporary, 304 not modified, 400 bad request, 401 unauthenticated, 403 forbidden, 404 not found, 405 wrong method, 409 conflict, 422 invalid, 429 rate limit, 500 bug, 502/503/504 gateway/overload/timeout.</li>
+<li>Cookie flags: <code>HttpOnly; Secure; SameSite</code>.</li>
+<li><code>no-store</code> = don&#39;t keep; <code>no-cache</code> = revalidate first; <code>private</code> = browser only; <code>public</code> = shared OK.</li>
+<li>Origin = scheme + host + port. Preflight = <code>OPTIONS</code>. CORS is enforced by browsers only.</li>
+<li><code>Vary</code> tells caches which request headers change the response.</li>
+</ul>
+<hr>
+
+<h2 id="3-17-mind-map-ascii">3.17 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                                HTTP (Ch. 3)
+                                     │
+   ┌──────────┬───────────┬──────────┼───────────┬───────────┬──────────┐
+ MESSAGE   METHODS     STATUS     HEADERS    STATE/COOKIES  CACHING   CORS
+   │          │           │          │            │            │        │
+ start line  GET POST   1xx info   Host Accept   Set-Cookie   max-age   origin =
+ headers     PUT PATCH  2xx ok     Auth Cookie   HttpOnly     ETag/304  scheme+host
+ blank line  DELETE     3xx move   Content-Type  Secure       no-store  +port
+ body        safe /     4xx you    Cache-Control SameSite     private/  preflight
+ URL parts   idempotent 5xx us     custom X-*    sessions     public    OPTIONS
+                                                              Vary      allow-list
+          VERSIONS: 1.1 text/TCP → 2 binary+multiplex → 3 QUIC/UDP</code></pre>
+<hr>
+
+<h2 id="3-18-cheat-sheet">3.18 Cheat Sheet</h2>
+<pre class="is-plain"><code>REQUEST    METHOD /path?query HTTP/1.1 ⏎ Header: v ⏎ ⏎ body
+RESPONSE   HTTP/1.1 200 OK ⏎ Header: v ⏎ ⏎ body
+
+METHODS    GET read | POST create/act | PUT replace | PATCH modify | DELETE remove
+SAFE       GET HEAD OPTIONS                 IDEMPOTENT  GET HEAD PUT DELETE OPTIONS
+
+CREATE → 201 + Location     DELETE → 204     VALIDATION → 400/422
+NOT LOGGED IN → 401         NOT ALLOWED → 403     MISSING → 404
+DUPLICATE/CONFLICT → 409    RATE LIMIT → 429 + Retry-After
+BUG → 500                   OVERLOAD → 503   PROXY TIMEOUT → 504
+
+COOKIE     Set-Cookie: sid=...; HttpOnly; Secure; SameSite=Lax; Max-Age=3600
+CACHE      Cache-Control: public, max-age=3600 | private | no-store | no-cache
+           ETag: &quot;v1&quot;  ⇄  If-None-Match: &quot;v1&quot;  → 304
+CORS       Access-Control-Allow-Origin: &lt;specific origin&gt; (+ Vary: Origin)
+           Preflight: OPTIONS → Allow-Methods / Allow-Headers / Max-Age
+CURL       -i headers | -v verbose | -X METHOD | -H header | --json body | -L follow
+GOLDEN     Right method, right status code, never leak internals, never trust input.</code></pre>
+<hr>
+
+<h2 id="3-19-key-takeaways">3.19 Key Takeaways</h2>
+<ol>
+<li>HTTP is simple text; mastering its vocabulary (methods, statuses, headers) makes every framework easier.</li>
+<li>Statelessness is a feature: state is carried by cookies/tokens, with real state in databases.</li>
+<li>Pick methods by <strong>intent</strong> and status codes by <strong>outcome</strong>; design for <strong>idempotency</strong> because networks retry.</li>
+<li>Caching headers are free performance, but get <code>private</code>/<code>public</code> and <code>Vary</code> right.</li>
+<li>CORS is a browser rule you configure from the server with an allow-list; it&#39;s not authentication.</li>
+<li>Debug with raw tools (<code>curl -v</code>, an inspector server) before blaming frameworks.</li>
+</ol>
+<hr>
+
+<h2 id="3-20-20-multiple-choice-questions">3.20 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="The protocol itself keeps no per-client memory."><p class="quiz-text">What does &quot;stateless&quot; mean for HTTP?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Servers never store data</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Each request is independent; the server keeps no memory of previous requests by protocol</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Requests can&#39;t have bodies</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No cookies are allowed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="GET changes nothing and can repeat freely."><p class="quiz-text">Which method is both safe and idempotent?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">POST</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">GET</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">PATCH</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">DELETE</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="201 Created (+ Location)."><p class="quiz-text">Which status code should a successful <code>POST</code> that creates a resource return?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">200</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">201</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">204</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">302</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Authenticated but not permitted."><p class="quiz-text">A user is logged in but tries to open another user&#39;s private page. Best response?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">401</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">403</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">200 with an error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">301</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Fragment is browser-only."><p class="quiz-text">Which part of a URL is never sent to the server?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Query string</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Path</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Fragment</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Host</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="PUT replaces the full resource."><p class="quiz-text">What is <code>PUT</code> primarily for?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Partial update</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Replace a resource entirely</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Delete</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Read headers</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Revalidate before reuse; no-store is the &quot;never keep&quot; one."><p class="quiz-text"><code>Cache-Control: no-cache</code> means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Never store the response</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Store it, but revalidate with the server before reuse</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Cache for one year</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cache only on CDN</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="304 Not Modified."><p class="quiz-text">What response does a server give when a client&#39;s <code>If-None-Match</code> matches the current ETag?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">200</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">304</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">404</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">412</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="HttpOnly blocks document.cookie access."><p class="quiz-text">Which cookie flag prevents JavaScript from reading the cookie?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Secure</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">SameSite</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">HttpOnly</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Path</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Browser enforces; curl ignores it."><p class="quiz-text">CORS errors are enforced by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The server</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The browser</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The DNS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The database</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="&quot;May I?&quot; before risky cross-origin calls."><p class="quiz-text">Why does a preflight request exist?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To compress data</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">To ask permission before sending a potentially state-changing cross-origin request</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To authenticate</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To measure latency</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Preflight uses OPTIONS."><p class="quiz-text">Which HTTP method is used for a CORS preflight?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">GET</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">POST</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">OPTIONS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">HEAD</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Origin = scheme + host + port."><p class="quiz-text">Two URLs have the same origin if they share:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only the host</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Scheme, host and port</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only the path</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only the port</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="State conflict with existing data."><p class="quiz-text">Which is a valid reason to return 409?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Malformed JSON</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Creating a user with an email that already exists</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Server crash</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Missing auth token</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Clients and dashboards trust status codes."><p class="quiz-text">Why should <code>res.status(200).json({ error })</code> be avoided?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slower</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It hides failures from clients and monitoring</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JSON can&#39;t contain error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Node forbids it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Content-Type labels the body."><p class="quiz-text">Which header tells the server the format of the <em>request body</em>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Accept</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Content-Type</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Host</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Location</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="One connection carries many streams."><p class="quiz-text">What problem does HTTP/2 multiplexing solve?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">DNS delays</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Needing many parallel connections due to HTTP/1.1 head-of-line blocking</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Certificate cost</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cookie size</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="QUIC runs over UDP."><p class="quiz-text">HTTP/3 is built on:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">TCP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">QUIC over UDP</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">SMTP</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">SSH</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Use a specific allow-list origin."><p class="quiz-text">What&#39;s wrong with <code>Access-Control-Allow-Origin: *</code> on an authenticated API using cookies?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Browsers reject wildcard with credentials, and a reflected-any-origin workaround is insecure</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It disables HTTPS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It slows queries</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Retries must not duplicate the charge."><p class="quiz-text">Why is idempotency important for payment endpoints?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It makes them faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Safe retries without double-charging</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It encrypts the card</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It enables caching</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-c, 6-b, 7-b, 8-b, 9-c, 10-b, 11-b, 12-c, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="3-21-20-hands-on-exercises">3.21 20 Hands-on Exercises</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Use <code>curl -v https://example.com</code> and label the request line, three headers, and the status line.</li>
+<li>Use <code>curl -I</code> on five sites. Which return <code>Cache-Control</code>, <code>ETag</code>, <code>Server</code>?</li>
+<li>Run <code>inspector.js</code>. Send a GET, a POST with JSON and a POST with form data. Compare the <code>content-type</code> and body.</li>
+<li>Fetch a URL that redirects with <code>curl -i</code>, then with <code>curl -iL</code>. Describe the difference.</li>
+<li>Request a missing page on any site. Which status code appears? Then force a 405 on your API.</li>
+<li>Open browser dev tools → Network tab, load a site, and find an example of a 304 and a cached (200 from disk cache) response.</li>
+<li>Write down the origin of five URLs and mark which pairs are same-origin.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="8">
+<li>Add <code>PUT /products/:id</code> (full replace, 200/404/422) to the products API.</li>
+<li>Add <code>PATCH /products/:id</code> that accepts partial fields and validates only the ones present.</li>
+<li>Add <code>GET /products?minPrice=20&amp;sort=price</code> filtering and sorting. Use a query string; return <code>400</code> for a bad <code>minPrice</code>.</li>
+<li>Add an <code>X-Request-Id</code> header: reuse the incoming one if present, else generate with <code>crypto.randomUUID()</code>; log it and echo it back.</li>
+<li>Implement <code>gzip</code> for responses over 1 KB using <code>zlib</code> when <code>Accept-Encoding</code> includes gzip. Compare sizes with <code>curl --compressed -w &quot;%{size_download}&quot;</code>.</li>
+<li>Implement the cookie login demo with a random session ID (<code>crypto.randomBytes(16).toString(&#39;hex&#39;)</code>) and an in-memory session map. Add <code>/logout</code> that expires the cookie.</li>
+<li>Build a 429 rate limiter: max 5 requests per 10 seconds per IP, returning <code>Retry-After</code>.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="15">
+<li>Make the ETag server compute the ETag from real data and reload on change; verify with curl that you get 200 → 304 → 200 after modifying the data.</li>
+<li>Create a tiny frontend page on <code>localhost:5173</code> (e.g., <code>npx serve</code>) that <code>fetch</code>es your API on <code>:3000</code>. Reproduce the CORS error, then fix it with the allow-list handler, including a <code>POST</code> with JSON (preflight).</li>
+<li>Add idempotency to <code>POST /orders</code>: accept an <code>Idempotency-Key</code> header, store results in memory, and return the same response (with the same order id) for duplicates.</li>
+<li>Make the server stream a large JSON array (10,000 items) using chunked writes (<code>res.write</code>) rather than building one string, and observe memory use.</li>
+<li>Write a raw TCP client (<a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a> style) that sends two HTTP/1.1 requests over a single keep-alive connection and prints both responses.</li>
+<li>Write a script that fires 200 sequential requests and 200 concurrent requests at your API with and without keep-alive (<code>http.Agent</code>), and report total time for each of the four cases.</li>
+</ol>
+<hr>
+
+<h2 id="3-22-5-interview-questions">3.22 5 Interview Questions</h2>
+<p><strong>1. Explain the difference between PUT, PATCH and POST. Which are idempotent?</strong>
+<em>Model answer:</em> POST creates a subordinate resource or triggers an action; not idempotent. PUT replaces a resource at a known URL with the supplied representation; idempotent. PATCH applies a partial modification; may or may not be idempotent depending on the operation (setting a field is; &quot;increment by 1&quot; isn&#39;t). Idempotency matters for retries.</p>
+<p><strong>2. What&#39;s the difference between 401 and 403?</strong>
+<em>Model answer:</em> 401 means the request lacks valid authentication, so the client should authenticate. 403 means the server knows who the client is but refuses access. Sometimes 404 is used instead of 403 to avoid revealing that a resource exists.</p>
+<p><strong>3. How does HTTP caching work, and how would you cache an API response safely?</strong>
+<em>Model answer:</em> The server sets <code>Cache-Control</code> for freshness (<code>max-age</code>, <code>public</code>/<code>private</code>), and <code>ETag</code>/<code>Last-Modified</code> for validation. After expiry clients send conditional requests and receive 304 if unchanged. For personalized data use <code>private</code> or <code>no-store</code>; add <code>Vary</code> for headers that change the response; use versioned URLs for immutable assets.</p>
+<p><strong>4. Why do I get a CORS error in the browser but not in Postman, and how do I fix it?</strong>
+<em>Model answer:</em> CORS is a browser-enforced restriction from the same-origin policy; Postman isn&#39;t a browser and ignores it. Fix it server-side: respond to preflight <code>OPTIONS</code> and return <code>Access-Control-Allow-Origin</code> (a specific allowed origin from an allow-list), plus allowed methods and headers, and <code>Allow-Credentials</code> if using cookies. Don&#39;t use <code>*</code> with credentials or reflect arbitrary origins.</p>
+<p><strong>5. HTTP is stateless. How do web apps remember who you are?</strong>
+<em>Model answer:</em> State is passed on each request: cookies (session ID stored server-side in a DB/Redis) or tokens such as JWTs in the <code>Authorization</code> header. The server stays stateless w.r.t. the protocol and keeps state in shared storage so any instance can serve any request. Cookies should be <code>HttpOnly; Secure; SameSite</code>.</p>
+<hr>
+
+<h2 id="3-23-3-real-projects">3.23 3 Real Projects</h2>
+<p><strong>Project 1: HTTP Playground (beginner, ~2 hours).</strong>
+Extend the inspector into a mini &quot;httpbin&quot;: endpoints <code>/status/:code</code> (returns that status), <code>/delay/:ms</code> (responds after a delay), <code>/headers</code>, <code>/cookies/set?name=value</code>, <code>/redirect/:n</code> (redirects n times). Use it to experiment with curl and your future clients.</p>
+<p><strong>Project 2: Cache-Aware Static File Server (intermediate, ~4 hours).</strong>
+Serve files from a folder with correct <code>Content-Type</code> by extension, <code>ETag</code> from file mtime+size, <code>Last-Modified</code>, <code>If-None-Match</code>/<code>If-Modified-Since</code> → 304, <code>Range</code> support (206 Partial Content), gzip, and path-traversal protection (<code>../</code> must not escape the folder). Compare behavior to <code>npx serve</code>.</p>
+<p><strong>Project 3: Rate-Limited, Idempotent Mini Payments API (intermediate–advanced, ~5 hours).</strong>
+<code>POST /payments</code> with <code>Idempotency-Key</code>, <code>GET /payments/:id</code>, proper statuses (201, 200 on replay, 409 on key reuse with a different body, 422, 429 with <code>Retry-After</code>), request IDs in logs, and CORS allow-list. Write 10 curl scripts that prove each behavior. This is the skeleton of every serious payment integration.</p>
+<hr>
+
+<h2 id="3-24-further-reading">3.24 Further Reading</h2>
+<ul>
+<li>MDN Web Docs: <em>HTTP</em> section (Overview, Methods, Status, Headers, Caching, CORS). Authoritative and readable.</li>
+<li>RFC 9110 (HTTP Semantics) and RFC 9111 (HTTP Caching): dense but definitive; skim the tables.</li>
+<li><em>High Performance Browser Networking</em>, chapters on HTTP/1.1, HTTP/2 and QUIC.</li>
+<li><em>HTTP: The Definitive Guide</em> (older, but explains the fundamentals well).</li>
+<li><code>curl</code> manual and the &quot;Everything curl&quot; book (everything.curl.dev).</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-4-linux-terminal-git-dev-environment">Up next → Chapter 4: Linux, Terminal, Git &amp; Dev Environment</h3>
+<p>Now that you speak HTTP, we need a comfortable workshop: the terminal, Linux basics (where your servers will actually live), permissions, processes, environment variables, SSH and a Git workflow you can use on any team.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">HTTP Explained: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is the difference between GET and POST?</h3></summary><p>GET retrieves data and is safe and idempotent, so it can be cached and retried. POST sends data to create or process something and is neither safe nor idempotent, so repeating it can repeat the effect.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the difference between 401 and 403?</h3></summary><p>401 means the request is not authenticated: the server does not know who you are. 403 means you are authenticated but not allowed to do that action.</p></details>
+<details class="learn-faq-item"><summary><h3>What does idempotent mean?</h3></summary><p>An operation is idempotent if doing it several times has the same effect as doing it once. GET, PUT and DELETE are idempotent by definition; POST is not, which is why retries need idempotency keys.</p></details>
+<details class="learn-faq-item"><summary><h3>What changed in HTTP/2 and HTTP/3?</h3></summary><p>HTTP/2 multiplexes many requests over one connection and compresses headers. HTTP/3 runs over QUIC (UDP) to avoid head-of-line blocking at the transport layer and speed up connection setup.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span>&larr; Previous &middot; Chapter 2</span><strong>How the Internet Works: DNS, TCP &amp; TLS</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span>Next &middot; Chapter 4 &rarr;</span><strong>Linux, Terminal &amp; Git for Backend Devs</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#3-0-why-this-chapter-matters">3.0 Why This Chapter Matters</a></li><li><a href="#3-1-http-in-one-sentence">3.1 HTTP in One Sentence</a></li><li><a href="#3-2-anatomy-of-an-http-message">3.2 Anatomy of an HTTP Message</a></li><li><a href="#3-3-http-methods">3.3 HTTP Methods</a></li><li><a href="#3-4-status-codes">3.4 Status Codes</a></li><li><a href="#3-5-headers">3.5 Headers</a></li><li><a href="#3-6-query-path-and-body-where-does-data-go">3.6 Query, Path and Body: Where Does Data Go?</a></li><li><a href="#3-7-cookies-statelessness-s-workaround">3.7 Cookies: Statelessness's Workaround</a></li><li><a href="#3-8-http-caching">3.8 HTTP Caching</a></li><li><a href="#3-9-cors-the-most-misunderstood-error-in-web-development">3.9 CORS: The Most Misunderstood Error in Web Development</a></li><li><a href="#3-10-redirects-compression-and-connections">3.10 Redirects, Compression and Connections</a></li><li><a href="#3-11-http-1-1-vs-http-2-vs-http-3">3.11 HTTP/1.1 vs HTTP/2 vs HTTP/3</a></li><li><a href="#3-12-talking-http-with-curl-your-best-debugging-friend">3.12 Talking HTTP With curl (Your Best Debugging Friend)</a></li><li><a href="#3-13-putting-it-together-a-tiny-well-behaved-products-api">3.13 Putting It Together: A Tiny, Well-Behaved Products API</a></li><li><a href="#3-14-edge-cases-and-gotchas-checklist">3.14 Edge Cases and Gotchas Checklist</a></li><li><a href="#3-15-chapter-summary">3.15 Chapter Summary</a></li><li><a href="#3-16-revision-notes">3.16 Revision Notes</a></li><li><a href="#3-17-mind-map-ascii">3.17 Mind Map (ASCII)</a></li><li><a href="#3-18-cheat-sheet">3.18 Cheat Sheet</a></li><li><a href="#3-19-key-takeaways">3.19 Key Takeaways</a></li><li><a href="#3-20-20-multiple-choice-questions">3.20 20 Multiple Choice Questions</a></li><li><a href="#3-21-20-hands-on-exercises">3.21 20 Hands-on Exercises</a></li><li><a href="#3-22-5-interview-questions">3.22 5 Interview Questions</a></li><li><a href="#3-23-3-real-projects">3.23 3 Real Projects</a></li><li><a href="#3-24-further-reading">3.24 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "http-explained-methods-status-codes-headers"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

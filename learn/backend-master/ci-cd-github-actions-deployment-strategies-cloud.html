@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>CI/CD &amp; Cloud: GitHub Actions Deployments | Backend Master</title>
+    <meta name="description" content="Ship backend code safely: CI/CD with GitHub Actions, rolling, blue/green and canary deploys, migrations during deploys, feature flags and cloud basics.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="ci cd pipeline, github actions nodejs, blue green deployment, canary release, feature flags, terraform basics, zero downtime deployment, cloud services map, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="ci cd pipeline">
+    <meta property="article:tag" content="github actions nodejs">
+    <meta property="article:tag" content="blue green deployment">
+    <meta property="article:tag" content="canary release">
+    <meta property="article:tag" content="feature flags">
+    <meta property="article:tag" content="terraform basics">
+    <meta property="article:tag" content="zero downtime deployment">
+    <meta property="article:tag" content="cloud services map">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="CI/CD &amp; Cloud: GitHub Actions Deployments">
+    <meta property="og:description" content="Ship backend code safely: CI/CD with GitHub Actions, rolling, blue/green and canary deploys, migrations during deploys, feature flags and cloud basics.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="CI/CD and Cloud Basics: GitHub Actions, Deployment Strategies and Safe Migrations: Backend Master chapter 32">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CI/CD &amp; Cloud: GitHub Actions Deployments">
+    <meta name="twitter:description" content="Ship backend code safely: CI/CD with GitHub Actions, rolling, blue/green and canary deploys, migrations during deploys, feature flags and cloud basics.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud.png">
+    <meta name="twitter:image:alt" content="CI/CD and Cloud Basics: GitHub Actions, Deployment Strategies and Safe Migrations: Backend Master chapter 32">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud",
+          "name": "CI/CD & Cloud: GitHub Actions Deployments | Backend Master",
+          "description": "Ship backend code safely: CI/CD with GitHub Actions, rolling, blue/green and canary deploys, migrations during deploys, feature flags and cloud basics.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "CI/CD and Cloud Basics: GitHub Actions, Deployment Strategies and Safe Migrations"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#webpage"
+          },
+          "headline": "CI/CD and Cloud Basics: GitHub Actions, Deployment Strategies and Safe Migrations",
+          "alternativeHeadline": "CI/CD and Cloud Basics — Shipping ShopLine Safely, Many Times a Day",
+          "description": "Ship backend code safely: CI/CD with GitHub Actions, rolling, blue/green and canary deploys, migrations during deploys, feature flags and cloud basics.",
+          "abstract": "Small, frequent, automated and reversible releases are safer than big manual ones. This chapter shows a CI pipeline with a real database, build-once promotion, rolling, blue/green and canary strategies, expand and contract migrations in deploys, feature flags and rollbacks, infrastructure as code, and a map of cloud services. The workflows were not run.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud.png",
+          "url": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 5028,
+          "timeRequired": "PT23M",
+          "articleSection": "Backend Development",
+          "keywords": "ci cd pipeline, github actions nodejs, blue green deployment, canary release, feature flags, terraform basics, zero downtime deployment, cloud services map",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "A CI pipeline and build-once promotion",
+            "Rolling, blue/green and canary deployments",
+            "Database migrations during deploys",
+            "Feature flags, kill switches and rollback",
+            "Infrastructure as code and a cloud services map"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "ci cd pipeline"
+          },
+          "isAccessibleForFree": true,
+          "position": 32,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes#article",
+            "name": "Docker and Containers for Node.js: Dockerfile, Compose, Signals and Kubernetes Basics",
+            "url": "https://shivamthakur.me/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "CI/CD & Cloud: GitHub Actions Deployments",
+              "item": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the difference between continuous delivery and continuous deployment?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Continuous delivery keeps every passing change releasable behind an approval step; continuous deployment releases every passing change to production automatically."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I deploy a schema change without downtime?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use expand and contract: add new structures compatibly first, deploy code that works with both, backfill, switch reads and remove old structures in a later release. Run migrations as a separate step."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a canary release?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A new version receives a small share of traffic while metrics are watched; if error rate or latency worsen, traffic is rolled back, limiting the blast radius."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Were the pipelines tested?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. This chapter was written in fast mode; the workflow, Terraform and shell snippets were not run and may contain mistakes."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#quiz",
+          "name": "CI/CD & Cloud: GitHub Actions Deployments: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "ci cd pipeline"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "\"Build once, deploy many\" means:",
+              "text": "\"Build once, deploy many\" means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Test and promote the same artefact through environments"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Build per environment"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never rebuild"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Build only in production"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why run integration tests in CI against a real database?",
+              "text": "Why run integration tests in CI against a real database?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Mocks can pass while real SQL is broken"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's cheaper"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Required by GitHub"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Faster"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "OIDC federation from CI to a cloud gives:",
+              "text": "OIDC federation from CI to a cloud gives:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Short-lived credentials without stored cloud keys"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Longer-lived keys"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Faster builds"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Free compute"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which deployment strategy limits blast radius using real traffic?",
+              "text": "Which deployment strategy limits blast radius using real traffic?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Canary"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Recreate"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Big bang"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Manual copy"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Blue/green's main advantage is:",
+              "text": "Blue/green's main advantage is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Instant cutover and rollback"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Less cost"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No need for a load balancer"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No database"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A rolling update without downtime requires:",
+              "text": "A rolling update without downtime requires:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Multiple instances, readiness checks and graceful draining"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A single instance"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A bigger server"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Stopping traffic"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Migrations in a rolling deploy must be:",
+              "text": "Migrations in a rolling deploy must be:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Compatible with both old and new code versions"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Destructive"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Run by every instance"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Edited in place"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "For additive schema changes, migrate:",
+              "text": "For additive schema changes, migrate:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Before deploying the code that needs it"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "After deploying the code"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "During the deploy only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why roll back code but roll forward data changes?",
+              "text": "Why roll back code but roll forward data changes?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Code rolls back by redeploying the old image, but destructive data changes can't be undone"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Code is safer to lose"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Data changes are tiny"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's a convention"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A feature flag kill switch lets you:",
+              "text": "A feature flag kill switch lets you:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Disable a misbehaving feature in seconds without a deploy"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Deploy faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Delete data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rotate secrets"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Feature flag debt is:",
+              "text": "Feature flag debt is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Accumulation of stale flags and untested combinations"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Money owed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A bug type"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A licensing term"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Terraform state should be:",
+              "text": "Terraform state should be:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Remote and locked, with sensitive data protected"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Committed with secrets"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Local only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Deleted after apply"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "terraform plan in a PR is for:",
+              "text": "terraform plan in a PR is for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reviewing the infrastructure change before applying"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Deploying"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Destroying resources"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cost billing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The database should be placed in:",
+              "text": "The database should be placed in:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Private subnets reachable only from the app tier"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A public subnet with a public IP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The CDN"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The load balancer"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "RPO is:",
+              "text": "RPO is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "How much data loss is tolerable"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Recovery time"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Request per second"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Region pairing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "RTO is:",
+              "text": "RTO is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "How long recovery may take"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "How much data may be lost"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Round-trip time"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retry timeout"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a common surprise cloud cost?",
+              "text": "Which is a common surprise cloud cost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Data egress and NAT gateway charges"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "CPU idle"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Git commits"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "TLS certificates"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A good default for a small team's compute is:",
+              "text": "A good default for a small team's compute is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A managed container platform with managed Postgres/Redis"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Self-managed Kubernetes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bare VMs only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Mainframes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Smoke tests after a deploy verify:",
+              "text": "Smoke tests after a deploy verify:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The deployed system's critical paths work"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Unit logic"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Code style"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Coverage"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Knight Capital's loss illustrates the danger of:",
+              "text": "Knight Capital's loss illustrates the danger of:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Manual, unverified deployments without a kill switch"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Using cloud"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using flags"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rolling updates"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">CI/CD &amp; Cloud: GitHub Actions Deployments</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:88.9%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item active" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud" aria-current="page"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 32 of 36 &middot; Intermediate</p>
+                        <h1>CI/CD and Cloud Basics: GitHub Actions, Deployment Strategies and Safe Migrations</h1>
+                        <p class="learn-book-title">CI/CD and Cloud Basics — Shipping ShopLine Safely, Many Times a Day</p>
+                        <ul class="learn-meta text-caption">
+                            <li>23 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud.webp"><img src="../../assets/images/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="CI/CD and Cloud Basics: GitHub Actions, Deployment Strategies and Safe Migrations: Backend Master chapter 32 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Small, frequent, automated and reversible releases are safer than big manual ones. This chapter shows a CI pipeline with a real database, build-once promotion, rolling, blue/green and canary strategies, expand and contract migrations in deploys, feature flags and rollbacks, infrastructure as code, and a map of cloud services. The workflows were not run.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>A CI pipeline and build-once promotion</li><li>Rolling, blue/green and canary deployments</li><li>Database migrations during deploys</li><li>Feature flags, kill switches and rollback</li><li>Infrastructure as code and a cloud services map</li></ul>
+                        </section>
+<hr>
+
+<h2 id="32-0-why-this-chapter-matters">32.0 Why This Chapter Matters</h2>
+<p>Writing code is half the job. The other half is getting it to users <strong>safely and repeatably</strong>. Teams that deploy by &quot;SSH into the server, <code>git pull</code>, restart&quot; ship rarely, fear every release, and fix outages by heroics. Teams with good pipelines ship <strong>many times a day</strong> with <em>less</em> risk, because every change is small, tested automatically, rolled out gradually and reversible in minutes.</p>
+<p>This is not an opinion; it&#39;s the best-replicated finding in software-delivery research (the <strong>DORA</strong> metrics): elite teams deploy more often, have shorter lead times, <em>lower</em> change-failure rates, and recover faster. Speed and stability aren&#39;t a trade-off; they come from the same practices:</p>
+<ul>
+<li><strong>CI</strong> (Continuous Integration): every change is built and tested automatically, immediately.</li>
+<li><strong>CD</strong> (Continuous Delivery/Deployment): every passing change can be (or is) released to production through an automated, repeatable pipeline.</li>
+<li><strong>Progressive rollouts</strong> and <strong>fast rollback</strong>, so a bad release hurts few users, briefly.</li>
+<li><strong>Infrastructure as Code</strong>: servers, networks and databases defined in versioned files, not clicked in a console.</li>
+</ul>
+<p>This chapter covers pipelines, deployment strategies, database migrations during deploys (building on <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>), feature flags, secrets in CI, and a practical <strong>map of the cloud</strong> so you know what the services are for.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run-fast-mode" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run (fast mode)</span></h3>
+<p><strong>Nothing in this chapter was executed.</strong> The GitHub Actions workflow, Terraform, shell commands and Kubernetes snippets were written in &quot;fast mode&quot; from established practice and <strong>may contain mistakes</strong> (action versions, flag names, syntax). I did not run any CI service, cloud provider or deployment tool. Everything measured earlier in the book (tests in <a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>, migration behaviour in <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>, zero-error failover in <a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>) is referenced where it supports a point.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>In 2012, Knight Capital lost <strong>$440 million in 45 minutes</strong> when a deployment went out to only 7 of its 8 servers: the 8th still ran old code that reacted to a repurposed flag by firing millions of unintended trades. Manual, unverifiable deployments, no automated check that all servers matched, and no kill switch turned a routine release into a company-ending event.</p>
+</aside>
+<hr>
+
+<h2 id="32-1-the-delivery-pipeline">32.1 The Delivery Pipeline</h2>
+<pre class="is-plain"><code> commit ─► CI ─────────────────────────────────────► CD ──────────────────────────────────────►
+  push   lint → typecheck → unit → build image →   deploy      smoke      deploy to    verify +
+  /PR    integration tests (real DB) → scan →      to staging   tests      production   monitor,
+         publish image (tag = git SHA)             (auto)       (auto)     (auto/manual)  auto-rollback</code></pre>
+<p>Principles:</p>
+<ol>
+<li><strong>Build once, deploy many.</strong> Build the artefact (the Docker image from <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>) <strong>once</strong>, test <em>that exact artefact</em>, and promote it through environments. Rebuilding per environment means you&#39;re deploying something you never tested.</li>
+<li><strong>Everything in version control</strong>: application code, pipeline definition, infrastructure, dashboards, alerts.</li>
+<li><strong>Fast feedback</strong>: the PR pipeline should answer in minutes (our <a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a> suite ran in ~1.4 s). Slow pipelines get bypassed.</li>
+<li><strong>The pipeline is the only path to production.</strong> No manual hotfixes on servers; fixes go through the same gates (just quickly).</li>
+<li><strong>Keep the main branch always releasable</strong> (trunk-based development with short-lived branches and feature flags).</li>
+<li><strong>Automate the boring, gate the risky</strong>: automatic for staging; production can be automatic (continuous deployment) or a one-click approval (continuous delivery).</li>
+</ol>
+<h3 id="branching-strategy">Branching strategy</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Strategy</th>
+<th>Idea</th>
+<th>Fit</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Trunk-based</strong></td>
+<td>Short-lived branches (&lt;1–2 days) merge to <code>main</code> daily; unfinished work hidden behind <strong>feature flags</strong></td>
+<td>High-frequency teams; best for CD</td>
+</tr>
+<tr>
+<td><strong>GitHub Flow</strong></td>
+<td>Branch → PR → review → merge to <code>main</code> → deploy</td>
+<td>Most web teams</td>
+</tr>
+<tr>
+<td><strong>Git Flow</strong></td>
+<td>Long-lived <code>develop</code>/<code>release</code>/<code>hotfix</code> branches</td>
+<td>Versioned/packaged software; slower</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="32-2-continuous-integration-a-github-actions-workflow-not-run">32.2 Continuous Integration: A GitHub Actions Workflow <em>(not run)</em></h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">YAML</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-yaml"><span class="hljs-comment"># .github/workflows/ci.yml</span>
+<span class="hljs-attr">name:</span> <span class="hljs-string">CI</span>
+<span class="hljs-attr">on:</span>
+  <span class="hljs-attr">pull_request:</span>
+  <span class="hljs-attr">push:</span> { <span class="hljs-attr">branches:</span> [<span class="hljs-string">main</span>] }
+
+<span class="hljs-attr">permissions:</span> { <span class="hljs-attr">contents:</span> <span class="hljs-string">read</span> }                      <span class="hljs-comment"># least privilege for the token</span>
+
+<span class="hljs-attr">concurrency:</span> { <span class="hljs-attr">group:</span> <span class="hljs-string">ci-$<span class="hljs-template-variable">{{ github.ref }}</span></span>, <span class="hljs-attr">cancel-in-progress:</span> <span class="hljs-literal">true</span> }
+
+<span class="hljs-attr">jobs:</span>
+  <span class="hljs-attr">test:</span>
+    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span>
+    <span class="hljs-attr">timeout-minutes:</span> <span class="hljs-number">15</span>
+    <span class="hljs-attr">services:</span>
+      <span class="hljs-attr">postgres:</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:17-alpine</span>
+        <span class="hljs-attr">env:</span> { <span class="hljs-attr">POSTGRES_PASSWORD:</span> <span class="hljs-string">test</span>, <span class="hljs-attr">POSTGRES_DB:</span> <span class="hljs-string">shopline</span> }
+        <span class="hljs-attr">ports:</span> [<span class="hljs-string">&quot;5432:5432&quot;</span>]
+        <span class="hljs-attr">options:</span> <span class="hljs-string">&gt;-
+          --health-cmd &quot;pg_isready -U postgres&quot; --health-interval 5s --health-timeout 3s --health-retries 10
+</span>      <span class="hljs-attr">redis:</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">redis:7.2-alpine</span>
+        <span class="hljs-attr">ports:</span> [<span class="hljs-string">&quot;6379:6379&quot;</span>]
+    <span class="hljs-attr">env:</span>
+      <span class="hljs-attr">DATABASE_URL:</span> <span class="hljs-string">postgres://postgres:test@localhost:5432/shopline</span>
+      <span class="hljs-attr">REDIS_URL:</span> <span class="hljs-string">redis://localhost:6379</span>
+    <span class="hljs-attr">steps:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v4</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/setup-node@v4</span>
+        <span class="hljs-attr">with:</span> { <span class="hljs-attr">node-version:</span> <span class="hljs-number">22</span>, <span class="hljs-attr">cache:</span> <span class="hljs-string">npm</span> }
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">ci</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">lint</span> <span class="hljs-string">&amp;&amp;</span> <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">typecheck</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">node</span> <span class="hljs-string">dist/migrate.js</span> <span class="hljs-string">||</span> <span class="hljs-string">npm</span> <span class="hljs-string">run</span> <span class="hljs-string">migrate</span>        <span class="hljs-comment"># apply ALL migrations to an empty DB (Chapter 14)</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">test</span> <span class="hljs-string">--</span> <span class="hljs-string">--experimental-test-coverage</span>       <span class="hljs-comment"># unit + integration (Chapter 24)</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">npm</span> <span class="hljs-string">audit</span> <span class="hljs-string">--omit=dev</span> <span class="hljs-string">--audit-level=high</span>         <span class="hljs-comment"># dependency risk (Chapter 23)</span>
+
+  <span class="hljs-attr">image:</span>
+    <span class="hljs-attr">needs:</span> <span class="hljs-string">test</span>
+    <span class="hljs-attr">if:</span> <span class="hljs-string">github.ref</span> <span class="hljs-string">==</span> <span class="hljs-string">&#x27;refs/heads/main&#x27;</span>
+    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span>
+    <span class="hljs-attr">permissions:</span> { <span class="hljs-attr">contents:</span> <span class="hljs-string">read</span>, <span class="hljs-attr">packages:</span> <span class="hljs-string">write</span>, <span class="hljs-attr">id-token:</span> <span class="hljs-string">write</span> }
+    <span class="hljs-attr">steps:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">actions/checkout@v4</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">docker/setup-buildx-action@v3</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">docker/login-action@v3</span>
+        <span class="hljs-attr">with:</span> { <span class="hljs-attr">registry:</span> <span class="hljs-string">ghcr.io</span>, <span class="hljs-attr">username:</span> <span class="hljs-string">&quot;$<span class="hljs-template-variable">{{ github.actor }}</span>&quot;</span>, <span class="hljs-attr">password:</span> <span class="hljs-string">&quot;$<span class="hljs-template-variable">{{ secrets.GITHUB_TOKEN }}</span>&quot;</span> }
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">docker/build-push-action@v6</span>
+        <span class="hljs-attr">with:</span>
+          <span class="hljs-attr">push:</span> <span class="hljs-literal">true</span>
+          <span class="hljs-attr">tags:</span> <span class="hljs-string">ghcr.io/${{</span> <span class="hljs-string">github.repository</span> <span class="hljs-string">}}/api:${{</span> <span class="hljs-string">github.sha</span> <span class="hljs-string">}}</span>
+          <span class="hljs-attr">cache-from:</span> <span class="hljs-string">type=gha</span>
+          <span class="hljs-attr">cache-to:</span> <span class="hljs-string">type=gha,mode=max</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">Scan</span> <span class="hljs-string">image</span>
+        <span class="hljs-attr">uses:</span> <span class="hljs-string">aquasecurity/trivy-action@0.28.0</span>
+        <span class="hljs-attr">with:</span> { <span class="hljs-attr">image-ref:</span> <span class="hljs-string">&quot;ghcr.io/$<span class="hljs-template-variable">{{ github.repository }}</span>/api:$<span class="hljs-template-variable">{{ github.sha }}</span>&quot;</span>, <span class="hljs-attr">severity:</span> <span class="hljs-string">&quot;CRITICAL,HIGH&quot;</span>, <span class="hljs-attr">exit-code:</span> <span class="hljs-string">&quot;1&quot;</span> }</code></pre></div>
+<p>Points that matter:</p>
+<ul>
+<li><strong>Run the real database</strong> as a service container so integration tests mean something (Chapter 24).</li>
+<li><strong>Apply all migrations to an empty database in CI</strong>: catches broken or out-of-order migrations (Chapter 14).</li>
+<li><strong>Least-privilege tokens</strong> (<code>permissions:</code>), pinned action versions (or SHAs, since actions are third-party code: a supply-chain risk, <a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>), <code>timeout-minutes</code>, <code>concurrency</code> to cancel superseded runs.</li>
+<li><strong>Cache dependencies and Docker layers</strong> to keep the pipeline fast.</li>
+<li><strong>Required checks and branch protection</strong>: the main branch only accepts PRs whose CI passed and that were reviewed.</li>
+<li>Other CI services (GitLab CI, CircleCI, Jenkins, Buildkite, Cloud Build) express the same ideas.</li>
+</ul>
+<h3 id="flaky-tests-are-a-pipeline-problem">Flaky tests are a pipeline problem</h3>
+<p>A flaky test (Chapter 24) in CI trains everyone to re-run and ignore red. Quarantine immediately; track flake rate; never add automatic retries as a permanent fix.</p>
+<hr>
+
+<h2 id="32-3-continuous-delivery-environments-and-promotion">32.3 Continuous Delivery: Environments and Promotion</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Environment</th>
+<th>Purpose</th>
+<th>Data</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Local / dev</strong></td>
+<td>Developer iteration (Compose, <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>)</td>
+<td>Fake/seed</td>
+</tr>
+<tr>
+<td><strong>CI</strong></td>
+<td>Automated tests</td>
+<td>Ephemeral</td>
+</tr>
+<tr>
+<td><strong>Preview</strong> (per PR)</td>
+<td>Review the change in a live URL</td>
+<td>Seeded, disposable</td>
+</tr>
+<tr>
+<td><strong>Staging</strong></td>
+<td>Production-like rehearsal: same image, same config <em>shape</em>, same infrastructure code</td>
+<td>Anonymised/synthetic; <strong>never raw production PII</strong></td>
+</tr>
+<tr>
+<td><strong>Production</strong></td>
+<td>Real users</td>
+<td>Real</td>
+</tr>
+</tbody></table></div>
+<p><strong>Promotion</strong> = deploying the <em>same image digest</em> to the next environment after checks pass. Configuration differs by environment (secrets, URLs, scale), never the code.</p>
+<p>A deploy job <em>(not run)</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">YAML</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-yaml">  <span class="hljs-attr">deploy-staging:</span>
+    <span class="hljs-attr">needs:</span> <span class="hljs-string">image</span>
+    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span>
+    <span class="hljs-attr">environment:</span> <span class="hljs-string">staging</span>                              <span class="hljs-comment"># GitHub Environments: secrets, approvals, deployment history</span>
+    <span class="hljs-attr">permissions:</span> { <span class="hljs-attr">id-token:</span> <span class="hljs-string">write</span>, <span class="hljs-attr">contents:</span> <span class="hljs-string">read</span> }
+    <span class="hljs-attr">steps:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">uses:</span> <span class="hljs-string">aws-actions/configure-aws-credentials@v4</span>          <span class="hljs-comment"># OIDC: short-lived cloud credentials, no stored keys</span>
+        <span class="hljs-attr">with:</span> { <span class="hljs-attr">role-to-assume:</span> <span class="hljs-string">arn:aws:iam::123456789012:role/gha-deploy-staging</span>, <span class="hljs-attr">aws-region:</span> <span class="hljs-string">ap-south-1</span> }
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">./deploy.sh</span> <span class="hljs-string">staging</span> <span class="hljs-string">&quot;$<span class="hljs-template-variable">{{ github.sha }}</span>&quot;</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">./smoke-test.sh</span> <span class="hljs-string">https://staging.shopline.example</span>         <span class="hljs-comment"># hit /readyz and a few critical flows</span>
+
+  <span class="hljs-attr">deploy-production:</span>
+    <span class="hljs-attr">needs:</span> <span class="hljs-string">deploy-staging</span>
+    <span class="hljs-attr">runs-on:</span> <span class="hljs-string">ubuntu-latest</span>
+    <span class="hljs-attr">environment:</span> <span class="hljs-string">production</span>                           <span class="hljs-comment"># configure &quot;required reviewers&quot; for a manual approval gate</span>
+    <span class="hljs-attr">steps:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">./deploy.sh</span> <span class="hljs-string">production</span> <span class="hljs-string">&quot;$<span class="hljs-template-variable">{{ github.sha }}</span>&quot;</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">run:</span> <span class="hljs-string">./smoke-test.sh</span> <span class="hljs-string">https://api.shopline.example</span></code></pre></div>
+<ul>
+<li><strong>OIDC federation</strong> (GitHub → AWS/GCP/Azure) gives the pipeline <strong>short-lived credentials</strong> without storing long-lived cloud keys as secrets, the modern best practice (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>: reduce standing secrets).</li>
+<li><strong>Smoke tests</strong> after each deploy verify the <em>deployed</em> system (health, a login, a read, maybe a synthetic order) and fail the pipeline (and trigger rollback) if broken.</li>
+<li><strong>Deployment ≠ release</strong>: you can deploy code to production with a feature <strong>turned off</strong> (§32.6) and release it later by flipping a flag.</li>
+</ul>
+<hr>
+
+<h2 id="32-4-deployment-strategies">32.4 Deployment Strategies</h2>
+<p>How do you replace version N with N+1 <em>without downtime</em> and <em>without betting everything on one switch</em>?</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Strategy</th>
+<th>How</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Recreate</strong></td>
+<td>Stop old, start new</td>
+<td>Simplest</td>
+<td><strong>Downtime</strong></td>
+</tr>
+<tr>
+<td><strong>Rolling update</strong></td>
+<td>Replace instances a few at a time; health checks gate progress</td>
+<td>No downtime, no extra capacity (Kubernetes default)</td>
+<td>Two versions run at once; slow rollback</td>
+</tr>
+<tr>
+<td><strong>Blue/green</strong></td>
+<td>Run the full new stack (green) next to the old (blue); switch traffic at the load balancer; keep blue for instant rollback</td>
+<td>Instant cutover and rollback; easy testing of green</td>
+<td>Double capacity temporarily; DB shared by both versions</td>
+</tr>
+<tr>
+<td><strong>Canary</strong></td>
+<td>Send a small % (1%, 5%, 25%…) to the new version; watch metrics; expand or abort</td>
+<td><strong>Limits blast radius</strong>; real-traffic validation</td>
+<td>Needs good metrics and traffic splitting</td>
+</tr>
+<tr>
+<td><strong>Shadow/mirror</strong></td>
+<td>Copy production traffic to the new version without returning its responses</td>
+<td>Safe load/behaviour testing</td>
+<td>Side effects must be suppressed</td>
+</tr>
+<tr>
+<td><strong>Feature flags</strong></td>
+<td>Ship dark, enable gradually</td>
+<td>Decouples deploy from release; per-user targeting</td>
+<td>Flag debt; combinatorial states</td>
+</tr>
+</tbody></table></div>
+<p>All except <em>recreate</em> rely on things you already built: <strong>stateless instances and load balancing</strong> (<a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>: we measured a zero-error failover), <strong>readiness probes and graceful draining</strong> (Chapters <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">25</a> and 31), and <strong>backward-compatible database changes</strong> (next section).</p>
+<h3 id="a-canary-with-automatic-rollback-concept">A canary with automatic rollback <em>(concept)</em></h3>
+<pre class="is-plain"><code>deploy v2 to 5% of traffic → watch for 10 min:
+   error rate (5xx) ≤ baseline + 0.5%?   p99 latency ≤ baseline × 1.2?   business metric (orders/min) not dropping?
+ yes → 25% → 50% → 100%                        no → shift all traffic back to v1 automatically, page the owner</code></pre>
+<p>Tools: Argo Rollouts, Flagger, AWS CodeDeploy, Spinnaker, service meshes (Envoy/Istio weighted routing), or weighted DNS/load-balancer rules. The decisive ingredient is <strong>automated analysis of the metrics from <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a></strong>: a canary without SLO-based checks is just a slow rollout.</p>
+<hr>
+
+<h2 id="32-5-database-migrations-in-deployments">32.5 Database Migrations in Deployments</h2>
+<p>The database is <strong>shared</strong> between the old and new versions of your code during any non-recreate deployment, so <strong>every migration must be compatible with both versions</strong> (Chapter 14&#39;s expand/contract, which we measured for lock behaviour and backfills):</p>
+<pre class="is-plain"><code>release 1  (expand):    migration adds the new nullable column / table / index CONCURRENTLY.   Code N still works. Code N+1 writes both.
+release 2  (migrate):   backfill in batches; switch reads to the new column.
+release 3  (contract):  migration drops the old column, after no running code uses it.</code></pre>
+<p>Deployment rules:</p>
+<ol>
+<li><strong>Order matters:</strong> for <em>additive</em> changes, migrate <strong>before</strong> deploying the code that needs it; for <em>removals</em>, deploy the code that stops using it <strong>first</strong>, then migrate.</li>
+<li><strong>Run migrations as a separate, once-only step</strong> (a CI/CD job or a Kubernetes <code>Job</code>/init job with the advisory lock from Chapter 14&#39;s runner), <strong>not</strong> inside every app instance&#39;s startup (N instances racing, long migrations delaying readiness).</li>
+<li><strong>Set <code>lock_timeout</code> and <code>statement_timeout</code></strong> on migrations; use <code>CREATE INDEX CONCURRENTLY</code>, <code>NOT VALID</code> constraints (measured in Chapter 14).</li>
+<li><strong>Never edit a migration that has run</strong>; write a new one (checksums catch it).</li>
+<li><strong>Roll forward, don&#39;t roll back</strong> data changes: code can be rolled back instantly with the same image, but a destructive migration can&#39;t; that&#39;s why <em>contract</em> happens in a <strong>later</strong> release once you&#39;re confident.</li>
+<li><strong>Test migrations on production-sized data</strong> and in CI against an empty database <em>and</em> a snapshot.</li>
+<li><strong>Take a backup/snapshot before risky migrations</strong> and rehearse the restore (backups you&#39;ve never restored don&#39;t count).</li>
+</ol>
+<hr>
+
+<h2 id="32-6-feature-flags-and-rollbacks">32.6 Feature Flags and Rollbacks</h2>
+<h3 id="feature-flags-toggles">Feature flags (toggles)</h3>
+<p>A <strong>feature flag</strong> is a runtime switch controlling behaviour without a deploy:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (flags.<span class="hljs-title function_">isEnabled</span>(<span class="hljs-string">&#x27;new-checkout&#x27;</span>, { userId, country })) <span class="hljs-keyword">return</span> <span class="hljs-title function_">newCheckout</span>(req); <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-title function_">oldCheckout</span>(req);</code></pre></div>
+<p>Uses: <strong>dark launches</strong> (deploy disabled), <strong>gradual rollouts</strong> (1% → 100%), <strong>kill switches</strong> (turn off a misbehaving feature in seconds, ideal for risky integrations), <strong>A/B tests</strong>, <strong>operational toggles</strong> (disable recommendations under load: <a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>&#39;s degradation), and <strong>permissioning</strong> (beta users). Providers: LaunchDarkly, Unleash, Flagsmith, GrowthBook, Statsig, or a simple DB/Redis table with caching (<a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>).</p>
+<p>Discipline: give flags <strong>owners and expiry dates</strong> and remove them after rollout (<strong>flag debt</strong> is real); test both states; evaluate flags <strong>server-side</strong>; default to the <strong>safe</strong> value if the flag service is unreachable; log flag state in requests (Chapter 25).</p>
+<h3 id="rollback">Rollback</h3>
+<ul>
+<li><strong>Application rollback</strong> = redeploy the previous image tag (digest): fast (minutes) and safe <em>because the database was kept backward-compatible</em> (§32.5). Practise it; make it one command or one button.</li>
+<li><strong>Feature rollback</strong> = flip the flag (seconds).</li>
+<li><strong>Data rollback</strong> is hard; protect with backups, point-in-time recovery (PITR), and expand/contract.</li>
+<li><strong>Roll forward</strong> (ship a fix) is sometimes faster than rollback if the fix is small and the pipeline is fast; decide in advance who may choose.</li>
+<li>Define <strong>automatic rollback triggers</strong> (error rate, latency, failed health checks).</li>
+</ul>
+<hr>
+
+<h2 id="32-7-infrastructure-as-code-not-run">32.7 Infrastructure as Code <em>(not run)</em></h2>
+<p>Clicking resources into a cloud console isn&#39;t reproducible, reviewable or recoverable. <strong>Infrastructure as Code (IaC)</strong> declares infrastructure in files:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Tool</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Terraform / OpenTofu</strong></td>
+<td>Declarative, multi-cloud, huge ecosystem; state file tracks reality</td>
+</tr>
+<tr>
+<td><strong>Pulumi / AWS CDK</strong></td>
+<td>Infrastructure in real programming languages (TypeScript)</td>
+</tr>
+<tr>
+<td><strong>CloudFormation / Bicep</strong></td>
+<td>AWS / Azure native</td>
+</tr>
+<tr>
+<td><strong>Ansible / cloud-init</strong></td>
+<td>Configure machines (imperative-ish)</td>
+</tr>
+<tr>
+<td><strong>Helm / Kustomize</strong></td>
+<td>Package and customise Kubernetes manifests</td>
+</tr>
+</tbody></table></div>
+<p>A Terraform sketch (AWS, not run):</p>
+<pre class="is-plain"><code>resource &quot;aws_db_instance&quot; &quot;shopline&quot; {
+  identifier              = &quot;shopline-prod&quot;
+  engine                  = &quot;postgres&quot;
+  engine_version          = &quot;17&quot;
+  instance_class          = &quot;db.t4g.medium&quot;
+  allocated_storage       = 100
+  storage_encrypted       = true
+  multi_az                = true                 # automatic failover standby (Chapter 30)
+  backup_retention_period = 14                   # point-in-time recovery window
+  deletion_protection     = true
+  username                = &quot;shopline&quot;
+  manage_master_user_password = true             # secret lives in Secrets Manager, not in the repo
+  vpc_security_group_ids  = [aws_security_group.db.id]    # only the app tier can reach it (private subnets)
+}</code></pre>
+<p>IaC rules: <strong>review infrastructure changes like code</strong> (<code>terraform plan</code> output in the PR); keep <strong>state in a remote, locked backend</strong> (S3 + DynamoDB lock, Terraform Cloud); <strong>separate environments</strong> (workspaces/directories/accounts); <strong>never put secrets in state or code</strong> (state files contain sensitive values: protect them); use <strong>modules</strong> for repeatability; <strong>detect drift</strong> (someone changed something by hand); and apply with the same pipeline discipline as application code (plan on PR, apply on merge, approval for production).</p>
+<hr>
+
+<h2 id="32-8-a-map-of-the-cloud">32.8 A Map of the Cloud</h2>
+<p>You don&#39;t need to know every service; you need to know <strong>which category solves which problem</strong>. Names for the big three:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Need</th>
+<th>AWS</th>
+<th>Google Cloud</th>
+<th>Azure</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Virtual machines</strong></td>
+<td>EC2</td>
+<td>Compute Engine</td>
+<td>Virtual Machines</td>
+</tr>
+<tr>
+<td><strong>Containers (managed)</strong></td>
+<td>ECS, Fargate, EKS (K8s)</td>
+<td>Cloud Run, GKE</td>
+<td>Container Apps, AKS</td>
+</tr>
+<tr>
+<td><strong>Serverless functions</strong></td>
+<td>Lambda</td>
+<td>Cloud Functions / Cloud Run functions</td>
+<td>Functions</td>
+</tr>
+<tr>
+<td><strong>PaaS (git push to deploy)</strong></td>
+<td>Elastic Beanstalk, App Runner, Amplify</td>
+<td>App Engine</td>
+<td>App Service</td>
+</tr>
+<tr>
+<td><strong>Managed PostgreSQL/MySQL</strong></td>
+<td>RDS, Aurora</td>
+<td>Cloud SQL, AlloyDB</td>
+<td>Azure Database</td>
+</tr>
+<tr>
+<td><strong>NoSQL / key-value</strong></td>
+<td>DynamoDB; DocumentDB</td>
+<td>Firestore, Bigtable</td>
+<td>Cosmos DB</td>
+</tr>
+<tr>
+<td><strong>Managed Redis</strong></td>
+<td>ElastiCache, MemoryDB</td>
+<td>Memorystore</td>
+<td>Azure Cache for Redis</td>
+</tr>
+<tr>
+<td><strong>Object storage</strong></td>
+<td>S3</td>
+<td>Cloud Storage</td>
+<td>Blob Storage</td>
+</tr>
+<tr>
+<td><strong>Queues / events</strong></td>
+<td>SQS, SNS, EventBridge, Kinesis, MSK (Kafka)</td>
+<td>Pub/Sub</td>
+<td>Service Bus, Event Hubs</td>
+</tr>
+<tr>
+<td><strong>Load balancing / CDN</strong></td>
+<td>ALB/NLB, CloudFront</td>
+<td>Cloud Load Balancing, Cloud CDN</td>
+<td>Front Door, App Gateway</td>
+</tr>
+<tr>
+<td><strong>DNS / certificates</strong></td>
+<td>Route 53, ACM</td>
+<td>Cloud DNS, certificate manager</td>
+<td>Azure DNS</td>
+</tr>
+<tr>
+<td><strong>Secrets / keys</strong></td>
+<td>Secrets Manager, KMS</td>
+<td>Secret Manager, KMS</td>
+<td>Key Vault</td>
+</tr>
+<tr>
+<td><strong>Identity &amp; access</strong></td>
+<td>IAM</td>
+<td>IAM</td>
+<td>Entra ID / RBAC</td>
+</tr>
+<tr>
+<td><strong>Monitoring &amp; logs</strong></td>
+<td>CloudWatch, X-Ray</td>
+<td>Cloud Monitoring/Logging/Trace</td>
+<td>Azure Monitor</td>
+</tr>
+<tr>
+<td><strong>Networking</strong></td>
+<td>VPC, subnets, security groups, NAT</td>
+<td>VPC</td>
+<td>VNet</td>
+</tr>
+</tbody></table></div>
+<p>Beyond the hyperscalers: <strong>Vercel/Netlify/Cloudflare</strong> (front-end, edge functions), <strong>Fly.io/Render/Railway</strong> (simple container PaaS), <strong>DigitalOcean/Hetzner</strong> (cheap VMs and managed databases), <strong>Supabase/Neon/PlanetScale/Upstash/Atlas</strong> (managed data stores).</p>
+<h3 id="choosing-a-compute-model">Choosing a compute model</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Model</th>
+<th>Good for</th>
+<th>Watch out</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>PaaS</strong> (Render, Fly, App Runner, Beanstalk)</td>
+<td>Small teams; minimal ops</td>
+<td>Less control; per-unit cost</td>
+</tr>
+<tr>
+<td><strong>Serverless containers</strong> (Cloud Run, Fargate)</td>
+<td>Scale-to-zero/auto, no servers to patch</td>
+<td>Cold starts; connection limits to DBs (PgBouncer/RDS Proxy); timeouts</td>
+</tr>
+<tr>
+<td><strong>Functions</strong> (Lambda)</td>
+<td>Event handlers, spiky/rare workloads</td>
+<td>Cold starts, 15-min limit, many connections to the DB, vendor lock-in, hard local testing</td>
+</tr>
+<tr>
+<td><strong>Kubernetes</strong></td>
+<td>Many services, portability, custom needs</td>
+<td>Operational complexity: need a platform team or managed offering</td>
+</tr>
+<tr>
+<td><strong>VMs</strong></td>
+<td>Full control, legacy</td>
+<td>You patch, scale and secure everything</td>
+</tr>
+</tbody></table></div>
+<p><strong>Default for a small team:</strong> a managed container platform (Cloud Run/App Runner/Fargate/Render) + a <strong>managed Postgres</strong> + <strong>managed Redis</strong> + object storage + CDN. You get ShopLine&#39;s whole architecture with very little undifferentiated ops.</p>
+<h3 id="the-fundamentals-you-must-still-understand">The fundamentals you must still understand</h3>
+<ul>
+<li><strong>Networking:</strong> VPC with <strong>public subnets</strong> (load balancer) and <strong>private subnets</strong> (app, database); security groups as stateful firewalls; <strong>the database should never have a public IP</strong>; NAT for outbound access; egress controls (Chapter 23 SSRF).</li>
+<li><strong>IAM:</strong> least privilege; <strong>roles for workloads</strong> (the API&#39;s role can read one bucket and one secret, nothing else), no long-lived keys, MFA on human accounts (<a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a>), separate accounts/projects per environment.</li>
+<li><strong>Regions and availability zones:</strong> spread across <strong>AZs</strong> for resilience (a multi-AZ database fails over: <a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">Chapter 30</a>); <strong>multi-region</strong> is a large step in complexity (data placement, consistency, failover) most apps don&#39;t need.</li>
+<li><strong>TLS and DNS:</strong> managed certificates (ACM, Let&#39;s Encrypt), automatic renewal, HSTS (Chapter 23), low-TTL DNS records for failover plans.</li>
+<li><strong>Backups and disaster recovery:</strong> define <strong>RPO</strong> (how much data you can lose) and <strong>RTO</strong> (how long you can be down); automated backups, <strong>PITR</strong>, cross-region copies for critical data, and <strong>restore drills</strong>.</li>
+<li><strong>Cost:</strong> tag everything; set budgets and alerts; right-size; use reserved/committed use for steady load; watch <strong>data egress</strong> and <strong>NAT gateway</strong> charges (classic surprise bills); turn off unused environments; scale-to-zero where you can.</li>
+</ul>
+<hr>
+
+<h2 id="32-9-a-shopline-delivery-blueprint-design-not-built">32.9 A ShopLine Delivery Blueprint <em>(design; not built)</em></h2>
+<pre class="is-plain"><code>GitHub PR ─► CI (lint, types, unit, integration with Postgres+Redis, migrations on empty DB, audit)
+   └─ merge to main ─► build image (tag = SHA) ─► Trivy scan ─► push to registry ─► sign
+        └─► deploy STAGING (OIDC creds) ─► run migrations Job (expand-only) ─► rolling deploy ─► smoke tests
+              └─► manual approval ─► PRODUCTION: migrations Job ─► canary 5% (10 min, SLO checks) ─► 50% ─► 100%
+                    └─► feature flags control release; kill switches for payment/recommendation integrations
+ monitoring (Ch 25): dashboards + burn-rate alerts; auto-rollback on SLO breach; post-deploy marker on graphs
+ infra: Terraform (VPC, managed Postgres multi-AZ, Redis, object storage, container platform, CDN, DNS, IAM), plan on PR
+ runbooks: rollback, restore from backup, failover, rotate secrets</code></pre>
+<h3 id="the-release-checklist-for-humans-until-the-pipeline-does-it-all">The release checklist (for humans, until the pipeline does it all)</h3>
+<ul>
+<li><input disabled="" type="checkbox"> CI green; migrations are backward-compatible (expand-only) and tested on a prod-size copy.</li>
+<li><input disabled="" type="checkbox"> Feature flags in place for risky changes; kill switch tested.</li>
+<li><input disabled="" type="checkbox"> Dashboards and alerts cover the new code paths; a deploy marker is added.</li>
+<li><input disabled="" type="checkbox"> Rollback plan written (previous image digest, flag states, backup point).</li>
+<li><input disabled="" type="checkbox"> On-call aware; release not on Friday evening unless the pipeline is trusted and the change is small.</li>
+<li><input disabled="" type="checkbox"> Post-deploy: watch error rate, latency, business metrics for at least one traffic cycle.</li>
+</ul>
+<hr>
+
+<h2 id="32-10-edge-cases-and-gotchas-checklist">32.10 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Deploying from laptops; manual server changes (&quot;snowflake servers&quot;); no audit trail.</li>
+<li><input disabled="" type="checkbox"> Rebuilding artefacts per environment; testing something different from what ships; mutable or <code>latest</code> tags.</li>
+<li><input disabled="" type="checkbox"> CI without a real database; migrations never run in CI; flaky tests tolerated.</li>
+<li><input disabled="" type="checkbox"> Long-lived cloud keys stored as CI secrets; over-privileged tokens; unpinned third-party actions.</li>
+<li><input disabled="" type="checkbox"> Staging unlike production; production data copied to staging unmasked.</li>
+<li><input disabled="" type="checkbox"> Migrations that are not backward compatible with the running version; migrations run by every instance at startup; destructive migrations in the same release as the code change.</li>
+<li><input disabled="" type="checkbox"> No smoke tests, no automatic rollback criteria; canary without metric analysis.</li>
+<li><input disabled="" type="checkbox"> Feature flags without owners/expiry; untested flag combinations; flag service outage = outage.</li>
+<li><input disabled="" type="checkbox"> Infrastructure created by hand; Terraform state not locked/remote; secrets in state or repo; drift ignored.</li>
+<li><input disabled="" type="checkbox"> Database in a public subnet; wide-open security groups; shared accounts for all environments.</li>
+<li><input disabled="" type="checkbox"> Backups never restored; no defined RPO/RTO; single AZ for critical data.</li>
+<li><input disabled="" type="checkbox"> No cost budgets/alerts; surprise egress/NAT bills.</li>
+</ul>
+<hr>
+
+<h2 id="32-11-chapter-summary">32.11 Chapter Summary</h2>
+<ul>
+<li><strong>CI/CD</strong> is the safe, fast path to production: DORA research shows speed and stability go together. Build <strong>once</strong>, test that artefact, promote the <strong>same image</strong> (tag = git SHA) through environments.</li>
+<li><strong>CI</strong> = lint, types, tests with a <strong>real database</strong>, migrations on an empty DB, audit, image build + scan, with least-privilege tokens and caching. <strong>CD</strong> = environments, OIDC short-lived credentials, smoke tests, approval gates.</li>
+<li><strong>Strategies:</strong> recreate (downtime), <strong>rolling</strong>, <strong>blue/green</strong>, <strong>canary</strong> (blast radius control with metric-based auto-rollback), shadow, <strong>feature flags</strong> (decouple deploy from release; kill switches; remove them later).</li>
+<li><strong>Migrations in deploys:</strong> backward-compatible expand → migrate → contract; run once as a separate step with timeouts; <strong>roll forward</strong> data changes, roll back code via the previous image; rehearse restores.</li>
+<li><strong>IaC</strong> (Terraform/Pulumi/CDK): reviewable, reproducible infrastructure; remote locked state; no secrets in code/state; plan on PR.</li>
+<li><strong>Cloud map:</strong> VMs, containers, serverless, PaaS, managed DBs, object storage, queues, CDN/DNS, secrets/IAM, monitoring. Small-team default: managed containers + managed Postgres/Redis + object storage + CDN. Know networking (private DB), IAM, AZs, RPO/RTO, and cost traps.</li>
+<li><strong>Nothing here was executed</strong> (fast mode); validate pipelines and IaC in a sandbox first.</li>
+</ul>
+<hr>
+
+<h2 id="32-12-revision-notes">32.12 Revision Notes</h2>
+<ul>
+<li>Build once → promote the same digest; tag by git SHA; never <code>latest</code> in deploys.</li>
+<li>CI: lint/types/tests(real DB)/migrations/audit/scan; branch protection; fast.</li>
+<li>CD: staging → smoke → approval → production; OIDC; GitHub Environments.</li>
+<li>Rolling/blue-green/canary; canary needs SLO checks + auto rollback.</li>
+<li>Migrations: expand → migrate → contract; separate job; <code>lock_timeout</code>; roll forward data.</li>
+<li>Flags: dark launch, kill switch, expiry/owner; safe default.</li>
+<li>IaC: Terraform plan on PR; remote locked state; no secrets in state.</li>
+<li>Cloud: private subnets for DB; IAM least privilege; multi-AZ; RPO/RTO; budgets.</li>
+</ul>
+<hr>
+
+<h2 id="32-13-mind-map-ascii">32.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                           CI/CD &amp; CLOUD
+                                │
+    ┌──────────┬───────────┬────┴──────┬───────────┬────────────┬──────────┐
+   CI         CD        STRATEGIES  DATABASE     FLAGS/ROLLBACK  IaC      CLOUD
+    │          │            │          │              │           │         │
+ lint/test   environments rolling   expand/        feature flags  Terraform  compute models
+ real DB     promote SHA  blue/green contract       kill switch    plan/PR    managed DBs
+ migrations  OIDC creds   canary    separate job    rollback       remote     networking/IAM
+ scan/audit  smoke tests  shadow    roll forward    roll forward   state      AZs, RPO/RTO
+ cache       approvals    auto-rb   backups         flag debt      drift      cost</code></pre>
+<hr>
+
+<h2 id="32-14-cheat-sheet">32.14 Cheat Sheet</h2>
+<pre class="is-plain"><code>Pipeline:  PR → lint+types+tests(real DB)+migrations+audit → build image (SHA) → scan → staging → smoke → approve → prod (canary) → monitor → auto-rollback
+Rules:     build once · same image to all envs · pipeline = only path · small changes · flags for risk · rollback = previous digest
+Migrate:   expand (additive) → deploy → backfill → switch reads → contract (later release)    separate job, lock_timeout
+Flags:     default safe · owner + expiry · server-side · log state
+IaC:       plan on PR · apply on merge · remote locked state · no secrets in code/state
+Cloud:     DB in private subnets · IAM roles not keys · multi-AZ · backups + restore drills · budgets + alerts</code></pre>
+<hr>
+
+<h2 id="32-15-key-takeaways">32.15 Key Takeaways</h2>
+<ol>
+<li><strong>Small, frequent, automated, reversible releases are safer than big, rare, manual ones.</strong></li>
+<li><strong>Build once, promote the same artefact</strong>; the pipeline is the only road to production.</li>
+<li><strong>Database changes must be compatible with two versions at once</strong>: expand/contract.</li>
+<li><strong>Decouple deploy from release with feature flags; measure canaries with your SLOs.</strong></li>
+<li><strong>Infrastructure belongs in version control</strong>, with reviewed plans and no secrets.</li>
+<li><strong>Know the cloud categories, keep databases private, give workloads least privilege, restore your backups.</strong></li>
+</ol>
+<hr>
+
+<h2 id="32-16-20-multiple-choice-questions">32.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Same artefact."><p class="quiz-text">&quot;Build once, deploy many&quot; means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Build per environment</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Test and promote the same artefact through environments</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Never rebuild</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Build only in production</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Real SQL."><p class="quiz-text">Why run integration tests in CI against a real database?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s cheaper</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Mocks can pass while real SQL is broken</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Required by GitHub</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Faster</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No stored keys."><p class="quiz-text">OIDC federation from CI to a cloud gives:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Longer-lived keys</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Short-lived credentials without stored cloud keys</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Faster builds</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Free compute</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Canary."><p class="quiz-text">Which deployment strategy limits blast radius using real traffic?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Recreate</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Canary</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Big bang</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Manual copy</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Switch back instantly."><p class="quiz-text">Blue/green&#39;s main advantage is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Less cost</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Instant cutover and rollback</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No need for a load balancer</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No database</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Capacity + readiness."><p class="quiz-text">A rolling update without downtime requires:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A single instance</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Multiple instances, readiness checks and graceful draining</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A bigger server</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Stopping traffic</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Two versions overlap."><p class="quiz-text">Migrations in a rolling deploy must be:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Destructive</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Compatible with both old and new code versions</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Run by every instance</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Edited in place</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Expand first."><p class="quiz-text">For additive schema changes, migrate:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">After deploying the code</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Before deploying the code that needs it</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Never</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">During the deploy only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Irreversible data."><p class="quiz-text">Why roll <em>back</em> code but roll <em>forward</em> data changes?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Code is safer to lose</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Code rolls back by redeploying the old image, but destructive data changes can&#39;t be undone</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Data changes are tiny</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s a convention</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Instant disable."><p class="quiz-text">A feature flag kill switch lets you:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Deploy faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Disable a misbehaving feature in seconds without a deploy</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Delete data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Rotate secrets</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Stale flags."><p class="quiz-text">Feature flag debt is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Money owed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Accumulation of stale flags and untested combinations</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A bug type</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A licensing term</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Remote + locked."><p class="quiz-text">Terraform state should be:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Committed with secrets</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Remote and locked, with sensitive data protected</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Local only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Deleted after apply</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Review changes."><p class="quiz-text"><code>terraform plan</code> in a PR is for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Deploying</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Reviewing the infrastructure change before applying</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Destroying resources</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cost billing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Private subnets."><p class="quiz-text">The database should be placed in:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A public subnet with a public IP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Private subnets reachable only from the app tier</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The CDN</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The load balancer</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Data loss tolerance."><p class="quiz-text">RPO is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Recovery time</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">How much data loss is tolerable</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Request per second</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Region pairing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Recovery duration."><p class="quiz-text">RTO is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">How long recovery may take</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">How much data may be lost</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Round-trip time</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Retry timeout</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Egress/NAT."><p class="quiz-text">Which is a common surprise cloud cost?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">CPU idle</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Data egress and NAT gateway charges</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Git commits</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">TLS certificates</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Managed services."><p class="quiz-text">A good default for a small team&#39;s compute is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Self-managed Kubernetes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A managed container platform with managed Postgres/Redis</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Bare VMs only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Mainframes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Post-deploy check."><p class="quiz-text">Smoke tests after a deploy verify:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Unit logic</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The deployed system&#39;s critical paths work</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Code style</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Coverage</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Manual unverified deploys."><p class="quiz-text">Knight Capital&#39;s loss illustrates the danger of:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Using cloud</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Manual, unverified deployments without a kill switch</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Using flags</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Rolling updates</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-a, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="32-17-20-hands-on-exercises">32.17 20 Hands-on Exercises</h2>
+<p><em>(Suggestions; none were run by me.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Write a CI workflow that runs lint and tests on every PR.</li>
+<li>Add a Postgres service container and run your Chapter 24 suite against it.</li>
+<li>Add <code>npm audit</code> and fail on high severity.</li>
+<li>Tag a Docker image with the git SHA in CI and push to a registry.</li>
+<li>Add branch protection requiring CI and a review.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Add a CI step that applies all migrations to an empty database.</li>
+<li>Create staging and production environments with approvals and separate secrets.</li>
+<li>Configure OIDC to deploy without long-lived cloud keys.</li>
+<li>Write post-deploy smoke tests and make the pipeline fail on them.</li>
+<li>Implement a feature flag with a kill switch and test both states.</li>
+<li>Do a blue/green switch using two Compose stacks and nginx.</li>
+<li>Write an expand/contract migration across three releases and deploy it with zero errors.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Implement a canary with Argo Rollouts or a weighted load balancer and automated SLO-based rollback.</li>
+<li>Write Terraform for a VPC, private Postgres, container service and load balancer; run <code>plan</code> in CI.</li>
+<li>Add drift detection to the IaC pipeline.</li>
+<li>Perform a restore drill from backup and measure RTO/RPO.</li>
+<li>Build a rollback button (redeploy previous digest + flag reset) and test under load.</li>
+<li>Add deployment markers to Grafana and correlate them with error spikes.</li>
+<li>Cost-optimise a sample architecture; list savings and risks.</li>
+<li>Write the incident runbook for &quot;bad deploy&quot;: detection, rollback, communication, post-mortem.</li>
+</ol>
+<hr>
+
+<h2 id="32-18-5-interview-questions">32.18 5 Interview Questions</h2>
+<p><strong>1. What is the difference between continuous integration, delivery and deployment?</strong>
+<em>Model answer:</em> CI automatically builds and tests every change; continuous delivery keeps every passing change releasable through an automated pipeline with a manual approval for production; continuous deployment releases every passing change automatically. All depend on automated tests, reproducible builds and fast rollback.</p>
+<p><strong>2. How do you deploy with zero downtime when the database schema changes?</strong>
+<em>Model answer:</em> Make migrations backward-compatible with both versions using expand/contract: add nullable columns/tables/indexes (concurrently) first, deploy code that writes both and reads old, backfill in batches, switch reads, then remove old structures in a later release. Run migrations as a separate job with lock timeouts; roll back code via the previous image, roll data forward.</p>
+<p><strong>3. Compare rolling, blue/green and canary deployments.</strong>
+<em>Model answer:</em> Rolling replaces instances gradually with no extra capacity but slower rollback; blue/green runs two full stacks and switches traffic for instant cutover/rollback at double capacity; canary exposes a small share to the new version while monitoring SLO metrics and auto-aborting, limiting blast radius. All need stateless instances, readiness checks and compatible database changes.</p>
+<p><strong>4. What are feature flags good for, and what are the risks?</strong>
+<em>Model answer:</em> They decouple deploy from release: dark launches, gradual rollouts, kill switches and experiments. Risks: stale flags (debt), untested combinations, flag-service dependency (use safe defaults), and complexity; mitigate with ownership, expiry, tests and logging.</p>
+<p><strong>5. How do you manage infrastructure and secrets in a pipeline?</strong>
+<em>Model answer:</em> IaC (Terraform/Pulumi) in version control with plan on PR and remote locked state; separate environments/accounts; no secrets in code or state; CI gets short-lived credentials via OIDC; runtime secrets from a secret manager; least-privilege roles; drift detection; and restore drills for backups.</p>
+<hr>
+
+<h2 id="32-19-3-real-projects">32.19 3 Real Projects</h2>
+<p><strong>Project 1: Full CI Pipeline (intermediate, ~8 hours).</strong>
+GitHub Actions for ShopLine: lint, types, unit and integration tests with Postgres/Redis service containers, migrations on an empty DB, <code>npm audit</code>, image build with caching, Trivy scan, publish by SHA; add branch protection and required checks; track pipeline duration and flake rate.</p>
+<p><strong>Project 2: Progressive Delivery (advanced, ~14 hours).</strong>
+Deploy to a local cluster with rolling updates, then add canary releases with weighted traffic and metric-based auto-rollback driven by your Chapter 25 dashboards; run a bad-release drill (error injection) and record time to detect and roll back.</p>
+<p><strong>Project 3: ShopLine on the Cloud with Terraform (advanced, ~20 hours).</strong>
+Provision a VPC, private multi-AZ Postgres, Redis, object storage, container service, load balancer/CDN, DNS/TLS and IAM with Terraform; wire the CI/CD pipeline with OIDC; add backups with a restore drill; document costs and a DR plan with RPO/RTO.</p>
+<hr>
+
+<h2 id="32-20-further-reading">32.20 Further Reading</h2>
+<ul>
+<li><em>Continuous Delivery</em> (Humble &amp; Farley); <em>Accelerate</em> (Forsgren, Humble, Kim) and the annual <strong>DORA State of DevOps</strong> reports.</li>
+<li>Google SRE Workbook: <em>Canarying Releases</em>, <em>Release Engineering</em>; Martin Fowler on <em>Feature Toggles</em> and <em>BlueGreenDeployment</em>.</li>
+<li>GitHub Actions docs (OIDC, environments, reusable workflows); Argo Rollouts / Flagger docs.</li>
+<li>Terraform docs and <em>Terraform: Up &amp; Running</em> (Yevgeniy Brikman); AWS Well-Architected Framework (all six pillars).</li>
+<li>Chapter 14 of this book and the <em>strong_migrations</em> README for safe-migration patterns; Pete Hodgson on feature flags.</li>
+<li><em>The Phoenix Project</em> and <em>The DevOps Handbook</em> for culture and flow.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-33-microservices-vs-monolith">Up next → Chapter 33: Microservices vs Monolith</h3>
+<p>You can now package, ship and scale a service. Should ShopLine be one service or twenty? Next: the real trade-offs, the modular monolith, service boundaries and data ownership, communication styles, API gateways, the strangler-fig migration, and the organisational side (Conway&#39;s law), written in fast mode.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">CI/CD: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is the difference between continuous delivery and continuous deployment?</h3></summary><p>Continuous delivery keeps every passing change releasable behind an approval step; continuous deployment releases every passing change to production automatically.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I deploy a schema change without downtime?</h3></summary><p>Use expand and contract: add new structures compatibly first, deploy code that works with both, backfill, switch reads and remove old structures in a later release. Run migrations as a separate step.</p></details>
+<details class="learn-faq-item"><summary><h3>What is a canary release?</h3></summary><p>A new version receives a small share of traffic while metrics are watched; if error rate or latency worsen, traffic is rolled back, limiting the blast radius.</p></details>
+<details class="learn-faq-item"><summary><h3>Were the pipelines tested?</h3></summary><p>No. This chapter was written in fast mode; the workflow, Terraform and shell snippets were not run and may contain mistakes.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span>&larr; Previous &middot; Chapter 31</span><strong>Docker for Node.js: Dockerfile &amp; Compose</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span>Next &middot; Chapter 33 &rarr;</span><strong>Microservices vs Monolith: How to Decide</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#32-0-why-this-chapter-matters">32.0 Why This Chapter Matters</a></li><li><a href="#32-1-the-delivery-pipeline">32.1 The Delivery Pipeline</a></li><li><a href="#32-2-continuous-integration-a-github-actions-workflow-not-run">32.2 Continuous Integration: A GitHub Actions Workflow (not run)</a></li><li><a href="#32-3-continuous-delivery-environments-and-promotion">32.3 Continuous Delivery: Environments and Promotion</a></li><li><a href="#32-4-deployment-strategies">32.4 Deployment Strategies</a></li><li><a href="#32-5-database-migrations-in-deployments">32.5 Database Migrations in Deployments</a></li><li><a href="#32-6-feature-flags-and-rollbacks">32.6 Feature Flags and Rollbacks</a></li><li><a href="#32-7-infrastructure-as-code-not-run">32.7 Infrastructure as Code (not run)</a></li><li><a href="#32-8-a-map-of-the-cloud">32.8 A Map of the Cloud</a></li><li><a href="#32-9-a-shopline-delivery-blueprint-design-not-built">32.9 A ShopLine Delivery Blueprint (design; not built)</a></li><li><a href="#32-10-edge-cases-and-gotchas-checklist">32.10 Edge Cases and Gotchas Checklist</a></li><li><a href="#32-11-chapter-summary">32.11 Chapter Summary</a></li><li><a href="#32-12-revision-notes">32.12 Revision Notes</a></li><li><a href="#32-13-mind-map-ascii">32.13 Mind Map (ASCII)</a></li><li><a href="#32-14-cheat-sheet">32.14 Cheat Sheet</a></li><li><a href="#32-15-key-takeaways">32.15 Key Takeaways</a></li><li><a href="#32-16-20-multiple-choice-questions">32.16 20 Multiple Choice Questions</a></li><li><a href="#32-17-20-hands-on-exercises">32.17 20 Hands-on Exercises</a></li><li><a href="#32-18-5-interview-questions">32.18 5 Interview Questions</a></li><li><a href="#32-19-3-real-projects">32.19 3 Real Projects</a></li><li><a href="#32-20-further-reading">32.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "ci-cd-github-actions-deployment-strategies-cloud"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

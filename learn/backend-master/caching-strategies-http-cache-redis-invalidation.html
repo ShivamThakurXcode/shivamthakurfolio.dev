@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Caching: HTTP Headers, Redis &amp; Invalidation | Backend Master</title>
+    <meta name="description" content="Cache at every layer: Cache-Control and ETag, CDNs, stale-while-revalidate, Redis cache-aside, invalidation races and versioned keys, eviction policies.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="http caching cache-control, etag 304, stale-while-revalidate, redis cache aside, cache invalidation, lru vs lfu, cache penetration, cdn caching, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/message-queues-background-jobs-outbox-nodejs">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="http caching cache-control">
+    <meta property="article:tag" content="etag 304">
+    <meta property="article:tag" content="stale-while-revalidate">
+    <meta property="article:tag" content="redis cache aside">
+    <meta property="article:tag" content="cache invalidation">
+    <meta property="article:tag" content="lru vs lfu">
+    <meta property="article:tag" content="cache penetration">
+    <meta property="article:tag" content="cdn caching">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Caching: HTTP Headers, Redis &amp; Invalidation">
+    <meta property="og:description" content="Cache at every layer: Cache-Control and ETag, CDNs, stale-while-revalidate, Redis cache-aside, invalidation races and versioned keys, eviction policies.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/caching-strategies-http-cache-redis-invalidation.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Caching: HTTP Cache-Control, ETags, Redis Cache-Aside and Invalidation: Backend Master chapter 27">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Caching: HTTP Headers, Redis &amp; Invalidation">
+    <meta name="twitter:description" content="Cache at every layer: Cache-Control and ETag, CDNs, stale-while-revalidate, Redis cache-aside, invalidation races and versioned keys, eviction policies.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/caching-strategies-http-cache-redis-invalidation.png">
+    <meta name="twitter:image:alt" content="Caching: HTTP Cache-Control, ETags, Redis Cache-Aside and Invalidation: Backend Master chapter 27">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation",
+          "name": "Caching: HTTP Headers, Redis & Invalidation | Backend Master",
+          "description": "Cache at every layer: Cache-Control and ETag, CDNs, stale-while-revalidate, Redis cache-aside, invalidation races and versioned keys, eviction policies.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/caching-strategies-http-cache-redis-invalidation.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Caching: HTTP Cache-Control, ETags, Redis Cache-Aside and Invalidation"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#webpage"
+          },
+          "headline": "Caching: HTTP Cache-Control, ETags, Redis Cache-Aside and Invalidation",
+          "alternativeHeadline": "Caching — Doing Expensive Work Once",
+          "description": "Cache at every layer: Cache-Control and ETag, CDNs, stale-while-revalidate, Redis cache-aside, invalidation races and versioned keys, eviction policies.",
+          "abstract": "Caching trades freshness for speed and load reduction, and every cache is a copy that can drift. This chapter tests HTTP caching with validators and stale-while-revalidate through a small shared cache, measures a 78 times faster Redis hit, reproduces the stale-write race and fixes it with versioned keys, and compares eviction policies.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/caching-strategies-http-cache-redis-invalidation.png",
+          "url": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6322,
+          "timeRequired": "PT29M",
+          "articleSection": "Backend Development",
+          "keywords": "http caching cache-control, etag 304, stale-while-revalidate, redis cache aside, cache invalidation, lru vs lfu, cache penetration, cdn caching",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Cache-Control, ETag and Vary",
+            "Stale-while-revalidate and immutable assets",
+            "Cache-aside and the stale-write race",
+            "In-process versus Redis caches and invalidation",
+            "Penetration, stampede, avalanche and eviction policies"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "http caching cache-control"
+          },
+          "isAccessibleForFree": true,
+          "position": 27,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#article",
+            "name": "Error Handling and Resilience: Timeouts, Retries, Circuit Breakers and Bulkheads",
+            "url": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Caching: HTTP Headers, Redis & Invalidation",
+              "item": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the difference between no-cache and no-store?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "no-store means do not store the response anywhere. no-cache means it may be stored but must be revalidated with the server before reuse."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is stale-while-revalidate?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A Cache-Control extension that lets a cache serve an expired response immediately while it refreshes in the background, so users never wait for the refresh."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I avoid stale data after an update?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Invalidate on write, keep a TTL as a safety net and use version-stamped keys so a delayed reader cannot refill an old value. Never serve checkout prices or stock decisions from a cache."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is cache penetration?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Requests for keys that do not exist always miss and hit the database. Negative caching stores the not-found result briefly; it cut 3,000 queries to 30 in our test."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#quiz",
+          "name": "Caching: HTTP Headers, Redis & Invalidation: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "http caching cache-control"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which directive means \"do not store this at all\"?",
+              "text": "Which directive means \"do not store this at all\"?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "no-store"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "no-cache"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "must-revalidate"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "max-age=0"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Cache-Control: private means:",
+              "text": "Cache-Control: private means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Only the user's own browser may cache it, not shared caches/CDNs"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Encrypt it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never cache"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cache for one second"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "An ETag lets a cache:",
+              "text": "An ETag lets a cache:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ask \"has it changed?\" and receive a bodyless 304 if not"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Skip HTTPS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Set cookies"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Compress"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A fingerprinted asset (app.9f8a7c.js) should use:",
+              "text": "A fingerprinted asset (app.9f8a7c.js) should use:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "public, max-age=31536000, immutable"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "no-store"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "max-age=0"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "private"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Vary: Accept-Language makes a cache:",
+              "text": "Vary: Accept-Language makes a cache:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Keep separate entries per language value"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Ignore the header"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Refuse to cache"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Translate pages"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why avoid Vary: Cookie on a public page?",
+              "text": "Why avoid Vary: Cookie on a public page?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Almost every user has a different cookie, so effectively nothing is shareable"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's deprecated"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cookies are secure"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It changes the status code"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "stale-while-revalidate makes the user:",
+              "text": "stale-while-revalidate makes the user:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Get the stale copy instantly while the cache refreshes in the background"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Wait for the refresh"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "See an error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bypass the CDN"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A 304 saves server work only if:",
+              "text": "A 304 saves server work only if:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The validator is computed cheaply before running the expensive query"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Always"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The ETag is weak"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HTTP/2 is used"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In cache-aside, on a write you normally:",
+              "text": "In cache-aside, on a write you normally:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Update the DB then invalidate the key"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Update only the cache"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Delete the DB row"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Do nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The stale-write race happens when:",
+              "text": "The stale-write race happens when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A delayed reader fills the cache with an old value after a writer invalidated it"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Redis crashes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "TTLs are too long"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Keys collide"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Version-stamped keys fix the race because:",
+              "text": "Version-stamped keys fix the race because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A late writer fills an old-version key no one reads any more"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They are shorter"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They disable TTL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They lock the DB"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which data must NOT be served from a cache when making the purchase decision?",
+              "text": "Which data must NOT be served from a cache when making the purchase decision?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The price charged and stock availability at checkout"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Category names"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Product images"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Site footer text"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Two app instances with in-process caches show different prices after an update because:",
+              "text": "Two app instances with in-process caches show different prices after an update because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each cache is separate; one instance's invalidation doesn't reach the other without a broadcast"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Clock skew"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The DB is wrong"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis is down"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Negative caching reduced 3,000 database queries to:",
+              "text": "Negative caching reduced 3,000 database queries to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "30"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "3,000"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "300"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A cache avalanche is best mitigated by:",
+              "text": "A cache avalanche is best mitigated by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "TTL jitter, warming, and protecting the DB with load shedding/breakers"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Identical TTLs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Smaller keys"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Disabling Redis"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the Zipf simulation, caching 1% of keys gave about what hit ratio?",
+              "text": "In the Zipf simulation, caching 1% of keys gave about what hit ratio?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "~50%"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "5%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "99%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0%"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which policy resisted scan pollution better in our simulation?",
+              "text": "Which policy resisted scan pollution better in our simulation?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The (sampled) LFU"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "LRU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "FIFO"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "RANDOM"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The cache key for a localized product page must include:",
+              "text": "The cache key for a localized product page must include:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Product id, language and any other input that changes the output"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only the product id"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The server name"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A random number"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "\"Web cache deception\" is prevented by:",
+              "text": "\"Web cache deception\" is prevented by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Caching only responses that explicitly allow it and returning 404 for unknown paths"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Caching by URL file extension"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using longer TTLs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Disabling HTTPS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Caching a primary-key lookup in Redis often buys little because:",
+              "text": "Caching a primary-key lookup in Redis often buys little because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An indexed PK lookup costs about the same as a Redis round trip, and the cache adds staleness"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Redis is slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "PK lookups can't be cached"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis can't store JSON"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Caching: HTTP Headers, Redis &amp; Invalidation</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:75.0%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item active" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" aria-current="page"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 27 of 36 &middot; Intermediate</p>
+                        <h1>Caching: HTTP Cache-Control, ETags, Redis Cache-Aside and Invalidation</h1>
+                        <p class="learn-book-title">Caching — Doing Expensive Work Once</p>
+                        <ul class="learn-meta text-caption">
+                            <li>29 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/caching-strategies-http-cache-redis-invalidation.webp"><img src="../../assets/images/learn/backend-master/caching-strategies-http-cache-redis-invalidation.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Caching: HTTP Cache-Control, ETags, Redis Cache-Aside and Invalidation: Backend Master chapter 27 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Caching trades freshness for speed and load reduction, and every cache is a copy that can drift. This chapter tests HTTP caching with validators and stale-while-revalidate through a small shared cache, measures a 78 times faster Redis hit, reproduces the stale-write race and fixes it with versioned keys, and compares eviction policies.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Cache-Control, ETag and Vary</li><li>Stale-while-revalidate and immutable assets</li><li>Cache-aside and the stale-write race</li><li>In-process versus Redis caches and invalidation</li><li>Penetration, stampede, avalanche and eviction policies</li></ul>
+                        </section>
+<hr>
+
+<h2 id="27-0-why-this-chapter-matters">27.0 Why This Chapter Matters</h2>
+<p>The fastest request is the one that never reaches your server. The cheapest database query is the one you never run. <strong>Caching</strong> is storing the result of expensive work so the next person who needs it gets it instantly, and it is the single most effective performance tool you have.</p>
+<p>It is also famously where subtle, painful bugs live. Phil Karlton&#39;s joke (&quot;there are only two hard things in computer science: cache invalidation and naming things&quot;) survives because it&#39;s <em>true</em>: every cache is a <strong>copy</strong>, and copies drift. Caching trades <strong>freshness for speed</strong>, and the engineering is in choosing <em>how much staleness is acceptable</em> for each piece of data, and in making sure the cache can never make things <em>wrong</em>, only <em>slightly old</em>.</p>
+<p>Caching happens at <strong>many layers</strong>, and a request can be answered at any of them:</p>
+<pre class="is-plain"><code>Browser cache  →  CDN / reverse proxy  →  Application (in-process)  →  Redis  →  Database  →  Disk
+ (0 ms, free)      (10 ms, edge)           (0.0001 ms)                 (1–2 ms)    (3–100 ms)</code></pre>
+<p>This chapter works from the outside in, and <strong>runs every claim</strong>:</p>
+<ul>
+<li><strong>HTTP caching</strong>: <code>Cache-Control</code>, <code>ETag</code>/<code>304</code>, <code>Vary</code>, immutable assets, <code>stale-while-revalidate</code>; tested against a small shared cache that behaves like a CDN.</li>
+<li><strong>Application caching</strong>: cache-aside, read-through, write-through, write-behind; measured speed-ups.</li>
+<li><strong>Invalidation and consistency</strong>: the <strong>stale-write race</strong> reproduced, and fixed with versioned keys.</li>
+<li><strong>Multi-instance caches</strong>: in-process incoherence and pub/sub invalidation.</li>
+<li><strong>Cache failure modes</strong>: penetration, stampede, avalanche, hot keys.</li>
+<li><strong>Eviction policies</strong>: LRU vs LFU simulated on realistic (Zipf) traffic.</li>
+<li><strong>What not to cache</strong>, and the security hazards (cache poisoning and &quot;web cache deception&quot;).</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>All outputs are real, from labs in <a href="/learn/backend-master/resources/ch27/README.txt">resources/ch27/</a>: Node 22.17, Express 5.3, <code>lru-cache</code>, Redis 7.2, PostgreSQL 17 (the 1M-row <code>ch15.orders</code> table). The &quot;CDN&quot; is <strong>a 40-line cache I wrote</strong> to behave like a standards-following shared cache; I did <strong>not</strong> test a real CDN (Cloudflare, CloudFront, Fastly), a browser&#39;s cache, or service workers, so those behaviours are described from the HTTP specifications (RFC 9111). The eviction comparison is a <strong>simulation</strong>, not Redis&#39;s actual eviction. Latencies are from a laptop with Docker: compare ratios.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The web scales largely <strong>because of caching</strong>. When you reload a popular site, most of the bytes you download (images, fonts, scripts) don&#39;t come from the site&#39;s servers at all; they come from your own browser&#39;s disk or a CDN node a few milliseconds from you. If every page view hit the origin server, the internet would need orders of magnitude more servers.</p>
+</aside>
+<hr>
+
+<h2 id="27-1-http-caching-let-the-browser-and-cdn-do-the-work">27.1 HTTP Caching: Let the Browser and CDN Do the Work</h2>
+<p>HTTP has caching built in (RFC 9111). The server describes how cacheable a response is; every cache along the path (the browser&#39;s private cache, corporate proxies, CDNs, reverse proxies) obeys.</p>
+<h3 id="27-1-1-cache-control-the-main-switch">27.1.1 <code>Cache-Control</code>: the main switch</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Directive</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><code>max-age=N</code></td>
+<td>Fresh for N seconds; serve from cache without asking the server</td>
+</tr>
+<tr>
+<td><code>s-maxage=N</code></td>
+<td>Like <code>max-age</code> but <strong>only for shared caches</strong> (CDNs)</td>
+</tr>
+<tr>
+<td><code>public</code></td>
+<td>Any cache may store it (even if it normally wouldn&#39;t, e.g., with auth)</td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td>Only the <strong>user&#39;s own browser</strong> may store it, never a CDN (personalised data!)</td>
+</tr>
+<tr>
+<td><code>no-store</code></td>
+<td>Don&#39;t store it anywhere (sensitive data)</td>
+</tr>
+<tr>
+<td><code>no-cache</code></td>
+<td>You may store it, but <strong>must revalidate</strong> with the server before every reuse</td>
+</tr>
+<tr>
+<td><code>must-revalidate</code></td>
+<td>Once stale, don&#39;t serve without revalidating</td>
+</tr>
+<tr>
+<td><code>immutable</code></td>
+<td>Won&#39;t change during its freshness lifetime: don&#39;t even revalidate on reload</td>
+</tr>
+<tr>
+<td><code>stale-while-revalidate=N</code></td>
+<td>After expiry, serve the stale copy for up to N more seconds <strong>while refreshing in the background</strong></td>
+</tr>
+<tr>
+<td><code>stale-if-error=N</code></td>
+<td>Serve stale for N seconds if the origin errors (resilience, Ch 26)</td>
+</tr>
+</tbody></table></div>
+<p>(A famously confusing naming trap: <strong><code>no-cache</code> does <em>not</em> mean &quot;don&#39;t cache&quot;</strong>; it means &quot;cache, but validate first.&quot; <code>no-store</code> means &quot;don&#39;t cache.&quot;)</p>
+<h3 id="27-1-2-validators-etag-and-last-modified-the-304-trick">27.1.2 Validators: <code>ETag</code> and <code>Last-Modified</code> (the 304 trick)</h3>
+<p>When a cached copy expires, the cache doesn&#39;t have to download the body again. It asks: <em>&quot;has it changed?&quot;</em> using a <strong>validator</strong>:</p>
+<ol>
+<li>First response includes <code>ETag: &quot;3a-q9zid6Y5D4sjHNBISZoNDDhwpr0&quot;</code> (a fingerprint of the content) and/or <code>Last-Modified</code>.</li>
+<li>Later request: <code>If-None-Match: &quot;3a-q9zid...&quot;</code> (or <code>If-Modified-Since</code>).</li>
+<li>If unchanged, the server answers <strong><code>304 Not Modified</code></strong> with <strong>no body</strong>; the cache reuses its copy and refreshes its freshness timer.</li>
+</ol>
+<p>Tested straight against the origin:</p>
+<pre class="is-plain"><code>first GET              : 200 ETag &quot;3a-q9zid6Y5D4sjHNBISZoNDDhwpr0&quot; (58 bytes body)
+If-None-Match          : 304 (0 bytes body)   &lt;- 304 Not Modified: the client reuses its copy
+after the data changed : 200 (58 bytes)  new ETag &quot;3a-bSK7fcEHjUp5bzdIM7Erj/TyDfc&quot;   &lt;- validator no longer matches</code></pre>
+<p>Express generates ETags automatically for <code>res.send/res.json</code> (a hash of the body; weak by default). It also revalidates <code>If-None-Match</code> for you (<code>req.fresh</code>). For a 58-byte JSON the saving is trivial; for a 2 MB catalogue response a <code>304</code> saves almost the whole transfer.</p>
+<p><strong>Two honest caveats.</strong> (1) <strong><code>304</code> saves bandwidth, not server work</strong>, if the server still does the full query to compute the ETag. In my test the origin took 100 ms before answering, and the revalidation still took 112 ms (the output below). To save <em>work</em>, derive the validator <strong>cheaply</strong> (e.g., from the row&#39;s <code>updated_at</code>/<code>version</code>) <em>before</em> running the expensive query, then short-circuit with <code>304</code>. (2) <strong>A gotcha I hit:</strong> Node&#39;s built-in <code>fetch()</code> adds <code>Cache-Control: no-cache</code> to <em>conditional</em> requests (the browser Fetch-spec behaviour), and Express treats that as &quot;client wants a fresh copy&quot; and <strong>never returns <code>304</code></strong>. My first test &quot;failed&quot; until I used <code>http.get</code>. Real browsers and CDNs send conditional requests correctly; just don&#39;t be misled when testing with <code>fetch</code>.</p>
+<h3 id="27-1-3-through-a-shared-cache">27.1.3 Through a shared cache</h3>
+<p>I wrote a small shared cache (what a CDN or reverse proxy like Varnish/nginx does: obey <code>Cache-Control</code>, <code>Vary</code>, validators, <code>stale-while-revalidate</code>; never store <code>private</code>/<code>no-store</code>/no-header responses) and put five differently-labelled endpoints behind it:</p>
+<pre class="is-plain"><code>GET /static/app.9f8a7c.js (immutable, 1 year) 200  MISS                                    12 ms  9500 B
+GET /static/app.9f8a7c.js again               200  HIT                                      2 ms  9500 B
+GET /products/1 (max-age=0, must-revalidate)  200  MISS                                   114 ms    58 B
+GET /products/1 again: revalidates            200  REVALIDATED (304 from origin, body reused)  112 ms  58 B
+GET /me (private, no-store)                   200  MISS                                     6 ms    24 B
+GET /me again                                 200  MISS                                     4 ms    24 B
+GET /search (no Cache-Control)                200  MISS                                     8 ms    34 B
+GET /search again                             200  MISS                                     3 ms    34 B
+GET /lang  Accept-Language: en                200  MISS
+GET /lang  Accept-Language: hi (Vary)         200  MISS    (a *separate* cached copy)
+GET /lang  Accept-Language: en again          200  HIT
+GET /lang  Accept-Language: hi again          200  HIT
+origin requests so far: 9</code></pre>
+<p>What each line teaches:</p>
+<ul>
+<li><strong>Versioned static assets</strong> (<code>app.9f8a7c.js</code>) get <code>max-age=31536000, immutable</code> (one year). The <em>filename contains a content hash</em>, so a new build gets a new URL: <strong>cache-busting by fingerprinting</strong>. This is the gold standard for JS/CSS/images/fonts: infinite caching, instant updates.</li>
+<li><strong><code>max-age=0, must-revalidate</code> + ETag</strong> (the product): always checks, but cheaply (<code>304</code>). Good for data that must be fresh but is large.</li>
+<li><strong><code>private, no-store</code></strong> (<code>/me</code>): never cached by the shared cache (correct: per-user data must not be shared, <a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a>).</li>
+<li><strong>No <code>Cache-Control</code> at all</strong> (<code>/search</code>): our cache refused to store it. Real caches may apply <em>heuristic</em> freshness from <code>Last-Modified</code>, which is why you should <strong>always send an explicit policy</strong> rather than rely on guesses.</li>
+<li><strong><code>Vary: Accept-Language</code></strong> created <strong>separate cache entries per language</strong>. Without <code>Vary</code>, the first visitor&#39;s language would be served to everyone: a correctness bug. <code>Vary</code> multiplies cache entries, so vary only on headers that truly change the response (never <code>Vary: Cookie</code> on a public page, which makes it uncacheable; never <code>Vary: User-Agent</code>, whose values are endless).</li>
+</ul>
+<h3 id="27-1-4-stale-while-revalidate-fast-and-fresh">27.1.4 <code>stale-while-revalidate</code>: fast <em>and</em> fresh</h3>
+<p>A user should never have to wait for a refresh. <code>max-age=2, stale-while-revalidate=30</code> on an endpoint whose origin takes 200 ms:</p>
+<pre class="is-plain"><code>t=0 s    first request (cold)                  200  MISS                                     217 ms
+t=0 s    second request                        200  HIT                                        2 ms
+t=2.3 s  STALE: served instantly, refresh starts   STALE (revalidating in background)         4 ms
+t=2.7 s  fresh again (refreshed in background)  200  HIT                                       11 ms
+origin requests for the /feed sequence: 2   (4 client requests)</code></pre>
+<p>After the data expired (t = 2.3 s) the user <strong>still got an answer in 4 ms</strong>; the cache refreshed in the background and the next request saw fresh data. Only the very first request ever pays the 200 ms. This is the best latency/freshness compromise for content that tolerates being seconds old (feeds, listings, dashboards), and it also <strong>shields the origin from stampedes</strong> (one refresh, not one per user; compare <a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>&#39;s stampede). Use <code>stale-if-error</code> for resilience.</p>
+<p>Overall effect, 200 requests through the cache: <strong>199 hits of 200, 1 origin request, 2.8 ms median.</strong></p>
+<h3 id="27-1-5-what-to-put-on-which-route">27.1.5 What to put on which route</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Route type</th>
+<th>Suggested headers</th>
+</tr>
+</thead><tbody><tr>
+<td>Fingerprinted assets (<code>/assets/app.9f8a7c.js</code>)</td>
+<td><code>public, max-age=31536000, immutable</code></td>
+</tr>
+<tr>
+<td>Public, slowly changing API/HTML (<code>/products</code>, <code>/categories</code>)</td>
+<td><code>public, max-age=60, stale-while-revalidate=300</code> (+ <code>ETag</code>)</td>
+</tr>
+<tr>
+<td>Public but must be fresh (<code>/products/:id</code> price)</td>
+<td><code>public, max-age=0, must-revalidate</code> + cheap <code>ETag</code>, or short <code>s-maxage</code></td>
+</tr>
+<tr>
+<td>Personalised (<code>/me</code>, cart, orders)</td>
+<td><code>private, no-store</code> (or <code>private, max-age=0</code>)</td>
+</tr>
+<tr>
+<td>Authenticated API responses</td>
+<td>Default to <code>private, no-store</code>; cache deliberately and only per user</td>
+</tr>
+<tr>
+<td>Sensitive (tokens, PII, payment)</td>
+<td><code>no-store</code></td>
+</tr>
+<tr>
+<td>POST/PUT/DELETE</td>
+<td>Not cached (but they should <strong>invalidate</strong> related cached GETs, e.g., via <code>Location</code>/purge)</td>
+</tr>
+</tbody></table></div>
+<p>Also: <strong>never cache error responses long</strong> (a <code>500</code> cached for an hour is an outage that outlives the bug; use short or no caching for <code>5xx</code>), and put the <strong>CDN purge/invalidation</strong> (tag- or URL-based) in your deploy and update flows. <em>(CDN purge APIs described, not run.)</em></p>
+<hr>
+
+<h2 id="27-2-application-caching-patterns">27.2 Application Caching Patterns</h2>
+<p>Past HTTP, your code decides what to keep in memory or Redis.</p>
+<h3 id="27-2-1-the-four-patterns">27.2.1 The four patterns</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Pattern</th>
+<th>How it works</th>
+<th>Use when</th>
+<th>Risk</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Cache-aside</strong> (lazy loading)</td>
+<td>App reads cache; on miss loads from DB and fills cache; on write updates DB then <strong>invalidates</strong></td>
+<td>The default for reads</td>
+<td>Stale races (§27.3), stampedes</td>
+</tr>
+<tr>
+<td><strong>Read-through</strong></td>
+<td>The cache layer itself loads on miss (a library/service does the DB call)</td>
+<td>Cleaner code; same semantics as cache-aside</td>
+<td>Needs a loader abstraction</td>
+</tr>
+<tr>
+<td><strong>Write-through</strong></td>
+<td>Writes go to cache <em>and</em> DB together</td>
+<td>Read-after-write consistency matters</td>
+<td>Two writes to keep consistent; cache polluted with unread data</td>
+</tr>
+<tr>
+<td><strong>Write-behind</strong> (write-back)</td>
+<td>Write to cache, flush to DB later asynchronously</td>
+<td>Very write-heavy, tolerant of loss</td>
+<td><strong>Data loss on crash</strong>; ordering; complexity</td>
+</tr>
+<tr>
+<td><strong>Refresh-ahead</strong></td>
+<td>Refresh hot entries <em>before</em> they expire</td>
+<td>Predictable hot keys</td>
+<td>Wasted refreshes of cold keys</td>
+</tr>
+</tbody></table></div>
+<p><strong>Cache-aside is the right default</strong>, and the one that <a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a> implemented.</p>
+<h3 id="27-2-2-what-a-cache-hit-is-worth">27.2.2 What a cache hit is worth</h3>
+<p>A realistic expensive query: revenue grouped by status across <strong>1,000,000 orders</strong> (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>&#39;s table):</p>
+<pre class="is-plain"><code>database (cache miss) median 126 ms | Redis (cache hit) median 1.63 ms | speed-up ≈ 78x</code></pre>
+<p><strong>78× faster</strong>, and, as important, <strong>the database wasn&#39;t touched.</strong> A cache doesn&#39;t just reduce latency; it <strong>removes load</strong>. If 1,000 users view a dashboard per minute and its numbers can be 60 s old, that&#39;s 1 query instead of 1,000.</p>
+<h3 id="27-2-3-where-to-cache-memory-vs-redis-vs-database">27.2.3 Where to cache: memory vs Redis vs database</h3>
+<pre class="is-plain"><code>in-process LRU  ~110 ns/op   |   Redis GET  ~2,559 µs/op   |   PostgreSQL primary-key lookup  ~2,983 µs/op</code></pre>
+<p>(≈ 23,000× between process memory and Redis on this machine; the ~2.5 ms Redis figure is a Docker-on-Windows network round trip: on a real network it&#39;s typically 0.2–1 ms.) The ranking matters more than the numbers:</p>
+<ul>
+<li><strong>In-process (L1)</strong>: nanoseconds, no network, but <strong>per-instance</strong> (each server has its own copy; memory is limited; lost on restart) → ideal for small, hot, rarely-changing data (config, feature flags, category tree).</li>
+<li><strong>Redis (L2)</strong>: shared by every instance, survives app restarts, millisecond cost → the default for shared caches.</li>
+<li><strong>Both (L1 + L2)</strong>: check memory, then Redis, then DB. Fastest, but <strong>two layers to invalidate</strong> (§27.4).</li>
+<li>A PK lookup against PostgreSQL costs about the same as a Redis <code>GET</code> <em>over the same network path</em>; <strong>caching a trivial indexed lookup in Redis often buys little</strong> (and adds staleness). <strong>Cache expensive things</strong>: aggregates, joins, remote API calls, rendered fragments, results of CPU-heavy work.</li>
+</ul>
+<hr>
+
+<h2 id="27-3-invalidation-the-hard-part">27.3 Invalidation: The Hard Part</h2>
+<h3 id="27-3-1-strategies">27.3.1 Strategies</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Strategy</th>
+<th>How</th>
+<th>Consistency</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>TTL only</strong></td>
+<td>Entries expire on their own</td>
+<td>Stale up to the TTL</td>
+<td>Simplest; pick TTL = tolerable staleness</td>
+</tr>
+<tr>
+<td><strong>Invalidate on write</strong></td>
+<td><code>DEL key</code> after updating the DB</td>
+<td>Fresh on the next read (but see the race)</td>
+<td>Needs every writer to know the keys</td>
+</tr>
+<tr>
+<td><strong>Update on write</strong> (write-through)</td>
+<td>Write new value to cache</td>
+<td>Read-your-writes</td>
+<td>Races between concurrent writers</td>
+</tr>
+<tr>
+<td><strong>Versioned keys</strong></td>
+<td>Include a version in the key; writers bump the version</td>
+<td>Stale entries are simply never read</td>
+<td>Extra version lookup; garbage collected by TTL</td>
+</tr>
+<tr>
+<td><strong>Event-driven</strong></td>
+<td>Publish change events; subscribers invalidate (Ch 28/29)</td>
+<td>Eventual, fast</td>
+<td>Infrastructure</td>
+</tr>
+</tbody></table></div>
+<p><strong>Always combine invalidation with a TTL</strong> as a safety net: bugs and missed invalidations then self-heal.</p>
+<h3 id="27-3-2-the-stale-write-race-reproduced">27.3.2 The stale-write race, reproduced</h3>
+<p>&quot;Invalidate on write&quot; looks airtight. It isn&#39;t. We forced the interleaving that happens naturally under load:</p>
+<ol>
+<li><strong>Reader A</strong> misses the cache, reads the <em>old</em> row (price 12000) from the database, then is <strong>delayed</strong> (a GC pause, a slow network hop, a busy event loop: here 150 ms).</li>
+<li><strong>Writer B</strong> updates the database (price 9900) and <strong>deletes the cache key</strong>. Correct so far.</li>
+<li><strong>Reader A</strong> wakes and writes <strong>its old value</strong> into the cache.</li>
+</ol>
+<pre class="is-plain"><code>database says price 9900, cache says 12000  &lt;- STALE until the TTL (300 s) expires, even though we invalidated on write</code></pre>
+<p>The cache is now <strong>wrong for five minutes</strong>, though every individual step followed &quot;the rules.&quot; (This race is rare per request but certain at scale.)</p>
+<h3 id="the-fix-version-stamped-keys">The fix: version-stamped keys</h3>
+<p>Readers learn the <strong>current version first</strong>, and only ever write under the version they started with. A late writer fills an <strong>old</strong> key that no one reads anymore.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">getProduct</span>(<span class="hljs-params">id</span>) {
+  <span class="hljs-keyword">const</span> ver = <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">get</span>(<span class="hljs-string">`ver:product:<span class="hljs-subst">${id}</span>`</span>);              <span class="hljs-comment">// 1. read the version FIRST</span>
+  <span class="hljs-keyword">const</span> k = <span class="hljs-string">`product:<span class="hljs-subst">${id}</span>:v<span class="hljs-subst">${ver}</span>`</span>; <span class="hljs-keyword">const</span> cached = <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">get</span>(k); <span class="hljs-keyword">if</span> (cached) <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(cached);
+  <span class="hljs-keyword">const</span> row = <span class="hljs-keyword">await</span> <span class="hljs-title function_">readDb</span>(id);                                  <span class="hljs-comment">//    (a delay here is now harmless)</span>
+  <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">set</span>(k, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(row), { <span class="hljs-attr">EX</span>: <span class="hljs-number">300</span> }); <span class="hljs-keyword">return</span> row;   <span class="hljs-comment">// 2. fill the key for the version we READ</span>
+}
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">updatePrice</span>(<span class="hljs-params">id, price</span>) {
+  <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">update</span>(id, price); <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">incr</span>(<span class="hljs-string">`ver:product:<span class="hljs-subst">${id}</span>`</span>);   <span class="hljs-comment">// writers bump the version after the DB commit</span>
+}</code></pre></div>
+<pre class="is-plain"><code>after the same race: a new reader gets price 9900 (database: 9900); the stale value sits under key product:2:v1, which nobody reads any more</code></pre>
+<p>Same interleaving, correct result. Other mitigations: a <strong>short TTL</strong> (limits the damage window), <strong>delayed double-delete</strong> (delete again ~1 s after the write), reading from the <strong>primary</strong> (not a lagging replica) when refilling, and for critical data (money, stock) <strong>don&#39;t cache</strong> or cache only with explicit versioning. <em>(Remaining caveat: a tiny window between &quot;read version&quot; and &quot;read DB&quot; if the write lands in between: the fill is then under the <em>old</em> version with <em>new</em> data, which is harmless since the old key is never read again.)</em></p>
+<h3 id="27-3-3-what-consistency-do-you-actually-need">27.3.3 What consistency do you actually need?</h3>
+<p>Decide <strong>per data type</strong>, explicitly:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Data</th>
+<th>Tolerable staleness</th>
+<th>Approach</th>
+</tr>
+</thead><tbody><tr>
+<td>Static assets, product images</td>
+<td>Days/forever</td>
+<td>Fingerprint + <code>immutable</code></td>
+</tr>
+<tr>
+<td>Category tree, site config</td>
+<td>Minutes</td>
+<td>TTL 5–60 min, invalidate on admin change</td>
+</tr>
+<tr>
+<td>Product description, reviews summary</td>
+<td>1–5 min</td>
+<td>TTL + invalidate on write</td>
+</tr>
+<tr>
+<td>Product <strong>price</strong> shown on listing</td>
+<td>Seconds–1 min</td>
+<td>Short TTL / SWR; <strong>re-check at checkout</strong></td>
+</tr>
+<tr>
+<td>Stock levels</td>
+<td>Seconds (display only)</td>
+<td>Short TTL; <strong>never trust for the purchase decision</strong> (<a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>)</td>
+</tr>
+<tr>
+<td>Cart, order status, balance, auth</td>
+<td><strong>Zero</strong></td>
+<td>Don&#39;t cache (or version rigorously); source of truth is the DB</td>
+</tr>
+</tbody></table></div>
+<p>The golden rule: <strong>a cache may make something <em>slightly old</em>, never <em>wrong</em></strong>: the price the customer is <em>charged</em> always comes from the database inside the checkout transaction, whatever the product page displayed.</p>
+<hr>
+
+<h2 id="27-4-multiple-instances-local-caches-and-invalidation-broadcast">27.4 Multiple Instances: Local Caches and Invalidation Broadcast</h2>
+<p>An in-process cache is wonderfully fast and <strong>invisible to your other servers</strong>. Two instances, each with its own <code>Map</code>:</p>
+<pre class="is-plain"><code>after a write handled by instance A (no broadcast): A=miss B=1500   &lt;- B still serves 1500 (stale until its TTL)</code></pre>
+<p>Instance A handled the update and cleared <em>its</em> copy; instance B knows nothing and serves the old price until its TTL. The fix is to <strong>broadcast invalidations</strong>, e.g., over a Redis Pub/Sub channel (Chapter 19), with every instance subscribing and deleting the key:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> sub.<span class="hljs-title function_">subscribe</span>(<span class="hljs-string">&#x27;invalidate&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">key</span>) =&gt;</span> localCache.<span class="hljs-title function_">delete</span>(key));
+<span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">publish</span>(<span class="hljs-string">&#x27;invalidate&#x27;</span>, <span class="hljs-string">&#x27;product:1&#x27;</span>);          <span class="hljs-comment">// writer announces the change</span></code></pre></div>
+<pre class="is-plain"><code>after publishing an invalidation on a Redis channel: A=miss B=miss   (propagated in 3.5 ms)</code></pre>
+<p>Caveat from Chapter 19: <strong>Pub/Sub is fire-and-forget</strong>: an instance that was disconnected misses the message. So keep a <strong>short TTL on in-process entries</strong> (seconds) as the safety net, and design L1 for data that tolerates brief staleness. (Alternatives: Redis <strong>client-side caching</strong> with server-assisted invalidation (RESP3 <code>CLIENT TRACKING</code>), or skipping L1 entirely for correctness-critical data. <em>Not run here.</em>)</p>
+<hr>
+
+<h2 id="27-5-cache-failure-modes">27.5 Cache Failure Modes</h2>
+<h3 id="27-5-1-cache-penetration-requests-for-things-that-don-t-exist">27.5.1 Cache penetration (requests for things that don&#39;t exist)</h3>
+<p>A cache stores <em>found</em> data, so requests for <strong>nonexistent</strong> ids (typos, scrapers, attackers incrementing ids) <strong>always miss and always hit the database</strong>. Three thousand requests across 30 missing ids:</p>
+<pre class="is-plain"><code>without negative caching: 3000 requests for 30 missing ids -&gt; 3000 database queries
+with negative caching:    3000 requests for 30 missing ids -&gt;   30 database queries</code></pre>
+<p><strong>Negative caching</strong> stores &quot;not found&quot; briefly (<code>SET key NULL EX 30</code>), collapsing 3,000 queries to 30. For huge id spaces add a <strong>Bloom filter</strong> of valid ids in front <em>(described, not run)</em>, plus rate limiting (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>).</p>
+<h3 id="27-5-2-cache-stampede-thundering-herd">27.5.2 Cache stampede (thundering herd)</h3>
+<p>Covered with measurements in Chapter 19 (50 concurrent misses → 50 DB hits): fix with <strong>single-flight/locks</strong>, <strong><code>stale-while-revalidate</code></strong> (§27.1.4: the 4 ms stale response above is exactly this), TTL jitter, and refresh-ahead for known-hot keys.</p>
+<h3 id="27-5-3-cache-avalanche">27.5.3 Cache avalanche</h3>
+<p>Many keys expiring <strong>at the same moment</strong> (a cache cold-start after Redis restarts, or a batch job that cached 10,000 items with an identical TTL) sends a wall of misses to the database. Mitigate with <strong>TTL jitter</strong> (<code>ttl + random(0..20%)</code>), <strong>warming</strong> critical keys before cutting traffic, running Redis with replicas/persistence for the cache-critical case, and <strong>load shedding or a circuit breaker</strong> on the database path (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>).</p>
+<h3 id="27-5-4-hot-keys-and-big-keys">27.5.4 Hot keys and big keys</h3>
+<p>One extremely popular key (a viral product) can overload a single Redis node/shard: replicate it in L1 memory, split it (<code>key:{0..N}</code> random suffix), or serve via CDN. <strong>Big values</strong> (a 5 MB JSON) are slow to (de)serialise and block Redis&#39;s single thread (Chapter 19): cache smaller pieces, compress, or paginate.</p>
+<h3 id="27-5-5-cache-dependency-and-the-cold-start-problem">27.5.5 Cache dependency and the &quot;cold start&quot; problem</h3>
+<p>Know what happens when the cache is <strong>empty or down</strong>: if your system only works because 95% of traffic hits the cache, losing it means the database sees <strong>20× load</strong> and falls over (a <em>metastable failure</em>). Capacity-plan for a cold cache, <strong>degrade gracefully</strong> (catch Redis errors and fall through to the DB with a rate limit), and never make Redis a hard dependency for correctness (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>).</p>
+<hr>
+
+<h2 id="27-6-eviction-policies-and-hit-ratio">27.6 Eviction Policies and Hit Ratio</h2>
+<p>Memory is finite, so a full cache must evict. The policy decides which entries survive. Real traffic is <strong>skewed</strong>: a few items are requested constantly, a long tail rarely (a <em>Zipf</em> distribution; true of products, pages and users). I simulated 400,000 requests over 100,000 keys with Zipf(1.0) and four policies:</p>
+<pre class="is-plain"><code>cache size (% of keys)   LRU     FIFO    RANDOM  LFU (sampled)
+0.1% (100 keys)          29.1%   25.1%   25.1%   38.9%
+1%   (1,000 keys)        50.7%   46.6%   46.5%   49.3%
+5%   (5,000 keys)        66.4%   62.6%   62.7%   63.1%
+10%  (10,000 keys)       73.2%   69.8%   70.0%   70.0%</code></pre>
+<p>Findings:</p>
+<ul>
+<li><strong>Skew is your friend.</strong> Caching just <strong>1% of the keys served ~50% of requests</strong>; 10% served ~73%. A <em>small</em> cache goes a long way: you rarely need to cache everything.</li>
+<li>LRU beat FIFO/RANDOM everywhere; <strong>LFU won only at the smallest size</strong>, and LRU was ahead at larger sizes in this simulation (which is a <em>toy</em> LFU without aging; production policies like Redis&#39;s approximated LFU, W-TinyLFU in Caffeine, and ARC differ).</li>
+<li><strong>Scan pollution</strong>: one big sequential scan (e.g., a crawler or an export reading 5,000 cold keys) evicts hot entries. After the scan, the hit ratio in the next 800 requests dropped to <strong>64.1% for LRU</strong> (from 86.6%) but only <strong>71.5% for LFU</strong> (from 84.9%): frequency-aware policies resist scans better. Use <code>allkeys-lfu</code> in Redis (Chapter 19) when scan-like traffic exists.</li>
+</ul>
+<p>Practical advice: <strong>measure your hit ratio</strong> (hits ÷ (hits + misses); Redis exposes <code>keyspace_hits/misses</code>, <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>). A cache with a 30% hit ratio is probably not worth its complexity; 90%+ on a hot path is typical. Pick the <strong>TTL from tolerable staleness</strong>, the <strong>size from the hit-ratio curve</strong>, and the <strong>policy from the access pattern</strong>.</p>
+<hr>
+
+<h2 id="27-7-cache-keys-serialization-and-security">27.7 Cache Keys, Serialization and Security</h2>
+<h3 id="key-design">Key design</h3>
+<ul>
+<li><strong>Namespaced and versioned:</strong> <code>shopline:v3:product:42:en</code>. Bump a global version when the <em>shape</em> of the cached value changes (a deploy that changes serialisation would otherwise read incompatible old entries).</li>
+<li><strong>Include every input that affects the result</strong> (language, currency, user role, feature flags, page and filters). A key that omits an input serves <em>the wrong answer to someone</em>: the quiet worst bug in caching. (HTTP&#39;s <code>Vary</code> is the same idea.)</li>
+<li><strong>Normalise</strong> keys (sort query params, lowercase emails) so equivalent requests share an entry.</li>
+<li>Keep keys short enough for memory but readable for debugging.</li>
+</ul>
+<h3 id="serialization">Serialization</h3>
+<p><code>JSON.stringify/parse</code> is simple but costly for big values; <code>Date</code>s become strings, <code>BigInt</code> throws, <code>undefined</code> vanishes (<a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>). Consider MessagePack/Protobuf for large hot values, and <strong>cache DTOs (plain data), never class instances or ORM entities</strong>.</p>
+<h3 id="security-caching-can-leak-or-poison">Security: caching can leak or poison</h3>
+<ul>
+<li><strong>Never cache personalised responses in a shared cache</strong> (<code>Cache-Control: private</code>, and keys including the user id). Leaking user A&#39;s cart to user B is a data breach (<a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a>).</li>
+<li><strong>Web cache deception</strong>: an attacker lures a victim to <code>/account/profile/anything.css</code>; if the CDN caches by file extension while the origin ignores the extra path segment and returns the private page, the attacker later fetches the victim&#39;s cached page. Defence: cache <strong>only responses that say they&#39;re cacheable</strong> (<code>Cache-Control</code>), not by URL pattern, and make unknown paths <code>404</code>.</li>
+<li><strong>Cache poisoning</strong>: if a response varies on an <em>unkeyed</em> input (like <code>X-Forwarded-Host</code> or a header reflected into the HTML) that isn&#39;t in the cache key, an attacker can store a malicious variant for everyone. Include (or strip) every input that influences the response.</li>
+<li>Don&#39;t cache <strong>authorization decisions</strong> beyond their staleness tolerance (a demoted admin, Chapter 22).</li>
+<li>Cached secrets need the same protection as the originals; set TTLs short for tokens.</li>
+</ul>
+<hr>
+
+<h2 id="27-8-when-not-to-cache">27.8 When <em>Not</em> to Cache</h2>
+<ul>
+<li><strong>Data that must be exact</strong>: balances, stock at purchase time, authorisation (<a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>/22).</li>
+<li><strong>Cheap operations</strong>: a primary-key lookup already costs about as much as a Redis hit (§27.2.3).</li>
+<li><strong>Low-reuse data</strong>: if each result is requested once, you&#39;re only adding writes.</li>
+<li><strong>Highly volatile data</strong> that changes faster than the TTL.</li>
+<li><strong>Before measuring</strong>: add an index (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>) or fix an N+1 first. A cache in front of a missing index hides the problem and adds staleness bugs.</li>
+</ul>
+<hr>
+
+<h2 id="27-9-a-caching-plan-for-shopline">27.9 A Caching Plan for ShopLine</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th>
+<th>What</th>
+<th>Policy</th>
+</tr>
+</thead><tbody><tr>
+<td>CDN / browser</td>
+<td>Fingerprinted JS/CSS/images</td>
+<td><code>public, max-age=31536000, immutable</code></td>
+</tr>
+<tr>
+<td>CDN</td>
+<td>Public product list / category pages</td>
+<td><code>public, s-maxage=60, stale-while-revalidate=300</code>, ETag; purge on admin update</td>
+</tr>
+<tr>
+<td>Browser</td>
+<td>Personalised endpoints</td>
+<td><code>private, no-store</code></td>
+</tr>
+<tr>
+<td>In-process (L1)</td>
+<td>Category tree, feature flags, config</td>
+<td>30 s TTL + pub/sub invalidation</td>
+</tr>
+<tr>
+<td>Redis (L2)</td>
+<td>Product detail, search results, best-seller report</td>
+<td>Cache-aside, TTL 5 min + jitter, versioned keys, negative caching (30 s), single-flight</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>Source of truth</td>
+<td>Price and stock <strong>always</strong> read here at checkout</td>
+</tr>
+<tr>
+<td>Metrics</td>
+<td>Hit ratio per cache, miss latency, eviction count</td>
+<td>Alert on hit-ratio collapse (a cold cache is an incident, Ch 25/26)</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="27-10-edge-cases-and-gotchas-checklist">27.10 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> No explicit <code>Cache-Control</code> (relying on heuristics); <code>no-cache</code> confused with <code>no-store</code>.</li>
+<li><input disabled="" type="checkbox"> Personalised data served with <code>public</code>/in a shared cache; <code>Vary: Cookie</code> making everything uncacheable; <code>Vary: User-Agent</code>.</li>
+<li><input disabled="" type="checkbox"> Assets not fingerprinted (so they can&#39;t be cached long) or fingerprinted but short-lived.</li>
+<li><input disabled="" type="checkbox"> <code>304</code> expected to save server work while the server still runs the expensive query to compute the ETag.</li>
+<li><input disabled="" type="checkbox"> Testing conditional requests with <code>fetch()</code> (adds <code>no-cache</code>) and concluding ETags are broken.</li>
+<li><input disabled="" type="checkbox"> Invalidate-on-write without protection against the stale-write race; no TTL safety net.</li>
+<li><input disabled="" type="checkbox"> In-process caches on several instances with no broadcast invalidation.</li>
+<li><input disabled="" type="checkbox"> Cache keys missing an input (language, currency, role, tenant, page); un-normalised keys.</li>
+<li><input disabled="" type="checkbox"> No negative caching (penetration); identical TTLs (avalanche); no single-flight (stampede); hot/big keys.</li>
+<li><input disabled="" type="checkbox"> Caching trivial lookups; caching before fixing the index/N+1; caching exact-consistency data.</li>
+<li><input disabled="" type="checkbox"> Never measuring hit ratio; unbounded cache growth; no eviction policy.</li>
+<li><input disabled="" type="checkbox"> A system that cannot survive an empty cache; Redis treated as a hard dependency.</li>
+<li><input disabled="" type="checkbox"> CDN caching by URL extension (web cache deception); unkeyed headers influencing responses (poisoning).</li>
+<li><input disabled="" type="checkbox"> Serialising class instances/ORM entities, <code>BigInt</code>, <code>Date</code> carelessly; changing value shape without a key version.</li>
+</ul>
+<hr>
+
+<h2 id="27-11-chapter-summary">27.11 Chapter Summary</h2>
+<ul>
+<li>Caching trades <strong>freshness for speed and load reduction</strong>; every cache is a copy. Layers: browser → CDN → app memory → Redis → DB.</li>
+<li><strong>HTTP caching:</strong> <code>Cache-Control</code> (<code>max-age</code>, <code>s-maxage</code>, <code>public/private</code>, <code>no-store</code> vs <code>no-cache</code>, <code>immutable</code>, <code>stale-while-revalidate</code>), <strong>validators</strong> (<code>ETag</code> → <code>304</code>, 0-byte body), <code>Vary</code> (separate entries per language). Fingerprinted assets with <code>immutable</code> are the gold standard. Through a mini CDN: 199/200 hits, <strong>SWR served a stale answer in 4 ms</strong> and refreshed in the background. <code>304</code> saves bandwidth, not origin work; Node&#39;s <code>fetch</code> adds <code>no-cache</code> to conditional requests.</li>
+<li><strong>App caching:</strong> cache-aside by default (read-through, write-through, write-behind, refresh-ahead are variants). A hit was <strong>78× faster</strong> than a 1M-row aggregate; in-process <strong>~110 ns</strong> vs Redis <strong>~2.5 ms</strong> vs a PG PK lookup <strong>~3 ms</strong>: cache <em>expensive</em> work.</li>
+<li><strong>Invalidation:</strong> TTL + invalidate-on-write; the <strong>stale-write race</strong> left the cache at 12000 while the DB said 9900; <strong>version-stamped keys</strong> fixed it. Match staleness to the data; prices and stock shown may be stale, prices <strong>charged</strong> never are.</li>
+<li><strong>Multi-instance:</strong> local caches go stale across servers; <strong>pub/sub invalidation</strong> fixed it in 3.5 ms (with a TTL safety net).</li>
+<li><strong>Failure modes:</strong> penetration (<strong>3,000 → 30</strong> DB queries with negative caching), stampede, avalanche (TTL jitter), hot/big keys, cold-cache dependency.</li>
+<li><strong>Eviction (simulated):</strong> 1% of keys served ~50% of requests under Zipf; LRU beat FIFO/random; LFU resisted scan pollution better (71.5% vs 64.1%).</li>
+<li><strong>Security:</strong> never share personalised responses; avoid web cache deception and header-based poisoning; key on every input.</li>
+</ul>
+<hr>
+
+<h2 id="27-12-revision-notes">27.12 Revision Notes</h2>
+<ul>
+<li><code>Cache-Control</code>: <code>public/private</code>, <code>max-age</code>/<code>s-maxage</code>, <code>no-store</code> (never) vs <code>no-cache</code> (validate), <code>immutable</code>, <code>stale-while-revalidate</code>, <code>stale-if-error</code>.</li>
+<li><code>ETag</code> + <code>If-None-Match</code> → <code>304</code>; derive validators cheaply; fingerprint static assets.</li>
+<li><code>Vary</code> only on headers that change the body; never Cookie/User-Agent on public pages.</li>
+<li>Cache-aside + TTL (+jitter) + single-flight + negative caching; versioned keys beat the stale-write race.</li>
+<li>L1 (µs-ns) + L2 Redis (ms) + DB; broadcast L1 invalidations; short L1 TTLs.</li>
+<li>Exact-consistency data (balance, checkout price, stock decision) is never served from cache.</li>
+<li>Measure hit ratio; Redis <code>allkeys-lru/lfu</code>; capacity-plan for a cold cache.</li>
+<li>Shared caches: <code>Cache-Control</code> decides, not URL extensions; key on all inputs.</li>
+</ul>
+<hr>
+
+<h2 id="27-13-mind-map-ascii">27.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                                CACHING
+                                   │
+    ┌───────────┬──────────────┬───┴─────────┬──────────────┬─────────────┐
+   HTTP       APPLICATION   INVALIDATION   FAILURES      EVICTION      SECURITY
+    │             │              │             │             │             │
+ Cache-Control  cache-aside   TTL + safety   penetration   LRU/LFU       private data
+ ETag/304       read/write-   invalidate     stampede      Zipf skew     poisoning
+ Vary           through       versioned keys avalanche     hit ratio     cache deception
+ immutable      L1 + L2       pub/sub        hot keys      scan pollution key = all inputs
+ SWR            negative      race fix       cold start</code></pre>
+<hr>
+
+<h2 id="27-14-cheat-sheet">27.14 Cheat Sheet</h2>
+<pre class="is-plain"><code>Cache-Control: public, max-age=31536000, immutable           # fingerprinted assets
+Cache-Control: public, max-age=60, stale-while-revalidate=300   # public lists
+Cache-Control: private, no-store                              # personal / sensitive
+ETag + If-None-Match → 304                                    # cheap revalidation
+Vary: Accept-Language                                         # only what changes the body</code></pre>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> ver = <span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">get</span>(<span class="hljs-string">`ver:product:<span class="hljs-subst">${id}</span>`</span>); <span class="hljs-keyword">const</span> k = <span class="hljs-string">`product:<span class="hljs-subst">${id}</span>:v<span class="hljs-subst">${ver}</span>`</span>;       <span class="hljs-comment">// read version first</span>
+<span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">set</span>(k, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(row), { <span class="hljs-attr">EX</span>: <span class="hljs-number">300</span> + <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(<span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * <span class="hljs-number">60</span>) });      <span class="hljs-comment">// TTL + jitter</span>
+<span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">set</span>(<span class="hljs-string">`p:<span class="hljs-subst">${id}</span>`</span>, <span class="hljs-string">&#x27;NULL&#x27;</span>, { <span class="hljs-attr">EX</span>: <span class="hljs-number">30</span> });                                             <span class="hljs-comment">// negative caching</span>
+<span class="hljs-keyword">await</span> redis.<span class="hljs-title function_">publish</span>(<span class="hljs-string">&#x27;invalidate&#x27;</span>, key);  <span class="hljs-comment">/* subscribers: localCache.delete(key) */</span>          <span class="hljs-comment">// L1 coherence</span></code></pre></div>
+<hr>
+
+<h2 id="27-15-key-takeaways">27.15 Key Takeaways</h2>
+<ol>
+<li><strong>Cache expensive work, not cheap lookups</strong>, and measure the hit ratio.</li>
+<li><strong>Be explicit with <code>Cache-Control</code></strong>; fingerprint assets; use <code>stale-while-revalidate</code> for fast <em>and</em> fresh.</li>
+<li><strong>Every cache is a copy: decide per data type how stale is acceptable.</strong> Money and stock decisions never come from a cache.</li>
+<li><strong>Invalidate on write plus a TTL safety net, and use versioned keys to beat races.</strong></li>
+<li><strong>Defend against penetration, stampede, avalanche and a cold start.</strong></li>
+<li><strong>Never put personalised data in a shared cache; key on every input.</strong></li>
+</ol>
+<hr>
+
+<h2 id="27-16-20-multiple-choice-questions">27.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="no-store."><p class="quiz-text">Which directive means &quot;do not store this at all&quot;?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>no-cache</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>no-store</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>must-revalidate</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>max-age=0</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Browser-only."><p class="quiz-text"><code>Cache-Control: private</code> means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Encrypt it</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Only the user&#39;s own browser may cache it, not shared caches/CDNs</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Never cache</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cache for one second</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Conditional request."><p class="quiz-text">An <code>ETag</code> lets a cache:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Skip HTTPS</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Ask &quot;has it changed?&quot; and receive a bodyless <code>304</code> if not</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Set cookies</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Compress</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Immutable, 1 year."><p class="quiz-text">A fingerprinted asset (<code>app.9f8a7c.js</code>) should use:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>no-store</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>public, max-age=31536000, immutable</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>max-age=0</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>private</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Separate variants."><p class="quiz-text"><code>Vary: Accept-Language</code> makes a cache:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Ignore the header</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Keep separate entries per language value</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Refuse to cache</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Translate pages</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Defeats sharing."><p class="quiz-text">Why avoid <code>Vary: Cookie</code> on a public page?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s deprecated</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Almost every user has a different cookie, so effectively nothing is shareable</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Cookies are secure</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It changes the status code</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Stale instantly + background refresh."><p class="quiz-text"><code>stale-while-revalidate</code> makes the user:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Wait for the refresh</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Get the stale copy instantly while the cache refreshes in the background</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">See an error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Bypass the CDN</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Cheap validator first."><p class="quiz-text">A <code>304</code> saves server <em>work</em> only if:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Always</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The validator is computed cheaply before running the expensive query</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The ETag is weak</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">HTTP/2 is used</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Update then invalidate."><p class="quiz-text">In cache-aside, on a write you normally:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Update only the cache</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Update the DB then invalidate the key</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Delete the DB row</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Do nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Late fill of old value."><p class="quiz-text">The stale-write race happens when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Redis crashes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A delayed reader fills the cache with an old value after a writer invalidated it</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">TTLs are too long</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Keys collide</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Old key never read."><p class="quiz-text">Version-stamped keys fix the race because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They are shorter</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A late writer fills an old-version key no one reads any more</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They disable TTL</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They lock the DB</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Source of truth."><p class="quiz-text">Which data must NOT be served from a cache when making the purchase decision?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Category names</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The price charged and stock availability at checkout</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Product images</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Site footer text</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Per-instance caches."><p class="quiz-text">Two app instances with in-process caches show different prices after an update because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Clock skew</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Each cache is separate; one instance&#39;s invalidation doesn&#39;t reach the other without a broadcast</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The DB is wrong</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Redis is down</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="30 queries."><p class="quiz-text">Negative caching reduced 3,000 database queries to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">3,000</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">300</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">30</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Jitter and protection."><p class="quiz-text">A cache avalanche is best mitigated by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Identical TTLs</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">TTL jitter, warming, and protecting the DB with load shedding/breakers</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Smaller keys</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Disabling Redis</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="~50% measured."><p class="quiz-text">In the Zipf simulation, caching 1% of keys gave about what hit ratio?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">5%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">~50%</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">99%</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0%</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="71.5% vs 64.1%."><p class="quiz-text">Which policy resisted scan pollution better in our simulation?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">LRU</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The (sampled) LFU</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">FIFO</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">RANDOM</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="All inputs."><p class="quiz-text">The cache key for a localized product page must include:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only the product id</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Product id, language and any other input that changes the output</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The server name</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A random number</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Explicit policy, 404s."><p class="quiz-text">&quot;Web cache deception&quot; is prevented by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Caching by URL file extension</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Caching only responses that explicitly allow it and returning 404 for unknown paths</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Using longer TTLs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Disabling HTTPS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Similar cost + staleness."><p class="quiz-text">Caching a primary-key lookup in Redis often buys little because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Redis is slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An indexed PK lookup costs about the same as a Redis round trip, and the cache adds staleness</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">PK lookups can&#39;t be cached</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Redis can&#39;t store JSON</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-c, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="27-17-20-hands-on-exercises">27.17 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch27/README.txt">resources/ch27/</a>.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>lab-http.mjs</code>; identify which route is cached and why for each of the five labels.</li>
+<li>Use <code>curl -I</code> against an Express app and add <code>Cache-Control</code> to a route; confirm the header.</li>
+<li>Show a <code>304</code> using <code>curl -H &#39;If-None-Match: &lt;etag&gt;&#39;</code>.</li>
+<li>Measure miss vs hit latency for an expensive query using Redis.</li>
+<li>Reproduce negative caching (3000 → 30 queries).</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Fingerprint your static assets with a build step and serve them <code>immutable</code>.</li>
+<li>Implement a cheap ETag from <code>updated_at</code>/<code>version</code> that short-circuits before the expensive query; measure server time saved.</li>
+<li>Add <code>stale-while-revalidate</code> to a public list and verify the background refresh with logs.</li>
+<li>Reproduce the stale-write race and fix it with version-stamped keys.</li>
+<li>Implement delayed double-delete and compare with versioned keys.</li>
+<li>Build a two-instance demo with L1 caches and Redis pub/sub invalidation; kill the subscriber and observe staleness; add a short TTL.</li>
+<li>Add TTL jitter and demonstrate the avalanche before/after with a load test.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Implement an L1+L2 cache wrapper (single-flight, negative caching, versioned keys, metrics) with unit and integration tests (Ch 24).</li>
+<li>Use Redis RESP3 client-side caching (<code>CLIENT TRACKING</code>) instead of pub/sub; compare.</li>
+<li>Put nginx or Varnish in front of an Express app; configure caching and verify <code>X-Cache</code> hits and <code>Vary</code> handling.</li>
+<li>Replay a real access-log sample through LRU, LFU and TinyLFU simulators; plot hit ratio vs size.</li>
+<li>Demonstrate a web-cache-deception and a cache-poisoning attack against a deliberately misconfigured cache; then fix both.</li>
+<li>Build a Bloom filter in front of the product cache and measure its effect on penetration traffic.</li>
+<li>Design the cache strategy for a flash sale (one hot product, 50k req/s): L1, request coalescing, CDN micro-caching, and a protected DB path; load-test it.</li>
+<li>Run a &quot;cold cache&quot; game day: flush Redis under load, record DB load and latency, and implement mitigations.</li>
+</ol>
+<hr>
+
+<h2 id="27-18-5-interview-questions">27.18 5 Interview Questions</h2>
+<p><strong>1. Explain HTTP caching headers and how a CDN uses them.</strong>
+<em>Model answer:</em> <code>Cache-Control</code> sets freshness and scope (<code>max-age</code>, <code>s-maxage</code> for shared caches, <code>public/private</code>, <code>no-store</code>, <code>immutable</code>, <code>stale-while-revalidate</code>); validators (<code>ETag</code>/<code>Last-Modified</code>) allow cheap revalidation with <code>304</code>; <code>Vary</code> splits cache entries by request headers. A CDN stores <code>public</code> responses, serves them while fresh, revalidates when stale, and must never store <code>private</code>/<code>no-store</code>. Fingerprint static assets and cache them for a year.</p>
+<p><strong>2. What are the cache-aside pattern&#39;s failure modes?</strong>
+<em>Model answer:</em> Stale reads after writes (invalidate-on-write races), stampedes on expiry, penetration for nonexistent keys, avalanche from synchronized TTLs, hot keys, and cold-start overload. Mitigate with TTL + versioned keys, single-flight/SWR, negative caching, jitter, local replication of hot keys, and capacity for a cold cache.</p>
+<p><strong>3. How do you keep multiple servers&#39; in-memory caches consistent?</strong>
+<em>Model answer:</em> You mostly can&#39;t make them strongly consistent; use short TTLs and broadcast invalidations (Redis pub/sub or client-side tracking), accept brief staleness, restrict L1 to data that tolerates it, and keep a TTL as a safety net since pub/sub can drop messages.</p>
+<p><strong>4. When is caching the wrong answer?</strong>
+<em>Model answer:</em> When data must be exact (balances, checkout price, stock decisions, authorization), when the operation is already cheap (a PK lookup), when reuse is low, or when the real problem is a missing index or N+1: fix those first. Caching adds staleness and failure modes.</p>
+<p><strong>5. How do you decide cache size, TTL and eviction policy?</strong>
+<em>Model answer:</em> TTL from the tolerable staleness per data type; size from the hit-ratio curve for your (skewed) traffic: e.g., 1% of keys served ~50% of requests in my simulation; policy from access patterns (LRU general, LFU when scans pollute), then measure hit ratio and eviction metrics in production and adjust.</p>
+<hr>
+
+<h2 id="27-19-3-real-projects">27.19 3 Real Projects</h2>
+<p><strong>Project 1: HTTP Caching Layer (intermediate, ~8 hours).</strong>
+Add correct <code>Cache-Control</code>, ETags (cheap validators), <code>Vary</code>, SWR and <code>stale-if-error</code> to ShopLine&#39;s public endpoints; put nginx/Varnish/CDN in front; add purge on update; verify with automated header tests and a load test showing origin-request reduction.</p>
+<p><strong>Project 2: Multi-Level Cache Library (intermediate–advanced, ~12 hours).</strong>
+An L1 (<code>lru-cache</code>) + L2 (Redis) library with versioned keys, single-flight, negative caching, TTL jitter, pub/sub invalidation, metrics, and fault injection (Redis down). Include property tests for staleness bounds and a simulation harness for race conditions.</p>
+<p><strong>Project 3: Flash-Sale Hardening (advanced, ~12 hours).</strong>
+Prepare ShopLine for a 50× traffic spike on one product: edge micro-caching, request coalescing, protected inventory path (atomic updates, queue-based purchase, Chapter 16/28), cache warming, and a rehearsed game day with SLO assertions.</p>
+<hr>
+
+<h2 id="27-20-further-reading">27.20 Further Reading</h2>
+<ul>
+<li><strong>RFC 9111</strong> (HTTP Caching) and <strong>RFC 8246</strong> (<code>immutable</code>), <strong>RFC 5861</strong> (<code>stale-while-revalidate</code>, <code>stale-if-error</code>); MDN: <em>HTTP caching</em>, <em>Cache-Control</em>, <em>Vary</em>.</li>
+<li>Google web.dev: <em>HTTP caching</em>, <em>Love your cache</em>; Cloudflare/Fastly docs on cache keys, purging, tiered caching.</li>
+<li>Redis docs: <em>Client-side caching</em>, <em>Eviction</em>; AWS: <em>Caching best practices</em> (Amazon Builders&#39; Library: <em>Caching challenges and strategies</em>).</li>
+<li><em>Designing Data-Intensive Applications</em>, Ch 5 (replication lag) and the caching discussions; Facebook&#39;s <em>Scaling Memcache at Facebook</em> paper (leases against stale sets and stampedes).</li>
+<li>Omer Gil, <em>Web Cache Deception Attack</em>; James Kettle (PortSwigger), <em>Practical Web Cache Poisoning</em>.</li>
+<li>Caffeine&#39;s W-TinyLFU design notes; <code>lru-cache</code>, <code>keyv</code>, <code>cache-manager</code> libraries.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-28-asynchronous-processing-queues-workers-and-events">Up next → Chapter 28: Asynchronous Processing — Queues, Workers and Events</h3>
+<p>Some work shouldn&#39;t happen inside the request: sending email, generating invoices, resizing images, calling slow providers. Next: job queues (PostgreSQL <code>SKIP LOCKED</code>, Redis streams, BullMQ), workers, retries and dead-letter queues, scheduling and cron, the outbox pattern, event-driven design, ordering and exactly-once myths, and backpressure, all built and failure-tested.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Caching: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is the difference between no-cache and no-store?</h3></summary><p>no-store means do not store the response anywhere. no-cache means it may be stored but must be revalidated with the server before reuse.</p></details>
+<details class="learn-faq-item"><summary><h3>What is stale-while-revalidate?</h3></summary><p>A Cache-Control extension that lets a cache serve an expired response immediately while it refreshes in the background, so users never wait for the refresh.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I avoid stale data after an update?</h3></summary><p>Invalidate on write, keep a TTL as a safety net and use version-stamped keys so a delayed reader cannot refill an old value. Never serve checkout prices or stock decisions from a cache.</p></details>
+<details class="learn-faq-item"><summary><h3>What is cache penetration?</h3></summary><p>Requests for keys that do not exist always miss and hit the database. Negative caching stores the not-found result briefly; it cut 3,000 queries to 30 in our test.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span>&larr; Previous &middot; Chapter 26</span><strong>Error Handling &amp; Resilience: Retries</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span>Next &middot; Chapter 28 &rarr;</span><strong>Message Queues &amp; Background Jobs: Outbox</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#27-0-why-this-chapter-matters">27.0 Why This Chapter Matters</a></li><li><a href="#27-1-http-caching-let-the-browser-and-cdn-do-the-work">27.1 HTTP Caching: Let the Browser and CDN Do the Work</a></li><li><a href="#27-2-application-caching-patterns">27.2 Application Caching Patterns</a></li><li><a href="#27-3-invalidation-the-hard-part">27.3 Invalidation: The Hard Part</a></li><li><a href="#27-4-multiple-instances-local-caches-and-invalidation-broadcast">27.4 Multiple Instances: Local Caches and Invalidation Broadcast</a></li><li><a href="#27-5-cache-failure-modes">27.5 Cache Failure Modes</a></li><li><a href="#27-6-eviction-policies-and-hit-ratio">27.6 Eviction Policies and Hit Ratio</a></li><li><a href="#27-7-cache-keys-serialization-and-security">27.7 Cache Keys, Serialization and Security</a></li><li><a href="#27-8-when-not-to-cache">27.8 When Not to Cache</a></li><li><a href="#27-9-a-caching-plan-for-shopline">27.9 A Caching Plan for ShopLine</a></li><li><a href="#27-10-edge-cases-and-gotchas-checklist">27.10 Edge Cases and Gotchas Checklist</a></li><li><a href="#27-11-chapter-summary">27.11 Chapter Summary</a></li><li><a href="#27-12-revision-notes">27.12 Revision Notes</a></li><li><a href="#27-13-mind-map-ascii">27.13 Mind Map (ASCII)</a></li><li><a href="#27-14-cheat-sheet">27.14 Cheat Sheet</a></li><li><a href="#27-15-key-takeaways">27.15 Key Takeaways</a></li><li><a href="#27-16-20-multiple-choice-questions">27.16 20 Multiple Choice Questions</a></li><li><a href="#27-17-20-hands-on-exercises">27.17 20 Hands-on Exercises</a></li><li><a href="#27-18-5-interview-questions">27.18 5 Interview Questions</a></li><li><a href="#27-19-3-real-projects">27.19 3 Real Projects</a></li><li><a href="#27-20-further-reading">27.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "caching-strategies-http-cache-redis-invalidation"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

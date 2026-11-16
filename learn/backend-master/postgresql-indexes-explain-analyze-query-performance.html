@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>PostgreSQL Indexes &amp; EXPLAIN ANALYZE | Backend Master</title>
+    <meta name="description" content="Make PostgreSQL queries fast: B-tree indexes, EXPLAIN ANALYZE, composite and partial indexes, index-only scans, GIN and BRIN, N+1 and keyset pagination.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="postgresql index, explain analyze, composite index order, partial index, gin index jsonb, brin index, n+1 query problem, keyset pagination, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/database-schema-design-normalization-migrations">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="postgresql index">
+    <meta property="article:tag" content="explain analyze">
+    <meta property="article:tag" content="composite index order">
+    <meta property="article:tag" content="partial index">
+    <meta property="article:tag" content="gin index jsonb">
+    <meta property="article:tag" content="brin index">
+    <meta property="article:tag" content="n+1 query problem">
+    <meta property="article:tag" content="keyset pagination">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">
+    <meta property="og:description" content="Make PostgreSQL queries fast: B-tree indexes, EXPLAIN ANALYZE, composite and partial indexes, index-only scans, GIN and BRIN, N+1 and keyset pagination.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/postgresql-indexes-explain-analyze-query-performance.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="PostgreSQL Indexes and Query Performance: Reading EXPLAIN ANALYZE: Backend Master chapter 15">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">
+    <meta name="twitter:description" content="Make PostgreSQL queries fast: B-tree indexes, EXPLAIN ANALYZE, composite and partial indexes, index-only scans, GIN and BRIN, N+1 and keyset pagination.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/postgresql-indexes-explain-analyze-query-performance.png">
+    <meta name="twitter:image:alt" content="PostgreSQL Indexes and Query Performance: Reading EXPLAIN ANALYZE: Backend Master chapter 15">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance",
+          "name": "PostgreSQL Indexes & EXPLAIN ANALYZE | Backend Master",
+          "description": "Make PostgreSQL queries fast: B-tree indexes, EXPLAIN ANALYZE, composite and partial indexes, index-only scans, GIN and BRIN, N+1 and keyset pagination.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/postgresql-indexes-explain-analyze-query-performance.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "PostgreSQL Indexes and Query Performance: Reading EXPLAIN ANALYZE"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#webpage"
+          },
+          "headline": "PostgreSQL Indexes and Query Performance: Reading EXPLAIN ANALYZE",
+          "alternativeHeadline": "Indexes and Query Performance — Making Queries Fast (and Knowing Why)",
+          "description": "Make PostgreSQL queries fast: B-tree indexes, EXPLAIN ANALYZE, composite and partial indexes, index-only scans, GIN and BRIN, N+1 and keyset pagination.",
+          "abstract": "Indexes turn full table scans into a few page reads. On a one-million-row table this chapter measures an index cutting a query from 107 ms to 0.28 ms, shows how to read EXPLAIN ANALYZE, explains why the planner sometimes ignores an index, and covers composite, covering, partial, expression, GIN and BRIN indexes, the N+1 problem and pg_stat_statements.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/postgresql-indexes-explain-analyze-query-performance.png",
+          "url": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 8364,
+          "timeRequired": "PT38M",
+          "articleSection": "Backend Development",
+          "keywords": "postgresql index, explain analyze, composite index order, partial index, gin index jsonb, brin index, n+1 query problem, keyset pagination",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "How a B-tree index works",
+            "Reading EXPLAIN (ANALYZE, BUFFERS)",
+            "Composite, covering, partial and expression indexes",
+            "Why the planner ignores an index",
+            "Finding slow queries and fixing N+1"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "postgresql index"
+          },
+          "isAccessibleForFree": true,
+          "position": 15,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/database-schema-design-normalization-migrations#article",
+            "name": "Schema Design and Normalization: Keys, Constraints and Zero-Downtime Migrations",
+            "url": "https://shivamthakur.me/learn/backend-master/database-schema-design-normalization-migrations"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "PostgreSQL Indexes & EXPLAIN ANALYZE",
+              "item": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why isn't PostgreSQL using my index?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Common reasons are low selectivity (the query matches most rows), wrapping the column in a function, a composite index used from the wrong column, stale statistics or a tiny table."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "In what order should composite index columns go?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Put equality columns first, then the range or sort column, and remember the index only serves left prefixes. For WHERE user_id = ? ORDER BY created_at DESC, use (user_id, created_at DESC)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does an index cost?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Every insert and update must maintain each index: six extra indexes made a 200,000-row insert 3.8 times slower in our test, plus disk and cache pressure."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is OFFSET pagination slow?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "OFFSET cannot skip rows; the database reads and discards them. Keyset pagination seeks directly to the position and stays fast at any depth."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#quiz",
+          "name": "PostgreSQL Indexes & EXPLAIN ANALYZE: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "postgresql index"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does an index primarily trade?",
+              "text": "What does an index primarily trade?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Disk space and write speed for read speed"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Memory for correctness"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Reads for writes only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Rows Removed by Filter: 999972 on a Seq Scan returning 28 rows suggests:",
+              "text": "Rows Removed by Filter: 999972 on a Seq Scan returning 28 rows suggests:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A missing/unusable index"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A healthy plan"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Corrupt data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Too much RAM"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "EXPLAIN ANALYZE on an UPDATE:",
+              "text": "EXPLAIN ANALYZE on an UPDATE:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Actually performs the update"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only estimates"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is rejected"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rolls back automatically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best first comparison when reading a plan is:",
+              "text": "The best first comparison when reading a plan is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Estimated vs actual rows"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Cost numbers across different servers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Query length"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Index names"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did the planner ignore the status index for status = 'delivered'?",
+              "text": "Why did the planner ignore the status index for status = 'delivered'?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "~80% of rows match, so a sequential scan is cheaper"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Bug"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Index corrupt"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Text type"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which condition can use a normal B-tree index on created_at?",
+              "text": "Which condition can use a normal B-tree index on created_at?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "created_at >= '2025-06-15' AND created_at < '2025-06-16'"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "date(created_at) = '2025-06-15'"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "created_at::text LIKE '2025-06%'"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "created_at + interval '1 day' > now()"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "For WHERE user_id = ? ORDER BY created_at DESC LIMIT 5, the best index is:",
+              "text": "For WHERE user_id = ? ORDER BY created_at DESC LIMIT 5, the best index is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "(user_id, created_at DESC)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "(created_at)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "(user_id)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "(created_at, user_id)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A composite index (a, b, c) can efficiently serve:",
+              "text": "A composite index (a, b, c) can efficiently serve:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Only a, a,b and a,b,c filters (left prefix)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only c"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Any column alone"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only a,b,c together"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "INCLUDE (total_minor) on an index is for:",
+              "text": "INCLUDE (total_minor) on an index is for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Index-only scans (covering)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Uniqueness"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Foreign keys"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Heap Fetches in an Index Only Scan is high because:",
+              "text": "Heap Fetches in an Index Only Scan is high because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The visibility map is not set for many pages (needs VACUUM)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The index is too small"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Too many columns"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The query is wrong"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A partial index WHERE status = 'pending' is useful because it is:",
+              "text": "A partial index WHERE status = 'pending' is useful because it is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Smaller, cheaper to maintain, and ideal for a hot subset"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Always chosen"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unique"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Free"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "To make WHERE lower(email) = $1 fast:",
+              "text": "To make WHERE lower(email) = $1 fast:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Index (lower(email))"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Index (email)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "LIKE"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Add RAM"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A plain B-tree on email failed to serve LIKE 'user777%' because:",
+              "text": "A plain B-tree on email failed to serve LIKE 'user777%' because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The en_US collation order isn't byte-wise; use text_pattern_ops"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "LIKE is unindexable"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The column was text"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The index was invalid"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which index type is ideal for payload @> '{\"type\":\"buy\"}' on jsonb?",
+              "text": "Which index type is ideal for payload @> '{\"type\":\"buy\"}' on jsonb?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "GIN"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "BRIN"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Hash"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "B-tree"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "BRIN is appropriate when:",
+              "text": "BRIN is appropriate when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The column's values correlate with physical row order (e.g., append-only timestamps)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Values are random"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "You need uniqueness"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Tables are tiny"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Inserting 200k rows was slower with 6 indexes than with 0 by roughly:",
+              "text": "Inserting 200k rows was slower with 6 indexes than with 0 by roughly:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "3.8×"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "10%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "1.2×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No difference"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why index foreign-key columns?",
+              "text": "Why index foreign-key columns?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Joins/filters and parent deletes would scan the child table"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Required by SQL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "For uniqueness"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "For ON DELETE CASCADE only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "OFFSET 900000 is slow because:",
+              "text": "OFFSET 900000 is slow because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The database reads and discards 900,000 rows"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The network"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting is disabled"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "LIMIT is small"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The N+1 problem is best detected by:",
+              "text": "The N+1 problem is best detected by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Counting queries per request (logs/pg_stat_statements calls)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "EXPLAIN on each query"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Checking CPU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Adding indexes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "pg_stat_statements requires:",
+              "text": "pg_stat_statements requires:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "shared_preload_libraries + a server restart + CREATE EXTENSION"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Superuser only at runtime"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A reboot of the OS"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:41.7%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item active" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" aria-current="page"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 15 of 36 &middot; Intermediate</p>
+                        <h1>PostgreSQL Indexes and Query Performance: Reading EXPLAIN ANALYZE</h1>
+                        <p class="learn-book-title">Indexes and Query Performance — Making Queries Fast (and Knowing Why)</p>
+                        <ul class="learn-meta text-caption">
+                            <li>38 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/postgresql-indexes-explain-analyze-query-performance.webp"><img src="../../assets/images/learn/backend-master/postgresql-indexes-explain-analyze-query-performance.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="PostgreSQL Indexes and Query Performance: Reading EXPLAIN ANALYZE: Backend Master chapter 15 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Indexes turn full table scans into a few page reads. On a one-million-row table this chapter measures an index cutting a query from 107 ms to 0.28 ms, shows how to read EXPLAIN ANALYZE, explains why the planner sometimes ignores an index, and covers composite, covering, partial, expression, GIN and BRIN indexes, the N+1 problem and pg_stat_statements.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>How a B-tree index works</li><li>Reading EXPLAIN (ANALYZE, BUFFERS)</li><li>Composite, covering, partial and expression indexes</li><li>Why the planner ignores an index</li><li>Finding slow queries and fixing N+1</li></ul>
+                        </section>
+<hr>
+
+<h2 id="15-0-why-this-chapter-matters">15.0 Why This Chapter Matters</h2>
+<p>Almost every &quot;the site is slow&quot; ticket in a backend job ends in the same place: <strong>a database query that reads far more data than it needs.</strong> The fix is rarely a bigger server. It is usually a one-line <code>CREATE INDEX</code>, or rewriting a condition so the index you already have can be used.</p>
+<p>But &quot;add an index&quot; is dangerous folk wisdom without understanding:</p>
+<ul>
+<li>An index that is <strong>never used</strong> still slows every write and wastes disk.</li>
+<li>An index you <em>think</em> is helping may be <strong>silently ignored</strong> by the planner because of one innocent-looking function call.</li>
+<li>The same query can be instant on your laptop&#39;s 1,000 rows and a disaster on 100 million.</li>
+</ul>
+<p>This chapter teaches you to <strong>measure instead of guess</strong>. You&#39;ll learn what an index physically is, read <code>EXPLAIN ANALYZE</code> like a story, and fix the classic problems on a <strong>real 1,000,000-row table</strong>, with before/after numbers.</p>
+<p>By the end you&#39;ll be able to:</p>
+<ul>
+<li>Explain how a <strong>B-tree index</strong> works and what it can and cannot do.</li>
+<li>Read <code>EXPLAIN (ANALYZE, BUFFERS)</code>: scan types, estimates vs actuals, buffers.</li>
+<li>Predict <strong>when the planner ignores an index</strong> (and why that&#39;s often correct).</li>
+<li>Design <strong>composite, covering, partial and expression</strong> indexes, and pick GIN/BRIN when B-tree isn&#39;t right.</li>
+<li>Count the <strong>cost of an index</strong> (write amplification, size, unused indexes).</li>
+<li>Fix <strong>OFFSET pagination</strong>, <strong>stale statistics</strong>, <strong>missing foreign-key indexes</strong>, and the <strong>N+1 query problem</strong>.</li>
+<li>Find slow queries with <strong><code>pg_stat_statements</code></strong>.</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="how-to-read-the-numbers-in-this-chapter" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>How to read the numbers in this chapter</span></h3>
+<p>Every number is real output from <strong>PostgreSQL 17</strong> in a Docker container on a Windows laptop, against the dataset in <a href="/learn/backend-master/resources/ch15-setup.sql">resources/ch15-setup.sql</a> (50,000 users, 1,000,000 orders). <strong>Absolute times will differ on your machine</strong>; ratios and <em>plan shapes</em> are what matter. I turned off parallel query (<code>SET max_parallel_workers_per_gather = 0</code>) so plans are one straight line you can read; in production PostgreSQL may use parallel workers. Plans are trimmed (I removed repetitive <code>Buffers:</code> and <code>Planning:</code> lines) for readability.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The same B-tree idea has powered databases since 1970 (Bayer &amp; McCreight, &quot;Organization and Maintenance of Large Ordered Indexes&quot;). A B-tree over a billion rows is only <strong>about four levels deep</strong>, so finding any row costs about four page reads. That is why a lookup on 1,000 rows and on a billion rows feel almost the same <em>with</em> an index, and wildly different <em>without</em> one.</p>
+</aside>
+<hr>
+
+<h2 id="15-1-the-mental-model-a-book-and-its-index">15.1 The Mental Model: A Book and Its Index</h2>
+<p>A table is a heap of <strong>8 KB pages</strong> holding rows in roughly insertion order (Ch 12). Our <code>orders</code> table: 1,000,000 rows in <strong>8,334 pages</strong> (65 MB).</p>
+<p>Question: <em>&quot;Find all orders for user 1234.&quot;</em></p>
+<p><strong>Without an index</strong>, the database must read every page and test every row: a <strong>sequential scan</strong>. Like finding every mention of a name by reading a 1,000-page book cover to cover.</p>
+<p><strong>With an index</strong>, it does what you do with the index at the back of a book: look up &quot;1234&quot; in a small, sorted structure that says <em>&quot;it&#39;s on pages 12, 88 and 301&quot;</em>, then jump to just those pages.</p>
+<p>Here is the real difference (query: <code>SELECT * FROM orders WHERE user_id = 1234</code>, 28 matching rows):</p>
+<pre class="is-plain"><code>-- no index
+Seq Scan on orders  (cost=0.00..20834.00 rows=21 width=37) (actual time=0.054..106.966 rows=28 loops=1)
+  Filter: (user_id = 1234)
+  Rows Removed by Filter: 999972
+  Buffers: shared hit=8334
+Execution Time: 107.180 ms
+
+-- with CREATE INDEX orders_user_idx ON orders (user_id)
+Bitmap Heap Scan on orders  (cost=4.59..85.69 rows=21 width=37) (actual time=0.146..0.193 rows=28 loops=1)
+  Recheck Cond: (user_id = 1234)
+  Heap Blocks: exact=28
+  Buffers: shared hit=31 read=3
+  -&gt;  Bitmap Index Scan on orders_user_idx  (actual time=0.132..0.132 rows=28 loops=1)
+        Index Cond: (user_id = 1234)
+Execution Time: 0.279 ms</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>No index</th>
+<th>Index</th>
+</tr>
+</thead><tbody><tr>
+<td>Pages touched</td>
+<td><strong>8,334</strong> (the whole table)</td>
+<td><strong>34</strong></td>
+</tr>
+<tr>
+<td>Rows examined &amp; discarded</td>
+<td>999,972</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Time</td>
+<td>107 ms</td>
+<td>0.28 ms (<strong>≈380× faster</strong>)</td>
+</tr>
+</tbody></table></div>
+<p>The index is 7,800 kB: about 12% the size of the table. That is the trade: <strong>extra disk and slower writes in exchange for fast lookups</strong> (§15.9).</p>
+<blockquote>
+<p><strong>Why the &quot;pages touched&quot; number matters more than milliseconds:</strong> time depends on your hardware and what&#39;s cached; <em>buffers</em> (page reads) measure the actual work. When you compare two plans, compare buffers.</p>
+</blockquote>
+<hr>
+
+<h2 id="15-2-how-a-b-tree-works-just-enough">15.2 How a B-tree Works (Just Enough)</h2>
+<p>PostgreSQL&#39;s default index type is the <strong>B-tree</strong>. Picture a sorted, shallow tree:</p>
+<pre class="is-plain"><code>                          [ root:   2000 | 4000 ]
+                         /          |           \
+             [ 500 | 1000 | 1500 ]  [ 2500 | 3000 | 3500 ]  [ 4500 | 5000 ... ]
+              /     |      |    \          ...                    ...
+          [leaf pages: sorted keys + pointers to table rows (ctid)]  ←→  linked left/right</code></pre>
+<ul>
+<li><strong>Keys are kept sorted.</strong> Searching is a binary-search-like walk from the root down: ~3–4 page reads even for hundreds of millions of rows.</li>
+<li><strong>Leaf pages are linked</strong>, so a <em>range</em> (<code>BETWEEN</code>, <code>&gt;</code>, <code>&lt;</code>) and <em>sorted order</em> come almost for free: find the start, then walk right.</li>
+<li>Each leaf entry holds the key and a <strong>pointer (<code>ctid</code>)</strong> to the table row.</li>
+</ul>
+<h3 id="what-a-b-tree-index-can-serve">What a B-tree index can serve</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Query shape</th>
+<th>Uses the index?</th>
+</tr>
+</thead><tbody><tr>
+<td><code>WHERE col = 5</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>WHERE col &gt; 5</code>, <code>&lt;</code>, <code>BETWEEN</code></td>
+<td>Yes (range walk)</td>
+</tr>
+<tr>
+<td><code>WHERE col IN (1,2,3)</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>ORDER BY col [LIMIT n]</code></td>
+<td>Yes: <strong>no sort needed</strong></td>
+</tr>
+<tr>
+<td><code>WHERE col LIKE &#39;abc%&#39;</code> (prefix)</td>
+<td>Yes, <strong>only with the right operator class/collation</strong> (§15.7)</td>
+</tr>
+<tr>
+<td><code>WHERE col IS NULL</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>WHERE col LIKE &#39;%abc&#39;</code> (contains)</td>
+<td><strong>No</strong> → trigram index (§15.7)</td>
+</tr>
+<tr>
+<td><code>WHERE lower(col) = &#39;x&#39;</code></td>
+<td><strong>No</strong>, unless the index is on <code>lower(col)</code> (§15.7)</td>
+</tr>
+<tr>
+<td><code>WHERE col + 1 = 5</code></td>
+<td><strong>No</strong> (function of the column)</td>
+</tr>
+</tbody></table></div>
+<p>The rule behind the &quot;No&quot; rows: the index is sorted by the <strong>stored value of the column</strong>. If your condition wraps the column in a function or arithmetic, the database can&#39;t use the sort order, because it doesn&#39;t know where <code>lower(col) = &#39;x&#39;</code> falls in a list sorted by <code>col</code>.</p>
+<h3 id="the-primary-key-already-has-one">The primary key already has one</h3>
+<p><code>PRIMARY KEY</code> and <code>UNIQUE</code> automatically create a B-tree index (our <code>orders_pkey</code> is 21 MB). <strong>Foreign keys do not</strong> (§15.10).</p>
+<hr>
+
+<h2 id="15-3-reading-explain">15.3 Reading <code>EXPLAIN</code></h2>
+<p><code>EXPLAIN</code> shows the <strong>plan</strong> the database chose. It does <em>not</em> run the query. <code>EXPLAIN ANALYZE</code> <strong>runs</strong> it and adds real timings. <code>BUFFERS</code> adds page counts.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql">EXPLAIN <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id <span class="hljs-operator">=</span> <span class="hljs-number">1234</span>;                    <span class="hljs-comment">-- estimates only</span>
+EXPLAIN (ANALYZE, BUFFERS) <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id <span class="hljs-operator">=</span> <span class="hljs-number">1234</span>; <span class="hljs-comment">-- run it, measure it</span></code></pre></div>
+<blockquote>
+<p>⚠️ <strong><code>EXPLAIN ANALYZE</code> really executes the statement.</strong> For an <code>UPDATE</code> or <code>DELETE</code> it really changes data. Wrap it: <code>BEGIN; EXPLAIN ANALYZE UPDATE …; ROLLBACK;</code>. <em>(Standard practice; I did not run a write example in this chapter.)</em></p>
+</blockquote>
+<h3 id="the-anatomy-of-one-node">The anatomy of one node</h3>
+<pre class="is-plain"><code>Bitmap Heap Scan on orders  (cost=4.59..85.69 rows=21 width=37) (actual time=0.146..0.193 rows=28 loops=1)
+│                            │             │       │  │          │                        │       │
+│                            │             │       │  │          │                        │       └ times this node ran
+│                            │             │       │  │          │                        └ ACTUAL rows returned
+│                            │             │       │  │          └ ACTUAL ms: first row .. last row
+│                            │             │       │  └ average row width in bytes
+│                            │             │       └ ESTIMATED rows
+│                            │             └ estimated total cost
+│                            └ estimated startup cost
+└ what the node does</code></pre>
+<p><strong>Costs are in arbitrary units</strong> (not milliseconds) and are only comparable <em>within one planner</em>; they exist so the planner can compare alternative plans. <strong>Rows</strong>: estimate vs actual is the most valuable comparison on the page: here the planner expected 21 rows and got 28, close enough. When they differ by 10× or 1000×, the statistics are wrong (§15.12) and the plan may be too.</p>
+<h3 id="reading-order">Reading order</h3>
+<p>Plans are <strong>trees, read from the innermost/most-indented node outward</strong>; each node feeds its parent.</p>
+<pre class="is-plain"><code>Aggregate                                      ← 3. count them
+  -&gt; Seq Scan on orders                        ← 2. keep rows passing the filter
+       Filter: (date(created_at) = ...)</code></pre>
+<h3 id="the-scan-types-you-ll-meet">The scan types you&#39;ll meet</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Node</th>
+<th>Meaning</th>
+<th>Good when</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Seq Scan</strong></td>
+<td>Read the whole table</td>
+<td>You need a large fraction of the rows, or the table is tiny</td>
+</tr>
+<tr>
+<td><strong>Index Scan</strong></td>
+<td>Walk the index, fetch each row from the table</td>
+<td>Few rows; or rows in index order with <code>LIMIT</code></td>
+</tr>
+<tr>
+<td><strong>Index Only Scan</strong></td>
+<td>Answer from the index alone (no table visit)</td>
+<td>The index <em>covers</em> every column you need (§15.6)</td>
+</tr>
+<tr>
+<td><strong>Bitmap Index Scan + Bitmap Heap Scan</strong></td>
+<td>Collect <em>all</em> matching row locations from the index, sort them by page, then visit each page once</td>
+<td>A medium number of rows scattered across pages</td>
+</tr>
+</tbody></table></div>
+<p>You&#39;ll notice our 28-row query used a <strong>bitmap</strong> scan, not a plain index scan: with rows scattered over 28 different pages, collecting locations first and visiting pages in physical order is cheaper than bouncing around. You don&#39;t choose this; the planner does.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>Read <strong>E-A-B</strong>: <strong>E</strong>stimated vs <strong>A</strong>ctual rows, then <strong>B</strong>uffers. If estimates are far off, fix statistics. If buffers are huge for few rows, you&#39;re missing an index (or the planner can&#39;t use it).</p>
+</aside>
+<hr>
+
+<h2 id="15-4-when-the-planner-ignores-your-index-and-why-that-s-usually-right">15.4 When the Planner Ignores Your Index (and Why That&#39;s Usually Right)</h2>
+<h3 id="15-4-1-low-selectivity-the-index-would-be-slower">15.4.1 Low selectivity: the index would be slower</h3>
+<p>Our <code>status</code> column is skewed: <strong>80% delivered</strong>, 8% shipped, 6% paid, 5% pending, 1% cancelled. We create <code>CREATE INDEX orders_status_idx ON orders (status)</code> and ask for each:</p>
+<pre class="is-plain"><code>status = 'delivered' (80% of rows)
+  Seq Scan on orders  (cost=0.00..20834.00 rows=801167 …) (actual time=0.013..149.828 rows=799588 …)
+  Execution Time: 181.284 ms                                      ← index IGNORED
+
+status = 'paid' (6%)
+  Bitmap Heap Scan … Heap Blocks: exact=8326   Execution Time: 39.787 ms
+
+status = 'cancelled' (1%)
+  Bitmap Heap Scan … Heap Blocks: exact=5831   Execution Time: 14.418 ms</code></pre>
+<p>For 80% of the table, reading the index <em>and then</em> the table is more work than just reading the table once. The planner is <strong>right</strong> to ignore the index. For <code>&#39;paid&#39;</code> (6%) it used the bitmap path and read <strong>8,326</strong> pages, nearly the whole table anyway, which is why it took 40 ms rather than a millisecond.</p>
+<blockquote>
+<p><strong>Honest note.</strong> I forced the index for the 80% case (<code>SET enable_seqscan = off; SET enable_bitmapscan = off</code>) to prove the planner wrong. It did <strong>not</strong> lose here: 184.9 ms vs 181.3 ms. Because the whole 65 MB table sat in memory cache, random reads were nearly free. On a cold cache or a table larger than RAM, random page reads are far more expensive and the sequential scan would win clearly. The planner&#39;s cost model assumes a cache-cold world. <strong>Conclusion:</strong> don&#39;t fight the planner on a warm laptop; judge on realistic data and caches.</p>
+</blockquote>
+<p><strong>The lesson: an index on a low-cardinality or heavily skewed column (<code>status</code>, <code>is_active</code>, <code>gender</code>) is usually useless for the common value.</strong> It <em>is</em> useful for the rare value, which is exactly what a <strong>partial index</strong> exploits (§15.7).</p>
+<h3 id="15-4-2-functions-on-the-column-non-sargable-conditions">15.4.2 Functions on the column (&quot;non-sargable&quot; conditions)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> <span class="hljs-type">date</span>(created_at) <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;2025-06-15&#x27;</span>;</code></pre></div>
+<pre class="is-plain"><code>Aggregate
+  -&gt; Seq Scan on orders (actual time=85.865..204.720 rows=2769 loops=1)
+       Filter: (date(created_at) = '2025-06-15'::date)
+       Rows Removed by Filter: 997231
+Execution Time: 204.991 ms</code></pre>
+<p>Even though <code>created_at</code> is indexed, <code>date(created_at)</code> is a different value than what&#39;s stored, so the index can&#39;t help. <strong>Rewrite the condition so the column stands alone</strong>, using a half-open range:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> created_at <span class="hljs-operator">&gt;=</span> <span class="hljs-string">&#x27;2025-06-15&#x27;</span> <span class="hljs-keyword">AND</span> created_at <span class="hljs-operator">&lt;</span> <span class="hljs-string">&#x27;2025-06-16&#x27;</span>;</code></pre></div>
+<pre class="is-plain"><code>Aggregate
+  -&gt; Index Only Scan using orders_created_idx on orders (actual time=0.152..0.559 rows=2769 loops=1)
+       Index Cond: ((created_at &gt;= '2025-06-15 00:00:00+00') AND (created_at &lt; '2025-06-16 00:00:00+00'))
+       Heap Fetches: 0
+Execution Time: 0.819 ms</code></pre>
+<p><strong>205 ms → 0.8 ms (250×)</strong>, the same answer (2,769). &quot;Sargable&quot; (<em>S</em>earch <em>ARG</em>ument <em>able</em>) just means &quot;written so an index can be used.&quot; The same rule applies to <code>WHERE total_minor / 100 &gt; 50</code> (use <code>total_minor &gt; 5000</code>), <code>WHERE lower(email) = …</code> (fix with an expression index, §15.7), and <code>WHERE col::text = …</code>.</p>
+<h3 id="15-4-3-other-reasons-an-index-isn-t-used">15.4.3 Other reasons an index isn&#39;t used</h3>
+<ul>
+<li><strong>Stale statistics</strong> (§15.12).</li>
+<li><strong>The table is tiny</strong>: a seq scan of one page beats an index lookup. Don&#39;t test indexes on 100 rows.</li>
+<li><strong>Type mismatch</strong>, e.g., comparing an <code>int</code> column to a <code>numeric</code> parameter or a text column to a number; the database may cast the <em>column</em>, defeating the index. <em>(Described from experience; not run here. Check with <code>EXPLAIN</code>.)</em></li>
+<li><strong>A leading wildcard</strong> <code>LIKE &#39;%x&#39;</code> (§15.7).</li>
+<li><strong>Composite index used from the wrong column</strong> (§15.5).</li>
+</ul>
+<hr>
+
+<h2 id="15-5-composite-multi-column-indexes">15.5 Composite (Multi-Column) Indexes</h2>
+<p>A composite index is sorted by its <strong>first column, then by the second within each first-column value, and so on</strong>: like a phone book sorted by last name, then first name.</p>
+<p>We replaced the single-column index with <code>CREATE INDEX orders_user_created_idx ON orders (user_id, created_at DESC)</code> and tried three queries.</p>
+<h3 id="case-1-equality-on-the-leading-column">Case 1: equality on the leading column</h3>
+<pre class="is-plain"><code>WHERE user_id = 1234         →  Bitmap Index Scan on orders_user_created_idx      0.241 ms</code></pre>
+<p>(One composite index can replace the single-column <code>(user_id)</code> index. We dropped <code>orders_user_idx</code> and nothing got slower.)</p>
+<h3 id="case-2-leading-column-equality-order-by-the-second">Case 2: leading-column equality + ORDER BY the second</h3>
+<p><em>&quot;Show a user&#39;s 5 most recent orders&quot;</em>: the most common query in any shop.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id <span class="hljs-operator">=</span> <span class="hljs-number">1234</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> created_at <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">5</span>;</code></pre></div>
+<pre class="is-plain"><code>Limit (actual time=0.029..0.037 rows=5 loops=1)
+  -&gt; Index Scan using orders_user_created_idx on orders (actual rows=5 loops=1)
+       Index Cond: (user_id = 1234)
+Execution Time: 0.083 ms</code></pre>
+<p><strong>There is no <code>Sort</code> node.</strong> The index already stores this user&#39;s orders newest-first, so the database reads the first 5 entries and stops. Work done is independent of how many orders the user has.</p>
+<h3 id="case-3-filtering-only-on-the-second-column">Case 3: filtering only on the <em>second</em> column</h3>
+<p>We dropped the standalone <code>created_at</code> index and asked for orders in a 30-minute window:</p>
+<pre class="is-plain"><code>Seq Scan on orders (actual time=36.622..97.428 rows=58 loops=1)
+  Rows Removed by Filter: 999942
+Execution Time: 97.456 ms</code></pre>
+<p>The composite index is sorted by <code>user_id</code> first, so rows with a given <code>created_at</code> are scattered across <em>every</em> user&#39;s section. (With the standalone <code>created_at</code> index back in place, the same query took <strong>0.13 ms</strong>.) <em>(PostgreSQL 18&#39;s release notes add &quot;skip scan&quot; for some such cases; I only tested 17.)</em></p>
+<h3 id="the-rules-of-thumb-for-column-order">The rules of thumb for column order</h3>
+<ol>
+<li><strong>Equality columns first</strong>, then <strong>range</strong>, then the <strong>sort</strong> column: <code>(user_id, status, created_at)</code> for <code>WHERE user_id = ? AND status = ? ORDER BY created_at</code>.</li>
+<li>The index serves any <strong>left prefix</strong>: <code>(a, b, c)</code> helps <code>a</code>, <code>a+b</code>, <code>a+b+c</code>: <strong>not</strong> <code>b</code> alone or <code>c</code> alone.</li>
+<li>Put the <strong>more selective equality column first</strong> only if the others vary; if you always filter on <code>a</code>, put <code>a</code> first regardless.</li>
+<li>Don&#39;t create <code>(a)</code> <em>and</em> <code>(a, b)</code>; the second covers the first (it&#39;s bigger, though).</li>
+<li><strong>Match the <code>ORDER BY</code> direction</strong> (<code>created_at DESC</code>) so no sort step is needed.</li>
+</ol>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;We have <code>WHERE user_id = ? ORDER BY created_at DESC LIMIT 20</code>. What index?&quot;</em> → <strong><code>(user_id, created_at DESC)</code></strong>: equality column first, then the sort column. Explain that it removes the sort and reads only 20 entries.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="15-6-covering-indexes-and-index-only-scans">15.6 Covering Indexes and Index-Only Scans</h2>
+<p>Normally the index finds a row&#39;s location, then the database <strong>visits the table</strong> to fetch other columns. If the index contains <em>all</em> the columns the query needs, the table visit can be skipped: an <strong>Index Only Scan</strong>.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> INDEX orders_user_cover_idx <span class="hljs-keyword">ON</span> orders (user_id) INCLUDE (total_minor);
+<span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">sum</span>(total_minor) <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">WHERE</span> user_id <span class="hljs-operator">=</span> <span class="hljs-number">1234</span>;</code></pre></div>
+<pre class="is-plain"><code>Aggregate
+  -&gt; Index Only Scan using orders_user_cover_idx on orders (actual rows=28 loops=1)
+       Index Cond: (user_id = 1234)
+       Heap Fetches: 0</code></pre>
+<p><code>INCLUDE (total_minor)</code> stores the column in the index <em>payload</em> without making it part of the sort key. </p>
+<h3 id="the-catch-the-visibility-map">The catch: the visibility map</h3>
+<p>MVCC (Ch 12) means the index alone can&#39;t tell whether a row version is <strong>visible to your transaction</strong>. PostgreSQL keeps a <strong>visibility map</strong>, a per-page flag &quot;all rows on this page are visible to everyone,&quot; maintained by <strong>VACUUM</strong>. For pages not marked, an index-only scan must still visit the table: those visits are the <strong><code>Heap Fetches</code></strong> line. We forced it:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">UPDATE</span> orders <span class="hljs-keyword">SET</span> total_minor <span class="hljs-operator">=</span> total_minor <span class="hljs-operator">+</span> <span class="hljs-number">1</span> <span class="hljs-keyword">WHERE</span> user_id <span class="hljs-operator">=</span> <span class="hljs-number">1234</span>;   <span class="hljs-comment">-- dirties those pages</span>
+<span class="hljs-comment">-- Heap Fetches: 56</span>
+VACUUM orders;
+<span class="hljs-comment">-- Heap Fetches: 0</span></code></pre></div>
+<p>Also note what happened <em>before</em> that: my first &quot;before <code>VACUUM</code>&quot; test already showed <code>Heap Fetches: 0</code>, most likely because <strong>autovacuum had already processed the freshly loaded table</strong> in the background (<code>pg_stat_user_tables.last_autovacuum</code> shows it ran on <code>orders</code> that same minute, though I did not pin down the exact order of events). Index-only scans are fastest on read-mostly tables; on hot, constantly-updated tables the visibility map is often stale.</p>
+<blockquote>
+<p><strong>Pro tip:</strong> <code>SELECT *</code> kills index-only scans (you almost never have every column in the index). Selecting only the columns you need (Ch 13&#39;s advice) enables them.</p>
+</blockquote>
+<hr>
+
+<h2 id="15-7-partial-expression-and-text-search-indexes">15.7 Partial, Expression, and Text-Search Indexes</h2>
+<h3 id="15-7-1-partial-indexes-index-only-the-rows-you-query">15.7.1 Partial indexes: index only the rows you query</h3>
+<p>Pending orders (5%) are what an &quot;orders to fulfil&quot; screen reads, always:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> INDEX orders_pending_idx <span class="hljs-keyword">ON</span> orders (created_at) <span class="hljs-keyword">WHERE</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;pending&#x27;</span>;</code></pre></div>
+<pre class="is-plain"><code> partial_size | full_size
+--------------+-----------
+ 1112 kB      | 21 MB            ← 19× smaller than a full index on created_at
+
+SELECT id FROM orders WHERE status = 'pending' ORDER BY created_at LIMIT 10;
+  Limit (actual time=0.044..0.049 rows=10 loops=1)
+    -&gt; Index Scan using orders_pending_idx on orders        Execution Time: 0.078 ms</code></pre>
+<p>Smaller index → fits in memory, cheaper to maintain (rows that aren&#39;t <code>pending</code> never touch it). A query that does <strong>not</strong> match the predicate can&#39;t use it: asking for <code>status = &#39;paid&#39;</code> fell back to scanning <code>orders_created_idx</code> and filtering. (Remember Ch 14: partial <em>unique</em> indexes also enforce &quot;unique among live rows.&quot;)</p>
+<h3 id="15-7-2-expression-indexes-lower-email">15.7.2 Expression indexes: <code>lower(email)</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> <span class="hljs-built_in">lower</span>(email) <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;user777@example.com&#x27;</span>;
+<span class="hljs-comment">-- Seq Scan on users (actual time=0.478..31.534 rows=1)   Rows Removed by Filter: 49999</span>
+
+<span class="hljs-keyword">CREATE</span> INDEX users_lower_email_idx <span class="hljs-keyword">ON</span> users (<span class="hljs-built_in">lower</span>(email));
+<span class="hljs-comment">-- Index Scan using users_lower_email_idx (actual time=0.071..0.072 rows=1)</span></code></pre></div>
+<p>Your <strong>query expression must match the index expression exactly</strong> (<code>lower(email)</code>), and the same function must be used everywhere (in the login code <em>and</em> in the unique index from Ch 14).</p>
+<h3 id="15-7-3-like-prefix-the-collation-surprise">15.7.3 <code>LIKE &#39;prefix%&#39;</code>: the collation surprise</h3>
+<p>You&#39;d expect a plain index on <code>email</code> to serve <code>LIKE &#39;user777%&#39;</code>. It doesn&#39;t:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> INDEX users_email_idx <span class="hljs-keyword">ON</span> users (email);
+EXPLAIN <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> email <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;user777%&#x27;</span>;
+<span class="hljs-comment">--  Seq Scan on users   Filter: (email ~~ &#x27;user777%&#x27;)</span></code></pre></div>
+<p>Our database uses the <code>en_US.utf8</code> collation, where string ordering follows locale rules rather than raw bytes, so the B-tree order is not usable for a byte-wise prefix match. The fix is a <strong><code>text_pattern_ops</code></strong> index:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> INDEX users_email_pattern_idx <span class="hljs-keyword">ON</span> users (email text_pattern_ops);
+<span class="hljs-comment">--  Bitmap Index Scan on users_email_pattern_idx</span>
+<span class="hljs-comment">--    Index Cond: ((email ~&gt;=~ &#x27;user777&#x27;) AND (email ~&lt;~ &#x27;user778&#x27;))</span></code></pre></div>
+<p>PostgreSQL rewrote the prefix into a <strong>range</strong> (<code>&gt;= &#39;user777&#39; AND &lt; &#39;user778&#39;</code>). (A <code>COLLATE &quot;C&quot;</code> database/column achieves the same effect with a normal index.)</p>
+<h3 id="15-7-4-like-contains-trigram-indexes">15.7.4 <code>LIKE &#39;%contains%&#39;</code>: trigram indexes</h3>
+<p>A leading wildcard has no sort position to seek to, so B-tree can&#39;t help (we saw a Seq Scan, 15 ms on 50,000 rows). The <code>pg_trgm</code> extension breaks strings into 3-letter chunks and indexes them with <strong>GIN</strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> EXTENSION pg_trgm;
+<span class="hljs-keyword">CREATE</span> INDEX users_email_trgm_idx <span class="hljs-keyword">ON</span> users <span class="hljs-keyword">USING</span> gin (email gin_trgm_ops);
+EXPLAIN ANALYZE <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> users <span class="hljs-keyword">WHERE</span> email <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;%er7777@%&#x27;</span>;
+<span class="hljs-comment">--  Bitmap Index Scan on users_email_trgm_idx   (actual time=0.281..0.282 rows=2)</span>
+<span class="hljs-comment">--  Execution Time: ~0.3 ms</span></code></pre></div>
+<p><strong>A bug I hit:</strong> my first attempt failed with <code>operator class &quot;gin_trgm_ops&quot; does not exist for access method &quot;gin&quot;</code>. The extension had been created in the <code>public</code> schema, but my session&#39;s <code>search_path</code> was <code>ch15</code> only, so the operator class wasn&#39;t visible. Fix: <code>SET search_path = ch15, public;</code> (or qualify it, <code>public.gin_trgm_ops</code>). Extensions live in a schema, and <code>search_path</code> decides what you can see. (The trigram index was 1,904 kB vs 2,008 kB for the plain B-tree here.) For real search features (ranking, stemming), PostgreSQL full-text search (<code>tsvector</code>) or a search engine goes further. <em>(Not covered in depth here.)</em></p>
+<hr>
+
+<h2 id="15-8-beyond-b-tree-gin-and-brin-and-friends">15.8 Beyond B-tree: GIN and BRIN (and friends)</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Index type</th>
+<th>Great for</th>
+<th>Our measurement</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>B-tree</strong> (default)</td>
+<td><code>=</code>, ranges, sorting, uniqueness</td>
+<td>everything above</td>
+</tr>
+<tr>
+<td><strong>GIN</strong></td>
+<td>&quot;Contains&quot; in composite values: <code>jsonb @&gt;</code>, arrays <code>&amp;&amp;</code>, full-text, trigrams</td>
+<td>see below</td>
+</tr>
+<tr>
+<td><strong>BRIN</strong></td>
+<td>Huge tables whose column is <strong>physically ordered</strong> (timestamps in an append-only log)</td>
+<td>see below</td>
+</tr>
+<tr>
+<td><strong>GiST</strong></td>
+<td>Geometry, ranges, exclusion constraints (Ch 14 <code>EXCLUDE</code>)</td>
+<td>not benchmarked</td>
+</tr>
+<tr>
+<td><strong>Hash</strong></td>
+<td>Pure equality only; rarely better than B-tree</td>
+<td>not benchmarked</td>
+</tr>
+</tbody></table></div>
+<p>Test data: 1,000,000 <code>events</code> rows with a timestamp and a <code>jsonb</code> payload.</p>
+<h3 id="gin-for-jsonb">GIN for <code>jsonb</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> ev <span class="hljs-keyword">WHERE</span> payload @<span class="hljs-operator">&gt;</span> <span class="hljs-string">&#x27;{&quot;type&quot;:&quot;buy&quot;,&quot;tags&quot;:[&quot;t7&quot;]}&#x27;</span>;
+<span class="hljs-comment">-- no index:  Seq Scan, 6666 rows found, 993,334 removed     922 ms</span>
+<span class="hljs-keyword">CREATE</span> INDEX ev_payload_gin <span class="hljs-keyword">ON</span> ev <span class="hljs-keyword">USING</span> gin (payload jsonb_path_ops);   <span class="hljs-comment">-- 9,256 kB</span>
+<span class="hljs-comment">-- with GIN:  Bitmap Index Scan on ev_payload_gin                       126 ms   (≈7× faster)</span></code></pre></div>
+<p>(<code>jsonb_path_ops</code> is smaller and faster than the default operator class if you only need <code>@&gt;</code>.)</p>
+<h3 id="brin-for-time-ordered-data">BRIN for time-ordered data</h3>
+<p>A BRIN (&quot;block range&quot;) index stores only the <strong>min/max per block of pages</strong>: tiny, but only useful when the column&#39;s values correlate with physical order, as with an append-only <code>created_at</code>.</p>
+<pre class="is-plain"><code> btree | brin
+-------+-------
+ 21 MB | 24 kB          ← about 900× smaller
+
+SELECT count(*) FROM ev WHERE at &gt;= '2025-03-01' AND at &lt; '2025-03-02';
+  Bitmap Heap Scan … Heap Blocks: lossy=256    Execution Time: 47.8 ms</code></pre>
+<p>At 47.8 ms it is slower than the B-tree (0.8 ms for a similar query earlier), but it costs 24 kB instead of 21 MB, which matters at billions of rows in time-series tables. It&#39;s a space-for-speed trade, not a free lunch.</p>
+<hr>
+
+<h2 id="15-9-indexes-are-not-free">15.9 Indexes Are Not Free</h2>
+<p>Every <code>INSERT</code>, <code>UPDATE</code> (of indexed columns) and <code>DELETE</code> must update <strong>every index</strong> on the table. We inserted 200,000 rows into three identical tables:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Table</th>
+<th>Secondary indexes</th>
+<th>200k-row insert</th>
+</tr>
+</thead><tbody><tr>
+<td><code>w0</code></td>
+<td>0</td>
+<td><strong>2.4 s</strong></td>
+</tr>
+<tr>
+<td><code>w1</code></td>
+<td>1</td>
+<td>4.8 s (<strong>2.0×</strong>)</td>
+</tr>
+<tr>
+<td><code>w6</code></td>
+<td>6</td>
+<td><strong>9.1 s (3.8×)</strong></td>
+</tr>
+</tbody></table></div>
+<p>Indexes also cost <strong>disk</strong> (the seven indexes on our experiment <code>orders</code> table, primary key included, total about 140 MB for a 65 MB table) and <strong>cache</strong> (index pages compete with data pages for RAM).</p>
+<h3 id="find-indexes-nobody-uses">Find indexes nobody uses</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> indexrelname <span class="hljs-keyword">AS</span> index, idx_scan <span class="hljs-keyword">AS</span> times_used, pg_size_pretty(pg_relation_size(indexrelid)) <span class="hljs-keyword">AS</span> size
+<span class="hljs-keyword">FROM</span> pg_stat_user_indexes <span class="hljs-keyword">WHERE</span> relname <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;orders&#x27;</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> idx_scan, pg_relation_size(indexrelid) <span class="hljs-keyword">DESC</span>;</code></pre></div>
+<pre class="is-plain"><code>          index          | times_used |  size
+-------------------------+------------+---------
+ orders_pkey             |          0 | 21 MB
+ orders_pending_idx      |          1 | 1112 kB
+ orders_created_id_idx   |          2 | 30 MB
+ orders_user_created_idx |          3 | 30 MB
+ orders_created_idx      |          3 | 21 MB
+ orders_status_idx       |          3 | 6888 kB
+ orders_user_cover_idx   |          8 | 30 MB</code></pre>
+<p>This is our <em>experiment</em> table, full of overlapping indexes (e.g., <code>orders_user_created_idx</code> and <code>orders_user_cover_idx</code> both lead with <code>user_id</code>), so several are redundant. In a real system, <code>idx_scan = 0</code> <strong>over a long, representative period</strong> marks a candidate to drop, with two cautions: never drop a primary key or unique index just because it isn&#39;t <em>scanned</em> (it enforces integrity: note <code>orders_pkey</code> shows 0 scans), and counters reset on restart or stats reset, so observe long enough to include month-end jobs.</p>
+<aside class="callout callout-memory">
+<h3 id="rule-of-thumb" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Rule of thumb</span></h3>
+<blockquote>
+<p><strong>Index for the queries you actually run, not the ones you might.</strong> Start with: the primary key, every foreign key, and one or two composite indexes per hot query pattern. Add more only with a slow-query measurement in hand.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="15-10-joins-and-foreign-key-indexes">15.10 Joins and Foreign-Key Indexes</h2>
+<p>PostgreSQL has three join algorithms; the planner picks by estimated sizes.</p>
+<p><strong>Nested loop</strong>: for each row on one side, look up matches on the other (via an index). Best when one side is tiny:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> u.name, o.id <span class="hljs-keyword">FROM</span> users u <span class="hljs-keyword">JOIN</span> orders o <span class="hljs-keyword">ON</span> o.user_id <span class="hljs-operator">=</span> u.id <span class="hljs-keyword">WHERE</span> u.id <span class="hljs-operator">=</span> <span class="hljs-number">1234</span>;</code></pre></div>
+<pre class="is-plain"><code>Nested Loop (actual time=0.149..0.156 rows=28 loops=1)
+  -&gt; Index Scan using users_pkey on users u (rows=1)
+  -&gt; Bitmap Heap Scan on orders o (rows=28)
+       -&gt; Bitmap Index Scan on orders_user_cover_idx
+Execution Time: 0.487 ms</code></pre>
+<p><strong>Hash join</strong>: build an in-memory hash table of the smaller side, then stream the larger side through it. Best for joining or aggregating <em>large</em> sets:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> u.country, <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">sum</span>(o.total_minor) <span class="hljs-keyword">FROM</span> orders o <span class="hljs-keyword">JOIN</span> users u <span class="hljs-keyword">ON</span> u.id <span class="hljs-operator">=</span> o.user_id <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> u.country;</code></pre></div>
+<pre class="is-plain"><code>HashAggregate (actual time=1493.493..1493.497 rows=6)
+  -&gt; Hash Join (actual time=30.381..1146.405 rows=1000000)
+       Hash Cond: (o.user_id = u.id)
+       -&gt; Seq Scan on orders o (actual rows=1000000)
+       -&gt; Hash (actual rows=50000)   Buckets: 65536  Batches: 1  Memory Usage: 2856kB
+            -&gt; Seq Scan on users u
+Execution Time: 1494.838 ms</code></pre>
+<p>All 1,000,000 orders are needed, so no index could make a full scan cheaper; this <em>should</em> read everything. (&quot;Batches: 1&quot; means the hash table fit in <code>work_mem</code>; a value above 1 means it spilled to disk: a sign to raise <code>work_mem</code> or filter earlier.) <strong>Merge join</strong> (both sides sorted, then zipped) is the third; it appears when both inputs are already sorted by the join key. <em>(I did not produce a merge join in these tests.)</em></p>
+<h3 id="foreign-keys-need-their-own-index">Foreign keys need their own index</h3>
+<p>PostgreSQL indexes the <em>referenced</em> side (the parent&#39;s PK) but <strong>not the child&#39;s FK column</strong>. Two consequences:</p>
+<ol>
+<li><code>JOIN</code>s and <code>WHERE child.fk = ?</code> scan the child.</li>
+<li><strong>Deleting or updating a parent row makes PostgreSQL search the child table</strong> to verify no orphans. We measured on 2,000 parents and 500,000 children:</li>
+</ol>
+<pre class="is-plain"><code>DELETE FROM parent WHERE id = 2000;     -- FK column NOT indexed:  49.4 ms
+CREATE INDEX ON child (parent_id);
+DELETE FROM parent WHERE id = 2000;     -- FK column indexed:        8.1 ms   (≈6× faster)</code></pre>
+<p>At this small scale it&#39;s tens of milliseconds; with hundreds of millions of children, an un-indexed FK turns a single-row delete into a table scan <em>while holding locks</em>. <strong>Index every foreign key</strong> unless you&#39;ve measured and decided not to.</p>
+<hr>
+
+<h2 id="15-11-pagination-revisited-offset-is-a-trap">15.11 Pagination Revisited: <code>OFFSET</code> Is a Trap</h2>
+<p>Ch 8 recommended cursor/keyset pagination; here&#39;s the proof. Newest-first listing of the 1M orders, 20 per page:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-comment">-- page 1</span>
+<span class="hljs-keyword">SELECT</span> id, created_at <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> created_at <span class="hljs-keyword">DESC</span>, id <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">20</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">0</span>;        <span class="hljs-comment">--   3.8 ms</span>
+<span class="hljs-comment">-- page 45,000 (deep)</span>
+<span class="hljs-keyword">SELECT</span> id, created_at <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> created_at <span class="hljs-keyword">DESC</span>, id <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">20</span> <span class="hljs-keyword">OFFSET</span> <span class="hljs-number">900000</span>;   <span class="hljs-comment">-- 543 ms</span>
+<span class="hljs-comment">-- keyset: &quot;20 rows older than the last one I saw&quot;</span>
+<span class="hljs-keyword">SELECT</span> id, created_at <span class="hljs-keyword">FROM</span> orders
+<span class="hljs-keyword">WHERE</span> (created_at, id) <span class="hljs-operator">&lt;</span> (<span class="hljs-string">&#x27;2025-02-10&#x27;</span>, <span class="hljs-number">100000</span>)
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> created_at <span class="hljs-keyword">DESC</span>, id <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">20</span>;                                                    <span class="hljs-comment">--   1.2 ms</span></code></pre></div>
+<p>With the right index <code>(created_at DESC, id DESC)</code>:</p>
+<pre class="is-plain"><code>OFFSET 900000:  Index Only Scan … (actual rows=900020 loops=1)   Execution Time: 357.499 ms   ← read &amp; threw away 900,000 entries
+keyset:         Index Only Scan … Index Cond: (ROW(created_at, id) &lt; ROW('2025-02-10 …', 100000))
+                (actual rows=20)                                  Execution Time: 0.182 ms</code></pre>
+<p><code>OFFSET n</code> <strong>cannot skip</strong>; it reads and discards <code>n</code> rows, so page <em>N</em> costs <em>O(N)</em>. Keyset pagination seeks directly to the position and reads only the page: <strong>constant cost at any depth</strong> (~2000× faster here), and it is also stable when new rows are inserted. The <code>(created_at, id)</code> pair is a <strong>tiebreaker</strong> so ordering is total; without <code>id</code>, rows with identical timestamps could be skipped or repeated.</p>
+<p>The cost: you can&#39;t jump to &quot;page 4,712&quot; (UIs for feeds use &quot;next/previous&quot; anyway) and the cursor must encode the sort key(s).</p>
+<hr>
+
+<h2 id="15-12-statistics-how-the-planner-knows-anything">15.12 Statistics: How the Planner &quot;Knows&quot; Anything</h2>
+<p>The planner doesn&#39;t execute candidate plans; it <em>estimates</em> their cost using <strong>statistics</strong> about each column (row counts, distinct values, most-common values, histograms), stored by <strong><code>ANALYZE</code></strong> and refreshed automatically by <strong>autovacuum</strong> after enough rows change.</p>
+<p>If statistics are stale or missing, estimates are wrong and plans can be bad. We simulated that: a table analyzed at 100 rows then bulk-loaded to 500,100 rows <strong>without re-running <code>ANALYZE</code></strong>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql">EXPLAIN (ANALYZE) <span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> s1 <span class="hljs-keyword">WHERE</span> kind <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;b&#x27;</span> LIMIT <span class="hljs-number">100000</span>;</code></pre></div>
+<pre class="is-plain"><code>-- BEFORE ANALYZE
+Limit (cost=0.42..4.44 rows=1 …) (actual … rows=100000 …)
+  -&gt; Index Scan using s1_kind_idx on s1 (cost=0.42..4.44 rows=1 …) (actual … rows=100000 …)
+
+-- AFTER ANALYZE
+Limit (cost=0.00..1692.94 rows=100000 …) (actual time=0.027..26.589 rows=100000 …)
+  -&gt; Seq Scan on s1 (cost=0.00..8463.00 rows=499900 …)</code></pre>
+<p><strong><code>rows=1</code> estimated vs <code>rows=100000</code> actual</strong>: a 100,000× error, the E-A-B signal. The planner chose an index scan believing it&#39;d fetch one row. In this tiny example the harm was small (33 ms vs 27 ms) but with joins, a bad row estimate cascades (it picks nested loops for millions of rows) and queries can go from milliseconds to minutes.</p>
+<p><strong>What to do:</strong></p>
+<ul>
+<li>After bulk loads, migrations that rewrite data, or big deletes: <strong>run <code>ANALYZE table;</code></strong> yourself.</li>
+<li>If one column is skewed or columns are correlated, raise the statistics target (<code>ALTER TABLE … ALTER COLUMN … SET STATISTICS 500</code>) or use <code>CREATE STATISTICS</code> for multi-column dependencies. <em>(Not run here.)</em></li>
+<li>Make sure <strong>autovacuum</strong> is running and not starved; it also maintains the visibility map (§15.6) and reclaims dead row versions (the &quot;bloat&quot; from MVCC, Ch 12).</li>
+</ul>
+<hr>
+
+<h2 id="15-13-finding-slow-queries-pg-stat-statements">15.13 Finding Slow Queries: <code>pg_stat_statements</code></h2>
+<p>You can&#39;t optimize what you haven&#39;t found. The standard tool is the <strong><code>pg_stat_statements</code></strong> extension: per <em>normalized</em> query, it records calls, total time, mean time and rows.</p>
+<p><strong>Setup (one time):</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-keyword">SET</span> shared_preload_libraries <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;pg_stat_statements&#x27;</span>;   <span class="hljs-comment">-- needs a server RESTART</span>
+<span class="hljs-comment">-- after restart:</span>
+<span class="hljs-keyword">CREATE</span> EXTENSION pg_stat_statements;</code></pre></div>
+<p>(In my Docker test I ran the <code>ALTER SYSTEM</code>, restarted the container, and created the extension. It will not appear unless the library is preloaded.)</p>
+<p>I ran six queries, then asked which cost the most in total:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-keyword">left</span>(regexp_replace(query, <span class="hljs-string">&#x27;\s+&#x27;</span>, <span class="hljs-string">&#x27; &#x27;</span>, <span class="hljs-string">&#x27;g&#x27;</span>), <span class="hljs-number">70</span>) <span class="hljs-keyword">AS</span> query, calls,
+       round(total_exec_time::<span class="hljs-type">numeric</span>,<span class="hljs-number">1</span>) <span class="hljs-keyword">AS</span> total_ms, round(mean_exec_time::<span class="hljs-type">numeric</span>,<span class="hljs-number">2</span>) <span class="hljs-keyword">AS</span> mean_ms, <span class="hljs-keyword">rows</span>
+<span class="hljs-keyword">FROM</span> pg_stat_statements <span class="hljs-keyword">WHERE</span> query ILIKE <span class="hljs-string">&#x27;%orders%&#x27;</span> <span class="hljs-keyword">AND</span> query <span class="hljs-keyword">NOT</span> ILIKE <span class="hljs-string">&#x27;%pg_stat_statements%&#x27;</span>
+<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> total_exec_time <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">5</span>;</code></pre></div>
+<pre class="is-plain"><code>                                 query                                  | calls | total_ms | mean_ms | rows
+------------------------------------------------------------------------+-------+----------+---------+------
+ SELECT u.country, count(*) FROM orders o JOIN users u ON u.id = o.user | 1     |    378.1 |  378.13 |    6
+ SELECT count(*) FROM orders WHERE date(created_at) = $1               | 2     |    229.8 |  114.89 |    2
+ SELECT * FROM orders WHERE user_id = $1                                | 3     |      0.9 |    0.31 |   57</code></pre>
+<p>Two details worth noticing:</p>
+<ol>
+<li><strong>Normalization</strong>: the two <code>date(created_at) = …</code> queries with different dates, and the three <code>user_id = 77/78/79</code> queries, were merged into one row each with <code>$1</code>. That&#39;s what makes the totals meaningful.</li>
+<li><strong>Sort by <code>total_exec_time</code>, not <code>mean</code>.</strong> A 0.3 ms query called 50 million times a day costs far more than a 400 ms report run twice. Both views matter: <em>total</em> finds the biggest overall consumer, <em>mean</em> finds the slow outliers.</li>
+</ol>
+<p>Other sources: <code>log_min_duration_statement = 250</code> (log every query slower than 250 ms), <code>auto_explain</code> (log plans of slow queries), <code>pg_stat_activity</code> (what&#39;s running <em>now</em>), and APM tools (Ch 25). <em>(Config options listed from documentation, not run here.)</em></p>
+<hr>
+
+<h2 id="15-14-the-n-1-problem-the-most-common-slow-endpoint">15.14 The N+1 Problem (the Most Common Slow Endpoint)</h2>
+<p>It&#39;s not a database problem; it&#39;s a <strong>loop that issues a query per item</strong>. Listing 500 orders with each customer&#39;s name:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: orders } = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id, user_id FROM orders ORDER BY id LIMIT $1&#x27;</span>, [<span class="hljs-number">500</span>]);
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> o <span class="hljs-keyword">of</span> orders) {                                                    <span class="hljs-comment">// 1 query + 500 queries</span>
+  <span class="hljs-keyword">const</span> { rows } = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT name FROM users WHERE id = $1&#x27;</span>, [o.<span class="hljs-property">user_id</span>]);
+}</code></pre></div>
+<p>Each query is individually fast and perfectly indexed, which is why N+1 hides from <code>EXPLAIN</code>: <strong>it&#39;s the round trips.</strong> Measured on the same machine (Node 22 → Docker PostgreSQL):</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Strategy</th>
+<th>Queries</th>
+<th>Time</th>
+</tr>
+</thead><tbody><tr>
+<td>N+1, sequential</td>
+<td>501</td>
+<td><strong>1,908 ms</strong> (second run: 2,998 ms)</td>
+</tr>
+<tr>
+<td>N+1, fired in parallel (pool of 10)</td>
+<td>501</td>
+<td>939 ms (second run: 873 ms)</td>
+</tr>
+<tr>
+<td>Batched <code>= ANY($1)</code></td>
+<td><strong>2</strong></td>
+<td><strong>24.7 ms</strong></td>
+</tr>
+<tr>
+<td>One <code>JOIN</code></td>
+<td><strong>1</strong></td>
+<td><strong>29.7 ms</strong></td>
+</tr>
+</tbody></table></div>
+<p>About <strong>4 ms per round trip</strong> here (a Docker-on-Windows network hop); even on a fast production network, 1 ms × 500 is half a second of pure waiting. Firing them in parallel only helps until the <strong>pool</strong> (Ch 12) is exhausted, and it then starves every <em>other</em> request. The fixes:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-comment">// Batch: 2 queries</span>
+<span class="hljs-keyword">const</span> ids = [...<span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(orders.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">o</span>) =&gt;</span> o.<span class="hljs-property">user_id</span>))];
+<span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: users } = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id, name FROM users WHERE id = ANY($1::bigint[])&#x27;</span>, [ids]);
+<span class="hljs-keyword">const</span> byId = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(users.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">u</span>) =&gt;</span> [u.<span class="hljs-property">id</span>, u]));   <span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> bigint ids arrive as strings; keys must match (Ch 13)</span>
+
+<span class="hljs-comment">// or JOIN: 1 query</span>
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT o.id, u.name FROM orders o JOIN users u ON u.id = o.user_id ORDER BY o.id LIMIT $1&#x27;</span>, [<span class="hljs-number">500</span>]);</code></pre></div>
+<p><strong>How to spot N+1 in production:</strong> one HTTP request producing dozens or hundreds of near-identical queries in your logs or <code>pg_stat_statements</code> (high <code>calls</code>, tiny <code>mean_ms</code>). In GraphQL (Ch 9) the same problem is solved by <strong>DataLoader</strong>; in ORMs (Ch 17) by eager loading (<code>include</code>/<code>join</code>).</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake</span></h3>
+<blockquote>
+<p><em>&quot;It&#39;s fast, each query is 1 ms.&quot;</em> Count the queries per request, not just their speed. <strong>Latency = (number of round trips) × (cost per round trip)</strong>, and you control the first factor.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="15-15-a-repeatable-performance-method">15.15 A Repeatable Performance Method</h2>
+<p>When someone says &quot;this endpoint is slow&quot;:</p>
+<ol>
+<li><strong>Measure at the right level.</strong> Is it the query, the number of queries (N+1), or the app/network? Check logs/<code>pg_stat_statements</code> first. Don&#39;t guess.</li>
+<li><strong>Get the slow query with its real parameters</strong> (parameter values change plans!).</li>
+<li><strong><code>EXPLAIN (ANALYZE, BUFFERS)</code> it</strong> on realistic data (not 100 rows). Look for: a <code>Seq Scan</code> with a large &quot;Rows Removed by Filter&quot;, estimates vs actuals (E-A-B), <code>Sort</code> nodes on big sets, large <code>Heap Fetches</code>.</li>
+<li><strong>Ask &quot;what&#39;s the cheapest way to find this data?&quot;</strong> and match an index to it (composite order, partial, covering) or rewrite the condition to be sargable.</li>
+<li><strong>Create the index with <code>CREATE INDEX CONCURRENTLY</code></strong> (Ch 14) on a live table.</li>
+<li><strong>Re-run <code>EXPLAIN ANALYZE</code></strong>: confirm the plan changed <em>and</em> buffers dropped. Check <code>ANALYZE</code> if estimates are off.</li>
+<li><strong>Check the write cost and other queries.</strong> One new index slows every insert (§15.9).</li>
+<li><strong>Prevent regression:</strong> add a slow-query alert and keep a test dataset.</li>
+</ol>
+<blockquote>
+<p><strong>What not to do first:</strong> add RAM, add a cache (Ch 27), or rewrite in another language. A cache in front of a missing index hides the problem and adds stale-data bugs.</p>
+</blockquote>
+<hr>
+
+<h2 id="15-16-shopline-indexes-we-d-actually-add">15.16 ShopLine: Indexes We&#39;d Actually Add</h2>
+<p>From the ShopLine schema (Ch 13/14) and the queries we&#39;ve written:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-comment">-- FK columns (Ch 14 added these)</span>
+<span class="hljs-keyword">CREATE</span> INDEX orders_user_idx      <span class="hljs-keyword">ON</span> orders (user_id);        <span class="hljs-comment">-- upgrade to the composite below</span>
+<span class="hljs-keyword">CREATE</span> INDEX order_items_prod_idx <span class="hljs-keyword">ON</span> order_items (product_id);
+
+<span class="hljs-comment">-- the user&#x27;s order history, newest first (replaces orders_user_idx)</span>
+<span class="hljs-keyword">CREATE</span> INDEX orders_user_created_idx <span class="hljs-keyword">ON</span> orders (user_id, created_at <span class="hljs-keyword">DESC</span>);
+
+<span class="hljs-comment">-- the fulfilment queue</span>
+<span class="hljs-keyword">CREATE</span> INDEX orders_pending_idx <span class="hljs-keyword">ON</span> orders (created_at) <span class="hljs-keyword">WHERE</span> status <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;paid&#x27;</span>);   <span class="hljs-comment">-- example predicate</span>
+
+<span class="hljs-comment">-- case-insensitive login lookup (also enforced unique in Ch 14)</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">UNIQUE</span> INDEX users_email_alive <span class="hljs-keyword">ON</span> users (<span class="hljs-built_in">lower</span>(email)) <span class="hljs-keyword">WHERE</span> deleted_at <span class="hljs-keyword">IS</span> <span class="hljs-keyword">NULL</span>;
+
+<span class="hljs-comment">-- product search by name fragment</span>
+<span class="hljs-keyword">CREATE</span> INDEX products_name_trgm <span class="hljs-keyword">ON</span> products <span class="hljs-keyword">USING</span> gin (name gin_trgm_ops);</code></pre></div>
+<p><em>(The ShopLine dataset has only dozens of rows, so indexes there would be ignored by the planner. These statements illustrate the design; the measured proofs above come from the 1M-row <code>ch15</code> dataset. The <code>orders_pending_idx</code> with <code>status IN (&#39;paid&#39;)</code> and <code>products_name_trgm</code> statements were not executed as written.)</em></p>
+<hr>
+
+<h2 id="15-17-edge-cases-and-gotchas-checklist">15.17 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Testing performance on a tiny dataset (seq scan wins; real data is different).</li>
+<li><input disabled="" type="checkbox"> Wrapping an indexed column in a function/cast/arithmetic in <code>WHERE</code>.</li>
+<li><input disabled="" type="checkbox"> <code>LIKE &#39;x%&#39;</code> without <code>text_pattern_ops</code>/<code>C</code> collation; <code>LIKE &#39;%x&#39;</code> without trigram.</li>
+<li><input disabled="" type="checkbox"> Indexing a low-cardinality column (<code>status</code>, boolean) fully instead of partially.</li>
+<li><input disabled="" type="checkbox"> Composite index in the wrong column order; querying only its second column.</li>
+<li><input disabled="" type="checkbox"> No index on foreign keys; slow parent deletes.</li>
+<li><input disabled="" type="checkbox"> <code>SELECT *</code> blocking index-only scans.</li>
+<li><input disabled="" type="checkbox"> <code>OFFSET</code> pagination on large tables.</li>
+<li><input disabled="" type="checkbox"> N+1 queries (look at the <em>count</em> of queries per request).</li>
+<li><input disabled="" type="checkbox"> Stale statistics after bulk loads: run <code>ANALYZE</code>.</li>
+<li><input disabled="" type="checkbox"> Too many indexes: write slowdown, bloat; unused indexes never reviewed.</li>
+<li><input disabled="" type="checkbox"> <code>EXPLAIN ANALYZE</code> on a write statement without a transaction + rollback.</li>
+<li><input disabled="" type="checkbox"> Building an index on a live table without <code>CONCURRENTLY</code>.</li>
+<li><input disabled="" type="checkbox"> Comparing plans by time on a warm cache instead of by buffers.</li>
+<li><input disabled="" type="checkbox"> Extensions created in one schema but invisible via <code>search_path</code>.</li>
+<li><input disabled="" type="checkbox"> Optimizing a query that isn&#39;t a real bottleneck: measure <code>pg_stat_statements</code> first.</li>
+</ul>
+<hr>
+
+<h2 id="15-18-chapter-summary">15.18 Chapter Summary</h2>
+<ul>
+<li>An <strong>index</strong> is a sorted structure (usually a <strong>B-tree</strong>, ~4 levels for billions of rows) that lets the database jump to rows instead of scanning the table. Measured: 107 ms → 0.28 ms, 8,334 pages → 34.</li>
+<li><strong><code>EXPLAIN (ANALYZE, BUFFERS)</code></strong>: read inside-out; compare <strong>E</strong>stimated vs <strong>A</strong>ctual rows, then <strong>B</strong>uffers. Know Seq / Index / Index-Only / Bitmap scans.</li>
+<li>The planner is <em>right</em> to ignore an index for low-selectivity filters (80% of rows). Functions on columns (<code>date(created_at)</code>) make a condition <strong>non-sargable</strong>: rewrite as a range (205 ms → 0.8 ms).</li>
+<li><strong>Composite</strong> indexes: equality columns first, then range/sort; usable only from the left prefix. <code>(user_id, created_at DESC)</code> removes the sort for &quot;latest N of a user&quot;.</li>
+<li><strong>Covering</strong> indexes (<code>INCLUDE</code>) enable index-only scans, which depend on VACUUM&#39;s visibility map.</li>
+<li><strong>Partial</strong> (19× smaller) and <strong>expression</strong> (<code>lower(email)</code>) indexes target exactly what you query; <code>LIKE &#39;x%&#39;</code> needs <code>text_pattern_ops</code> under non-C collations; <code>%x%</code> needs <strong>trigram GIN</strong>.</li>
+<li><strong>GIN</strong> for <code>jsonb</code> (922 → 126 ms); <strong>BRIN</strong> for time-ordered data (24 kB vs 21 MB).</li>
+<li>Indexes cost writes (insert: 2× with 1, 3.8× with 6), disk and cache. Review unused ones; index every <strong>foreign key</strong> (parent delete ~6× faster).</li>
+<li><strong>OFFSET</strong> cost grows with depth (543 ms deep); <strong>keyset</strong> is constant (1.2 ms).</li>
+<li><strong>Stale statistics</strong> produce bad plans: <code>ANALYZE</code> after bulk changes.</li>
+<li>Find work with <strong><code>pg_stat_statements</code></strong> (sort by total time). <strong>N+1</strong> is the commonest slow endpoint: 501 queries took 1.9 s; 2 queries took 25 ms.</li>
+</ul>
+<hr>
+
+<h2 id="15-19-revision-notes">15.19 Revision Notes</h2>
+<ul>
+<li>Read plans: inner → outer. <strong>E-A-B</strong>: estimated vs actual, then buffers.</li>
+<li>Sargable = column alone on one side: use ranges, not <code>date(col)</code>.</li>
+<li>Composite: equality → range → sort; left prefix only; match <code>ORDER BY</code> direction.</li>
+<li><code>INCLUDE (col)</code> for covering; VACUUM sets the visibility map.</li>
+<li>Partial: <code>WHERE status = &#39;pending&#39;</code>; expression: <code>lower(email)</code>.</li>
+<li><code>LIKE &#39;p%&#39;</code> → <code>text_pattern_ops</code>; <code>%p%</code> → <code>gin_trgm_ops</code> (+ <code>search_path</code>!).</li>
+<li>GIN: jsonb/arrays/text; BRIN: huge ordered tables.</li>
+<li>Index cost: slower writes, disk, RAM. Drop unused (not PKs).</li>
+<li>Index every FK. Keyset over OFFSET. <code>ANALYZE</code> after bulk loads.</li>
+<li><code>pg_stat_statements</code>: preload + restart + <code>CREATE EXTENSION</code>; sort by <code>total_exec_time</code>.</li>
+<li>N+1 → <code>= ANY($1)</code> or <code>JOIN</code>. <code>CREATE INDEX CONCURRENTLY</code> on live tables.</li>
+</ul>
+<hr>
+
+<h2 id="15-20-mind-map-ascii">15.20 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                        QUERY PERFORMANCE
+                               │
+     ┌────────────┬────────────┼─────────────┬──────────────────┐
+  INDEXES      READ PLANS    PITFALLS      FIND PROBLEMS       NODE SIDE
+     │             │            │               │                 │
+  B-tree         EXPLAIN     low selectivity  pg_stat_statements  N+1
+  composite     ANALYZE     functions on col  log_min_duration    batch ANY()
+  covering      BUFFERS     wrong col order   pg_stat_activity    JOIN
+  partial       E-A-B       stale stats                           pool limits
+  expression    scan types  missing FK index
+  GIN / BRIN                OFFSET depth
+     │                      too many indexes
+  cost: writes, disk, cache</code></pre>
+<hr>
+
+<h2 id="15-21-cheat-sheet">15.21 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql">EXPLAIN (ANALYZE, BUFFERS) <span class="hljs-operator">&lt;</span>query<span class="hljs-operator">&gt;</span>;                  <span class="hljs-comment">-- inside BEGIN..ROLLBACK for writes</span>
+<span class="hljs-keyword">CREATE</span> INDEX CONCURRENTLY name <span class="hljs-keyword">ON</span> t (a, b <span class="hljs-keyword">DESC</span>);     <span class="hljs-comment">-- equality first, then sort</span>
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t (a) INCLUDE (b);                   <span class="hljs-comment">-- covering</span>
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t (created_at) <span class="hljs-keyword">WHERE</span> status<span class="hljs-operator">=</span><span class="hljs-string">&#x27;pending&#x27;</span>;   <span class="hljs-comment">-- partial</span>
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t (<span class="hljs-built_in">lower</span>(email));                    <span class="hljs-comment">-- expression</span>
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t (email text_pattern_ops);          <span class="hljs-comment">-- LIKE &#x27;p%&#x27;</span>
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t <span class="hljs-keyword">USING</span> gin (col gin_trgm_ops);      <span class="hljs-comment">-- LIKE &#x27;%p%&#x27;   (pg_trgm)</span>
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t <span class="hljs-keyword">USING</span> gin (doc jsonb_path_ops);    <span class="hljs-comment">-- doc @&gt; &#x27;{...}&#x27;</span>
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t <span class="hljs-keyword">USING</span> brin (ts);                   <span class="hljs-comment">-- huge, time-ordered</span>
+ANALYZE t;   VACUUM t;
+<span class="hljs-keyword">WHERE</span> created_at <span class="hljs-operator">&gt;=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> created_at <span class="hljs-operator">&lt;</span> $<span class="hljs-number">2</span>           <span class="hljs-comment">-- not date(created_at) = $1</span>
+<span class="hljs-keyword">WHERE</span> (created_at, id) <span class="hljs-operator">&lt;</span> ($<span class="hljs-number">1</span>, $<span class="hljs-number">2</span>) <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> created_at <span class="hljs-keyword">DESC</span>, id <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">20</span>   <span class="hljs-comment">-- keyset</span>
+<span class="hljs-keyword">SELECT</span> ... <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-keyword">ANY</span>($<span class="hljs-number">1</span>::<span class="hljs-type">bigint</span>[])              <span class="hljs-comment">-- batch instead of N+1</span>
+<span class="hljs-keyword">SELECT</span> indexrelname, idx_scan <span class="hljs-keyword">FROM</span> pg_stat_user_indexes <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> idx_scan;</code></pre></div>
+<hr>
+
+<h2 id="15-22-key-takeaways">15.22 Key Takeaways</h2>
+<ol>
+<li><strong>Measure, don&#39;t guess</strong>: <code>EXPLAIN (ANALYZE, BUFFERS)</code> and <code>pg_stat_statements</code>.</li>
+<li>Make conditions <strong>sargable</strong> and match index <strong>column order</strong> to the query.</li>
+<li>The planner skipping an index is often <strong>correct</strong>.</li>
+<li><strong>Every index costs writes and space</strong>; index real queries, review unused ones, always index FKs.</li>
+<li><strong>N+1</strong> and <strong>OFFSET</strong> are the two biggest self-inflicted wounds; batch and keyset.</li>
+</ol>
+<hr>
+
+<h2 id="15-23-20-multiple-choice-questions">15.23 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Space and write cost for read speed."><p class="quiz-text">What does an index primarily trade?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Memory for correctness</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Disk space and write speed for read speed</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Reads for writes only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Scanned a million rows for 28."><p class="quiz-text"><code>Rows Removed by Filter: 999972</code> on a Seq Scan returning 28 rows suggests:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A healthy plan</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A missing/unusable index</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Corrupt data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Too much RAM</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="It runs; wrap in a transaction and roll back."><p class="quiz-text"><code>EXPLAIN ANALYZE</code> on an <code>UPDATE</code>:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only estimates</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Actually performs the update</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Is rejected</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Rolls back automatically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Estimate vs actual exposes statistics problems."><p class="quiz-text">The best first comparison when reading a plan is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Cost numbers across different servers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Estimated vs actual rows</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Query length</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Index names</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="80% selectivity."><p class="quiz-text">Why did the planner ignore the <code>status</code> index for <code>status = &#39;delivered&#39;</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Bug</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">~80% of rows match, so a sequential scan is cheaper</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Index corrupt</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Text type</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Column stands alone in a range."><p class="quiz-text">Which condition can use a normal B-tree index on <code>created_at</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>date(created_at) = &#39;2025-06-15&#39;</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>created_at &gt;= &#39;2025-06-15&#39; AND created_at &lt; &#39;2025-06-16&#39;</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>created_at::text LIKE &#39;2025-06%&#39;</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>created_at + interval &#39;1 day&#39; &gt; now()</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Equality column, then the sort column."><p class="quiz-text">For <code>WHERE user_id = ? ORDER BY created_at DESC LIMIT 5</code>, the best index is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>(created_at)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>(user_id)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>(user_id, created_at DESC)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>(created_at, user_id)</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Left-prefix rule."><p class="quiz-text">A composite index <code>(a, b, c)</code> can efficiently serve:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only <code>a</code>, <code>a,b</code> and <code>a,b,c</code> filters (left prefix)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Only <code>c</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Any column alone</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Only <code>a,b,c</code> together</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Covering index."><p class="quiz-text"><code>INCLUDE (total_minor)</code> on an index is for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Uniqueness</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Index-only scans (covering)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sorting</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Foreign keys</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Visibility map / VACUUM."><p class="quiz-text"><code>Heap Fetches</code> in an Index Only Scan is high because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The index is too small</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The visibility map is not set for many pages (needs VACUUM)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Too many columns</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The query is wrong</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Smaller and targeted (19× smaller measured)."><p class="quiz-text">A partial index <code>WHERE status = &#39;pending&#39;</code> is useful because it is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Always chosen</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Smaller, cheaper to maintain, and ideal for a hot subset</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Unique</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Free</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Expression index."><p class="quiz-text">To make <code>WHERE lower(email) = $1</code> fast:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Index <code>(email)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Index <code>(lower(email))</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>LIKE</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Add RAM</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Collation; text_pattern_ops."><p class="quiz-text">A plain B-tree on <code>email</code> failed to serve <code>LIKE &#39;user777%&#39;</code> because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">LIKE is unindexable</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The en_US collation order isn&#39;t byte-wise; use <code>text_pattern_ops</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The column was text</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The index was invalid</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="GIN."><p class="quiz-text">Which index type is ideal for <code>payload @&gt; &#39;{&quot;type&quot;:&quot;buy&quot;}&#39;</code> on jsonb?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">BRIN</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">GIN</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Hash</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">B-tree</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Physical correlation."><p class="quiz-text">BRIN is appropriate when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Values are random</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The column&#39;s values correlate with physical row order (e.g., append-only timestamps)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">You need uniqueness</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Tables are tiny</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="9.1 s vs 2.4 s."><p class="quiz-text">Inserting 200k rows was slower with 6 indexes than with 0 by roughly:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">10%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">1.2×</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">3.8×</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No difference</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Un-indexed FKs force child scans."><p class="quiz-text">Why index foreign-key columns?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Required by SQL</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Joins/filters and parent deletes would scan the child table</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">For uniqueness</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">For ON DELETE CASCADE only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Offset cannot skip."><p class="quiz-text"><code>OFFSET 900000</code> is slow because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The network</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The database reads and discards 900,000 rows</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sorting is disabled</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">LIMIT is small</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="It's the count of queries."><p class="quiz-text">The N+1 problem is best detected by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>EXPLAIN</code> on each query</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Counting queries per request (logs/<code>pg_stat_statements</code> calls)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Checking CPU</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Adding indexes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Preload, restart, create extension."><p class="quiz-text"><code>pg_stat_statements</code> requires:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>shared_preload_libraries</code> + a server restart + <code>CREATE EXTENSION</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Superuser only at runtime</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A reboot of the OS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-c, 8-a, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-c, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="15-24-20-hands-on-exercises">15.24 20 Hands-on Exercises</h2>
+<p><em>(Load <a href="/learn/backend-master/resources/ch15-setup.sql">resources/ch15-setup.sql</a> first; it builds <code>ch15.users</code> and <code>ch15.orders</code> with 1M rows. Use <code>SET search_path = ch15, public;</code>.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>EXPLAIN (ANALYZE, BUFFERS)</code> on <code>WHERE user_id = 1234</code> with no index; record execution time and buffers.</li>
+<li>Create an index on <code>user_id</code> and repeat; compute the speedup and buffer ratio.</li>
+<li>Query <code>status = &#39;cancelled&#39;</code> and <code>status = &#39;delivered&#39;</code> with an index on <code>status</code>. Explain the different plans.</li>
+<li>Compare <code>date(created_at) = &#39;2025-06-15&#39;</code> with the range rewrite.</li>
+<li>Check the size of every index on <code>orders</code> with <code>pg_relation_size</code>.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Build <code>(user_id, created_at DESC)</code> and show that &quot;latest 5 orders of a user&quot; has no <code>Sort</code> node.</li>
+<li>Try filtering only on <code>created_at</code> with just that composite present. Explain the plan.</li>
+<li>Create a covering index with <code>INCLUDE</code>; make <code>Heap Fetches</code> go from non-zero to zero using <code>UPDATE</code> then <code>VACUUM</code>.</li>
+<li>Create a partial index on <code>pending</code> orders; show a query that can use it and one that can&#39;t.</li>
+<li>Create <code>lower(email)</code> and show the plan before/after. Then show that <code>LOWER(email)</code> vs <code>lower(email)</code> both match (why?).</li>
+<li>Reproduce the <code>LIKE &#39;user777%&#39;</code> collation surprise and fix it with <code>text_pattern_ops</code>.</li>
+<li>Measure OFFSET 0 / 100000 / 900000 vs keyset on <code>(created_at, id)</code>; plot time vs depth.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Insert 200k rows into tables with 0, 1, 3 and 6 indexes; graph insert time vs index count.</li>
+<li>Reproduce stale statistics: load rows without <code>ANALYZE</code>, find an estimate 1000× off, fix it.</li>
+<li>Add trigram search to <code>users.email</code> and benchmark <code>%er7777@%</code> before and after; reproduce and fix the <code>search_path</code> error.</li>
+<li>Create a 1M-row <code>jsonb</code> table; benchmark <code>@&gt;</code> with no index, default GIN, and <code>jsonb_path_ops</code>; compare sizes.</li>
+<li>Create a BRIN index on a naturally ordered timestamp, then <em>shuffle</em> the rows (<code>CLUSTER</code> or reinsert randomly) and show BRIN stops helping.</li>
+<li>Enable <code>pg_stat_statements</code>; run a mixed workload from a Node script; produce a &quot;top 5 by total time&quot; report.</li>
+<li>Write a Node script that detects N+1 by counting queries per HTTP request (hint: wrap <code>pool.query</code> and use <code>AsyncLocalStorage</code>, Ch 5).</li>
+<li>Find all foreign keys in a database that lack a supporting index using <code>pg_constraint</code> and <code>pg_index</code>.</li>
+</ol>
+<hr>
+
+<h2 id="15-25-5-interview-questions">15.25 5 Interview Questions</h2>
+<p><strong>1. A query on a 50M-row table is slow. Walk me through diagnosing it.</strong>
+<em>Model answer:</em> Confirm it&#39;s the query (not app/N+1/network) via logs or <code>pg_stat_statements</code>. Capture the exact SQL and parameters. Run <code>EXPLAIN (ANALYZE, BUFFERS)</code> on realistic data: look for large seq scans with many rows removed, estimated-vs-actual mismatches, sorts and heap fetches. Design an index that matches the filter/sort (equality columns first, then range/sort), maybe partial or covering. Create it <code>CONCURRENTLY</code>, re-run EXPLAIN to confirm the plan and buffers improved, check write overhead and other queries, run <code>ANALYZE</code> if estimates were off.</p>
+<p><strong>2. Why might PostgreSQL not use an index you created?</strong>
+<em>Model answer:</em> Low selectivity (it&#39;d read most of the table anyway), the column is wrapped in a function/cast so the condition isn&#39;t sargable, wrong column order in a composite index, stale statistics, a tiny table, a type or collation mismatch (e.g., <code>LIKE &#39;x%&#39;</code> needing <code>text_pattern_ops</code>), or the planner estimates that a seq scan is cheaper. Often the planner is right; verify on realistic data.</p>
+<p><strong>3. What&#39;s the difference between a composite index <code>(a, b)</code> and two separate indexes on <code>a</code> and <code>b</code>?</strong>
+<em>Model answer:</em> The composite index is sorted by <code>a</code> then <code>b</code>, so it serves <code>a = ? AND b = ?</code>, <code>a = ? ORDER BY b</code>, and <code>a</code> alone (left prefix), with a single index lookup. Two separate indexes can be combined with a bitmap AND but less efficiently, and they can&#39;t give sorted <code>b</code> within <code>a</code>. The composite can&#39;t serve <code>b</code> alone.</p>
+<p><strong>4. What&#39;s the cost of having many indexes?</strong>
+<em>Model answer:</em> Every insert/delete (and updates to indexed columns) must maintain every index: we measured 2× slower with one extra index and about 3.8× with six. Also disk, cache pressure, vacuum work, and planner time. So index for real query patterns, review <code>pg_stat_user_indexes</code> for unused ones (without dropping constraint-backing indexes), and measure before adding.</p>
+<p><strong>5. What is the N+1 problem and how do you fix it?</strong>
+<em>Model answer:</em> A loop issues one query per item after an initial list query: 1 + N round trips. Each query is fast, so it hides from EXPLAIN, but total latency is <code>N × round trip</code> and it exhausts the pool. Detect by counting queries per request. Fix by batching (<code>WHERE id = ANY($1)</code>), joining, DataLoader (GraphQL) or eager loading (ORM). Our measurement: 501 queries ≈ 1.9 s vs 2 queries ≈ 25 ms.</p>
+<hr>
+
+<h2 id="15-26-3-real-projects">15.26 3 Real Projects</h2>
+<p><strong>Project 1: Index Lab (beginner–intermediate, ~6 hours).</strong>
+Using the 1M-row dataset, write 15 realistic ShopLine queries (order history, daily revenue, top customers, search by email fragment, fulfilment queue …). For each, record the plan with no index, design the best index, and record before/after time and buffers. Produce a one-page &quot;index decisions&quot; document with the write-cost trade-off for each.</p>
+<p><strong>Project 2: Slow-Query Dashboard (intermediate, ~8 hours).</strong>
+Enable <code>pg_stat_statements</code> and <code>log_min_duration_statement</code>; build a small Node service that samples <code>pg_stat_statements</code> every minute, stores deltas, and renders top queries by total/mean time, plus a &quot;suspected N+1&quot; list (high calls, low mean). Run a load generator against a deliberately poor API and use the dashboard to find and fix three problems.</p>
+<p><strong>Project 3: N+1 Detector Middleware (intermediate–advanced, ~8 hours).</strong>
+Build Express/Fastify middleware that counts and fingerprints SQL per request using <code>AsyncLocalStorage</code> and a wrapped <code>pool.query</code>, warns in development when a request exceeds N identical-shape queries, and fails a test when an endpoint&#39;s query count regresses. Add a fix-it guide (<code>ANY</code>, joins, DataLoader) and prove the improvement on three endpoints.</p>
+<hr>
+
+<h2 id="15-27-further-reading">15.27 Further Reading</h2>
+<ul>
+<li>PostgreSQL docs: <em>Indexes</em>, <em>Using EXPLAIN</em>, <em>Planner Statistics</em>, <em>Routine Vacuuming</em>, and the <code>pg_stat_statements</code> appendix.</li>
+<li><strong>Use The Index, Luke!</strong> (use-the-index-luke.com) by Markus Winand: the best free guide to indexing; sargability, composite order, pagination.</li>
+<li><em>PostgreSQL Query Optimization</em> (Dombrovskaya et al.) and <em>The Internals of PostgreSQL</em> (Suzuki, interdb.jp).</li>
+<li>explain.depesz.com and explain.dalibo.com: paste a plan, get an annotated view.</li>
+<li>Bayer &amp; McCreight (1972), <em>Organization and Maintenance of Large Ordered Indexes</em>.</li>
+<li>Tools: <code>pgbadger</code> (log analysis), <code>pev2</code> (plan visualizer), <code>pg_stat_kcache</code>, <code>auto_explain</code>, <code>HypoPG</code> (hypothetical indexes).</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-16-transactions-isolation-levels-and-concurrency">Up next → Chapter 16: Transactions, Isolation Levels and Concurrency</h3>
+<p>Fast queries still go wrong when two users act at once: two buyers for the last item, a double-spent balance, a deadlock at 3 a.m. Next: transactions in depth, isolation levels with <em>reproducible</em> anomalies (dirty/non-repeatable/phantom reads, write skew), <code>SELECT … FOR UPDATE</code>, optimistic vs pessimistic locking, deadlocks and how to avoid them, and idempotent retry logic in Node.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">PostgreSQL Indexes: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Why isn't PostgreSQL using my index?</h3></summary><p>Common reasons are low selectivity (the query matches most rows), wrapping the column in a function, a composite index used from the wrong column, stale statistics or a tiny table.</p></details>
+<details class="learn-faq-item"><summary><h3>In what order should composite index columns go?</h3></summary><p>Put equality columns first, then the range or sort column, and remember the index only serves left prefixes. For WHERE user_id = ? ORDER BY created_at DESC, use (user_id, created_at DESC).</p></details>
+<details class="learn-faq-item"><summary><h3>What does an index cost?</h3></summary><p>Every insert and update must maintain each index: six extra indexes made a 200,000-row insert 3.8 times slower in our test, plus disk and cache pressure.</p></details>
+<details class="learn-faq-item"><summary><h3>Why is OFFSET pagination slow?</h3></summary><p>OFFSET cannot skip rows; the database reads and discards them. Keyset pagination seeks directly to the position and stays fast at any depth.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/database-schema-design-normalization-migrations"><span>&larr; Previous &middot; Chapter 14</span><strong>Schema Design &amp; Normalization: Migrations</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span>Next &middot; Chapter 16 &rarr;</span><strong>Transactions, Isolation &amp; Concurrency</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#15-0-why-this-chapter-matters">15.0 Why This Chapter Matters</a></li><li><a href="#15-1-the-mental-model-a-book-and-its-index">15.1 The Mental Model: A Book and Its Index</a></li><li><a href="#15-2-how-a-b-tree-works-just-enough">15.2 How a B-tree Works (Just Enough)</a></li><li><a href="#15-3-reading-explain">15.3 Reading EXPLAIN</a></li><li><a href="#15-4-when-the-planner-ignores-your-index-and-why-that-s-usually-right">15.4 When the Planner Ignores Your Index (and Why That's Usually Right)</a></li><li><a href="#15-5-composite-multi-column-indexes">15.5 Composite (Multi-Column) Indexes</a></li><li><a href="#15-6-covering-indexes-and-index-only-scans">15.6 Covering Indexes and Index-Only Scans</a></li><li><a href="#15-7-partial-expression-and-text-search-indexes">15.7 Partial, Expression, and Text-Search Indexes</a></li><li><a href="#15-8-beyond-b-tree-gin-and-brin-and-friends">15.8 Beyond B-tree: GIN and BRIN (and friends)</a></li><li><a href="#15-9-indexes-are-not-free">15.9 Indexes Are Not Free</a></li><li><a href="#15-10-joins-and-foreign-key-indexes">15.10 Joins and Foreign-Key Indexes</a></li><li><a href="#15-11-pagination-revisited-offset-is-a-trap">15.11 Pagination Revisited: OFFSET Is a Trap</a></li><li><a href="#15-12-statistics-how-the-planner-knows-anything">15.12 Statistics: How the Planner Knows Anything</a></li><li><a href="#15-13-finding-slow-queries-pg-stat-statements">15.13 Finding Slow Queries: pg_stat_statements</a></li><li><a href="#15-14-the-n-1-problem-the-most-common-slow-endpoint">15.14 The N+1 Problem (the Most Common Slow Endpoint)</a></li><li><a href="#15-15-a-repeatable-performance-method">15.15 A Repeatable Performance Method</a></li><li><a href="#15-16-shopline-indexes-we-d-actually-add">15.16 ShopLine: Indexes We'd Actually Add</a></li><li><a href="#15-17-edge-cases-and-gotchas-checklist">15.17 Edge Cases and Gotchas Checklist</a></li><li><a href="#15-18-chapter-summary">15.18 Chapter Summary</a></li><li><a href="#15-19-revision-notes">15.19 Revision Notes</a></li><li><a href="#15-20-mind-map-ascii">15.20 Mind Map (ASCII)</a></li><li><a href="#15-21-cheat-sheet">15.21 Cheat Sheet</a></li><li><a href="#15-22-key-takeaways">15.22 Key Takeaways</a></li><li><a href="#15-23-20-multiple-choice-questions">15.23 20 Multiple Choice Questions</a></li><li><a href="#15-24-20-hands-on-exercises">15.24 20 Hands-on Exercises</a></li><li><a href="#15-25-5-interview-questions">15.25 5 Interview Questions</a></li><li><a href="#15-26-3-real-projects">15.26 3 Real Projects</a></li><li><a href="#15-27-further-reading">15.27 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "postgresql-indexes-explain-analyze-query-performance"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

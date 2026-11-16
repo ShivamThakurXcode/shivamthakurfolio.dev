@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Build a Node.js Server: Routing &amp; Middleware</title>
+    <meta name="description" content="Build a real Node.js server: the raw http module, routing, middleware, error handling and Express basics, then structure the first ShopLine API endpoints.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="nodejs http server, express routing, express middleware, nodejs rest api tutorial, error handling middleware, build api with express, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/express-5-fastify-validation-zod-security-middleware">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="nodejs http server">
+    <meta property="article:tag" content="express routing">
+    <meta property="article:tag" content="express middleware">
+    <meta property="article:tag" content="nodejs rest api tutorial">
+    <meta property="article:tag" content="error handling middleware">
+    <meta property="article:tag" content="build api with express">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Build a Node.js Server: Routing &amp; Middleware">
+    <meta property="og:description" content="Build a real Node.js server: the raw http module, routing, middleware, error handling and Express basics, then structure the first ShopLine API endpoints.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/nodejs-http-server-routing-middleware-express.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Your First Real Server: Node.js HTTP, Routing, Middleware and Express: Backend Master chapter 6">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Build a Node.js Server: Routing &amp; Middleware">
+    <meta name="twitter:description" content="Build a real Node.js server: the raw http module, routing, middleware, error handling and Express basics, then structure the first ShopLine API endpoints.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/nodejs-http-server-routing-middleware-express.png">
+    <meta name="twitter:image:alt" content="Your First Real Server: Node.js HTTP, Routing, Middleware and Express: Backend Master chapter 6">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express",
+          "name": "Build a Node.js Server: Routing & Middleware",
+          "description": "Build a real Node.js server: the raw http module, routing, middleware, error handling and Express basics, then structure the first ShopLine API endpoints.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/nodejs-http-server-routing-middleware-express.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Your First Real Server: Node.js HTTP, Routing, Middleware and Express"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#webpage"
+          },
+          "headline": "Your First Real Server: Node.js HTTP, Routing, Middleware and Express",
+          "alternativeHeadline": "Your First Real Server — Routing, Middleware and Express",
+          "description": "Build a real Node.js server: the raw http module, routing, middleware, error handling and Express basics, then structure the first ShopLine API endpoints.",
+          "abstract": "A backend server is a program that listens on a port and turns requests into responses. This chapter builds one with Node's http module, then Express, covering routing, middleware order, error handling and project structure, and creates the first ShopLine endpoints.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/nodejs-http-server-routing-middleware-express.png",
+          "url": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 7088,
+          "timeRequired": "PT32M",
+          "articleSection": "Backend Development",
+          "keywords": "nodejs http server, express routing, express middleware, nodejs rest api tutorial, error handling middleware, build api with express",
+          "proficiencyLevel": "Beginner",
+          "educationalLevel": "Beginner",
+          "teaches": [
+            "Building a server with the Node http module",
+            "Routing and request parsing",
+            "Middleware and the order it runs in",
+            "Centralised error handling",
+            "Structuring an Express project"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs http server"
+          },
+          "isAccessibleForFree": true,
+          "position": 6,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads#article",
+            "name": "Node.js Internals: The Event Loop, Streams, Worker Threads and Cluster",
+            "url": "https://shivamthakur.me/learn/backend-master/nodejs-event-loop-streams-worker-threads"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Build a Node.js Server: Routing & Middleware",
+              "item": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is middleware in Express?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Middleware is a function that runs between receiving a request and sending the response. It can read or change the request, end the response, or pass control on with next(). Order matters because middleware runs in the order you register it."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why use Express instead of the raw http module?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Express adds routing, middleware, parsing and error handling so you write less boilerplate. The raw module is useful for understanding what the framework does."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How should errors be handled in Express?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use a final error-handling middleware that logs the error, hides internals from clients and returns a consistent error body. In Express 5, rejected promises from async handlers reach it automatically."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the difference between req.params and req.query?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "req.params holds values from the route path such as /products/:id, while req.query holds the key-value pairs after the question mark in the URL."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#quiz",
+          "name": "Build a Node.js Server: Routing & Middleware: 20 multiple choice questions",
+          "educationalLevel": "Beginner",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "nodejs http server"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/nodejs-http-server-routing-middleware-express#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the signature of a normal Express middleware?",
+              "text": "What is the signature of a normal Express middleware?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "(req, res, next)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "(req, res)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "(err, req, res, next)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "(app, req)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How does Express recognize an error-handling middleware?",
+              "text": "How does Express recognize an error-handling middleware?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It has four parameters"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Its name contains \"error\""
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's registered first"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It returns a promise"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What happens if a middleware neither responds nor calls next()?",
+              "text": "What happens if a middleware neither responds nor calls next()?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The request hangs"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Express auto-continues"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A 404 is sent"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The server restarts"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Where should the error handler be registered?",
+              "text": "Where should the error handler be registered?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "After all routes and other middleware"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Before routes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Anywhere"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Inside each route"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "req.params.id for /products/42 is:",
+              "text": "req.params.id for /products/42 is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The string '42'"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The number 42"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "undefined"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An array"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In Express 5, what happens when an async handler throws?",
+              "text": "In Express 5, what happens when an async handler throws?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The error is forwarded to the error-handling middleware"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The process always crashes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's silently ignored"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A 404 is returned"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is req.body in Express 5 if no body parser ran?",
+              "text": "What is req.body in Express 5 if no body parser ran?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "undefined"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "{}"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "null"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "''"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why separate app.js from server.js?",
+              "text": "Why separate app.js from server.js?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "So the app can be imported in tests without opening a port"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Style only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Express requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To hide secrets"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why set a limit on express.json()?",
+              "text": "Why set a limit on express.json()?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "To prevent huge bodies from exhausting memory"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "To speed up parsing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To validate JSON"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "To enable CORS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which status should Express return automatically for invalid JSON in the body?",
+              "text": "Which status should Express return automatically for invalid JSON in the body?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "400"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "200"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "404"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "502"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is wrong here? if (!id) res.status(400).json({...}); res.json(data);",
+              "text": "What is wrong here? if (!id) res.status(400).json({...}); res.json(data);",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Missing return, so a second response is attempted"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "status isn't a function"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JSON can't be sent twice per second"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does router.use('/admin', requireAdmin) do?",
+              "text": "What does router.use('/admin', requireAdmin) do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Applies requireAdmin only to paths beginning with /admin"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Applies requireAdmin to all requests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Defines a route"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Disables the route"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why hide the message of 500-level errors from clients?",
+              "text": "Why hide the message of 500-level errors from clients?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It can leak internal details such as DB hosts or stack traces"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "500s have no message"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Browsers can't show them"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's required by HTTP"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is mass assignment?",
+              "text": "What is mass assignment?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Copying a client-supplied body straight into stored data, letting clients set fields they shouldn't"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Updating many rows at once"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A DB feature"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Assigning many routes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the purpose of a request ID?",
+              "text": "What is the purpose of a request ID?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Correlating logs and support reports to a specific request"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Authentication"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Rate limiting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Caching"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Registering /products/:id before /products/featured causes:",
+              "text": "Registering /products/:id before /products/featured causes:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "\"featured\" to be captured as an :id"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A syntax error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A redirect"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does next(err) do?",
+              "text": "What does next(err) do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Skips to the next error-handling middleware"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Continues to the next normal middleware"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Restarts the app"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ends the response"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "app.disable('x-powered-by') is done to:",
+              "text": "app.disable('x-powered-by') is done to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Avoid advertising the framework to attackers"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Speed up requests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Enable HTTPS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Remove CORS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which Express 5 wildcard route is valid?",
+              "text": "Which Express 5 wildcard route is valid?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "app.get('/splat', ...)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "app.get('', ...)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "app.get('/.', ...)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "app.get('/', ...)"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A \"middleware factory\" like requireRole('admin') is:",
+              "text": "A \"middleware factory\" like requireRole('admin') is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A function that returns a middleware function"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A class"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A router"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A template"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Build a Node.js Server: Routing &amp; Middleware</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:16.7%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item active" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express" aria-current="page"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 6 of 36 &middot; Beginner</p>
+                        <h1>Your First Real Server: Node.js HTTP, Routing, Middleware and Express</h1>
+                        <p class="learn-book-title">Your First Real Server — Routing, Middleware and Express</p>
+                        <ul class="learn-meta text-caption">
+                            <li>32 min read</li>
+                            <li>Beginner</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/nodejs-http-server-routing-middleware-express.webp"><img src="../../assets/images/learn/backend-master/nodejs-http-server-routing-middleware-express.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Your First Real Server: Node.js HTTP, Routing, Middleware and Express: Backend Master chapter 6 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>A backend server is a program that listens on a port and turns requests into responses. This chapter builds one with Node's http module, then Express, covering routing, middleware order, error handling and project structure, and creates the first ShopLine endpoints.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Building a server with the Node http module</li><li>Routing and request parsing</li><li>Middleware and the order it runs in</li><li>Centralised error handling</li><li>Structuring an Express project</li></ul>
+                        </section>
+<hr>
+
+<h2 id="6-0-why-this-chapter-matters">6.0 Why This Chapter Matters</h2>
+<p>Part 1 gave you the foundations. Now we start <strong>building</strong>.</p>
+<p>In <a href="/learn/backend-master/http-explained-methods-status-codes-headers" title="HTTP Explained: Methods, Status &amp; Headers">Chapter 3</a> we wrote an entire products API with the raw <code>http</code> module. It worked, and it taught you what HTTP really is. But look at what we had to do by hand:</p>
+<ul>
+<li>Parse the URL and match routes with regular expressions.</li>
+<li>Collect the request body chunk by chunk and <code>JSON.parse</code> it.</li>
+<li>Set headers and status codes manually on every response.</li>
+<li>Wrap everything in one giant <code>try/catch</code>.</li>
+</ul>
+<p>Add authentication, logging, validation, rate limiting and file uploads, and that single <code>createServer</code> function becomes an unreadable monster.</p>
+<p>This chapter solves it with two ideas:</p>
+<ol>
+<li><strong>Routing</strong>: mapping <code>METHOD + path</code> to a function, declaratively.</li>
+<li><strong>Middleware</strong>: a <em>pipeline</em> of small functions that every request flows through.</li>
+</ol>
+<p>Then we meet <strong>Express</strong>, the most widely used Node web framework, and use it to start <strong>ShopLine</strong>, the project that will grow through the rest of the book.</p>
+<p>By the end you will be able to:</p>
+<ul>
+<li>Explain <em>exactly</em> what middleware is by having built your own mini-Express.</li>
+<li>Build a clean, modular Express API with routers, error handling and a 404 handler.</li>
+<li>Read <code>req.params</code>, <code>req.query</code> and <code>req.body</code> confidently.</li>
+<li>Structure a project so it stays maintainable.</li>
+</ul>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>Express was created by TJ Holowaychuk in 2010, inspired by a Ruby framework called Sinatra. Its design philosophy is &quot;minimal and unopinionated&quot;: it gives you routing and middleware and almost nothing else. That small core is why it has survived for 15+ years, and why most other Node frameworks (Koa, Fastify, NestJS&#39;s default adapter) borrow its vocabulary. <strong>Express 5</strong>, the version used here, was finally released as stable in late 2024 after a very long wait and is now the default on npm.</p>
+</aside>
+<hr>
+
+<h2 id="6-1-routing-the-core-idea">6.1 Routing: The Core Idea</h2>
+<p>A <strong>route</strong> is a rule: <em>&quot;when a request with this method and this path arrives, run this function.&quot;</em></p>
+<pre class="is-plain"><code> GET    /products        →  listProducts()
+ GET    /products/:id    →  getProduct()
+ POST   /products        →  createProduct()
+ DELETE /products/:id    →  deleteProduct()</code></pre>
+<p>In raw Node we did this with <code>if/else</code>. A framework turns it into a table the framework consults for you. Conceptually it is a <strong>lookup</strong>: given <code>(method, path)</code>, find the handler. (Real routers store paths in a <strong>trie</strong> or radix tree for speed. Yes, the Trie from our DSA book, <a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a>, runs inside the framework you&#39;re about to use.)</p>
+<h3 id="path-parameters">Path parameters</h3>
+<p><code>/products/:id</code> is a <em>pattern</em>. The part after <code>:</code> is a variable captured from the URL:</p>
+<pre class="is-plain"><code> pattern:   /products/:id
+ request:   /products/42      →  params = { id: '42' }     (always a string!)
+ request:   /products         →  no match</code></pre>
+<hr>
+
+<h2 id="6-2-middleware-the-most-important-concept-in-web-frameworks">6.2 Middleware: The Most Important Concept in Web Frameworks</h2>
+<h3 id="the-assembly-line">The assembly line</h3>
+<p>Imagine a factory assembly line. A product (the request) moves along a conveyor belt. At each station a worker does one job: inspect it, label it, wrap it. Any station can also <strong>reject</strong> the product and send it back early. At the end, the finished product leaves.</p>
+<p>Middleware is the same:</p>
+<pre class="is-plain"><code> request ──▶ [ requestId ] ──▶ [ logger ] ──▶ [ parse JSON ] ──▶ [ auth ] ──▶ [ route handler ] ──▶ response
+               adds an id       starts timer    fills req.body     blocks if      does the real
+                                                                    not logged in  work</code></pre>
+<h3 id="the-definition">The definition</h3>
+<blockquote>
+<p><strong>A middleware is a function <code>(req, res, next)</code> that can read/modify the request and response, then either end the response itself or call <code>next()</code> to pass control to the next function in line.</strong></p>
+</blockquote>
+<p>Three possible outcomes for any middleware:</p>
+<ol>
+<li><strong>Do something, call <code>next()</code></strong>: pass it along (logging, parsing).</li>
+<li><strong>Send a response, don&#39;t call <code>next()</code></strong>: stop the line (auth failure → 401).</li>
+<li><strong>Call <code>next(error)</code></strong>: jump to the error-handling middleware.</li>
+</ol>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p>Middleware is a <strong>relay race</strong>. Each runner (function) must pass the baton (<code>next()</code>) or the race (request) stops with them. <strong>Forgetting <code>next()</code> is the #1 middleware bug: the request hangs forever.</strong></p>
+</aside>
+<h3 id="build-it-yourself-a-mini-express-in-35-lines">Build it yourself: a mini-Express in 35 lines</h3>
+<p>The best way to understand middleware is to build the machinery. This is a genuine, working miniature of Express&#39;s core:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// mini.js</span>
+<span class="hljs-keyword">import</span> http <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:http&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">miniExpress</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">const</span> stack = [];                       <span class="hljs-comment">// the ordered list of middleware &amp; routes</span>
+
+  <span class="hljs-keyword">const</span> <span class="hljs-title function_">add</span> = (<span class="hljs-params">method</span>) =&gt; <span class="hljs-function">(<span class="hljs-params">path, handler</span>) =&gt;</span> stack.<span class="hljs-title function_">push</span>({ method, path, handler });
+  <span class="hljs-keyword">const</span> app = {
+    <span class="hljs-attr">use</span>: <span class="hljs-function">(<span class="hljs-params">handler</span>) =&gt;</span> stack.<span class="hljs-title function_">push</span>({ <span class="hljs-attr">method</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">path</span>: <span class="hljs-literal">null</span>, handler }),
+    <span class="hljs-attr">get</span>: <span class="hljs-title function_">add</span>(<span class="hljs-string">&#x27;GET&#x27;</span>),
+    <span class="hljs-attr">post</span>: <span class="hljs-title function_">add</span>(<span class="hljs-string">&#x27;POST&#x27;</span>),
+  };
+
+  app.<span class="hljs-property">listen</span> = <span class="hljs-function">(<span class="hljs-params">port, cb</span>) =&gt;</span>
+    http.<span class="hljs-title function_">createServer</span>(<span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+      <span class="hljs-comment">// add a convenience, just like Express adds res.json()</span>
+      res.<span class="hljs-property">json</span> = <span class="hljs-function">(<span class="hljs-params">data, status = <span class="hljs-number">200</span></span>) =&gt;</span> {
+        res.<span class="hljs-title function_">writeHead</span>(status, { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> });
+        res.<span class="hljs-title function_">end</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(data));
+      };
+      req.<span class="hljs-property">path</span> = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(req.<span class="hljs-property">url</span>, <span class="hljs-string">&#x27;http://x&#x27;</span>).<span class="hljs-property">pathname</span>;
+
+      <span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;
+      <span class="hljs-keyword">const</span> <span class="hljs-title function_">next</span> = (<span class="hljs-params">err</span>) =&gt; {
+        <span class="hljs-keyword">const</span> layer = stack[i++];                       <span class="hljs-comment">// take the next layer</span>
+        <span class="hljs-keyword">if</span> (!layer) {                                   <span class="hljs-comment">// ran off the end of the line</span>
+          <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: err ? err.<span class="hljs-property">message</span> : <span class="hljs-string">&#x27;Not found&#x27;</span> }, err ? <span class="hljs-number">500</span> : <span class="hljs-number">404</span>);
+        }
+        <span class="hljs-keyword">const</span> matches =
+          (layer.<span class="hljs-property">method</span> === <span class="hljs-literal">null</span> || layer.<span class="hljs-property">method</span> === req.<span class="hljs-property">method</span>) &amp;&amp;
+          (layer.<span class="hljs-property">path</span> === <span class="hljs-literal">null</span> || layer.<span class="hljs-property">path</span> === req.<span class="hljs-property">path</span>);
+        <span class="hljs-keyword">if</span> (!matches) <span class="hljs-keyword">return</span> <span class="hljs-title function_">next</span>(err);                 <span class="hljs-comment">// skip layers that don&#x27;t apply</span>
+
+        <span class="hljs-keyword">try</span> { layer.<span class="hljs-title function_">handler</span>(req, res, next); }          <span class="hljs-comment">// run it, handing it `next`</span>
+        <span class="hljs-keyword">catch</span> (e) { <span class="hljs-title function_">next</span>(e); }                          <span class="hljs-comment">// a thrown error goes down the line</span>
+      };
+      <span class="hljs-title function_">next</span>();                                           <span class="hljs-comment">// start the race</span>
+    }).<span class="hljs-title function_">listen</span>(port, cb);
+
+  <span class="hljs-keyword">return</span> app;
+}
+
+<span class="hljs-comment">// ---- use it ----</span>
+<span class="hljs-keyword">const</span> app = <span class="hljs-title function_">miniExpress</span>();
+app.<span class="hljs-title function_">use</span>(<span class="hljs-function">(<span class="hljs-params">req, _res, next</span>) =&gt;</span> { <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(req.<span class="hljs-property">method</span>, req.<span class="hljs-property">path</span>); <span class="hljs-title function_">next</span>(); });  <span class="hljs-comment">// logger</span>
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/hello&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">_req, res</span>) =&gt;</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">msg</span>: <span class="hljs-string">&#x27;hi&#x27;</span> }));
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/boom&#x27;</span>, <span class="hljs-function">() =&gt;</span> { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;kaboom&#x27;</span>); });
+app.<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;mini on 3000&#x27;</span>));</code></pre></div>
+<p>Run it and try:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl localhost:3000/hello    <span class="hljs-comment"># {&quot;msg&quot;:&quot;hi&quot;}      (server logs: GET /hello)</span>
+curl localhost:3000/boom     <span class="hljs-comment"># {&quot;error&quot;:&quot;kaboom&quot;}</span>
+curl localhost:3000/zzz      <span class="hljs-comment"># {&quot;error&quot;:&quot;Not found&quot;}</span></code></pre></div>
+<p>Study the heart of it: <strong>a list, an index <code>i</code>, and a <code>next()</code> that advances the index.</strong> That is the entire idea. Real Express adds path patterns, params, sub-routers, and a separate error-handling pass, but the skeleton is what you just read. (It is also exactly the &quot;iterator over a list of functions&quot; pattern, sometimes called <em>chain of responsibility</em>.)</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip</span></h3>
+<p>The order middleware is <em>registered</em> is the order it <em>runs</em>. Almost every &quot;why isn&#39;t my middleware working?&quot; question is an ordering mistake: for example registering <code>express.json()</code> <strong>after</strong> the routes that need <code>req.body</code>.</p>
+</aside>
+<hr>
+
+<h2 id="6-3-express-setup">6.3 Express: Setup</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash"><span class="hljs-built_in">mkdir</span> shopline-api &amp;&amp; <span class="hljs-built_in">cd</span> shopline-api
+npm init -y
+npm install express</code></pre></div>
+<p>Enable ES Modules by adding <code>&quot;type&quot;: &quot;module&quot;</code> to <code>package.json</code> (we&#39;ll use <code>import</code>/<code>export</code> for the rest of the book).</p>
+<h3 id="hello-express">Hello, Express</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// hello.js</span>
+<span class="hljs-keyword">import</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;express&#x27;</span>;
+
+<span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>();
+
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  res.<span class="hljs-title function_">send</span>(<span class="hljs-string">&#x27;Hello from Express!&#x27;</span>);
+});
+
+app.<span class="hljs-title function_">listen</span>(<span class="hljs-number">3000</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;http://localhost:3000&#x27;</span>));</code></pre></div>
+<p>Compare to the 10 lines of <code>http.createServer</code> + manual headers in <a href="/learn/backend-master/what-is-backend-development" title="What Is Backend Development? Start Here">Chapter 1</a>. <code>res.send()</code> sets <code>Content-Type</code> and <code>Content-Length</code> automatically.</p>
+<h3 id="what-express-gives-req-and-res">What Express gives <code>req</code> and <code>res</code></h3>
+<p><strong>On <code>req</code> (request):</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Property</th>
+<th>What it holds</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><code>req.method</code></td>
+<td>HTTP method</td>
+<td><code>&#39;POST&#39;</code></td>
+</tr>
+<tr>
+<td><code>req.path</code></td>
+<td>URL path only</td>
+<td><code>&#39;/products/5&#39;</code></td>
+</tr>
+<tr>
+<td><code>req.originalUrl</code></td>
+<td>Full URL as received</td>
+<td><code>&#39;/products/5?x=1&#39;</code></td>
+</tr>
+<tr>
+<td><code>req.params</code></td>
+<td>Path parameters</td>
+<td><code>{ id: &#39;5&#39; }</code></td>
+</tr>
+<tr>
+<td><code>req.query</code></td>
+<td>Parsed query string</td>
+<td><code>{ sort: &#39;price&#39; }</code></td>
+</tr>
+<tr>
+<td><code>req.body</code></td>
+<td>Parsed body (needs a parser middleware)</td>
+<td><code>{ name: &#39;Pen&#39; }</code></td>
+</tr>
+<tr>
+<td><code>req.headers</code> / <code>req.get(&#39;x&#39;)</code></td>
+<td>Headers</td>
+<td><code>req.get(&#39;Authorization&#39;)</code></td>
+</tr>
+<tr>
+<td><code>req.ip</code></td>
+<td>Client IP (careful behind proxies)</td>
+<td><code>&#39;::1&#39;</code></td>
+</tr>
+<tr>
+<td><code>req.cookies</code></td>
+<td>Cookies (needs <code>cookie-parser</code>)</td>
+<td></td>
+</tr>
+</tbody></table></div>
+<p><strong>On <code>res</code> (response):</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Method</th>
+<th>Does</th>
+</tr>
+</thead><tbody><tr>
+<td><code>res.send(x)</code></td>
+<td>Sends string/Buffer/object, guesses <code>Content-Type</code></td>
+</tr>
+<tr>
+<td><code>res.json(obj)</code></td>
+<td>Sends JSON with the right header</td>
+</tr>
+<tr>
+<td><code>res.status(404)</code></td>
+<td>Sets status code (chainable)</td>
+</tr>
+<tr>
+<td><code>res.sendStatus(204)</code></td>
+<td>Sets status and sends its text</td>
+</tr>
+<tr>
+<td><code>res.set(&#39;X-Foo&#39;, &#39;bar&#39;)</code></td>
+<td>Sets a header</td>
+</tr>
+<tr>
+<td><code>res.location(&#39;/x&#39;)</code></td>
+<td>Sets <code>Location</code></td>
+</tr>
+<tr>
+<td><code>res.redirect(301, &#39;/new&#39;)</code></td>
+<td>Redirect</td>
+</tr>
+<tr>
+<td><code>res.cookie(&#39;sid&#39;, v, opts)</code></td>
+<td>Set-Cookie</td>
+</tr>
+<tr>
+<td><code>res.end()</code></td>
+<td>Finish without a body</td>
+</tr>
+</tbody></table></div>
+<p><strong>Chaining:</strong> <code>res.status(201).location(&#39;/products/4&#39;).json(product)</code>.</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-sending-two-responses" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Sending two responses</span></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/x&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">if</span> (!req.<span class="hljs-property">query</span>.<span class="hljs-property">id</span>) res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: <span class="hljs-string">&#x27;id needed&#x27;</span> });   <span class="hljs-comment">// forgot `return`!</span>
+  res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">ok</span>: <span class="hljs-literal">true</span> });                                            <span class="hljs-comment">// runs too → crash</span>
+});</code></pre></div>
+<p>The second call throws <code>ERR_HTTP_HEADERS_SENT: Cannot set headers after they are sent</code>. <strong>Always <code>return</code> when you respond early</strong>, or use <code>if/else</code>, or <code>throw</code> an error and let the error handler respond (our pattern in §6.8).</p>
+</aside>
+<hr>
+
+<h2 id="6-4-the-three-places-input-arrives">6.4 The Three Places Input Arrives</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// GET /products/42?color=red&amp;color=blue&amp;sort=price</span>
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/products/:id&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  req.<span class="hljs-property">params</span>;   <span class="hljs-comment">// { id: &#x27;42&#x27; }                      ← always strings</span>
+  req.<span class="hljs-property">query</span>;    <span class="hljs-comment">// { color: [&#x27;red&#x27;,&#x27;blue&#x27;], sort: &#x27;price&#x27; }   ← repeats become arrays!</span>
+  res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">params</span>: req.<span class="hljs-property">params</span>, <span class="hljs-attr">query</span>: req.<span class="hljs-property">query</span> });
+});</code></pre></div>
+<p>Three traps hide here:</p>
+<ol>
+<li><strong>Everything is a string.</strong> <code>req.params.id === &#39;42&#39;</code>, not <code>42</code>. Convert and validate: <code>Number(id)</code>, then <code>Number.isInteger(id)</code>.</li>
+<li><strong>Query values can be a string, an array, or an object</strong> (<code>?a[b]=1</code> → <code>{ a: { b: &#39;1&#39; } }</code>). Never assume <code>req.query.sort</code> is a string: <code>?sort=a&amp;sort=b</code> makes it an array and <code>.toLowerCase()</code> will crash. Validate types (we&#39;ll use Zod in <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>).</li>
+<li><strong><code>req.body</code> is <code>undefined</code> unless a body parser ran</strong> (in Express 5 it is <code>undefined</code>, where Express 4 gave <code>{}</code>). Always register <code>express.json()</code> first.</li>
+</ol>
+<h3 id="body-parsing-middleware">Body parsing middleware</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">use</span>(express.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">limit</span>: <span class="hljs-string">&#x27;100kb&#x27;</span> }));                <span class="hljs-comment">// application/json</span>
+app.<span class="hljs-title function_">use</span>(express.<span class="hljs-title function_">urlencoded</span>({ <span class="hljs-attr">extended</span>: <span class="hljs-literal">false</span> }));         <span class="hljs-comment">// HTML form posts</span></code></pre></div>
+<p>Always set a <strong>size limit</strong>. Without one, an attacker can send a 2 GB JSON body and exhaust memory. A request that exceeds it gets automatically rejected with <code>413 Payload Too Large</code>. Malformed JSON automatically produces a <code>400</code> error (which our error handler will format).</p>
+<hr>
+
+<h2 id="6-5-express-4-vs-express-5-what-you-need-to-know">6.5 Express 4 vs Express 5: What You Need to Know</h2>
+<p>Tutorials online are often Express 4. The differences you&#39;ll actually meet:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Topic</th>
+<th>Express 4</th>
+<th>Express 5 (this book)</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Errors in <code>async</code> handlers</strong></td>
+<td>Rejected promises were <em>not</em> caught; you needed wrappers (<code>express-async-errors</code>, try/catch + <code>next(err)</code>)</td>
+<td><strong>Automatically forwarded to error middleware.</strong> <code>throw</code> in an async handler just works</td>
+</tr>
+<tr>
+<td>Wildcard routes</td>
+<td><code>app.get(&#39;*&#39;, …)</code></td>
+<td>Must be named: <code>app.get(&#39;/*splat&#39;, …)</code></td>
+</tr>
+<tr>
+<td><code>req.body</code> when no parser ran</td>
+<td><code>{}</code></td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td><code>req.query</code></td>
+<td>Mutable property</td>
+<td>Getter (read-only object); don&#39;t reassign it</td>
+</tr>
+<tr>
+<td><code>res.status()</code></td>
+<td>Accepted weird values</td>
+<td>Must be an integer 100–999</td>
+</tr>
+<tr>
+<td>Regex-ish path syntax (<code>?</code>, <code>+</code> modifiers)</td>
+<td>Allowed</td>
+<td>Removed; use explicit syntax</td>
+</tr>
+<tr>
+<td>Minimum Node</td>
+<td>0.10 era</td>
+<td>Node 18+</td>
+</tr>
+</tbody></table></div>
+<p>The most important one: <strong>in Express 5 you can simply <code>throw</code> (or <code>await</code> something that rejects) inside an async handler, and the error handler catches it.</strong> That makes our code far cleaner, and we&#39;ll rely on it throughout.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/orders/:id&#x27;</span>, <span class="hljs-keyword">async</span> (req, res) =&gt; {
+  <span class="hljs-keyword">const</span> order = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">findOrder</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>);   <span class="hljs-comment">// if this rejects → error handler</span>
+  <span class="hljs-keyword">if</span> (!order) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">notFound</span>(<span class="hljs-string">&#x27;Order&#x27;</span>);                <span class="hljs-comment">// if this throws → error handler</span>
+  res.<span class="hljs-title function_">json</span>(order);
+});</code></pre></div>
+<hr>
+
+<h2 id="6-6-starting-shopline-project-structure">6.6 Starting ShopLine: Project Structure</h2>
+<p>We use a layout that separates <em>building the app</em> from <em>starting the server</em>. This separation makes testing easy (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>) because tests can import the app without opening a port.</p>
+<pre class="is-plain"><code>shopline-api/
+├── package.json
+├── .env.example
+├── .gitignore
+└── src/
+    ├── server.js              ← starts listening + graceful shutdown (the only file with side effects)
+    ├── app.js                 ← builds &amp; returns the Express app (no listen!)
+    ├── config.js              ← reads/validates environment
+    ├── errors.js              ← AppError class + helpers
+    ├── store.js               ← in-memory data (replaced by PostgreSQL in Part 3)
+    ├── middleware/
+    │   ├── requestId.js
+    │   ├── requestLogger.js
+    │   └── errorHandler.js    ← notFoundHandler + errorHandler
+    └── routes/
+        └── products.js</code></pre>
+<h3 id="package-json"><code>package.json</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JSON</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-json"><span class="hljs-punctuation">{</span>
+  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;shopline-api&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;0.1.0&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;private&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;module&quot;</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;engines&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span> <span class="hljs-attr">&quot;node&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&gt;=22&quot;</span> <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;start&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;node src/server.js&quot;</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;dev&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;node --watch --env-file=.env src/server.js&quot;</span>
+  <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+  <span class="hljs-attr">&quot;dependencies&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;express&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;^5.1.0&quot;</span>
+  <span class="hljs-punctuation">}</span>
+<span class="hljs-punctuation">}</span></code></pre></div>
+<h3 id="src-config-js"><code>src/config.js</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> config = {
+  <span class="hljs-attr">port</span>: <span class="hljs-title class_">Number</span>(process.<span class="hljs-property">env</span>.<span class="hljs-property">PORT</span>) || <span class="hljs-number">3000</span>,
+  <span class="hljs-attr">env</span>: process.<span class="hljs-property">env</span>.<span class="hljs-property">NODE_ENV</span> || <span class="hljs-string">&#x27;development&#x27;</span>,
+};</code></pre></div>
+<p>(We add database URLs, secrets, and validation as the project grows.)</p>
+<hr>
+
+<h2 id="6-7-the-building-blocks">6.7 The Building Blocks</h2>
+<h3 id="6-7-1-custom-error-type-src-errors-js">6.7.1 Custom error type: <code>src/errors.js</code></h3>
+<p>Instead of scattering <code>res.status(404).json(...)</code> everywhere, handlers <strong>throw typed errors</strong> and one central place turns them into responses.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">status, message, details</span>) {
+    <span class="hljs-variable language_">super</span>(message);
+    <span class="hljs-variable language_">this</span>.<span class="hljs-property">status</span> = status;       <span class="hljs-comment">// HTTP status to respond with</span>
+    <span class="hljs-variable language_">this</span>.<span class="hljs-property">details</span> = details;     <span class="hljs-comment">// optional extra info (e.g. validation messages)</span>
+  }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">notFound</span> = (<span class="hljs-params">what = <span class="hljs-string">&#x27;Resource&#x27;</span></span>) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">AppError</span>(<span class="hljs-number">404</span>, <span class="hljs-string">`<span class="hljs-subst">${what}</span> not found`</span>);
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">badRequest</span> = (<span class="hljs-params">msg, details</span>) =&gt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">AppError</span>(<span class="hljs-number">400</span>, msg, details);</code></pre></div>
+<h3 id="6-7-2-in-memory-store-src-store-js">6.7.2 In-memory store: <code>src/store.js</code></h3>
+<p>A stand-in for a database. Every function here will later become a SQL query without the routes changing, which is exactly why we isolate it.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// In-memory store. Replaced by PostgreSQL in Part 3.</span>
+<span class="hljs-keyword">let</span> nextId = <span class="hljs-number">4</span>;
+<span class="hljs-keyword">const</span> products = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([
+  [<span class="hljs-number">1</span>, { <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Notebook&#x27;</span>, <span class="hljs-attr">price</span>: <span class="hljs-number">120</span>, <span class="hljs-attr">stock</span>: <span class="hljs-number">50</span> }],
+  [<span class="hljs-number">2</span>, { <span class="hljs-attr">id</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Pen&#x27;</span>, <span class="hljs-attr">price</span>: <span class="hljs-number">15</span>, <span class="hljs-attr">stock</span>: <span class="hljs-number">200</span> }],
+  [<span class="hljs-number">3</span>, { <span class="hljs-attr">id</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;Backpack&#x27;</span>, <span class="hljs-attr">price</span>: <span class="hljs-number">899</span>, <span class="hljs-attr">stock</span>: <span class="hljs-number">12</span> }],
+]);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> productStore = {
+  <span class="hljs-attr">all</span>: <span class="hljs-function">() =&gt;</span> [...products.<span class="hljs-title function_">values</span>()],
+  <span class="hljs-attr">get</span>: <span class="hljs-function">(<span class="hljs-params">id</span>) =&gt;</span> products.<span class="hljs-title function_">get</span>(id),
+  <span class="hljs-attr">create</span>: <span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> { <span class="hljs-keyword">const</span> p = { <span class="hljs-attr">id</span>: nextId++, ...data }; products.<span class="hljs-title function_">set</span>(p.<span class="hljs-property">id</span>, p); <span class="hljs-keyword">return</span> p; },
+  <span class="hljs-attr">update</span>: <span class="hljs-function">(<span class="hljs-params">id, data</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> p = products.<span class="hljs-title function_">get</span>(id);
+    <span class="hljs-keyword">if</span> (!p) <span class="hljs-keyword">return</span> <span class="hljs-literal">undefined</span>;
+    <span class="hljs-keyword">const</span> updated = { ...p, ...data };
+    products.<span class="hljs-title function_">set</span>(id, updated);
+    <span class="hljs-keyword">return</span> updated;
+  },
+  <span class="hljs-attr">remove</span>: <span class="hljs-function">(<span class="hljs-params">id</span>) =&gt;</span> products.<span class="hljs-title function_">delete</span>(id),
+};</code></pre></div>
+<p>(A <code>Map</code> gives O(1) lookup by id. A hash table, from DSA <a href="/learn/backend-master/linux-terminal-git-for-backend-developers" title="Linux, Terminal &amp; Git for Backend Devs">Chapter 4</a>.)</p>
+<h3 id="6-7-3-request-id-middleware-src-middleware-requestid-js">6.7.3 Request ID middleware: <code>src/middleware/requestId.js</code></h3>
+<p>Give every request a unique ID, reuse the caller&#39;s if they sent one, and echo it back. When a customer reports &quot;my checkout failed,&quot; that ID lets you find the exact request in your logs.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { randomUUID } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:crypto&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">requestId</span>(<span class="hljs-params">req, res, next</span>) {
+  req.<span class="hljs-property">id</span> = req.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;x-request-id&#x27;</span>) || <span class="hljs-title function_">randomUUID</span>();
+  res.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;X-Request-Id&#x27;</span>, req.<span class="hljs-property">id</span>);
+  <span class="hljs-title function_">next</span>();
+}</code></pre></div>
+<h3 id="6-7-4-request-logger-src-middleware-requestlogger-js">6.7.4 Request logger: <code>src/middleware/requestLogger.js</code></h3>
+<p>Notice how it works <em>around</em> the rest of the pipeline: it starts a timer, calls <code>next()</code>, and when the response finishes (an event!) it logs.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">requestLogger</span>(<span class="hljs-params">req, res, next</span>) {
+  <span class="hljs-keyword">const</span> start = process.<span class="hljs-property">hrtime</span>.<span class="hljs-title function_">bigint</span>();
+  res.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;finish&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> ms = <span class="hljs-title class_">Number</span>(process.<span class="hljs-property">hrtime</span>.<span class="hljs-title function_">bigint</span>() - start) / <span class="hljs-number">1e6</span>;
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({
+      <span class="hljs-attr">id</span>: req.<span class="hljs-property">id</span>, <span class="hljs-attr">method</span>: req.<span class="hljs-property">method</span>, <span class="hljs-attr">url</span>: req.<span class="hljs-property">originalUrl</span>,
+      <span class="hljs-attr">status</span>: res.<span class="hljs-property">statusCode</span>, <span class="hljs-attr">ms</span>: +ms.<span class="hljs-title function_">toFixed</span>(<span class="hljs-number">1</span>),
+    }));
+  });
+  <span class="hljs-title function_">next</span>();
+}</code></pre></div>
+<p>We log <strong>JSON, one object per line</strong>: machines (log aggregators) can parse it. <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a> upgrades this to a proper logger (<code>pino</code>).</p>
+<h3 id="6-7-5-error-handling-middleware-src-middleware-errorhandler-js">6.7.5 Error handling middleware: <code>src/middleware/errorHandler.js</code></h3>
+<p>An <strong>error-handling middleware has four parameters</strong> <code>(err, req, res, next)</code>. Express identifies it <em>by the parameter count</em>, so keep all four even if you don&#39;t use <code>next</code>.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">AppError</span>, notFound } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../errors.js&#x27;</span>;
+
+<span class="hljs-comment">// Runs when NO route matched.</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">notFoundHandler</span> = (<span class="hljs-params">req, _res, next</span>) =&gt;
+  <span class="hljs-title function_">next</span>(<span class="hljs-title function_">notFound</span>(<span class="hljs-string">`Route <span class="hljs-subst">${req.method}</span> <span class="hljs-subst">${req.path}</span>`</span>));
+
+<span class="hljs-comment">// Runs when anything threw or called next(err).</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">errorHandler</span>(<span class="hljs-params">err, req, res, next</span>) {
+  <span class="hljs-keyword">if</span> (res.<span class="hljs-property">headersSent</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">next</span>(err);   <span class="hljs-comment">// too late to send JSON; let Express close the socket</span>
+
+  <span class="hljs-comment">// Our AppErrors carry a status; body-parser errors (bad JSON, too large) carry one too.</span>
+  <span class="hljs-keyword">const</span> status = err <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">AppError</span> ? err.<span class="hljs-property">status</span> : err.<span class="hljs-property">status</span> ?? err.<span class="hljs-property">statusCode</span> ?? <span class="hljs-number">500</span>;
+
+  <span class="hljs-keyword">if</span> (status &gt;= <span class="hljs-number">500</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">id</span>: req.<span class="hljs-property">id</span>, <span class="hljs-attr">err</span>: err.<span class="hljs-property">message</span>, <span class="hljs-attr">stack</span>: err.<span class="hljs-property">stack</span> }));
+  }
+
+  res.<span class="hljs-title function_">status</span>(status).<span class="hljs-title function_">json</span>({
+    <span class="hljs-attr">error</span>: {
+      <span class="hljs-attr">message</span>: status &gt;= <span class="hljs-number">500</span> ? <span class="hljs-string">&#x27;Internal server error&#x27;</span> : err.<span class="hljs-property">message</span>,   <span class="hljs-comment">// never leak internals</span>
+      <span class="hljs-attr">details</span>: err.<span class="hljs-property">details</span>,
+      <span class="hljs-attr">requestId</span>: req.<span class="hljs-property">id</span>,
+    },
+  });
+}</code></pre></div>
+<p>Three principles in these 20 lines:</p>
+<ol>
+<li><strong>One place decides the error response shape.</strong> Clients get a consistent <code>{ error: { message, details, requestId } }</code>.</li>
+<li><strong>4xx messages are safe to show</strong> (the client caused them). <strong>5xx messages are hidden</strong>, because &quot;connect ECONNREFUSED 10.0.3.7:5432&quot; tells an attacker your database address. Log the real error server-side instead.</li>
+<li><strong>Include the request ID</strong> so a user can quote it to support.</li>
+</ol>
+<h3 id="6-7-6-routes-with-a-router-src-routes-products-js">6.7.6 Routes with a Router: <code>src/routes/products.js</code></h3>
+<p>An <code>express.Router()</code> is a mini-app: its own routes and middleware, mounted at a prefix. It lets each feature live in its own file.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Router</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;express&#x27;</span>;
+<span class="hljs-keyword">import</span> { productStore } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../store.js&#x27;</span>;
+<span class="hljs-keyword">import</span> { badRequest, notFound } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../errors.js&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> productsRouter = <span class="hljs-title class_">Router</span>();
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">parseId</span> = (<span class="hljs-params">raw</span>) =&gt; {
+  <span class="hljs-keyword">const</span> id = <span class="hljs-title class_">Number</span>(raw);
+  <span class="hljs-keyword">if</span> (!<span class="hljs-title class_">Number</span>.<span class="hljs-title function_">isInteger</span>(id) || id &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">badRequest</span>(<span class="hljs-string">&#x27;id must be a positive integer&#x27;</span>);
+  <span class="hljs-keyword">return</span> id;
+};
+
+<span class="hljs-comment">// GET /products?maxPrice=100&amp;sort=price</span>
+productsRouter.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> { maxPrice, sort } = req.<span class="hljs-property">query</span>;
+  <span class="hljs-keyword">let</span> list = productStore.<span class="hljs-title function_">all</span>();
+  <span class="hljs-keyword">if</span> (maxPrice !== <span class="hljs-literal">undefined</span>) {
+    <span class="hljs-keyword">const</span> max = <span class="hljs-title class_">Number</span>(maxPrice);
+    <span class="hljs-keyword">if</span> (<span class="hljs-title class_">Number</span>.<span class="hljs-built_in">isNaN</span>(max)) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">badRequest</span>(<span class="hljs-string">&#x27;maxPrice must be a number&#x27;</span>);
+    list = list.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">p</span>) =&gt;</span> p.<span class="hljs-property">price</span> &lt;= max);
+  }
+  <span class="hljs-keyword">if</span> (sort === <span class="hljs-string">&#x27;price&#x27;</span>) list = [...list].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a.<span class="hljs-property">price</span> - b.<span class="hljs-property">price</span>);
+  res.<span class="hljs-title function_">json</span>(list);
+});
+
+<span class="hljs-comment">// GET /products/:id</span>
+productsRouter.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/:id&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> product = productStore.<span class="hljs-title function_">get</span>(<span class="hljs-title function_">parseId</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>));
+  <span class="hljs-keyword">if</span> (!product) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">notFound</span>(<span class="hljs-string">&#x27;Product&#x27;</span>);
+  res.<span class="hljs-title function_">json</span>(product);
+});
+
+<span class="hljs-comment">// POST /products</span>
+productsRouter.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> { name, price, stock = <span class="hljs-number">0</span> } = req.<span class="hljs-property">body</span> ?? {};
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> name !== <span class="hljs-string">&#x27;string&#x27;</span> || !name.<span class="hljs-title function_">trim</span>()) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">badRequest</span>(<span class="hljs-string">&#x27;name is required&#x27;</span>);
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> price !== <span class="hljs-string">&#x27;number&#x27;</span> || price &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">badRequest</span>(<span class="hljs-string">&#x27;price must be a number &gt;= 0&#x27;</span>);
+
+  <span class="hljs-keyword">const</span> product = productStore.<span class="hljs-title function_">create</span>({ <span class="hljs-attr">name</span>: name.<span class="hljs-title function_">trim</span>(), price, stock });
+  res.<span class="hljs-title function_">status</span>(<span class="hljs-number">201</span>).<span class="hljs-title function_">location</span>(<span class="hljs-string">`/products/<span class="hljs-subst">${product.id}</span>`</span>).<span class="hljs-title function_">json</span>(product);
+});
+
+<span class="hljs-comment">// PATCH /products/:id</span>
+productsRouter.<span class="hljs-title function_">patch</span>(<span class="hljs-string">&#x27;/:id&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> updated = productStore.<span class="hljs-title function_">update</span>(<span class="hljs-title function_">parseId</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>), req.<span class="hljs-property">body</span> ?? {});
+  <span class="hljs-keyword">if</span> (!updated) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">notFound</span>(<span class="hljs-string">&#x27;Product&#x27;</span>);
+  res.<span class="hljs-title function_">json</span>(updated);
+});
+
+<span class="hljs-comment">// DELETE /products/:id</span>
+productsRouter.<span class="hljs-title function_">delete</span>(<span class="hljs-string">&#x27;/:id&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, res</span>) =&gt;</span> {
+  <span class="hljs-keyword">if</span> (!productStore.<span class="hljs-title function_">remove</span>(<span class="hljs-title function_">parseId</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>))) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">notFound</span>(<span class="hljs-string">&#x27;Product&#x27;</span>);
+  res.<span class="hljs-title function_">status</span>(<span class="hljs-number">204</span>).<span class="hljs-title function_">end</span>();
+});</code></pre></div>
+<p>Look how short each handler is. Compare with the 50-line raw version: no manual body reading, no regex, no <code>writeHead</code>.</p>
+<blockquote>
+<p><strong>There is a deliberate bug in the <code>PATCH</code> route.</strong> Can you spot it? Hint: what happens if a client sends <code>{ &quot;id&quot;: 999, &quot;price&quot;: -5 }</code>? We&#39;ll fix it in <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a> with schema validation. This class of bug is called <strong>mass assignment</strong>, and it appears in the OWASP Top 10 (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>). Never copy a client&#39;s whole body into your data.</p>
+</blockquote>
+<h3 id="6-7-7-assembling-the-app-src-app-js">6.7.7 Assembling the app: <code>src/app.js</code></h3>
+<p>This file is the <strong>table of contents of your server</strong>. The order is the order requests flow through.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> express <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;express&#x27;</span>;
+<span class="hljs-keyword">import</span> { requestId } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./middleware/requestId.js&#x27;</span>;
+<span class="hljs-keyword">import</span> { requestLogger } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./middleware/requestLogger.js&#x27;</span>;
+<span class="hljs-keyword">import</span> { errorHandler, notFoundHandler } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./middleware/errorHandler.js&#x27;</span>;
+<span class="hljs-keyword">import</span> { productsRouter } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./routes/products.js&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">createApp</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>();
+  app.<span class="hljs-title function_">disable</span>(<span class="hljs-string">&#x27;x-powered-by&#x27;</span>);                      <span class="hljs-comment">// don&#x27;t advertise &quot;Express&quot; to attackers</span>
+
+  <span class="hljs-comment">// 1. Cross-cutting middleware: runs for every request</span>
+  app.<span class="hljs-title function_">use</span>(requestId);
+  app.<span class="hljs-title function_">use</span>(requestLogger);
+  app.<span class="hljs-title function_">use</span>(express.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">limit</span>: <span class="hljs-string">&#x27;100kb&#x27;</span> }));
+
+  <span class="hljs-comment">// 2. Routes</span>
+  app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/health&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">_req, res</span>) =&gt;</span> res.<span class="hljs-title function_">json</span>({ <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;ok&#x27;</span>, <span class="hljs-attr">uptime</span>: process.<span class="hljs-title function_">uptime</span>() }));
+  app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/products&#x27;</span>, productsRouter);
+
+  <span class="hljs-comment">// 3. Fallbacks: ALWAYS LAST, in this order</span>
+  app.<span class="hljs-title function_">use</span>(notFoundHandler);
+  app.<span class="hljs-title function_">use</span>(errorHandler);
+
+  <span class="hljs-keyword">return</span> app;
+}</code></pre></div>
+<h3 id="6-7-8-starting-it-src-server-js">6.7.8 Starting it: <code>src/server.js</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">import</span> { createApp } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./app.js&#x27;</span>;
+<span class="hljs-keyword">import</span> { config } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./config.js&#x27;</span>;
+
+<span class="hljs-keyword">const</span> server = <span class="hljs-title function_">createApp</span>().<span class="hljs-title function_">listen</span>(config.<span class="hljs-property">port</span>, <span class="hljs-function">() =&gt;</span>
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`ShopLine API on :<span class="hljs-subst">${config.port}</span> (<span class="hljs-subst">${config.env}</span>)`</span>));
+
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">shutdown</span>(<span class="hljs-params">signal</span>) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">${signal}</span>: shutting down`</span>);
+  server.<span class="hljs-title function_">close</span>(<span class="hljs-function">() =&gt;</span> process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">0</span>));                <span class="hljs-comment">// finish in-flight requests</span>
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>), <span class="hljs-number">10_000</span>).<span class="hljs-title function_">unref</span>();  <span class="hljs-comment">// hard deadline</span>
+}
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;SIGTERM&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">shutdown</span>(<span class="hljs-string">&#x27;SIGTERM&#x27;</span>));
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;SIGINT&#x27;</span>, <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">shutdown</span>(<span class="hljs-string">&#x27;SIGINT&#x27;</span>));</code></pre></div>
+<p>This is the graceful-shutdown pattern from Chapters <a href="/learn/backend-master/linux-terminal-git-for-backend-developers" title="Linux, Terminal &amp; Git for Backend Devs">4</a> and 5, now in its permanent home.</p>
+<h3 id="try-it">Try it</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">npm start</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">curl -s localhost:3000/products
+<span class="hljs-comment"># [{&quot;id&quot;:1,&quot;name&quot;:&quot;Notebook&quot;,&quot;price&quot;:120,&quot;stock&quot;:50}, ...]</span>
+
+curl -si localhost:3000/products/2
+<span class="hljs-comment"># HTTP/1.1 200 OK</span>
+<span class="hljs-comment"># X-Request-Id: 5af22110-...</span>
+<span class="hljs-comment"># {&quot;id&quot;:2,&quot;name&quot;:&quot;Pen&quot;,&quot;price&quot;:15,&quot;stock&quot;:200}</span>
+
+curl -s <span class="hljs-string">&quot;localhost:3000/products?maxPrice=100&amp;sort=price&quot;</span>
+<span class="hljs-comment"># [{&quot;id&quot;:2,&quot;name&quot;:&quot;Pen&quot;,...}]</span>
+
+curl -si --json <span class="hljs-string">&#x27;{&quot;name&quot;:&quot;Eraser&quot;,&quot;price&quot;:5}&#x27;</span> localhost:3000/products
+<span class="hljs-comment"># HTTP/1.1 201 Created</span>
+<span class="hljs-comment"># Location: /products/4</span>
+
+curl -s localhost:3000/products/abc
+<span class="hljs-comment"># {&quot;error&quot;:{&quot;message&quot;:&quot;id must be a positive integer&quot;,&quot;requestId&quot;:&quot;749d5c91-...&quot;}}</span>
+
+curl -s localhost:3000/products/99
+<span class="hljs-comment"># {&quot;error&quot;:{&quot;message&quot;:&quot;Product not found&quot;,&quot;requestId&quot;:&quot;10c833aa-...&quot;}}</span>
+
+curl -s --json <span class="hljs-string">&#x27;{&quot;name&quot;:&#x27;</span> localhost:3000/products
+<span class="hljs-comment"># {&quot;error&quot;:{&quot;message&quot;:&quot;Unexpected end of JSON input&quot;,&quot;requestId&quot;:&quot;7bdb2cf4-...&quot;}}   ← 400, thanks to body-parser</span>
+
+curl -si -X DELETE localhost:3000/products/1
+<span class="hljs-comment"># HTTP/1.1 204 No Content</span>
+
+curl -s localhost:3000/nope
+<span class="hljs-comment"># {&quot;error&quot;:{&quot;message&quot;:&quot;Route GET /nope not found&quot;,&quot;requestId&quot;:&quot;c2e62e6c-...&quot;}}</span></code></pre></div>
+<p>And in the server terminal, one JSON log line per request:</p>
+<pre class="is-plain"><code>{&quot;id&quot;:&quot;4df36408-...&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;/products&quot;,&quot;status&quot;:200,&quot;ms&quot;:7}</code></pre>
+<p>🎉 That is a properly structured API: consistent errors, request IDs, logging, graceful shutdown, modular routes. In ~100 lines.</p>
+<hr>
+
+<h2 id="6-8-deep-dive-how-express-chooses-what-runs">6.8 Deep Dive: How Express Chooses What Runs</h2>
+<p>Understanding this removes all the mystery.</p>
+<h3 id="order-matters">Order matters</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">use</span>(A);
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/x&#x27;</span>, B);
+app.<span class="hljs-title function_">use</span>(C);</code></pre></div>
+<p>A request for <code>GET /x</code> runs <strong>A, then B</strong>. If B sends a response and doesn&#39;t call <code>next()</code>, <strong>C never runs</strong>. A request for <code>GET /y</code> runs <strong>A then C</strong>.</p>
+<h3 id="path-scoped-middleware">Path-scoped middleware</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/admin&#x27;</span>, requireAdmin);             <span class="hljs-comment">// only for /admin and below</span>
+app.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/admin/stats&#x27;</span>, statsHandler);       <span class="hljs-comment">// requireAdmin ran first</span></code></pre></div>
+<h3 id="multiple-handlers-per-route">Multiple handlers per route</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/orders&#x27;</span>, authenticate, validateOrder, createOrder);
+<span class="hljs-comment">//                   ^ each is just middleware; this is how real apps compose behavior</span></code></pre></div>
+<p>Reading that line aloud <em>is</em> the documentation: authenticate, then validate, then create. This composability is Express&#39;s greatest strength.</p>
+<h3 id="next-route-and-next-err"><code>next(&#39;route&#39;)</code> and <code>next(err)</code></h3>
+<ul>
+<li><code>next()</code> → continue to the next matching layer.</li>
+<li><code>next(err)</code> → skip all normal layers, jump straight to the next <strong>error-handling</strong> layer.</li>
+<li>Throwing (sync, or async in Express 5) is equivalent to <code>next(err)</code>.</li>
+</ul>
+<h3 id="error-handlers-are-found-by-position-and-arity">Error handlers are found by <em>position and arity</em></h3>
+<p>Normal middleware has 3 parameters; error middleware has 4. When an error occurs, Express skips every 3-parameter layer until it finds a 4-parameter one <strong>registered after</strong> the point of failure. That&#39;s why the error handler goes <strong>last</strong>.</p>
+<h3 id="parameter-middleware-router-param">Parameter middleware (<code>router.param</code>)</h3>
+<p>Run logic whenever a route has <code>:id</code>, e.g., to load the entity once:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">productsRouter.<span class="hljs-title function_">param</span>(<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">req, _res, next, raw</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> id = <span class="hljs-title class_">Number</span>(raw);
+  <span class="hljs-keyword">if</span> (!<span class="hljs-title class_">Number</span>.<span class="hljs-title function_">isInteger</span>(id) || id &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">next</span>(<span class="hljs-title function_">badRequest</span>(<span class="hljs-string">&#x27;id must be a positive integer&#x27;</span>));
+  req.<span class="hljs-property">productId</span> = id;
+  <span class="hljs-title function_">next</span>();
+});</code></pre></div>
+<p>Convenient, but explicit helper functions (as above) are easier to follow; use whichever your team prefers consistently.</p>
+<hr>
+
+<h2 id="6-9-writing-your-own-middleware-patterns">6.9 Writing Your Own Middleware: Patterns</h2>
+<h3 id="pattern-1-pre-processing">Pattern 1: Pre-processing</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">addTimestamp</span>(<span class="hljs-params">req, _res, next</span>) {
+  req.<span class="hljs-property">receivedAt</span> = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();
+  <span class="hljs-title function_">next</span>();
+}</code></pre></div>
+<h3 id="pattern-2-gatekeeping-stop-early">Pattern 2: Gatekeeping (stop early)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">requireApiKey</span>(<span class="hljs-params">req, res, next</span>) {
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;x-api-key&#x27;</span>) !== process.<span class="hljs-property">env</span>.<span class="hljs-property">API_KEY</span>) {
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">401</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: { <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Invalid API key&#x27;</span> } });   <span class="hljs-comment">// note: return!</span>
+  }
+  <span class="hljs-title function_">next</span>();
+}</code></pre></div>
+<h3 id="pattern-3-configurable-middleware-a-function-that-returns-middleware">Pattern 3: Configurable middleware (a function that returns middleware)</h3>
+<p>This &quot;factory&quot; pattern is how nearly every library (<code>cors()</code>, <code>helmet()</code>, <code>express.json()</code>) is built. The outer function takes options; the inner function is the real middleware:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">requireRole</span> = (<span class="hljs-params">role</span>) =&gt; <span class="hljs-function">(<span class="hljs-params">req, res, next</span>) =&gt;</span> {
+  <span class="hljs-keyword">if</span> (req.<span class="hljs-property">user</span>?.<span class="hljs-property">role</span> !== role) <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">error</span>: { <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Forbidden&#x27;</span> } });
+  <span class="hljs-title function_">next</span>();
+};
+
+app.<span class="hljs-title function_">delete</span>(<span class="hljs-string">&#x27;/products/:id&#x27;</span>, authenticate, requireRole(<span class="hljs-string">&#x27;admin&#x27;</span>), deleteProduct);</code></pre></div>
+<h3 id="pattern-4-wrapping-the-response-post-processing">Pattern 4: Wrapping the response (post-processing)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">responseTime</span>(<span class="hljs-params">req, res, next</span>) {
+  <span class="hljs-keyword">const</span> start = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();
+  <span class="hljs-keyword">const</span> originalEnd = res.<span class="hljs-property">end</span>;
+  res.<span class="hljs-property">end</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params">...args</span>) {
+    res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;X-Response-Time&#x27;</span>, <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">Date</span>.now() - start}</span>ms`</span>);   <span class="hljs-comment">// too late if headers already flushed!</span>
+    <span class="hljs-keyword">return</span> originalEnd.<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>, args);
+  };
+  <span class="hljs-title function_">next</span>();
+}</code></pre></div>
+<p>This works only because headers haven&#39;t been sent yet at <code>end()</code>. A safer way: use the <code>on-headers</code> package, or <code>res.on(&#39;finish&#39;)</code> for logging (which can&#39;t modify the response). Prefer the simplest tool that works.</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-middleware-that-does-async-work-without-forwarding-errors-express-4-habit" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Middleware that does async work without forwarding errors (Express 4 habit)</span></h3>
+<p>In Express 5, <code>async (req, res, next) =&gt; { await x(); next(); }</code> forwards rejections automatically, but a <strong>callback-style</strong> API inside middleware doesn&#39;t:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">use</span>(<span class="hljs-function">(<span class="hljs-params">req, res, next</span>) =&gt;</span> {
+  fs.<span class="hljs-title function_">readFile</span>(<span class="hljs-string">&#x27;x&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">err, data</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err;          <span class="hljs-comment">// thrown inside a CALLBACK → uncaught exception → crash!</span>
+    <span class="hljs-title function_">next</span>();
+  });
+});</code></pre></div>
+<p>Express can only catch errors thrown <strong>synchronously in the handler, or from a returned promise</strong>. Inside a plain callback, call <code>next(err)</code> explicitly, or promisify and <code>await</code>.</p>
+</aside>
+<hr>
+
+<h2 id="6-10-testing-without-a-test-framework-preview">6.10 Testing Without a Test Framework (Preview)</h2>
+<p>Because <code>createApp()</code> doesn&#39;t call <code>listen</code>, you can start the app on a random port inside a test using only Node&#39;s built-in tools:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// test/products.test.js</span>
+<span class="hljs-keyword">import</span> test <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:test&#x27;</span>;
+<span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;node:assert/strict&#x27;</span>;
+<span class="hljs-keyword">import</span> { createApp } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../src/app.js&#x27;</span>;
+
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;GET /products/:id returns 404 for unknown product&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> server = <span class="hljs-title function_">createApp</span>().<span class="hljs-title function_">listen</span>(<span class="hljs-number">0</span>);                        <span class="hljs-comment">// port 0 = pick any free port</span>
+  <span class="hljs-keyword">const</span> { port } = server.<span class="hljs-title function_">address</span>();
+
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`http://localhost:<span class="hljs-subst">${port}</span>/products/9999`</span>);
+  <span class="hljs-keyword">const</span> body = <span class="hljs-keyword">await</span> res.<span class="hljs-title function_">json</span>();
+
+  assert.<span class="hljs-title function_">equal</span>(res.<span class="hljs-property">status</span>, <span class="hljs-number">404</span>);
+  assert.<span class="hljs-title function_">equal</span>(body.<span class="hljs-property">error</span>.<span class="hljs-property">message</span>, <span class="hljs-string">&#x27;Product not found&#x27;</span>);
+  server.<span class="hljs-title function_">close</span>();
+});
+
+<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;POST /products validates input&#x27;</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> server = <span class="hljs-title function_">createApp</span>().<span class="hljs-title function_">listen</span>(<span class="hljs-number">0</span>);
+  <span class="hljs-keyword">const</span> { port } = server.<span class="hljs-title function_">address</span>();
+
+  <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`http://localhost:<span class="hljs-subst">${port}</span>/products`</span>, {
+    <span class="hljs-attr">method</span>: <span class="hljs-string">&#x27;POST&#x27;</span>,
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> },
+    <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-attr">price</span>: -<span class="hljs-number">1</span> }),
+  });
+
+  assert.<span class="hljs-title function_">equal</span>(res.<span class="hljs-property">status</span>, <span class="hljs-number">400</span>);
+  server.<span class="hljs-title function_">close</span>();
+});</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">node --<span class="hljs-built_in">test</span></code></pre></div>
+<p>That&#39;s an API test with zero dependencies. <a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a> builds a full testing strategy on this idea.</p>
+<hr>
+
+<h2 id="6-11-static-files-and-other-built-ins">6.11 Static Files and Other Built-ins</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript">app.<span class="hljs-title function_">use</span>(express.<span class="hljs-title function_">static</span>(<span class="hljs-string">&#x27;public&#x27;</span>));            <span class="hljs-comment">// serves ./public/** (HTML, CSS, images)</span></code></pre></div>
+<p>Express can serve files, but in production a CDN or NGINX should handle static assets. They&#39;re faster and keep your Node process free for API work. Use <code>express.static</code> for small apps and local development.</p>
+<p>Other built-in or common helpers:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Need</th>
+<th>Tool</th>
+</tr>
+</thead><tbody><tr>
+<td>Read cookies</td>
+<td><code>cookie-parser</code></td>
+</tr>
+<tr>
+<td>Security headers</td>
+<td><code>helmet</code> (Chapter 7)</td>
+</tr>
+<tr>
+<td>CORS</td>
+<td><code>cors</code> (Chapter 7)</td>
+</tr>
+<tr>
+<td>Gzip responses</td>
+<td><code>compression</code></td>
+</tr>
+<tr>
+<td>Request logging</td>
+<td><code>morgan</code> or <code>pino-http</code> (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>)</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td><code>zod</code> (Chapter 7)</td>
+</tr>
+<tr>
+<td>File uploads</td>
+<td><code>multer</code> (Chapter 7)</td>
+</tr>
+<tr>
+<td>Rate limiting</td>
+<td><code>express-rate-limit</code> (Chapter 7, 23)</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="6-12-why-not-just-use-raw-http-and-when-might-you">6.12 Why Not Just Use Raw <code>http</code>? (And When Might You?)</h2>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Raw <code>http</code></th>
+<th>Express</th>
+</tr>
+</thead><tbody><tr>
+<td>Learning value</td>
+<td>Maximum</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Boilerplate</td>
+<td>High</td>
+<td>Low</td>
+</tr>
+<tr>
+<td>Ecosystem</td>
+<td>None</td>
+<td>Thousands of middleware packages</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>Best (no overhead)</td>
+<td>A little overhead</td>
+</tr>
+<tr>
+<td>Team familiarity</td>
+<td>Low</td>
+<td>Very high</td>
+</tr>
+</tbody></table></div>
+<p>Use raw <code>http</code> to learn, for tiny internal tools, or for benchmarking. Use a framework for anything a team will maintain. In Chapter 7 we meet <strong>Fastify</strong>, which is faster than Express while keeping similar ergonomics.</p>
+<hr>
+
+<h2 id="6-13-edge-cases-and-gotchas-checklist">6.13 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Forgot <code>next()</code> → request hangs.</li>
+<li><input disabled="" type="checkbox"> Called <code>next()</code> <strong>and</strong> sent a response → &quot;headers already sent&quot; or double-handling. Pick one.</li>
+<li><input disabled="" type="checkbox"> Missing <code>return</code> after <code>res.json()</code> in an early-exit branch.</li>
+<li><input disabled="" type="checkbox"> Error handler registered <strong>before</strong> routes → never reached. It goes <strong>last</strong>.</li>
+<li><input disabled="" type="checkbox"> Error handler with only 3 parameters → treated as normal middleware, never handles errors.</li>
+<li><input disabled="" type="checkbox"> <code>express.json()</code> registered after the routes → <code>req.body</code> is <code>undefined</code>.</li>
+<li><input disabled="" type="checkbox"> Route order: <code>/products/:id</code> registered <strong>before</strong> <code>/products/featured</code> swallows &quot;featured&quot; as an id. Put specific routes first.</li>
+<li><input disabled="" type="checkbox"> Trailing slash/case differences: Express matches <code>/Products</code> and <code>/products/</code> leniently by default; be deliberate in API docs.</li>
+<li><input disabled="" type="checkbox"> <code>req.params.id</code> is a string; compare with <code>===</code> to a number and it silently fails.</li>
+<li><input disabled="" type="checkbox"> <code>req.query</code> values can be arrays/objects (<code>?a=1&amp;a=2</code>).</li>
+<li><input disabled="" type="checkbox"> Revealing stack traces or DB errors in 500 responses.</li>
+<li><input disabled="" type="checkbox"> No body-size limit on <code>express.json</code>.</li>
+<li><input disabled="" type="checkbox"> Throwing inside callbacks (not promises) → crash. Use <code>next(err)</code> or promisify.</li>
+<li><input disabled="" type="checkbox"> <code>app.listen</code> inside <code>app.js</code> → can&#39;t test without a port clash. Keep <code>listen</code> in <code>server.js</code>.</li>
+<li><input disabled="" type="checkbox"> Mass assignment: spreading <code>req.body</code> straight into your data.</li>
+<li><input disabled="" type="checkbox"> Not disabling <code>x-powered-by</code> (minor information leak).</li>
+</ul>
+<hr>
+
+<h2 id="6-14-chapter-summary">6.14 Chapter Summary</h2>
+<ul>
+<li><strong>Routing</strong> maps <code>(method, path)</code> to handlers; <strong>path parameters</strong> capture parts of the URL (always strings).</li>
+<li><strong>Middleware</strong> is <code>(req, res, next)</code>: a pipeline where each function can act, respond, or pass on with <code>next()</code>. Order of registration = order of execution. You built the engine yourself in 35 lines.</li>
+<li><strong>Express 5</strong> automatically forwards errors from <code>async</code> handlers, which makes <code>throw</code> the cleanest way to signal failure.</li>
+<li>A good API has <strong>one</strong> error-handling middleware, <strong>typed errors</strong> (<code>AppError</code>), consistent response shapes, request IDs and structured logs.</li>
+<li>Separate <strong><code>app.js</code></strong> (builds the app) from <strong><code>server.js</code></strong> (listens and handles signals) so the app is testable.</li>
+<li>Use <strong>Routers</strong> to keep each feature in its own module.</li>
+<li>Always set a <strong>body size limit</strong>, never leak 5xx internals, and never trust or blindly copy <code>req.body</code>.</li>
+</ul>
+<hr>
+
+<h2 id="6-15-revision-notes">6.15 Revision Notes</h2>
+<ul>
+<li>Middleware signature: <code>(req, res, next)</code>; error middleware: <code>(err, req, res, next)</code>.</li>
+<li>Three outcomes: <code>next()</code>, respond, or <code>next(err)</code>.</li>
+<li>Registration order = execution order. Error handler last; 404 handler just before it.</li>
+<li><code>req.params</code> (path), <code>req.query</code> (query string), <code>req.body</code> (needs parser), <code>req.get(header)</code>.</li>
+<li><code>res.status(201).location(url).json(obj)</code>; <code>res.status(204).end()</code>.</li>
+<li>Express 5: async errors auto-forwarded; wildcard is <code>/*splat</code>; <code>req.body</code> is <code>undefined</code> if unparsed.</li>
+<li><code>app.js</code> exports <code>createApp()</code>; <code>server.js</code> listens.</li>
+<li>Use <code>AppError(status, message)</code> + central handler; hide 5xx details.</li>
+</ul>
+<hr>
+
+<h2 id="6-16-mind-map-ascii">6.16 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                             EXPRESS &amp; MIDDLEWARE (Ch. 6)
+                                          │
+        ┌───────────────┬─────────────────┼──────────────────┬──────────────┐
+     ROUTING        MIDDLEWARE        INPUT/OUTPUT       ERRORS         STRUCTURE
+        │                │                 │                │               │
+   METHOD+path      (req,res,next)     req.params       throw / next(err)  app.js builds
+   :params          order = flow       req.query        AppError(status)   server.js listens
+   Router()         next() / respond   req.body         4-arg handler      routes/ per feature
+   mount prefix     / next(err)        res.json/status  last in chain      middleware/ folder
+        │            factories:        location          404 handler       config.js
+   trie lookup      cors(), json()     hide 5xx info     request id        store → DB later</code></pre>
+<hr>
+
+<h2 id="6-17-cheat-sheet">6.17 Cheat Sheet</h2>
+<pre class="is-plain"><code>SETUP          npm i express        package.json: &quot;type&quot;:&quot;module&quot;
+APP            const app = express(); app.use(express.json({limit:'100kb'}))
+ROUTE          app.get('/p/:id', (req,res)=&gt;{ ... })     app.use('/p', router)
+ROUTER         const r = Router(); r.get('/',..); r.post('/',..); export default r
+MIDDLEWARE     (req,res,next) =&gt; { ...; next() }         gate: return res.status(401).json(..)
+ERROR MW       (err,req,res,next) =&gt; res.status(err.status||500).json({...})   ← 4 args, LAST
+THROW          throw new AppError(404,'Not found')       (works in async handlers in v5)
+INPUT          req.params.id (string!) | req.query.x (string|array|obj) | req.body (parsed)
+OUTPUT         res.status(201).location(url).json(obj) | res.status(204).end()
+ORDER          requestId → logger → body parser → routes → 404 → errorHandler
+TEST           createApp().listen(0) → fetch(...) → node --test
+GOTCHAS        forgot next | forgot return | wrong order | unvalidated body | leaked 500 details</code></pre>
+<hr>
+
+<h2 id="6-18-key-takeaways">6.18 Key Takeaways</h2>
+<ol>
+<li>A framework is just <strong>routing + a middleware pipeline</strong>. You&#39;ve now built both from scratch, so no framework will ever feel like magic.</li>
+<li>Compose behavior with small, single-purpose middleware instead of one giant handler.</li>
+<li>Centralize error formatting; let handlers <code>throw</code>.</li>
+<li>Keep the app <strong>constructible without side effects</strong> so it can be tested.</li>
+<li>Treat all of <code>req.params</code>, <code>req.query</code>, <code>req.body</code> and headers as untrusted strings.</li>
+</ol>
+<hr>
+
+<h2 id="6-19-20-multiple-choice-questions">6.19 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="(req, res, next)."><p class="quiz-text">What is the signature of a normal Express middleware?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>(req, res)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>(req, res, next)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>(err, req, res, next)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>(app, req)</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Arity of four."><p class="quiz-text">How does Express recognize an error-handling middleware?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Its name contains &quot;error&quot;</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It has four parameters</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s registered first</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It returns a promise</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="The response is never completed."><p class="quiz-text">What happens if a middleware neither responds nor calls <code>next()</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Express auto-continues</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The request hangs</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A 404 is sent</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The server restarts</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Errors flow forward to later layers only."><p class="quiz-text">Where should the error handler be registered?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Before routes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">After all routes and other middleware</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Anywhere</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Inside each route</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Params are strings."><p class="quiz-text"><code>req.params.id</code> for <code>/products/42</code> is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The number 42</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The string <code>&#39;42&#39;</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>undefined</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">An array</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Express 5 forwards rejected promises."><p class="quiz-text">In Express 5, what happens when an <code>async</code> handler throws?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The process always crashes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The error is forwarded to the error-handling middleware</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It&#39;s silently ignored</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A 404 is returned</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Unparsed body is undefined in v5."><p class="quiz-text">What is <code>req.body</code> in Express 5 if no body parser ran?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>{}</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>null</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>undefined</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>&#39;&#39;</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Testability."><p class="quiz-text">Why separate <code>app.js</code> from <code>server.js</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Style only</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">So the app can be imported in tests without opening a port</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Express requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To hide secrets</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Defends against memory exhaustion."><p class="quiz-text">Why set a <code>limit</code> on <code>express.json()</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">To speed up parsing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">To prevent huge bodies from exhausting memory</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">To validate JSON</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">To enable CORS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="body-parser errors carry status 400."><p class="quiz-text">Which status should Express return automatically for invalid JSON in the body?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">200</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">400</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">404</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">502</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Without return both lines run."><p class="quiz-text">What is wrong here? <code>if (!id) res.status(400).json({...}); res.json(data);</code></p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Missing <code>return</code>, so a second response is attempted</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>status</code> isn&#39;t a function</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">JSON can&#39;t be sent twice per second</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Path-scoped middleware."><p class="quiz-text">What does <code>router.use(&#39;/admin&#39;, requireAdmin)</code> do?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Applies <code>requireAdmin</code> to all requests</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Applies <code>requireAdmin</code> only to paths beginning with <code>/admin</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Defines a route</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Disables the route</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Information disclosure."><p class="quiz-text">Why hide the message of 500-level errors from clients?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">500s have no message</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It can leak internal details such as DB hosts or stack traces</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Browsers can&#39;t show them</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s required by HTTP</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Client controls fields they shouldn't."><p class="quiz-text">What is mass assignment?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Updating many rows at once</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Copying a client-supplied body straight into stored data, letting clients set fields they shouldn&#39;t</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A DB feature</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Assigning many routes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Traceability."><p class="quiz-text">What is the purpose of a request ID?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Authentication</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Correlating logs and support reports to a specific request</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Rate limiting</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Caching</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="First matching route wins."><p class="quiz-text">Registering <code>/products/:id</code> before <code>/products/featured</code> causes:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">&quot;featured&quot; to be captured as an <code>:id</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A syntax error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A redirect</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Jumps to error handlers."><p class="quiz-text">What does <code>next(err)</code> do?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Continues to the next normal middleware</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Skips to the next error-handling middleware</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Restarts the app</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Ends the response</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Reduces fingerprinting."><p class="quiz-text"><code>app.disable(&#39;x-powered-by&#39;)</code> is done to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Speed up requests</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Avoid advertising the framework to attackers</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Enable HTTPS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Remove CORS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Wildcards must be named in v5."><p class="quiz-text">Which Express 5 wildcard route is valid?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>app.get(&#39;*&#39;, ...)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>app.get(&#39;/*splat&#39;, ...)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>app.get(&#39;/.*&#39;, ...)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>app.get(&#39;/**&#39;, ...)</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Higher-order function returning middleware."><p class="quiz-text">A &quot;middleware factory&quot; like <code>requireRole(&#39;admin&#39;)</code> is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A class</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A function that returns a middleware function</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A router</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A template</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-c, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="6-20-20-hands-on-exercises">6.20 20 Hands-on Exercises</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Build the ShopLine v0.1 project step by step and verify every curl command in §6.7.8.</li>
+<li>Add <code>GET /</code> returning <code>{ &quot;name&quot;: &quot;ShopLine API&quot;, &quot;version&quot;: &quot;0.1.0&quot; }</code> (read the version from <code>package.json</code>).</li>
+<li>Add a <code>GET /products/count</code> route. First place it <em>after</em> <code>/:id</code> and observe the bug; then fix the order.</li>
+<li>Change the error shape to include a machine-readable <code>code</code> (e.g., <code>&quot;PRODUCT_NOT_FOUND&quot;</code>) in <code>AppError</code>.</li>
+<li>Send <code>curl -X POST</code> with <code>Content-Type: text/plain</code> and see what <code>req.body</code> is. Explain.</li>
+<li>Remove <code>return</code> from an early-exit branch and trigger <code>ERR_HTTP_HEADERS_SENT</code>; then fix it.</li>
+<li>Send <code>?sort=price&amp;sort=name</code> to <code>/products</code> and observe <code>req.query.sort</code>; make the handler robust.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="8">
+<li>Build the 35-line <code>miniExpress</code> yourself from memory. Add <code>app.put</code>, <code>app.delete</code>, and <code>:param</code> support.</li>
+<li>Add a <code>requireApiKey</code> middleware to <code>POST</code>, <code>PATCH</code> and <code>DELETE</code> only.</li>
+<li>Write <code>requireRole(role)</code> middleware (fake <code>req.user</code> from a header for now) and protect <code>DELETE /products/:id</code>.</li>
+<li>Add a <code>responseTime</code> header safely (hint: the <code>on-headers</code> package, or compute it in the logger).</li>
+<li>Add pagination: <code>GET /products?page=2&amp;limit=2</code> returns <code>{ data, page, limit, total }</code>; validate bounds (limit ≤ 100).</li>
+<li>Add a <code>Product</code> search: <code>GET /products?q=pen</code> doing a case-insensitive substring match.</li>
+<li>Write three <code>node --test</code> tests for the products API using <code>listen(0)</code> and <code>fetch</code>.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="15">
+<li>Create an <code>/orders</code> router with an in-memory store: <code>POST /orders</code> accepts <code>{ items: [{ productId, quantity }] }</code>, checks stock, reduces stock, and returns total. Handle &quot;product not found&quot; and &quot;insufficient stock&quot; (409) with typed errors.</li>
+<li>Add a global middleware that rejects requests with <code>Content-Type</code> other than <code>application/json</code> for <code>POST/PUT/PATCH</code> with a <code>415</code>.</li>
+<li>Implement a request <strong>timeout middleware</strong>: if a handler takes longer than N seconds, respond <code>503</code>. Explain why you still must stop the underlying work.</li>
+<li>Add <code>X-Request-Id</code> propagation to an outbound <code>fetch</code> call so downstream logs can be correlated.</li>
+<li>Fix the mass-assignment bug in <code>PATCH /products/:id</code> <em>without</em> a library: whitelist allowed fields and validate each. (You&#39;ll compare with Zod next chapter.)</li>
+<li>Run <code>autocannon -c 100 -d 10 http://localhost:3000/products</code>; record req/sec. Then add <code>console.log</code> of the full request in the logger and re-measure. Discuss what logging costs.</li>
+</ol>
+<hr>
+
+<h2 id="6-21-5-interview-questions">6.21 5 Interview Questions</h2>
+<p><strong>1. What is middleware in Express? How does the request flow through it?</strong>
+<em>Model answer:</em> Middleware are functions <code>(req, res, next)</code> stored in an ordered stack. For each request Express iterates through matching layers; each may modify <code>req</code>/<code>res</code>, end the response, or call <code>next()</code> to continue, or <code>next(err)</code> to jump to error handlers. Execution order equals registration order. Examples: logging, body parsing, auth, CORS, validation, error handling.</p>
+<p><strong>2. How do you handle errors in an Express application?</strong>
+<em>Model answer:</em> Handlers throw (or reject) typed errors; Express 5 forwards both sync throws and async rejections to a single four-argument error middleware registered last. That middleware maps error type to status and a consistent JSON body, logs 5xx with the request ID, hides internals from clients, and falls through if headers were already sent. I add a 404 handler before it and process-level handlers as a last resort.</p>
+<p><strong>3. What&#39;s the difference between <code>app.use()</code> and <code>app.get()</code>?</strong>
+<em>Model answer:</em> <code>app.use(path?, fn)</code> mounts middleware for all methods and any path starting with the prefix (the prefix is stripped from <code>req.url</code> inside it); <code>app.get(path, fn)</code> matches only GET and the exact route pattern. <code>use</code> is for cross-cutting concerns and sub-routers; <code>get/post/...</code> define endpoints.</p>
+<p><strong>4. Why structure the app as <code>createApp()</code> in one file and <code>listen</code> in another?</strong>
+<em>Model answer:</em> It makes the app a pure factory with no side effects, so tests can instantiate it on an ephemeral port (or use supertest) without port conflicts, and each test can get a fresh instance. The server file owns process concerns: ports, signals, graceful shutdown.</p>
+<p><strong>5. What changed between Express 4 and 5 that matters in practice?</strong>
+<em>Model answer:</em> Async handler errors are now automatically caught and forwarded, removing wrapper boilerplate; wildcards need names (<code>/*splat</code>); <code>req.body</code> is undefined when unparsed; some deprecated APIs and regex-like path syntax were removed; minimum Node version is higher. Migration is mostly mechanical, and codemods exist.</p>
+<hr>
+
+<h2 id="6-22-3-real-projects">6.22 3 Real Projects</h2>
+<p><strong>Project 1: Bookmarks API (beginner, ~3 hours).</strong>
+CRUD for bookmarks <code>{ id, url, title, tags[] }</code> using the exact ShopLine structure (router, store, errors, request-id, logger). Add <code>GET /bookmarks?tag=js</code> filtering and validation that <code>url</code> is a valid <code>http(s)</code> URL. Write five <code>node --test</code> tests.</p>
+<p><strong>Project 2: Mini Blog API with Middleware Showcase (intermediate, ~5 hours).</strong>
+Posts and comments with nested routes (<code>/posts/:id/comments</code>), an API-key middleware for writes, a role middleware for deletes, a rate-limiter middleware you write yourself (token bucket in memory), and a request-timing middleware. Document the middleware order and why each sits where it does.</p>
+<p><strong>Project 3: Build Your Own Express (advanced, ~8 hours).</strong>
+Extend <code>miniExpress</code> to support: path params (<code>/users/:id</code>), <code>Router</code> objects, mounting with prefixes, error-handling middleware (4 args) with proper skipping, <code>res.status()/json()/send()</code> chaining, <code>express.json</code>-style body parsing, and 20 unit tests. Then run your ShopLine routes on top of <em>your</em> framework with minimal changes. By the end, Express will hold no secrets for you.</p>
+<hr>
+
+<h2 id="6-23-further-reading">6.23 Further Reading</h2>
+<ul>
+<li>Express documentation: <em>Routing</em>, <em>Using middleware</em>, <em>Error handling</em>, and <em>Migrating to Express 5</em> (expressjs.com).</li>
+<li>Express source code: <code>lib/router/layer.js</code> and <code>lib/router/index.js</code>. Small and very readable after building <code>miniExpress</code>.</li>
+<li>Node.js docs: <code>node:test</code> and <code>node:assert</code>.</li>
+<li><em>Node.js Design Patterns</em> (Casciaro &amp; Mammino), chapter on &quot;middleware&quot; / chain of responsibility.</li>
+<li>OWASP: <em>Mass Assignment Cheat Sheet</em>.</li>
+<li>Companion book: DSA Handbook <a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a> (Tries), the data structure inside fast routers.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-7-express-mastery-and-fastify">Up next → Chapter 7: Express Mastery and Fastify</h3>
+<p>ShopLine can route, log and fail gracefully, but it still <strong>trusts what clients send</strong>. Next we add real validation with schemas (Zod), security headers, CORS, rate limiting, file uploads and structured logging, then meet Fastify and compare the two frameworks head to head.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Build a Node.js Server: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What is middleware in Express?</h3></summary><p>Middleware is a function that runs between receiving a request and sending the response. It can read or change the request, end the response, or pass control on with next(). Order matters because middleware runs in the order you register it.</p></details>
+<details class="learn-faq-item"><summary><h3>Why use Express instead of the raw http module?</h3></summary><p>Express adds routing, middleware, parsing and error handling so you write less boilerplate. The raw module is useful for understanding what the framework does.</p></details>
+<details class="learn-faq-item"><summary><h3>How should errors be handled in Express?</h3></summary><p>Use a final error-handling middleware that logs the error, hides internals from clients and returns a consistent error body. In Express 5, rejected promises from async handlers reach it automatically.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the difference between req.params and req.query?</h3></summary><p>req.params holds values from the route path such as /products/:id, while req.query holds the key-value pairs after the question mark in the URL.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span>&larr; Previous &middot; Chapter 5</span><strong>Node.js Event Loop, Streams &amp; Threads</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span>Next &middot; Chapter 7 &rarr;</span><strong>Express 5 &amp; Fastify: Validation &amp; Security</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#6-0-why-this-chapter-matters">6.0 Why This Chapter Matters</a></li><li><a href="#6-1-routing-the-core-idea">6.1 Routing: The Core Idea</a></li><li><a href="#6-2-middleware-the-most-important-concept-in-web-frameworks">6.2 Middleware: The Most Important Concept in Web Frameworks</a></li><li><a href="#6-3-express-setup">6.3 Express: Setup</a></li><li><a href="#6-4-the-three-places-input-arrives">6.4 The Three Places Input Arrives</a></li><li><a href="#6-5-express-4-vs-express-5-what-you-need-to-know">6.5 Express 4 vs Express 5: What You Need to Know</a></li><li><a href="#6-6-starting-shopline-project-structure">6.6 Starting ShopLine: Project Structure</a></li><li><a href="#6-7-the-building-blocks">6.7 The Building Blocks</a></li><li><a href="#6-8-deep-dive-how-express-chooses-what-runs">6.8 Deep Dive: How Express Chooses What Runs</a></li><li><a href="#6-9-writing-your-own-middleware-patterns">6.9 Writing Your Own Middleware: Patterns</a></li><li><a href="#6-10-testing-without-a-test-framework-preview">6.10 Testing Without a Test Framework (Preview)</a></li><li><a href="#6-11-static-files-and-other-built-ins">6.11 Static Files and Other Built-ins</a></li><li><a href="#6-12-why-not-just-use-raw-http-and-when-might-you">6.12 Why Not Just Use Raw http? (And When Might You?)</a></li><li><a href="#6-13-edge-cases-and-gotchas-checklist">6.13 Edge Cases and Gotchas Checklist</a></li><li><a href="#6-14-chapter-summary">6.14 Chapter Summary</a></li><li><a href="#6-15-revision-notes">6.15 Revision Notes</a></li><li><a href="#6-16-mind-map-ascii">6.16 Mind Map (ASCII)</a></li><li><a href="#6-17-cheat-sheet">6.17 Cheat Sheet</a></li><li><a href="#6-18-key-takeaways">6.18 Key Takeaways</a></li><li><a href="#6-19-20-multiple-choice-questions">6.19 20 Multiple Choice Questions</a></li><li><a href="#6-20-20-hands-on-exercises">6.20 20 Hands-on Exercises</a></li><li><a href="#6-21-5-interview-questions">6.21 5 Interview Questions</a></li><li><a href="#6-22-3-real-projects">6.22 3 Real Projects</a></li><li><a href="#6-23-further-reading">6.23 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "nodejs-http-server-routing-middleware-express"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

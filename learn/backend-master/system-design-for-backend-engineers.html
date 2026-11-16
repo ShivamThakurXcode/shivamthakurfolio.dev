@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>System Design for Backend Engineers | Backend Master</title>
+    <meta name="description" content="Learn system design step by step: requirements, back-of-envelope estimation, API and data design, and worked designs for a URL shortener, checkout and feed.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="system design interview, back of envelope estimation, design url shortener, design rate limiter, news feed design, flash sale checkout design, notification system design, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/backend-capstone-project-build-ecommerce-api">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="system design interview">
+    <meta property="article:tag" content="back of envelope estimation">
+    <meta property="article:tag" content="design url shortener">
+    <meta property="article:tag" content="design rate limiter">
+    <meta property="article:tag" content="news feed design">
+    <meta property="article:tag" content="flash sale checkout design">
+    <meta property="article:tag" content="notification system design">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="System Design for Backend Engineers">
+    <meta property="og:description" content="Learn system design step by step: requirements, back-of-envelope estimation, API and data design, and worked designs for a URL shortener, checkout and feed.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/system-design-for-backend-engineers.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="System Design for Backend Engineers: Framework, Estimation and Five Worked Designs: Backend Master chapter 34">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="System Design for Backend Engineers">
+    <meta name="twitter:description" content="Learn system design step by step: requirements, back-of-envelope estimation, API and data design, and worked designs for a URL shortener, checkout and feed.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/system-design-for-backend-engineers.png">
+    <meta name="twitter:image:alt" content="System Design for Backend Engineers: Framework, Estimation and Five Worked Designs: Backend Master chapter 34">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers",
+          "name": "System Design for Backend Engineers | Backend Master",
+          "description": "Learn system design step by step: requirements, back-of-envelope estimation, API and data design, and worked designs for a URL shortener, checkout and feed.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/system-design-for-backend-engineers.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "System Design for Backend Engineers: Framework, Estimation and Five Worked Designs"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#webpage"
+          },
+          "headline": "System Design for Backend Engineers: Framework, Estimation and Five Worked Designs",
+          "alternativeHeadline": "System Design — From a Vague Requirement to a Defensible Architecture",
+          "description": "Learn system design step by step: requirements, back-of-envelope estimation, API and data design, and worked designs for a URL shortener, checkout and feed.",
+          "abstract": "System design is combining databases, caches, queues and load balancers to meet requirements with justified trade-offs. This chapter gives a repeatable framework and the numbers to estimate with, then works through a URL shortener, flash-sale checkout, notification service, distributed rate limiter and news feed. It contains no executed examples.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/system-design-for-backend-engineers.png",
+          "url": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6043,
+          "timeRequired": "PT27M",
+          "articleSection": "Backend Development",
+          "keywords": "system design interview, back of envelope estimation, design url shortener, design rate limiter, news feed design, flash sale checkout design, notification system design",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "A framework from requirements to operations",
+            "Back-of-envelope estimation",
+            "Designing a URL shortener and a rate limiter",
+            "A flash-sale checkout that cannot oversell",
+            "Feed fan-out and presenting trade-offs"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "system design interview"
+          },
+          "isAccessibleForFree": true,
+          "position": 34,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#article",
+            "name": "Microservices vs Monolith: Choosing Your Architecture and Migrating Safely",
+            "url": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "System Design for Backend Engineers",
+              "item": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do I approach a system design problem?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Clarify requirements, estimate load and storage, define the API and data model, sketch a simple design, deep-dive the hardest parts, identify bottlenecks and cover operations, stating trade-offs throughout."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How many requests per second is one million requests a day?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "About 12 on average (a day is roughly 100,000 seconds), and peaks are typically 2 to 10 times higher."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do you prevent overselling in a flash sale?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Layer the protection: edge caching, a fast Redis counter to reject most traffic, then an atomic conditional update in PostgreSQL as the authority, with idempotent payments and compensation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is fan-out on write for a feed?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pushing each new post into every follower's precomputed feed so reads are fast. For celebrities a hybrid pulls their posts at read time to avoid millions of writes."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#quiz",
+          "name": "System Design for Backend Engineers: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "system design interview"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "One million requests per day is about how many requests per second on average?",
+              "text": "One million requests per day is about how many requests per second on average?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "12"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "1,000"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100,000"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A sensible peak factor over the average is:",
+              "text": "A sensible peak factor over the average is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "2–10×"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "1,000×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0.5×"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In a read:write = 100:1 system you should design first:",
+              "text": "In a read:write = 100:1 system you should design first:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The read path (caching, replicas)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The write path"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Admin tools"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Billing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Zipf-distributed access means:",
+              "text": "Zipf-distributed access means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A small fraction of keys gets most of the traffic"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "All keys equally popular"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Random access"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sequential access"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Random 7-character base62 codes give about how many combinations?",
+              "text": "Random 7-character base62 codes give about how many combinations?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "3.5 × 10¹²"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "62"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "7"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "10⁶"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best way to guarantee unique short codes is:",
+              "text": "The best way to guarantee unique short codes is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A UNIQUE constraint with retry on conflict"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Hope"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Caching"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Click counts for a URL shortener should be updated:",
+              "text": "Click counts for a URL shortener should be updated:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Asynchronously via events, aggregated in batches"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Synchronously on each redirect with a row update"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Never"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By the browser"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the flash-sale design, the authoritative no-oversell guarantee comes from:",
+              "text": "In the flash-sale design, the authoritative no-oversell guarantee comes from:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PostgreSQL's atomic conditional stock update"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The Redis gate"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The CDN"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The browser"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The Redis stock counter in the design is:",
+              "text": "The Redis stock counter in the design is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A fast approximate gate protecting the database"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The source of truth"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unnecessary"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A backup"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A payment timeout should be treated as:",
+              "text": "A payment timeout should be treated as:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Unknown outcome: use idempotency keys and reconcile"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Failure"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Success"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retry without keys"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Notification priority queues are an example of:",
+              "text": "Notification priority queues are an example of:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A bulkhead"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A circuit breaker"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "2PC"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sharding"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A token bucket rate limiter allows:",
+              "text": "A token bucket rate limiter allows:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Bursts up to the bucket size with a steady refill rate"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "No bursts"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only one request"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unlimited traffic"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why do the rate limiter's check and update need one Lua script?",
+              "text": "Why do the rate limiter's check and update need one Lua script?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Atomicity: separate steps can race or leave keys without expiry"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Style"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Speed only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Fail-open for a rate limiter means:",
+              "text": "Fail-open for a rate limiter means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Allow requests (with local limits) when the limiter store is unavailable"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Deny all when the store is down"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Crash"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Open a firewall"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Fan-out on write means:",
+              "text": "Fan-out on write means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pushing a post into each follower's precomputed feed at post time"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Computing the feed on read"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Deleting posts"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sharding users"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why use a hybrid feed approach?",
+              "text": "Why use a hybrid feed approach?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Celebrity posts would cause massive write amplification if pushed to millions of feeds"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's simpler"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis requires it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Feeds are small"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Feed pagination should use:",
+              "text": "Feed pagination should use:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Cursors (keyset)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Offset"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Random pages"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "None"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Feeds in Redis are best viewed as:",
+              "text": "Feeds in Redis are best viewed as:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Disposable derived data rebuildable from posts and the follow graph"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The source of truth"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Backups"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Logs"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A good design answer includes:",
+              "text": "A good design answer includes:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Assumptions, estimates, trade-offs, failure handling and operations"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Only boxes and arrows"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only technology names"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A single database always"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A common design mistake is:",
+              "text": "A common design mistake is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Adding microservices, Kafka and sharding before estimating whether one machine suffices"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Asking clarifying questions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Stating trade-offs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Planning for failure"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">System Design for Backend Engineers</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:94.4%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item active" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers" aria-current="page"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 34 of 36 &middot; Advanced</p>
+                        <h1>System Design for Backend Engineers: Framework, Estimation and Five Worked Designs</h1>
+                        <p class="learn-book-title">System Design — From a Vague Requirement to a Defensible Architecture</p>
+                        <ul class="learn-meta text-caption">
+                            <li>27 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/system-design-for-backend-engineers.webp"><img src="../../assets/images/learn/backend-master/system-design-for-backend-engineers.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="System Design for Backend Engineers: Framework, Estimation and Five Worked Designs: Backend Master chapter 34 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>System design is combining databases, caches, queues and load balancers to meet requirements with justified trade-offs. This chapter gives a repeatable framework and the numbers to estimate with, then works through a URL shortener, flash-sale checkout, notification service, distributed rate limiter and news feed. It contains no executed examples.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>A framework from requirements to operations</li><li>Back-of-envelope estimation</li><li>Designing a URL shortener and a rate limiter</li><li>A flash-sale checkout that cannot oversell</li><li>Feed fan-out and presenting trade-offs</li></ul>
+                        </section>
+<hr>
+
+<h2 id="34-0-why-this-chapter-matters">34.0 Why This Chapter Matters</h2>
+<p>You now know the individual tools: databases, caches, queues, load balancers, consistency models, security, observability, deployment. <strong>System design</strong> is the skill of <em>combining</em> them to answer an open-ended question: <em>&quot;Design a URL shortener / a checkout system / a notification service / a news feed&quot;</em>, and to justify every choice with numbers and trade-offs.</p>
+<p>It is the core of senior-engineer interviews, but more importantly it is what you do every time a new feature or service is proposed at work. There is no single right answer. A good design is one that:</p>
+<ol>
+<li><strong>Meets the actual requirements</strong> (functional and non-functional), not an imagined version.</li>
+<li>Is <strong>backed by estimates</strong> (how many requests, how much data, how much latency budget).</li>
+<li><strong>Names its trade-offs</strong> honestly: what it gives up, and when you&#39;d change it.</li>
+<li>Starts <strong>as simple as the requirements allow</strong>, then evolves (<a href="/learn/backend-master/microservices-vs-monolith-architecture-decision" title="Microservices vs Monolith: How to Decide">Chapter 33</a>&#39;s &quot;monolith first&quot; applies to every design).</li>
+</ol>
+<p>This chapter gives you a <strong>repeatable framework</strong>, a <strong>toolbox of numbers</strong>, and five worked designs, each tied back to chapters where you built or measured the underlying pieces.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run-fast-mode" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run (fast mode)</span></h3>
+<p><strong>Nothing in this chapter was executed.</strong> The estimates are back-of-envelope arithmetic (checkable by hand), the designs are reasoned from the earlier chapters, and the code sketches <strong>were not run and may contain mistakes</strong>. Where I cite a measured figure from earlier in the book (Redis ~2.5 ms round trip on this laptop, a PK lookup ~3 ms, a 1M-row aggregate ~126 ms, 4 workers = 4.1×, and so on) it comes from that chapter&#39;s real run <strong>on one Windows laptop in Docker</strong>, and <strong>those numbers are not representative of production hardware</strong>: use the &quot;typical&quot; figures in §34.2 for planning.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>Jeff Dean&#39;s famous &quot;Numbers Every Programmer Should Know&quot; (c. 2009) listed that a main-memory reference is <del>100 ns, a datacenter round trip ~500 µs, a disk seek ~10 ms, and sending 1 KB over a 1 Gbps network ~10 µs: the gap between memory and disk (</del>100,000×) explains why caching (<a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>) is the first tool everyone reaches for.</p>
+</aside>
+<hr>
+
+<h2 id="34-1-a-framework-for-any-design-reshaded-style">34.1 A Framework for Any Design (RESHADED-style)</h2>
+<p>Work through these steps <strong>out loud</strong> (in an interview) or <strong>on a page</strong> (at work). Time-box each.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>Step</th>
+<th>Questions to answer</th>
+</tr>
+</thead><tbody><tr>
+<td>1</td>
+<td><strong>Requirements</strong></td>
+<td>Functional: what must it do? Non-functional: scale, latency, availability, consistency, durability, security, cost. <em>What&#39;s out of scope?</em></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Estimation</strong></td>
+<td>Users, requests/second (average and <strong>peak</strong>), data per record × records × retention, bandwidth, read:write ratio</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>API</strong></td>
+<td>The key endpoints/events, with request/response shapes and idempotency (<a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Data model</strong></td>
+<td>Entities, keys, relationships, access patterns → SQL vs document vs KV (Chapters <a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">12</a>–20)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>High-level design</strong></td>
+<td>Boxes and arrows: clients, load balancer, services, stores, queues, caches</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Deep dives</strong></td>
+<td>The 2–3 hardest parts: hot spots, consistency, failure handling</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Bottlenecks and scaling</strong></td>
+<td>Where does it break first at 10×? 100×? What do you do?</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Operations</strong></td>
+<td>Monitoring, SLOs, alerts, deployment, security, failure modes (Chapters <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">25</a>–26, 31–32)</td>
+</tr>
+</tbody></table></div>
+<h3 id="clarifying-questions-are-half-the-answer">Clarifying questions are half the answer</h3>
+<p>Never start drawing before you ask. For <em>&quot;design a URL shortener&quot;</em>: Who uses it (public/internal)? Custom aliases? Expiry? Analytics? Redirect latency target? Read:write ratio? Availability vs consistency if they conflict? How long are links kept? <strong>The assumptions you state become the requirements you&#39;re graded against</strong>; write them down.</p>
+<h3 id="non-functional-requirements-checklist">Non-functional requirements checklist</h3>
+<ul>
+<li><strong>Scale</strong>: DAU, peak RPS, data volume, growth rate.</li>
+<li><strong>Latency</strong>: p50/p99 targets per operation (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>).</li>
+<li><strong>Availability</strong>: 99.9% (43 min/month) vs 99.99% (4 min/month): what&#39;s the price (Chapter 25&#39;s table)?</li>
+<li><strong>Consistency</strong>: where must reads be strong (money, stock) and where may they be eventual (counters, feeds)? (<a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">Chapter 30</a>)</li>
+<li><strong>Durability</strong>: can we lose any data? RPO/RTO (<a href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud" title="CI/CD &amp; Cloud: GitHub Actions Deployments">Chapter 32</a>).</li>
+<li><strong>Security/privacy</strong>: authn/z, PII, rate limiting, abuse (Chapters <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">21</a>–23).</li>
+<li><strong>Cost</strong> and <strong>operational complexity</strong>: team size and skills.</li>
+</ul>
+<hr>
+
+<h2 id="34-2-the-numbers-to-know-planning-figures">34.2 The Numbers to Know (Planning Figures)</h2>
+<p>Typical orders of magnitude (use these for estimation; real values vary by hardware and cloud):</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Operation</th>
+<th>Approx. time</th>
+</tr>
+</thead><tbody><tr>
+<td>L1 cache / CPU register access</td>
+<td>~1 ns</td>
+</tr>
+<tr>
+<td>Main-memory reference</td>
+<td>~100 ns</td>
+</tr>
+<tr>
+<td>Compress 1 KB</td>
+<td>~2–10 µs</td>
+</tr>
+<tr>
+<td>Read 1 MB sequentially from RAM</td>
+<td>~10–50 µs</td>
+</tr>
+<tr>
+<td><strong>Round trip within a datacenter</strong></td>
+<td><strong>~0.5 ms</strong></td>
+</tr>
+<tr>
+<td>SSD random read</td>
+<td>~100 µs</td>
+</tr>
+<tr>
+<td>Read 1 MB sequentially from SSD</td>
+<td>~0.5–1 ms</td>
+</tr>
+<tr>
+<td>Disk (HDD) seek</td>
+<td>~10 ms</td>
+</tr>
+<tr>
+<td><strong>Round trip across a continent</strong></td>
+<td><strong>~50–100 ms</strong> (speed of light limits)</td>
+</tr>
+<tr>
+<td>Redis <code>GET</code> (same network)</td>
+<td>~0.2–1 ms</td>
+</tr>
+<tr>
+<td>PostgreSQL indexed lookup</td>
+<td>~0.1–2 ms (cached)</td>
+</tr>
+</tbody></table></div>
+<p>(Our laptop-in-Docker measurements, such as Redis ≈ 2.5 ms and a PK lookup ≈ 3 ms, are inflated by the Docker-on-Windows network hop; <a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a> flagged that.)</p>
+<p>Handy conversions:</p>
+<ul>
+<li><strong>1 day ≈ 86,400 s ≈ 10⁵ s</strong> (use 100,000 for quick maths).</li>
+<li><strong>1 million requests/day ≈ 12 requests/second</strong> average (<code>10⁶ / 10⁵ ≈ 10</code>). Peak is typically <strong>2–10×</strong> the average.</li>
+<li><strong>1 billion/day ≈ 12,000 req/s</strong> average.</li>
+<li>Storage: 1 KB × 1 million = 1 GB; 1 KB × 1 billion = 1 TB. A year ≈ 3×10⁷ s (≈ 30 million seconds).</li>
+<li>Powers: 2¹⁰ ≈ 10³ (KB), 2²⁰ ≈ 10⁶ (MB), 2³⁰ ≈ 10⁹ (GB), 2⁴⁰ ≈ 10¹² (TB).</li>
+<li>A single well-tuned stateless Node instance: roughly <strong>hundreds to a few thousand</strong> simple req/s per core (we measured ~46 req/s for a 20 ms CPU-bound handler, i.e., 1 core ÷ 20 ms ≈ 50 req/s: <strong>per-request CPU time sets the ceiling</strong>).</li>
+<li>A single PostgreSQL primary: thousands to tens of thousands of simple transactions/s on good hardware, if indexed (Chapters <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">15</a>, 29).</li>
+<li>A single Redis node: ~50k–150k+ simple ops/s.</li>
+<li>Availability math: 99.9% → 43.2 min/30 d; 99.99% → 4.3 min (Chapter 25); dependencies multiply (<a href="/learn/backend-master/microservices-vs-monolith-architecture-decision" title="Microservices vs Monolith: How to Decide">Chapter 33</a>).</li>
+</ul>
+<h3 id="the-estimation-recipe">The estimation recipe</h3>
+<ol>
+<li><strong>Users → requests</strong>: <code>DAU × actions/day ÷ 86,400 = average RPS</code>; multiply by a <strong>peak factor (3–10×)</strong>.</li>
+<li><strong>Reads vs writes</strong>: most systems are read-heavy (10:1 to 1000:1); design the read path first.</li>
+<li><strong>Storage</strong>: <code>records/day × bytes/record × retention days × replication factor (3×)</code> (+ indexes ≈ 30–100%).</li>
+<li><strong>Bandwidth</strong>: <code>RPS × response size</code>.</li>
+<li><strong>Memory for cache</strong>: Pareto/Zipf: caching the hottest <strong>~20%</strong> of keys often serves <strong>~80%+</strong> of reads (Chapter 27&#39;s simulation: 1% of keys served ~50%, 10% served ~73%).</li>
+<li><strong>Sanity-check</strong> against the figures above, and say what you&#39;d do if the estimate is 10× off.</li>
+</ol>
+<hr>
+
+<h2 id="34-3-design-1-a-url-shortener-shopl-in-ab3xy9">34.3 Design 1: A URL Shortener (<code>shopl.in/aB3xY9</code>)</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li><em>Functional:</em> create a short link for a long URL (optional custom alias, expiry); redirect short → long; basic click counts.</li>
+<li><em>Non-functional:</em> <strong>redirect latency &lt; 50 ms p99</strong>; <strong>very high availability</strong> (a broken link is a broken promise); links never collide; links unguessable enough (not required to be secret); abuse protection.</li>
+<li><em>Assume:</em> 100 M new links/month, <strong>read:write = 100:1</strong>, links kept 5 years.</li>
+</ul>
+<h3 id="estimates">Estimates</h3>
+<ul>
+<li>Writes: <code>100 M / (30 × 86,400) ≈ 40 writes/s</code> average (peak ~200).</li>
+<li>Reads: 100× → <strong>~4,000 redirects/s</strong> average, peak ~20,000.</li>
+<li>Storage: record ≈ 500 B (long URL, code, timestamps, owner) → <code>100 M × 12 months × 5 yr = 6 B links × 500 B = 3 TB</code> (before replication/indexes). Fits a sharded SQL/KV store; a single PostgreSQL node would need partitioning.</li>
+<li>Cache: hot links dominate (Zipf): caching the top ~1% of links in Redis serves most redirects; memory for 10 M cached links × 500 B ≈ 5 GB.</li>
+</ul>
+<h3 id="api">API</h3>
+<pre class="is-plain"><code>POST /api/links        { url, alias?, expiresAt? }  →  201 { code: &quot;aB3xY9&quot;, shortUrl }      (Idempotency-Key header, Chapter 8)
+GET  /{code}           →  301/302 redirect to the long URL      (302 if you need analytics/changes; 301 is cached by browsers)
+GET  /api/links/{code}/stats  →  { clicks, ... }</code></pre>
+<h3 id="the-key-design-question-generating-the-short-code">The key design question: generating the short code</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Approach</th>
+<th>How</th>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Hash</strong> (MD5/SHA of URL → first 7 chars base62)</td>
+<td>Deterministic</td>
+<td>No coordination</td>
+<td><strong>Collisions</strong> (must check/retry); same URL → same code (may or may not be desired)</td>
+</tr>
+<tr>
+<td><strong>Counter + base62</strong></td>
+<td>Monotonic id (DB sequence / distributed ID generator) → base62-encode</td>
+<td>No collisions, short codes</td>
+<td><strong>Predictable/enumerable</strong>; single counter is a bottleneck (use ranges per app server)</td>
+</tr>
+<tr>
+<td><strong>Random 7-char base62</strong></td>
+<td><code>62⁷ ≈ 3.5 × 10¹²</code> possibilities</td>
+<td>Unguessable, no coordination</td>
+<td>Collision check on insert (unique constraint, retry)</td>
+</tr>
+</tbody></table></div>
+<p>Chosen: <strong>random base62 (7 chars) with a unique index and retry on conflict</strong> (<a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>: let the database&#39;s UNIQUE constraint arbitrate; ~6 B links in 3.5 T space ≈ 0.17% occupancy → collisions are rare and retried). For custom aliases, the same unique constraint gives &quot;already taken.&quot;</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ALPHABET</span> = <span class="hljs-string">&#x27;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x27;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">newCode</span> = (<span class="hljs-params">len = <span class="hljs-number">7</span></span>) =&gt; <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(crypto.<span class="hljs-title function_">getRandomValues</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(len)), <span class="hljs-function">(<span class="hljs-params">b</span>) =&gt;</span> <span class="hljs-variable constant_">ALPHABET</span>[b % <span class="hljs-number">62</span>]).<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27;&#x27;</span>);
+<span class="hljs-comment">// insert; on unique violation (23505) generate a new code and retry (Chapters 13/14)      ← sketch, not run</span></code></pre></div>
+<p>(<em>Modulo bias</em> <code>b % 62</code> over a byte slightly favours some characters; use rejection sampling for rigour. Not a security boundary here.)</p>
+<h3 id="high-level-design">High-level design</h3>
+<pre class="is-plain"><code> client ─► CDN/edge (cache 301s for hot links) ─► LB ─► stateless redirect service ─┬─► Redis (code → url, TTL, negative caching for misses)
+                                                                                    └─► DB (source of truth: links table, sharded/partitioned by code)
+ POST /links ─► API service ─► DB (unique code)  ──outbox──► queue ──► click-analytics worker ──► analytics store (columnar, Chapter 20)</code></pre>
+<h3 id="deep-dives">Deep dives</h3>
+<ul>
+<li><strong>Read path</strong>: Redis hit ≈ 1 ms; on miss, read the DB and <strong>cache with TTL + jitter</strong>; <strong>negative caching</strong> for unknown codes (Chapter 27&#39;s penetration defence: 3,000 queries → 30); single-flight on misses. A CDN can cache <code>301</code>s at the edge for extreme hot links.</li>
+<li><strong>Click counting</strong>: never update a DB row per redirect (a hot-row bottleneck: <a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>&#39;s load test). <strong>Emit a click event to a queue</strong> (async, <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>) and aggregate in batches; counts are <em>eventually consistent</em>.</li>
+<li><strong>Availability</strong>: the redirect path depends only on cache + DB read replicas; multi-AZ; if the DB is down, <strong>serve from cache</strong>; degrade analytics, never redirects (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>).</li>
+<li><strong>Sharding</strong>: partition <code>links</code> by hash of <code>code</code> (consistent hashing: <a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">Chapter 30</a>); the code is always known on the read path, so lookups hit one shard.</li>
+<li><strong>Abuse</strong>: rate limiting per IP/key (<a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a> Lua), URL validation and blocklists (phishing/malware), SSRF-safe previews if you fetch titles (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>), <code>X-Content-Type-Options</code>/safe redirects (no open redirect: the target is user-supplied by design, so warn on suspicious domains).</li>
+<li><strong>Expiry</strong>: a <code>expires_at</code> column + lazy check on read + a background cleanup; partition by creation month to drop old data (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>).</li>
+</ul>
+<h3 id="trade-offs-to-state">Trade-offs to state</h3>
+<p>301 (cacheable, hides analytics) vs 302 (every click hits you, accurate stats); random codes (unguessable) vs counters (shorter, enumerable); strong vs eventual consistency for click counts (eventual is fine).</p>
+<hr>
+
+<h2 id="34-4-design-2-shopline-checkout-at-flash-sale-scale">34.4 Design 2: ShopLine Checkout at Flash-Sale Scale</h2>
+<h3 id="requirements-2">Requirements</h3>
+<ul>
+<li><em>Functional:</em> browse, add to cart, checkout (reserve stock, pay, confirm), order history.</li>
+<li><em>Non-functional:</em> <strong>never oversell</strong>; never double-charge; a <strong>flash sale</strong> drives <strong>50× normal traffic</strong> on a few products for 10 minutes; checkout p99 &lt; 1 s; 99.95% availability.</li>
+<li><em>Assume:</em> normal 50 orders/min; flash peak 25,000 requests/s to the product page, <strong>3,000 checkout attempts/s</strong> for 500 units of one product.</li>
+</ul>
+<h3 id="estimates-and-the-real-constraint">Estimates and the real constraint</h3>
+<p>The <strong>catalogue page</strong> is read-only and cacheable: a CDN absorbs 25,000 req/s easily (Chapter 27). The hard part is <strong>3,000 checkout attempts/s hammering one inventory row</strong>: that is a <strong>hot row</strong> (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>&#39;s load test showed a bigger pool made it <em>slower</em>) and the <strong>serial fraction</strong> of Amdahl&#39;s law (<a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>). 500 units sell out in about a fraction of a second at that rate; 99.98% of attempts must be rejected quickly and cheaply.</p>
+<h3 id="design">Design</h3>
+<pre class="is-plain"><code> users ─► CDN (static + product page, SWR) ─► LB ─► API (stateless, autoscaled, pre-scaled)
+                                                        │
+        1) cheap gate: Redis atomic counter  DECR stock:{sku}  (Lua; reject when &lt; 0 → &quot;sold out&quot; in ~1 ms)   ← protects the DB
+        2) admitted requests → create PENDING order + outbox row in ONE Postgres tx (Chapter 28) → 202 Accepted / order id
+        3) workers (queue): charge payment (idempotency key per order) → confirm → decrement the authoritative stock → emit events
+        4) expiring reservations: unpaid pending orders release stock after 10 min (job scheduler, Chapter 28)
+        5) read-your-writes: the order status page reads the PRIMARY (Chapter 29) until confirmed; notifications async</code></pre>
+<h3 id="deep-dives-2">Deep dives</h3>
+<ul>
+<li><strong>Oversell protection is layered.</strong> The Redis counter is a <em>fast, approximate gate</em> (it may over-admit slightly or lose state on restart); the <strong>authoritative guarantee</strong> is PostgreSQL&#39;s atomic conditional update <code>UPDATE stock SET available = available − $q WHERE sku = $s AND available &gt;= $q</code> (<a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>: strategy 2, measured: correct and the fastest of six). Never trust the cache for the purchase decision (Chapter 27).</li>
+<li><strong>Hot-row mitigation:</strong> (a) the Redis gate rejects most traffic before it reaches Postgres; (b) <strong>shard the counter</strong> across N rows (e.g., 20 buckets of 25 units; pick a random bucket; fall back to others when one is empty); (c) <strong>queue-based serialisation</strong>: a single worker per SKU applies decrements in order (no row contention at all, at the cost of async confirmation).</li>
+<li><strong>Payment:</strong> a <em>saga</em> (Chapter 30): reserve → authorise/charge with an <strong>idempotency key</strong> (<a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>: retries without keys produced 40 extra charges in our simulation) → confirm; on failure compensate (release stock, void). Treat payment-provider timeouts as <strong>unknown</strong> and reconcile.</li>
+<li><strong>Fairness and abuse:</strong> per-user purchase limits, bot protection, rate limiting at the edge and per account (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>), virtual waiting room (queue users in a CDN/edge worker and admit at a controlled rate).</li>
+<li><strong>Failure modes:</strong> Redis down → fall back to Postgres directly with strict rate limiting and a <strong>circuit breaker</strong>; payment provider slow → timeouts, bulkheads, show &quot;processing&quot;; DB failover → readiness fails, retries with jitter; <strong>degrade</strong> recommendations and reviews first (Chapter 26).</li>
+<li><strong>Observability:</strong> SLOs for checkout success and latency; metrics for admitted/rejected/sold-out, queue age, payment errors, reservation expiries (Chapter 25); a <strong>game-day rehearsal</strong> before the sale.</li>
+</ul>
+<h3 id="trade-offs-to-state-2">Trade-offs to state</h3>
+<p>Synchronous confirmation (simpler UX, bounded throughput) vs asynchronous (scales, needs &quot;pending&quot; UX); Redis gate (fast, approximate) vs DB-only (exact, slower); strict no-oversell vs allowing slight oversell with backorder (a business decision).</p>
+<hr>
+
+<h2 id="34-5-design-3-a-notification-service-email-sms-push">34.5 Design 3: A Notification Service (Email, SMS, Push)</h2>
+<h3 id="requirements-3">Requirements</h3>
+<ul>
+<li>Send transactional (order shipped, password reset) and marketing notifications across channels; <strong>respect user preferences and quiet hours</strong>; <strong>no duplicates</strong>; retries; templates; audit trail.</li>
+<li><em>Assume:</em> 10 M users, 5 M notifications/day average, <strong>bursts of 1 M in minutes</strong> (a campaign), transactional latency target &lt; 10 s, marketing up to hours.</li>
+</ul>
+<h3 id="estimates-2">Estimates</h3>
+<p><code>5 M/day ÷ 86,400 ≈ 58/s</code> average; campaign burst <code>1 M / 600 s ≈ 1,700/s</code>. Provider rate limits (e.g., an email API at 500/s) are the real ceiling → <strong>queues and rate limiting</strong> are essential.</p>
+<h3 id="design-2">Design</h3>
+<pre class="is-plain"><code> producers (orders, auth, marketing) ──► Notification API  ──validate, dedupe key──► outbox / queue (per channel, per priority)
+                                                                          │
+                      ┌───────────────────────────────────────────────────┼─────────────────────────────────────┐
+                 priority: transactional                        priority: marketing (bulk, rate-limited)         scheduled/digest
+                      ▼                                                    ▼
+                   workers: preference check → template render → provider call (idempotency key) → status → delivery log
+                                     │                    └─ retries with backoff+jitter → dead-letter → alerts (Chapter 28)
+                      provider webhooks (delivered/bounced/complained) ──► update status, suppression list</code></pre>
+<h3 id="deep-dives-3">Deep dives</h3>
+<ul>
+<li><strong>Separate queues by priority</strong> (a bulk campaign must never delay a password reset): <em>bulkheads</em> (Chapter 26).</li>
+<li><strong>Idempotency &amp; dedup</strong>: each notification has a deterministic key (<code>order-77:shipped:email</code>); the API rejects duplicates (<code>INSERT … ON CONFLICT DO NOTHING</code>), workers send with the provider&#39;s idempotency key, and handlers are idempotent (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>&#39;s duplicate-delivery experiment).</li>
+<li><strong>Rate limiting per provider and per user</strong> (BullMQ limiter, Chapter 28: measured 10 jobs/s cap) to respect provider limits and avoid spamming a user.</li>
+<li><strong>Preferences and compliance</strong>: opt-outs, unsubscribe links, quiet hours (timezones: store IANA zone, compute in UTC, <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>), regional rules (GDPR/CAN-SPAM/TCPA); the suppression list (bounces, complaints) is checked before every send.</li>
+<li><strong>Fan-out for campaigns</strong>: don&#39;t enqueue 1 M jobs in one request; a <em>campaign job</em> reads recipients in pages and enqueues in batches (backpressure: Chapter 28).</li>
+<li><strong>Delivery tracking</strong>: provider webhooks update status (verify signatures, idempotent: <a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a>); the delivery log is a <strong>partitioned</strong> table (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>) with retention.</li>
+<li><strong>Multi-provider failover</strong>: if the primary email provider degrades, a circuit breaker routes to a secondary (Chapter 26), accepting differing deliverability.</li>
+<li><strong>Templates and personalisation</strong> are data (versioned); rendering is deterministic and <strong>escaped</strong> (Chapter 23 XSS/injection).</li>
+</ul>
+<h3 id="trade-offs-to-state-3">Trade-offs to state</h3>
+<p>At-least-once with dedup vs at-most-once (a missed password reset vs a duplicate marketing email: choose per type); one pipeline vs per-channel services; build vs buy (SES/SendGrid/Twilio/FCM handle deliverability, which is a hard problem).</p>
+<hr>
+
+<h2 id="34-6-design-4-a-distributed-rate-limiter">34.6 Design 4: A Distributed Rate Limiter</h2>
+<h3 id="requirements-4">Requirements</h3>
+<p>Limit each client (API key/user/IP) to N requests per window across <strong>many API instances</strong>; low overhead (&lt; 1–2 ms added); accurate enough; fail safely when the limiter store is down; informative responses (<code>429</code>, <code>Retry-After</code>, <code>RateLimit-*</code> headers).</p>
+<h3 id="algorithms-chapter-19-implemented-two">Algorithms (Chapter 19 implemented two)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Algorithm</th>
+<th>Behaviour</th>
+<th>Memory</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Fixed window counter</strong></td>
+<td><code>INCR key:window</code></td>
+<td>O(1)</td>
+<td>Burst at window edges (up to 2× limit)</td>
+</tr>
+<tr>
+<td><strong>Sliding window log</strong></td>
+<td>Sorted set of timestamps</td>
+<td>O(limit) per key</td>
+<td>Exact; heavier (we measured it: 5 allowed, 3 refused in 400 ms)</td>
+</tr>
+<tr>
+<td><strong>Sliding window counter</strong></td>
+<td>Weighted blend of current and previous window counts</td>
+<td>O(1)</td>
+<td>Good accuracy/cost trade</td>
+</tr>
+<tr>
+<td><strong>Token bucket</strong></td>
+<td>Tokens refill at rate r up to burst b</td>
+<td>O(1)</td>
+<td>Allows bursts; the common production choice</td>
+</tr>
+<tr>
+<td><strong>Leaky bucket</strong></td>
+<td>Fixed outflow rate (a queue)</td>
+<td>O(1)</td>
+<td>Smooths traffic</td>
+</tr>
+</tbody></table></div>
+<h3 id="design-3">Design</h3>
+<pre class="is-plain"><code> client ─► API instance ─► (middleware) ─► Redis cluster (Lua: atomic token bucket per key, key = apikey:route) ─► allow/deny
+                              │ local in-memory counter as a fast path / fallback when Redis is slow</code></pre>
+<ul>
+<li><strong>Atomicity</strong>: do the check-and-update in <strong>one Lua script</strong> (<a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>: <code>INCR</code>+<code>EXPIRE</code> as two steps leaves a key that never expires if the process dies in between).</li>
+<li><strong>Where the key comes from</strong> matters (Chapter 23): the real client IP behind proxies (<code>trust proxy</code>), API key, user id; limit <strong>per route class</strong> (login stricter than reads), and <strong>per account and per IP</strong>.</li>
+<li><strong>Sharding</strong>: keys hash across Redis nodes (consistent hashing / Redis Cluster slots, Chapter 30); a hot key (one huge tenant) goes to one node: mitigate with local pre-aggregation or per-instance quotas that sync periodically.</li>
+<li><strong>Failure policy</strong>: when Redis is unreachable, <strong>fail open</strong> (allow, with local limits) for general APIs to preserve availability, <strong>fail closed</strong> for sensitive endpoints (login, payment): a deliberate, documented choice (Chapter 26).</li>
+<li><strong>Latency</strong>: one Redis round trip ≈ 0.2–1 ms in production (we measured ~2.5 ms through Docker): acceptable; reduce with local token caches (take N tokens at a time).</li>
+<li><strong>Fairness and abuse</strong>: tiered limits (free/paid), burst allowances, global limits to protect dependencies, and observability (rejections per client; Chapter 25).</li>
+</ul>
+<h3 id="trade-offs-to-state-4">Trade-offs to state</h3>
+<p>Accuracy vs cost (sliding log vs counter); central store (consistent, extra hop) vs local limits (fast, approximate: effective limit = limit × instances); fail-open vs fail-closed.</p>
+<hr>
+
+<h2 id="34-7-design-5-a-news-activity-feed">34.7 Design 5: A News/Activity Feed</h2>
+<h3 id="requirements-5">Requirements</h3>
+<p>Users follow others and see a reverse-chronological/ranked feed of posts. <em>Assume:</em> 50 M DAU, each opens the feed ~10×/day (<strong>5,800 reads/s</strong> average, peak ~30k), posts ~1×/day (<strong>580 writes/s</strong>), avg 200 followees, a few celebrities with 20 M followers; feed load &lt; 300 ms p99.</p>
+<h3 id="the-core-choice-fan-out-on-write-vs-fan-out-on-read">The core choice: fan-out-on-write vs fan-out-on-read</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Fan-out on write (push)</strong></th>
+<th><strong>Fan-out on read (pull)</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>On post</td>
+<td>Insert the post id into <strong>each follower&#39;s feed list</strong> (precompute)</td>
+<td>Store the post once</td>
+</tr>
+<tr>
+<td>On read</td>
+<td>Read one precomputed list: <strong>fast</strong></td>
+<td>Query all followees&#39; recent posts and merge: <strong>slow</strong></td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>Write amplification: a post by a 20 M-follower celebrity = 20 M writes</td>
+<td>Read amplification: 200 queries per feed view</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Typical users (few followers)</td>
+<td>Celebrities, inactive users</td>
+</tr>
+</tbody></table></div>
+<p><strong>Hybrid (what real systems do):</strong> push for ordinary users, <strong>pull for celebrities</strong> (their posts are merged into the reader&#39;s feed at read time), and skip pushing to <strong>inactive</strong> users.</p>
+<h3 id="design-4">Design</h3>
+<pre class="is-plain"><code> post ─► Post service ─► DB (posts, sharded by author) ──outbox──► queue ──► fan-out workers
+                                                                               │ for each follower (batched, rate-limited):
+                                                                               ▼  LPUSH/ZADD feed:{userId}  (Redis sorted set, score = timestamp/rank, capped at ~800 items)
+ read feed ─► Feed service ─► Redis feed:{userId} (hot) ─► hydrate post ids from a cache/DB ─► merge celebrity posts ─► rank ─► return page (cursor pagination, Chapter 8)</code></pre>
+<h3 id="deep-dives-4">Deep dives</h3>
+<ul>
+<li><strong>Storage:</strong> feeds are <strong>derived data</strong> in Redis sorted sets (Chapter 19: <code>ZADD</code>/<code>ZREVRANGE</code>, rebuildable from the follower graph + posts: the cache is disposable); posts in a sharded DB; media in object storage + CDN (Chapter 20).</li>
+<li><strong>Pagination:</strong> <strong>cursor-based</strong> (last seen score/id), never offset (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>: 543 ms at depth vs 1.2 ms for keyset).</li>
+<li><strong>Ranking:</strong> start chronological; add ML ranking later as a separate service reading features; keep the feed API stable.</li>
+<li><strong>Hot users/keys:</strong> celebrity posts cached aggressively (CDN/local cache, Chapter 27); fan-out workers rate-limited (backpressure, Chapter 28) so a viral post doesn&#39;t flood queues.</li>
+<li><strong>Consistency:</strong> eventual: a new post may take seconds to appear; the author sees their own post immediately via <strong>read-your-writes</strong> (merge their own recent posts locally).</li>
+<li><strong>Deletes and edits:</strong> propagate as events; lazy filtering at read time (check post still visible) avoids chasing 20 M copies.</li>
+<li><strong>Cold start:</strong> rebuild a feed from the graph on first visit or Redis loss, with a circuit breaker and rate limit (don&#39;t stampede the DB: Chapter 27).</li>
+</ul>
+<h3 id="trade-offs-to-state-5">Trade-offs to state</h3>
+<p>Write cost vs read latency (push vs pull); freshness vs cost (hybrid); precomputed lists vs on-the-fly ranking; storage (feed copies) vs compute.</p>
+<hr>
+
+<h2 id="34-8-patterns-that-keep-showing-up">34.8 Patterns That Keep Showing Up</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Problem</th>
+<th>Recurring answer</th>
+<th>Where we covered it</th>
+</tr>
+</thead><tbody><tr>
+<td>Too many reads</td>
+<td>Cache (CDN → app → Redis), replicas, SWR</td>
+<td>Ch 27, 29</td>
+</tr>
+<tr>
+<td>Too many writes to one row/key</td>
+<td>Shard the counter, queue/serialise, batch, async aggregation</td>
+<td>Ch 16, 24, 28</td>
+</tr>
+<tr>
+<td>Slow work in the request</td>
+<td>Queue + workers + outbox</td>
+<td>Ch 28</td>
+</tr>
+<tr>
+<td>Duplicate deliveries</td>
+<td>Idempotency keys + idempotent consumers</td>
+<td>Ch 16, 26, 28</td>
+</tr>
+<tr>
+<td>Unknown outcome of a remote call</td>
+<td>Timeouts + keys + reconciliation</td>
+<td>Ch 26, 30</td>
+</tr>
+<tr>
+<td>Hot key/celebrity</td>
+<td>Replicate/split/cache; hybrid push-pull</td>
+<td>Ch 27, 34</td>
+</tr>
+<tr>
+<td>Spiky load</td>
+<td>Autoscale, pre-scale, queue/buffer, rate limit, waiting room</td>
+<td>Ch 29</td>
+</tr>
+<tr>
+<td>Dependency failure</td>
+<td>Breaker, bulkhead, fallback, degrade</td>
+<td>Ch 26</td>
+</tr>
+<tr>
+<td>Global consistency need</td>
+<td>Single-writer/consensus store for the critical piece only</td>
+<td>Ch 30</td>
+</tr>
+<tr>
+<td>Search/analytics needs</td>
+<td>Derived stores fed by events/CDC</td>
+<td>Ch 20</td>
+</tr>
+<tr>
+<td>Large objects</td>
+<td>Object storage + presigned URLs + CDN</td>
+<td>Ch 20</td>
+</tr>
+<tr>
+<td>Multi-step business transaction</td>
+<td>Saga + outbox</td>
+<td>Ch 28, 30</td>
+</tr>
+<tr>
+<td>Ordering</td>
+<td>Partition by key, version checks</td>
+<td>Ch 28, 30</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="34-9-how-to-present-a-design-interview-or-review">34.9 How to Present a Design (Interview or Review)</h2>
+<ol>
+<li><strong>Restate</strong> the problem and <strong>list assumptions</strong> (write them down).</li>
+<li><strong>Estimate</strong> quickly and show you derived the constraint that matters (e.g., &quot;reads dominate: ~4k/s; one hot row is the real bottleneck&quot;).</li>
+<li><strong>Start simple</strong>: a single-region, single-DB design that satisfies the requirements; then <strong>scale step by step</strong>, explaining <em>why</em> each component appears (cache because reads dominate; queue because the provider is slow).</li>
+<li><strong>Deep-dive</strong> the hardest 2–3 parts rather than skimming everything.</li>
+<li><strong>State trade-offs and alternatives</strong> (&quot;I chose X over Y because…; if requirement Z changes, I&#39;d switch&quot;).</li>
+<li><strong>Address failure explicitly</strong>: what happens when the DB/cache/provider is down, a region fails, or traffic is 10×.</li>
+<li><strong>Cover operations</strong>: SLOs, metrics, alerting, deployment, data retention, security/privacy.</li>
+<li><strong>Stay interactive</strong>: check in, adapt to the interviewer&#39;s hints, and never defend a design against evidence.</li>
+</ol>
+<h3 id="common-mistakes">Common mistakes</h3>
+<ul>
+<li>Jumping to microservices, Kafka and sharding before computing whether one machine suffices.</li>
+<li>Ignoring estimates, or doing them but not using them.</li>
+<li>Hand-waving consistency (&quot;just use a cache&quot;) and failure handling.</li>
+<li>A single point of failure drawn as one box (the DB, the queue, the load balancer) with no redundancy story.</li>
+<li>Over-engineering for scale the requirements don&#39;t have; or ignoring the stated scale.</li>
+<li>Forgetting security, privacy, cost and operability.</li>
+</ul>
+<hr>
+
+<h2 id="34-10-edge-cases-and-gotchas-checklist">34.10 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> No clarifying questions; unstated assumptions; scope creep.</li>
+<li><input disabled="" type="checkbox"> No estimates, or estimates with wrong units (per day vs per second), no peak factor.</li>
+<li><input disabled="" type="checkbox"> Choosing technology before access patterns; one database for everything or ten for no reason.</li>
+<li><input disabled="" type="checkbox"> A hot key/row/partition not identified; celebrity/viral skew ignored.</li>
+<li><input disabled="" type="checkbox"> Strong consistency claimed with caches/replicas in the path; no read-your-writes plan.</li>
+<li><input disabled="" type="checkbox"> Synchronous calls to slow third parties in the critical path; no queue/outbox.</li>
+<li><input disabled="" type="checkbox"> No idempotency for retried writes; no deduplication for at-least-once delivery.</li>
+<li><input disabled="" type="checkbox"> Single points of failure; no multi-AZ story; no degraded modes.</li>
+<li><input disabled="" type="checkbox"> No monitoring/SLOs/alerts; no deployment and rollback story; no data retention/deletion plan.</li>
+<li><input disabled="" type="checkbox"> Security/privacy/abuse omitted (rate limits, authz, PII).</li>
+<li><input disabled="" type="checkbox"> No cost awareness; no evolution path from the simple version.</li>
+</ul>
+<hr>
+
+<h2 id="34-11-chapter-summary">34.11 Chapter Summary</h2>
+<ul>
+<li>System design = <strong>requirements → estimates → API → data model → high-level design → deep dives → bottlenecks → operations</strong>, with trade-offs stated and failure handled.</li>
+<li><strong>Estimate with planning figures</strong>: 1M req/day ≈ 12/s; peak 2–10×; datacenter RTT ~0.5 ms; Redis ~0.2–1 ms; per-request CPU time sets a Node core&#39;s ceiling; Zipf means a small cache serves most reads.</li>
+<li><strong>URL shortener:</strong> random base62 codes with a unique index, Redis + CDN for reads, async click events, negative caching, consistent-hash sharding; trade-offs 301 vs 302, random vs counter.</li>
+<li><strong>Flash-sale checkout:</strong> the hot row is the bottleneck; <strong>layered protection</strong> (Redis gate → pending order + outbox → queued payment with idempotency keys → atomic conditional stock update), sharded counters or queue serialisation, saga compensation, waiting room, degrade non-critical features.</li>
+<li><strong>Notification service:</strong> priority queues (bulkheads), dedup keys, provider rate limits, preferences/suppression, webhooks, DLQ, multi-provider failover.</li>
+<li><strong>Rate limiter:</strong> token bucket in an atomic Redis Lua script, key choice, shard/hot-key handling, fail-open vs fail-closed.</li>
+<li><strong>Feed:</strong> hybrid fan-out (push for ordinary users, pull for celebrities), Redis sorted-set feeds as disposable derived data, cursor pagination, eventual consistency with read-your-writes for the author.</li>
+<li><strong>Recurring patterns</strong> map to earlier chapters. <strong>Nothing in this chapter was executed.</strong></li>
+</ul>
+<hr>
+
+<h2 id="34-12-revision-notes">34.12 Revision Notes</h2>
+<ul>
+<li>Framework: requirements → estimates → API → data → HLD → deep dive → bottlenecks → ops.</li>
+<li>1M/day ≈ 12 RPS; 1B/day ≈ 12k RPS; peak = 2–10×; 1 day ≈ 10⁵ s.</li>
+<li>Read-heavy → cache/replicas; write-hot → shard/queue/batch; slow third party → queue + outbox.</li>
+<li>Idempotency keys + idempotent consumers; reconcile unknown outcomes.</li>
+<li>Layer protections: edge/CDN → gate (Redis) → authoritative DB (atomic conditional update).</li>
+<li>Rate limit: token bucket + Lua; decide fail-open/closed.</li>
+<li>Feed: hybrid push/pull; cursor pagination; derived data is disposable.</li>
+<li>Always state trade-offs and failure behaviour.</li>
+</ul>
+<hr>
+
+<h2 id="34-13-mind-map-ascii">34.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                               SYSTEM DESIGN
+                                     │
+   ┌────────────┬─────────────┬──────┴───────┬──────────────┬──────────────┐
+ FRAMEWORK   ESTIMATION    BUILDING BLOCKS   WORKED DESIGNS   PRESENTING   PATTERNS
+    │            │              │                │                │            │
+ reqs/NFRs   RPS, peak     cache, queue,     URL shortener    assumptions   hot key
+ API/data    storage       DB, LB, CDN       flash checkout   trade-offs    idempotency
+ HLD         bandwidth     replicas,         notifications    failure       backpressure
+ deep dive   Zipf cache    sharding          rate limiter     ops/security  saga/outbox
+ ops                                         feed             evolve        degrade</code></pre>
+<hr>
+
+<h2 id="34-14-cheat-sheet">34.14 Cheat Sheet</h2>
+<pre class="is-plain"><code>RPS_avg = DAU × actions/day / 86,400      RPS_peak = RPS_avg × (3..10)
+storage = records × bytes × retention × replicas(3) × (1.3..2 for indexes)
+bandwidth = RPS × response_bytes          cache RAM ≈ hot_keys(≈1–20%) × value_size
+node_rps ≈ 1000 ms / cpu_ms_per_request   (per core)       availability: ∏ of dependencies
+URL: random base62(7) = 62^7 ≈ 3.5e12   unique index + retry   |  Feed: push ordinary, pull celebrities
+Checkout: CDN → Redis gate → pending order + outbox → queue → payment(idempotency key) → atomic stock UPDATE
+Rate limit: token bucket in Lua; key = (client, route); fail-open general / fail-closed sensitive</code></pre>
+<hr>
+
+<h2 id="34-15-key-takeaways">34.15 Key Takeaways</h2>
+<ol>
+<li><strong>Clarify, estimate, then design</strong>; the numbers tell you which problem is actually hard.</li>
+<li><strong>Start simple and evolve</strong>, explaining why each component appears.</li>
+<li><strong>Find the bottleneck</strong> (hot key, slow provider, serial section) and design around <em>that</em>.</li>
+<li><strong>State trade-offs and failure behaviour</strong> as part of the design, not as an afterthought.</li>
+<li><strong>Reuse the patterns</strong>: cache, queue, outbox, idempotency, saga, backpressure, degradation.</li>
+<li><strong>Practise out loud</strong>; design is a communication skill as much as a technical one.</li>
+</ol>
+<hr>
+
+<h2 id="34-16-20-multiple-choice-questions">34.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="10⁶/10⁵ ≈ 12."><p class="quiz-text">One million requests per day is about how many requests per second on average?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">12</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">1,000</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">100,000</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="2–10×."><p class="quiz-text">A sensible peak factor over the average is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1×</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">2–10×</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">1,000×</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0.5×</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Reads dominate."><p class="quiz-text">In a read:write = 100:1 system you should design first:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The write path</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The read path (caching, replicas)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Admin tools</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Billing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Skew."><p class="quiz-text">Zipf-distributed access means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">All keys equally popular</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A small fraction of keys gets most of the traffic</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Random access</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sequential access</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="62⁷."><p class="quiz-text">Random 7-character base62 codes give about how many combinations?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">62</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">3.5 × 10¹²</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">7</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">10⁶</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="DB uniqueness."><p class="quiz-text">The best way to guarantee unique short codes is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Hope</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A UNIQUE constraint with retry on conflict</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sorting</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Caching</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Hot row avoidance."><p class="quiz-text">Click counts for a URL shortener should be updated:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Synchronously on each redirect with a row update</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Asynchronously via events, aggregated in batches</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Never</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">By the browser</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Atomic UPDATE."><p class="quiz-text">In the flash-sale design, the authoritative no-oversell guarantee comes from:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The Redis gate</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The CDN</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">PostgreSQL&#39;s atomic conditional stock update</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The browser</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Gate only."><p class="quiz-text">The Redis stock counter in the design is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The source of truth</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A fast approximate gate protecting the database</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Unnecessary</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A backup</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Unknown."><p class="quiz-text">A payment timeout should be treated as:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Failure</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Success</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Unknown outcome: use idempotency keys and reconcile</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Retry without keys</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Isolation."><p class="quiz-text">Notification priority queues are an example of:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A bulkhead</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A circuit breaker</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">2PC</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sharding</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Burst + refill."><p class="quiz-text">A token bucket rate limiter allows:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">No bursts</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Bursts up to the bucket size with a steady refill rate</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only one request</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Unlimited traffic</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Atomic."><p class="quiz-text">Why do the rate limiter&#39;s check and update need one Lua script?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Style</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Atomicity: separate steps can race or leave keys without expiry</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Redis requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Speed only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Allow on failure."><p class="quiz-text">Fail-open for a rate limiter means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Deny all when the store is down</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Allow requests (with local limits) when the limiter store is unavailable</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Crash</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Open a firewall</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Push at write."><p class="quiz-text">Fan-out on write means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Computing the feed on read</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Pushing a post into each follower&#39;s precomputed feed at post time</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Deleting posts</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sharding users</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Celebrity skew."><p class="quiz-text">Why use a hybrid feed approach?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Celebrity posts would cause massive write amplification if pushed to millions of feeds</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It&#39;s simpler</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Redis requires it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Feeds are small</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Keyset."><p class="quiz-text">Feed pagination should use:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Offset</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Cursors (keyset)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Random pages</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">None</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Disposable."><p class="quiz-text">Feeds in Redis are best viewed as:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The source of truth</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Disposable derived data rebuildable from posts and the follow graph</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Backups</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Logs</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Complete answer."><p class="quiz-text">A good design answer includes:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Only boxes and arrows</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Assumptions, estimates, trade-offs, failure handling and operations</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only technology names</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A single database always</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Premature complexity."><p class="quiz-text">A common design mistake is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Asking clarifying questions</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Adding microservices, Kafka and sharding before estimating whether one machine suffices</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Stating trade-offs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Planning for failure</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-c, 9-b, 10-c, 11-a, 12-b, 13-b, 14-b, 15-b, 16-a, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="34-17-20-hands-on-exercises">34.17 20 Hands-on Exercises</h2>
+<p><em>(Suggestions; none were run by me.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Estimate RPS, storage and bandwidth for a service with 5 M DAU and 20 actions/day each.</li>
+<li>Compute the collision probability for 6 B random 7-char base62 codes (birthday approximation).</li>
+<li>Draw the URL shortener&#39;s read path with and without caching; compute latency budgets.</li>
+<li>List the clarifying questions you would ask for &quot;design a chat app&quot;.</li>
+<li>Convert 99.95% availability to monthly downtime.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Implement the shortener (Express + PostgreSQL + Redis) with a unique index and retry; load-test redirects.</li>
+<li>Add negative caching and measure DB hits for random missing codes.</li>
+<li>Implement a token-bucket rate limiter in Redis Lua and test with concurrent clients.</li>
+<li>Simulate fan-out-on-write vs on-read for a social graph with skewed follower counts; compare costs.</li>
+<li>Design the schema and indexes for the notification service&#39;s delivery log and its retention.</li>
+<li>Write the saga for flash-sale checkout with compensations and idempotency keys.</li>
+<li>Design a waiting-room mechanism and describe how it admits users at a controlled rate.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Build the flash-sale inventory with a Redis gate + sharded Postgres counters; prove no oversell under 3,000 req/s.</li>
+<li>Implement a hybrid feed (push for ordinary users, pull for celebrities) with Redis sorted sets and measure feed latency.</li>
+<li>Design a multi-region version of the shortener; decide consistency, replication and failover.</li>
+<li>Build the notification pipeline with priority queues, provider rate limits and DLQ; run a campaign burst test.</li>
+<li>Design a global rate limiter that survives a Redis outage; test fail-open/closed behaviour under fault injection.</li>
+<li>Do a full design review of ShopLine at 100× scale using the framework; produce a one-page ADR set.</li>
+<li>Practise three timed 45-minute design interviews with a peer; get feedback on estimation and trade-offs.</li>
+<li>Take a real production incident and redesign the affected component to remove the root cause; document the new failure modes.</li>
+</ol>
+<hr>
+
+<h2 id="34-18-5-interview-questions">34.18 5 Interview Questions</h2>
+<p><strong>1. Walk me through how you approach a system design problem.</strong>
+<em>Model answer:</em> Clarify requirements and constraints, state assumptions, estimate load and storage to find the dominant constraint, define the API and data model by access patterns, sketch a simple high-level design, deep-dive the hardest parts (hot spots, consistency, failure), identify bottlenecks and scaling steps, and cover operations (monitoring, deployment, security), stating trade-offs throughout.</p>
+<p><strong>2. How would you design a URL shortener?</strong>
+<em>Model answer:</em> Generate unique codes (random base62 with a unique index and retry, or counters), store code→URL in a sharded/partitioned store, serve redirects from Redis/CDN with TTL and negative caching, count clicks asynchronously via a queue, rate-limit creation and block abuse, and discuss 301 vs 302, expiry, availability and sharding by code.</p>
+<p><strong>3. How do you prevent overselling in a flash sale?</strong>
+<em>Model answer:</em> Layered: edge caching and a waiting room, a fast Redis counter to reject most traffic, then an authoritative atomic conditional update in PostgreSQL (or serialised per-SKU processing), with pending orders, idempotent payments, and compensation on failure; mitigate hot rows via sharded counters; never trust the cache for the final decision.</p>
+<p><strong>4. Push vs pull for a news feed?</strong>
+<em>Model answer:</em> Push precomputes followers&#39; feeds at post time (fast reads, heavy writes, bad for celebrities); pull assembles at read time (cheap writes, slow reads). Real systems use a hybrid: push for ordinary users, pull for celebrities, skip inactive users, keep feeds in Redis sorted sets as rebuildable derived data, and paginate with cursors.</p>
+<p><strong>5. How do you design a distributed rate limiter?</strong>
+<em>Model answer:</em> A token bucket (or sliding window) kept in Redis with an atomic Lua script, keyed by client and route, with correct client identification behind proxies, local fallbacks, sharding of hot keys, informative 429 responses, and an explicit fail-open/fail-closed policy per endpoint class.</p>
+<hr>
+
+<h2 id="34-19-3-real-projects">34.19 3 Real Projects</h2>
+<p><strong>Project 1: Build and Load-Test Three Designs (intermediate, ~20 hours).</strong>
+Implement the URL shortener, the rate limiter and a simplified feed on your stack; for each, produce estimates, an architecture diagram, load tests with percentiles, and a document comparing predicted vs measured numbers and the bottlenecks found.</p>
+<p><strong>Project 2: ShopLine Flash-Sale Rehearsal (advanced, ~20 hours).</strong>
+Implement the layered checkout (Redis gate, pending orders/outbox, queue workers, idempotent payments, sharded counters), run a 3,000 req/s simulated sale with fault injection, and verify no oversell, no double charge and SLO adherence; write a post-mortem-style report.</p>
+<p><strong>Project 3: Design Portfolio (intermediate, ~15 hours).</strong>
+Write five full design documents (e.g., chat, video upload/transcoding, ride matching, search autocomplete, payment ledger) using the framework: requirements, estimates, APIs, schemas, diagrams, deep dives, failure modes, operations and trade-offs; review them with a mentor.</p>
+<hr>
+
+<h2 id="34-20-further-reading">34.20 Further Reading</h2>
+<ul>
+<li><em>Designing Data-Intensive Applications</em> (Kleppmann): the canonical text for the underlying ideas.</li>
+<li><em>System Design Interview</em> vols. 1–2 (Alex Xu); <em>Grokking the System Design Interview</em>; the <em>High Scalability</em> blog and company engineering blogs (Netflix, Uber, Stripe, Discord, Slack).</li>
+<li>Jeff Dean, <em>Numbers Everyone Should Know</em> and <em>Designs, Lessons and Advice from Building Large Distributed Systems</em>.</li>
+<li>Google SRE Book (capacity planning, load balancing, handling overload); AWS Well-Architected Framework; <em>Release It!</em> (Nygard).</li>
+<li><em>Building Microservices</em> and <em>Fundamentals of Software Architecture</em> (Richards &amp; Ford) for trade-off analysis; the C4 model (c4model.com) for diagrams.</li>
+<li>Real designs: Twitter&#39;s timeline (fan-out), Instagram&#39;s ID generation, Stripe&#39;s idempotency write-ups, Figma/Notion scaling posts.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-35-capstone-build-and-operate-shopline">Up next → Chapter 35: Capstone — Build and Operate ShopLine</h3>
+<p>The final project: bring everything together into one production-grade ShopLine, with a precise specification, milestones, acceptance criteria, a quality bar, a review checklist and runbooks, written in fast mode as a guided build plan rather than tested code.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">System Design for Backend Engineers: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>How do I approach a system design problem?</h3></summary><p>Clarify requirements, estimate load and storage, define the API and data model, sketch a simple design, deep-dive the hardest parts, identify bottlenecks and cover operations, stating trade-offs throughout.</p></details>
+<details class="learn-faq-item"><summary><h3>How many requests per second is one million requests a day?</h3></summary><p>About 12 on average (a day is roughly 100,000 seconds), and peaks are typically 2 to 10 times higher.</p></details>
+<details class="learn-faq-item"><summary><h3>How do you prevent overselling in a flash sale?</h3></summary><p>Layer the protection: edge caching, a fast Redis counter to reject most traffic, then an atomic conditional update in PostgreSQL as the authority, with idempotent payments and compensation.</p></details>
+<details class="learn-faq-item"><summary><h3>What is fan-out on write for a feed?</h3></summary><p>Pushing each new post into every follower's precomputed feed so reads are fast. For celebrities a hybrid pulls their posts at read time to avoid millions of writes.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span>&larr; Previous &middot; Chapter 33</span><strong>Microservices vs Monolith: How to Decide</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span>Next &middot; Chapter 35 &rarr;</span><strong>Capstone: Build a Production Backend</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#34-0-why-this-chapter-matters">34.0 Why This Chapter Matters</a></li><li><a href="#34-1-a-framework-for-any-design-reshaded-style">34.1 A Framework for Any Design (RESHADED-style)</a></li><li><a href="#34-2-the-numbers-to-know-planning-figures">34.2 The Numbers to Know (Planning Figures)</a></li><li><a href="#34-3-design-1-a-url-shortener-shopl-in-ab3xy9">34.3 Design 1: A URL Shortener (shopl.in/aB3xY9)</a></li><li><a href="#34-4-design-2-shopline-checkout-at-flash-sale-scale">34.4 Design 2: ShopLine Checkout at Flash-Sale Scale</a></li><li><a href="#34-5-design-3-a-notification-service-email-sms-push">34.5 Design 3: A Notification Service (Email, SMS, Push)</a></li><li><a href="#34-6-design-4-a-distributed-rate-limiter">34.6 Design 4: A Distributed Rate Limiter</a></li><li><a href="#34-7-design-5-a-news-activity-feed">34.7 Design 5: A News/Activity Feed</a></li><li><a href="#34-8-patterns-that-keep-showing-up">34.8 Patterns That Keep Showing Up</a></li><li><a href="#34-9-how-to-present-a-design-interview-or-review">34.9 How to Present a Design (Interview or Review)</a></li><li><a href="#34-10-edge-cases-and-gotchas-checklist">34.10 Edge Cases and Gotchas Checklist</a></li><li><a href="#34-11-chapter-summary">34.11 Chapter Summary</a></li><li><a href="#34-12-revision-notes">34.12 Revision Notes</a></li><li><a href="#34-13-mind-map-ascii">34.13 Mind Map (ASCII)</a></li><li><a href="#34-14-cheat-sheet">34.14 Cheat Sheet</a></li><li><a href="#34-15-key-takeaways">34.15 Key Takeaways</a></li><li><a href="#34-16-20-multiple-choice-questions">34.16 20 Multiple Choice Questions</a></li><li><a href="#34-17-20-hands-on-exercises">34.17 20 Hands-on Exercises</a></li><li><a href="#34-18-5-interview-questions">34.18 5 Interview Questions</a></li><li><a href="#34-19-3-real-projects">34.19 3 Real Projects</a></li><li><a href="#34-20-further-reading">34.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "system-design-for-backend-engineers"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

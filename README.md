@@ -167,3 +167,15 @@ node tools/learn-pages/sitewide.mjs   # sitemap, llms.txt, robots, redirects
 ```
 
 SEO data per chapter (title, description, FAQ) lives in `tools/learn-pages/data.mjs`.
+
+## Backend Master (learn/backend-master)
+
+The 36 chapter pages and the hub are generated from `docs/backend-master-handbook/*.md`:
+
+```
+node tools/learn-pages/build-backend.mjs      # pages + copies resources/ into learn/backend-master/resources
+node tools/learn-pages/og-backend.mjs         # social cards (needs Edge/Chrome)
+node tools/learn-pages/sitewide-backend.mjs   # sitemap, learn.html, llms.txt, robots, headers
+```
+
+SEO data per chapter lives in `tools/learn-pages/data-backend.mjs`.

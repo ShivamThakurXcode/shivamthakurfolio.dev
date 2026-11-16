@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Database Fundamentals: ACID, CAP &amp; MVCC | Backend Master</title>
+    <meta name="description" content="Learn database fundamentals: why files fail, ACID transactions, how data is stored on disk, MVCC, CAP and PACELC, connection pooling and SQL injection.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="database fundamentals, acid transactions, mvcc explained, cap theorem, connection pooling, sql injection, how databases store data, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/backend-architecture-patterns-modular-monolith">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/postgresql-sql-tutorial-joins-window-functions">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="database fundamentals">
+    <meta property="article:tag" content="acid transactions">
+    <meta property="article:tag" content="mvcc explained">
+    <meta property="article:tag" content="cap theorem">
+    <meta property="article:tag" content="connection pooling">
+    <meta property="article:tag" content="sql injection">
+    <meta property="article:tag" content="how databases store data">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Database Fundamentals: ACID, CAP &amp; MVCC">
+    <meta property="og:description" content="Learn database fundamentals: why files fail, ACID transactions, how data is stored on disk, MVCC, CAP and PACELC, connection pooling and SQL injection.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/database-fundamentals-acid-cap-mvcc.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Database Fundamentals: ACID, CAP, MVCC and How Data Lives on Disk: Backend Master chapter 12">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Database Fundamentals: ACID, CAP &amp; MVCC">
+    <meta name="twitter:description" content="Learn database fundamentals: why files fail, ACID transactions, how data is stored on disk, MVCC, CAP and PACELC, connection pooling and SQL injection.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/database-fundamentals-acid-cap-mvcc.png">
+    <meta name="twitter:image:alt" content="Database Fundamentals: ACID, CAP, MVCC and How Data Lives on Disk: Backend Master chapter 12">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc",
+          "name": "Database Fundamentals: ACID, CAP & MVCC | Backend Master",
+          "description": "Learn database fundamentals: why files fail, ACID transactions, how data is stored on disk, MVCC, CAP and PACELC, connection pooling and SQL injection.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/database-fundamentals-acid-cap-mvcc.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Database Fundamentals: ACID, CAP, MVCC and How Data Lives on Disk"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#webpage"
+          },
+          "headline": "Database Fundamentals: ACID, CAP, MVCC and How Data Lives on Disk",
+          "alternativeHeadline": "Database Fundamentals — Why Databases Exist, ACID, CAP and How Data Really Lives on Disk",
+          "description": "Learn database fundamentals: why files fail, ACID transactions, how data is stored on disk, MVCC, CAP and PACELC, connection pooling and SQL injection.",
+          "abstract": "Databases exist because files cannot safely handle concurrent updates. This chapter demonstrates a lost-update bug with a JSON file, then explains ACID, write-ahead logging, pages and B-trees, MVCC, the CAP and PACELC trade-offs, connection pooling and SQL injection on a real PostgreSQL.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/database-fundamentals-acid-cap-mvcc.png",
+          "url": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 9061,
+          "timeRequired": "PT41M",
+          "articleSection": "Backend Development",
+          "keywords": "database fundamentals, acid transactions, mvcc explained, cap theorem, connection pooling, sql injection, how databases store data",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "Why databases beat files for shared data",
+            "ACID and write-ahead logging",
+            "Pages, rows and B-tree indexes on disk",
+            "MVCC, CAP and PACELC",
+            "Connection pooling and SQL injection"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "database fundamentals"
+          },
+          "isAccessibleForFree": true,
+          "position": 12,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/backend-architecture-patterns-modular-monolith#article",
+            "name": "Backend Architecture Patterns: Layers, Dependency Injection and the Modular Monolith",
+            "url": "https://shivamthakur.me/learn/backend-master/backend-architecture-patterns-modular-monolith"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Database Fundamentals: ACID, CAP & MVCC",
+              "item": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What does ACID mean?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Atomicity (all or nothing), Consistency (rules always hold), Isolation (concurrent transactions do not corrupt each other) and Durability (committed data survives a crash)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why use a connection pool?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Opening a database connection is slow and each one costs memory on the server. A pool reuses a small, bounded set of connections across requests."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is MVCC?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Multi-version concurrency control keeps several versions of a row so readers see a consistent snapshot without blocking writers."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do you prevent SQL injection?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Never build SQL by concatenating user input. Use parameterised queries ($1, $2) and whitelist any identifiers such as sort columns."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#quiz",
+          "name": "Database Fundamentals: ACID, CAP & MVCC: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "database fundamentals"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-fundamentals-acid-cap-mvcc#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What caused the JSON-file demo to lose almost all of its 200 sales?",
+              "text": "What caused the JSON-file demo to lose almost all of its 200 sales?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Concurrent read-modify-write operations overwrote one another (lost updates)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Slow disk"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JSON syntax errors"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Node memory limits"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is NOT a main reason to use a database instead of a file?",
+              "text": "Which is NOT a main reason to use a database instead of a file?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Prettier syntax"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Concurrency control"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Crash safety"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Indexed querying"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In ACID, what does Atomicity guarantee?",
+              "text": "In ACID, what does Atomicity guarantee?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "All operations in a transaction succeed together or none take effect"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Queries are fast"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Data is encrypted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Data is replicated"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The \"C\" in ACID mainly depends on:",
+              "text": "The \"C\" in ACID mainly depends on:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Constraints and rules you declare in the schema"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Replication lag"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The CPU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The network"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How does the Write-Ahead Log provide durability?",
+              "text": "How does the Write-Ahead Log provide durability?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "By recording changes sequentially on disk before the commit is acknowledged, so they can be replayed after a crash"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "By caching queries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By compressing data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By sharding"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a PostgreSQL page?",
+              "text": "What is a PostgreSQL page?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A fixed-size (8 KB) block of storage holding many rows"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A web page"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An index"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A transaction"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the experiment, why was the index lookup faster than the sequential scan?",
+              "text": "In the experiment, why was the index lookup faster than the sequential scan?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It touched about 4 pages instead of all 1,274"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It used more CPU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It cached the query"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It skipped the WHERE clause"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is a cost of adding an index?",
+              "text": "What is a cost of adding an index?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Extra disk space and slower INSERT/UPDATE/DELETE"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "None"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Slower SELECTs"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Loss of constraints"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does MVCC do on an UPDATE in PostgreSQL?",
+              "text": "What does MVCC do on an UPDATE in PostgreSQL?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Writes a new row version and marks the old one dead"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Overwrites the row in place"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Deletes the table"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Locks the whole database"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What reclaims dead row versions?",
+              "text": "What reclaims dead row versions?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "VACUUM"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "COMMIT"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "ROLLBACK"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The OS"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "According to CAP, during a network partition a distributed database must choose between:",
+              "text": "According to CAP, during a network partition a distributed database must choose between:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Consistency and availability"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Speed and size"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Durability and atomicity"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Reads and writes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What does PACELC add to CAP?",
+              "text": "What does PACELC add to CAP?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The latency-vs-consistency trade-off during normal (no-partition) operation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A third guarantee"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Encryption"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sharding rules"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A user updates their profile, reloads, and sees old data from a read replica. This is:",
+              "text": "A user updates their profile, reloads, and sees old data from a read replica. This is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Replication lag (eventual consistency)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Corruption"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SQL injection"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A deadlock"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the difference between replication and sharding?",
+              "text": "What is the difference between replication and sharding?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Replication copies the same data to multiple nodes; sharding splits different data across nodes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "None"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sharding copies data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replication splits data"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which defends against SQL injection?",
+              "text": "Which defends against SQL injection?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Parameterized queries ($1, $2) with values passed separately"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Escaping quotes manually"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using single quotes only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Lowercasing input"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "How should a user-chosen sort column be handled?",
+              "text": "How should a user-chosen sort column be handled?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Map it through a whitelist of allowed column names"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Interpolate it directly"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Pass it as $1"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Strip spaces"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What problem does a connection pool solve?",
+              "text": "What problem does a connection pool solve?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The expense of opening connections per request and exceeding the database's connection limit"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Slow SQL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Missing indexes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Encryption"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What's wrong with pool.query('BEGIN'); pool.query('UPDATE...'); pool.query('COMMIT')?",
+              "text": "What's wrong with pool.query('BEGIN'); pool.query('UPDATE...'); pool.query('COMMIT')?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each call may use a different connection, so the transaction isn't one unit"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "COMMIT is invalid"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's too fast"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "If code takes a client from the pool and never releases it, what symptom appears?",
+              "text": "If code takes a client from the pool and never releases it, what symptom appears?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Eventually all queries time out waiting for a connection"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Faster queries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Automatic repair"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "More RAM free"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is the best default database choice for core business data with relationships and integrity rules?",
+              "text": "Which is the best default database choice for core business data with relationships and integrity rules?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PostgreSQL (relational)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A key-value store"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A flat file"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A graph database"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Database Fundamentals: ACID, CAP &amp; MVCC</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:33.3%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item active" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" aria-current="page"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 12 of 36 &middot; Intermediate</p>
+                        <h1>Database Fundamentals: ACID, CAP, MVCC and How Data Lives on Disk</h1>
+                        <p class="learn-book-title">Database Fundamentals — Why Databases Exist, ACID, CAP and How Data Really Lives on Disk</p>
+                        <ul class="learn-meta text-caption">
+                            <li>41 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/database-fundamentals-acid-cap-mvcc.webp"><img src="../../assets/images/learn/backend-master/database-fundamentals-acid-cap-mvcc.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Database Fundamentals: ACID, CAP, MVCC and How Data Lives on Disk: Backend Master chapter 12 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Databases exist because files cannot safely handle concurrent updates. This chapter demonstrates a lost-update bug with a JSON file, then explains ACID, write-ahead logging, pages and B-trees, MVCC, the CAP and PACELC trade-offs, connection pooling and SQL injection on a real PostgreSQL.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Why databases beat files for shared data</li><li>ACID and write-ahead logging</li><li>Pages, rows and B-tree indexes on disk</li><li>MVCC, CAP and PACELC</li><li>Connection pooling and SQL injection</li></ul>
+                        </section>
+<hr>
+
+<h2 id="12-0-why-this-chapter-matters">12.0 Why This Chapter Matters</h2>
+<p>Part 3 is the longest part of this book, and for good reason: <strong>the database is the heart of almost every backend.</strong> Servers are cheap and replaceable. You can restart them, clone them, throw them away. The data is none of those things. It is the business. When a company loses its database, it usually loses the company.</p>
+<p>Most backend performance problems, most correctness bugs, and most scaling walls trace back to the same place: how data is stored, queried and protected. Engineers who understand databases deeply are consistently the most valuable people on a backend team.</p>
+<p>By the end of this chapter you will know:</p>
+<ul>
+<li><strong>Why</strong> we don&#39;t just save data in files (and you&#39;ll watch that approach lose 199 of 200 sales).</li>
+<li>What a database actually does for you.</li>
+<li>What <strong>ACID</strong> really means, shown with working transactions.</li>
+<li>How a database physically <strong>stores</strong> rows on disk (pages, tuples, indexes), with real measurements.</li>
+<li>What <strong>CAP</strong> and <strong>PACELC</strong> actually say (and the common misunderstandings).</li>
+<li>How to choose between the database families, and why <strong>PostgreSQL is the default</strong> for this book.</li>
+<li>How to connect Node.js to PostgreSQL safely: <strong>parameterized queries</strong> and <strong>connection pools</strong>.</li>
+</ul>
+<p>Every measurement and output in this chapter came from a real <strong>PostgreSQL 17</strong> instance run while the chapter was written.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The relational model was proposed by <strong>Edgar F. Codd</strong> at IBM in 1970. The idea that you should describe <em>what</em> data you want, and let the system decide <em>how</em> to fetch it, was radical then and is the reason SQL is still dominant more than 50 years later. Most &quot;revolutionary&quot; new databases of each decade eventually added SQL.</p>
+</aside>
+<hr>
+
+<h2 id="12-1-why-not-just-use-files">12.1 Why Not Just Use Files?</h2>
+<p>Imagine you build ShopLine&#39;s stock tracking the simplest possible way, in a JSON file:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">sellOneFromFile</span>(<span class="hljs-params"></span>) {
+  <span class="hljs-keyword">const</span> data = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-keyword">await</span> <span class="hljs-title function_">readFile</span>(<span class="hljs-string">&#x27;counter.json&#x27;</span>, <span class="hljs-string">&#x27;utf8&#x27;</span>));   <span class="hljs-comment">// 1. read</span>
+  data.<span class="hljs-property">stock</span> -= <span class="hljs-number">1</span>;                                                     <span class="hljs-comment">// 2. modify</span>
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">writeFile</span>(<span class="hljs-string">&#x27;counter.json&#x27;</span>, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(data));              <span class="hljs-comment">// 3. write</span>
+}</code></pre></div>
+<p>It reads like it should work, and with one customer at a time it does. Now let 200 customers buy at once. Starting stock is 1,000, so afterwards it must be 800. Here is a real run, file versus PostgreSQL:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>({ <span class="hljs-attr">length</span>: <span class="hljs-number">200</span> }, sellOneFromFile));          <span class="hljs-comment">// JSON file</span>
+<span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>({ <span class="hljs-attr">length</span>: <span class="hljs-number">200</span> }, <span class="hljs-function">() =&gt;</span>                       <span class="hljs-comment">// PostgreSQL</span>
+  pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE demo_stock SET stock = stock - 1 WHERE id = 1&#x27;</span>)));</code></pre></div>
+<pre class="is-plain"><code>JSON file : started 1000, sold 200 -&gt; stock = 999 (correct is 800)
+PostgreSQL: started 1000, sold 200 -&gt; stock = 800 (correct is 800)</code></pre>
+<p><strong>The file lost 199 of 200 sales.</strong> Not &quot;a few.&quot; Almost all of them.</p>
+<h3 id="what-happened-a-race-condition">What happened? A race condition</h3>
+<p>Many requests read the <em>same</em> starting value (1,000) before any of them wrote back. Each computed 999 and wrote 999. They overwrote each other&#39;s results, a <strong>lost update</strong>.</p>
+<pre class="is-plain"><code> request A:  read 1000 ───────── write 999
+ request B:  read 1000 ── write 999                (B's work is erased by A's write)
+ request C:  read 1000 ─────────────── write 999
+             └── all three saw 1000, all three wrote 999: two sales vanished</code></pre>
+<p>Node being single-threaded doesn&#39;t save you: every <code>await</code> is a gap where other requests run. And with two server instances, or any other process touching the file, it gets worse.</p>
+<h3 id="the-five-things-files-can-t-give-you">The five things files can&#39;t give you</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Problem</th>
+<th>With a plain file</th>
+<th>What a database provides</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Concurrency</strong></td>
+<td>Lost updates, corrupted writes</td>
+<td>Locks and isolation: concurrent changes don&#39;t trample each other</td>
+</tr>
+<tr>
+<td><strong>Crash safety</strong></td>
+<td>A crash mid-write leaves a half-written, corrupt file</td>
+<td><strong>Atomic, durable</strong> commits: either the whole change happened or none of it</td>
+</tr>
+<tr>
+<td><strong>Querying</strong></td>
+<td>Read the <em>entire</em> file to find one record</td>
+<td><strong>Indexes</strong> and a query planner: find one row among millions in microseconds</td>
+</tr>
+<tr>
+<td><strong>Integrity</strong></td>
+<td>Nothing stops <code>stock = -5</code> or an order for a deleted product</td>
+<td><strong>Constraints</strong>: types, <code>NOT NULL</code>, <code>UNIQUE</code>, <code>CHECK</code>, foreign keys</td>
+</tr>
+<tr>
+<td><strong>Scale &amp; sharing</strong></td>
+<td>One file, one machine, locking by hand</td>
+<td>Network access, many clients, replication, access control, backups</td>
+</tr>
+</tbody></table></div>
+<p>And note the bonus at the end of that demo: the database <em>rejects impossible data</em>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE demo_stock SET stock = stock - 5000 WHERE id = 1&#x27;</span>);
+<span class="hljs-comment">// → error code 23514, constraint &quot;demo_stock_stock_check&quot;   (CHECK (stock &gt;= 0))</span></code></pre></div>
+<p>You can write all these features yourself. People have, many times, and they spent <em>years</em> making them correct. That&#39;s what a database is: <strong>decades of hard-won engineering for the hardest problems of storing data, packaged behind one interface.</strong></p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>C-C-Q-I-S:</strong> <strong>C</strong>oncurrency, <strong>C</strong>rash-safety, <strong>Q</strong>uerying, <strong>I</strong>ntegrity, <strong>S</strong>cale. If your storage needs even one of these, you need a database, not a file.</p>
+</aside>
+<hr>
+
+<h2 id="12-2-what-a-database-management-system-does">12.2 What a Database Management System Does</h2>
+<p>A <strong>database</strong> is the stored data. A <strong>DBMS</strong> (Database Management System) is the software that manages it: PostgreSQL, MySQL, MongoDB, Redis, SQLite. In everyday speech both are called &quot;the database.&quot;</p>
+<p>Inside, every DBMS has the same set of jobs:</p>
+<pre class="is-plain"><code>        your app (Node.js)
+              │  SQL / commands over a network connection
+              ▼
+ ┌───────────────────────────────────────────────────────────────┐
+ │ 1. CONNECTION MANAGER    authenticate, one backend per client   │
+ │ 2. QUERY PARSER          text → structure; check names &amp; types │
+ │ 3. QUERY PLANNER/        choose HOW to run it: which index?     │
+ │    OPTIMIZER             which join order? (cost-based)        │
+ │ 4. EXECUTOR              run the plan, produce rows            │
+ │ 5. TRANSACTION MANAGER   ACID: begin, commit, rollback, locks   │
+ │ 6. BUFFER CACHE          keep hot pages in RAM                  │
+ │ 7. STORAGE ENGINE        pages, tables, indexes on disk         │
+ │ 8. WRITE-AHEAD LOG (WAL) record changes first, for crash safety │
+ │ 9. REPLICATION/BACKUP    copies for safety and read scaling     │
+ └───────────────────────────────────────────────────────────────┘
+              │
+              ▼
+        disk (SSD)</code></pre>
+<p>The most important insight for you as an application developer is <strong>box 3</strong>. With SQL you describe <em>what</em> you want and the planner decides <em>how</em>. That&#39;s why the <em>same</em> query can run in 0.1 ms or 10 seconds depending on whether an index exists. Understanding the planner (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>) is the difference between guessing and engineering.</p>
+<hr>
+
+<h2 id="12-3-the-families-of-databases">12.3 The Families of Databases</h2>
+<p>&quot;Database&quot; isn&#39;t one thing. The right tool depends on the <strong>shape of your data and your access patterns</strong>.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Family</th>
+<th>Data shape</th>
+<th>Examples</th>
+<th>Best for</th>
+<th>Weak at</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Relational (SQL)</strong></td>
+<td>Tables of rows, linked by keys</td>
+<td><strong>PostgreSQL</strong>, MySQL/MariaDB, SQL Server, Oracle, SQLite</td>
+<td>Most business data: users, orders, payments, anything with relationships and rules</td>
+<td>Horizontal scale-out of writes (harder, not impossible)</td>
+</tr>
+<tr>
+<td><strong>Document</strong></td>
+<td>JSON-like documents</td>
+<td>MongoDB, Couchbase, Firestore</td>
+<td>Flexible/nested data that&#39;s read as a unit; rapid schema evolution</td>
+<td>Complex cross-document joins/transactions (improving)</td>
+</tr>
+<tr>
+<td><strong>Key-value</strong></td>
+<td><code>key → value</code></td>
+<td><strong>Redis</strong>, DynamoDB, Memcached</td>
+<td>Caches, sessions, counters, extreme speed/throughput</td>
+<td>Queries beyond key lookup</td>
+</tr>
+<tr>
+<td><strong>Wide-column</strong></td>
+<td>Rows with flexible columns, partitioned</td>
+<td>Cassandra, ScyllaDB, HBase</td>
+<td>Massive write throughput, time-ordered data at huge scale</td>
+<td>Ad-hoc queries, joins</td>
+</tr>
+<tr>
+<td><strong>Graph</strong></td>
+<td>Nodes and relationships</td>
+<td>Neo4j, Amazon Neptune</td>
+<td>Social networks, recommendations, fraud rings (deep relationship traversal)</td>
+<td>Everything else</td>
+</tr>
+<tr>
+<td><strong>Time-series</strong></td>
+<td>Timestamped measurements</td>
+<td>TimescaleDB, InfluxDB, Prometheus</td>
+<td>Metrics, IoT, monitoring</td>
+<td>General-purpose use</td>
+</tr>
+<tr>
+<td><strong>Search engine</strong></td>
+<td>Inverted index over text</td>
+<td>Elasticsearch, OpenSearch, Meilisearch</td>
+<td>Full-text search, faceting, log analytics</td>
+<td>Being the source of truth</td>
+</tr>
+<tr>
+<td><strong>Vector</strong></td>
+<td>Embeddings for similarity</td>
+<td>pgvector, Pinecone, Qdrant</td>
+<td>Semantic search, AI retrieval</td>
+<td>Exact-match transactional data</td>
+</tr>
+<tr>
+<td><strong>Columnar / warehouse (OLAP)</strong></td>
+<td>Column-oriented storage</td>
+<td>BigQuery, Snowflake, ClickHouse, Redshift</td>
+<td>Analytics over billions of rows</td>
+<td>Many small updates (OLTP)</td>
+</tr>
+<tr>
+<td><strong>Object storage</strong></td>
+<td>Blobs (files)</td>
+<td>Amazon S3, GCS</td>
+<td>Images, video, backups, big files</td>
+<td>Querying</td>
+</tr>
+</tbody></table></div>
+<h3 id="real-life-analogy-choosing-storage-at-home">Real-Life Analogy: Choosing Storage at Home</h3>
+<p>A <strong>filing cabinet with labeled folders and a cross-reference index</strong> (relational): excellent for records that relate to each other and must stay consistent. A <strong>sticky note on the fridge</strong> (key-value cache): instant to read, not for anything important. A <strong>warehouse for bulky items</strong> (object storage): cheap and huge, but you don&#39;t &quot;query&quot; it. A <strong>library card catalog</strong> (search engine): built so you can find books by any word. You wouldn&#39;t use the fridge for tax records or the warehouse to look up a phone number. Each family is built for <em>one job</em>.</p>
+<aside class="callout callout-pro">
+<h3 id="pro-tip" class="callout-title" data-callout="pro"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span><span>Pro Tip</span></h3>
+<p><strong>Default to PostgreSQL.</strong> It handles relational data, JSON documents (<code>jsonb</code>), full-text search, geospatial data (PostGIS), time-series (Timescale extension), and vectors (pgvector) <em>well enough</em> for the vast majority of products. Add a specialized store only when you can name the <em>measured</em> limit you&#39;ve hit. &quot;We might need scale&quot; is not a measurement. This book builds ShopLine on PostgreSQL, then adds MongoDB (<a href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose" title="MongoDB Data Modeling &amp; Aggregation">Chapter 18</a>), Redis (<a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>) and others (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>) where each genuinely earns its place.</p>
+</aside>
+<h3 id="oltp-vs-olap">OLTP vs OLAP</h3>
+<p>Two very different workloads hide inside &quot;a database&quot;:</p>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>OLTP</strong> (transactions)</th>
+<th><strong>OLAP</strong> (analytics)</th>
+</tr>
+</thead><tbody><tr>
+<td>Typical query</td>
+<td>&quot;Get order #9&quot;, &quot;place an order&quot;</td>
+<td>&quot;Total revenue per country per month for 3 years&quot;</td>
+</tr>
+<tr>
+<td>Touches</td>
+<td>A few rows</td>
+<td>Millions/billions of rows, few columns</td>
+</tr>
+<tr>
+<td>Writes</td>
+<td>Many small, concurrent</td>
+<td>Bulk loads</td>
+</tr>
+<tr>
+<td>Latency goal</td>
+<td>Milliseconds</td>
+<td>Seconds to minutes</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td><strong>Row-oriented</strong></td>
+<td><strong>Column-oriented</strong></td>
+</tr>
+<tr>
+<td>Examples</td>
+<td>PostgreSQL, MySQL</td>
+<td>BigQuery, ClickHouse, Snowflake</td>
+</tr>
+</tbody></table></div>
+<p><strong>Row-oriented</strong> storage keeps all of one row&#39;s fields together (great when you want the whole order). <strong>Column-oriented</strong> keeps each column together (great when you want only <code>revenue</code> across a billion rows, and it compresses far better since neighbouring values are alike):</p>
+<pre class="is-plain"><code> ROW STORE (OLTP)                         COLUMN STORE (OLAP)
+ [id1|name1|price1|country1]              id:      [1, 2, 3, 4 ...]
+ [id2|name2|price2|country2]              name:    [n1, n2, n3, n4 ...]
+ [id3|name3|price3|country3]              price:   [p1, p2, p3, p4 ...]   ← SUM(price) reads ONLY this
+                                          country: [c1, c2, c3, c4 ...]</code></pre>
+<p>Don&#39;t run heavy analytics on your production OLTP database; copy data to a warehouse (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>).</p>
+<hr>
+
+<h2 id="12-4-acid-the-four-promises-of-a-transaction">12.4 ACID: The Four Promises of a Transaction</h2>
+<p>A <strong>transaction</strong> is a group of operations treated as <strong>one unit</strong>. ACID names the guarantees a good transactional database gives it.</p>
+<h3 id="real-life-analogy-bank-transfer">Real-Life Analogy: Bank Transfer</h3>
+<p>Moving ₹70 from Asha&#39;s account to Ravi&#39;s has two steps: subtract from Asha, add to Ravi. Both must happen, or neither. If the bank&#39;s computer crashed between the steps and Asha&#39;s money was gone but Ravi&#39;s hadn&#39;t arrived, ₹70 would simply vanish.</p>
+<h3 id="12-4-1-a-atomicity-all-or-nothing">12.4.1 A: Atomicity: all or nothing</h3>
+<p>Here is exactly that scenario with real output. A <code>crash</code> is simulated between the two steps:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">transfer</span>(<span class="hljs-params"><span class="hljs-keyword">from</span>, to, amount, { useTransaction }</span>) {
+  <span class="hljs-keyword">const</span> c = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">connect</span>();
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">if</span> (useTransaction) <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>);
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE accounts SET balance = balance - $1 WHERE id = $2&#x27;</span>, [amount, <span class="hljs-keyword">from</span>]);
+    <span class="hljs-keyword">if</span> (amount === <span class="hljs-number">70</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;simulated crash between the two steps&#x27;</span>);
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE accounts SET balance = balance + $1 WHERE id = $2&#x27;</span>, [amount, to]);
+    <span class="hljs-keyword">if</span> (useTransaction) <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;ok&#x27;</span>;
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">if</span> (useTransaction) <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;ROLLBACK&#x27;</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`failed: <span class="hljs-subst">${e.message}</span>`</span>;
+  } <span class="hljs-keyword">finally</span> {
+    c.<span class="hljs-title function_">release</span>();                       <span class="hljs-comment">// ALWAYS give the connection back</span>
+  }
+}</code></pre></div>
+<pre class="is-plain"><code>start                     1:100  2:50
+no transaction, crash     failed: simulated crash...  -&gt; 1:30  2:50   &lt;- 70 vanished!
+transaction, crash        failed: simulated crash...  -&gt; 1:100 2:50   &lt;- nothing changed
+transaction, success      ok                          -&gt; 1:70  2:80
+transaction, overdraft    failed: ... violates check constraint &quot;accounts_balance_check&quot; -&gt; 1:70  2:80</code></pre>
+<p>Without a transaction, the debit stuck and the credit never happened: <strong>₹70 destroyed.</strong> With a transaction, the crash triggered a <code>ROLLBACK</code> and the database returned to exactly the prior state. <strong>Atomicity.</strong></p>
+<p>The basic shape you&#39;ll use constantly:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">BEGIN</span>;
+  <span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">-</span> <span class="hljs-number">70</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+  <span class="hljs-keyword">UPDATE</span> accounts <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">+</span> <span class="hljs-number">70</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;
+<span class="hljs-keyword">COMMIT</span>;          <span class="hljs-comment">-- or ROLLBACK; to undo everything since BEGIN</span></code></pre></div>
+<h3 id="12-4-2-c-consistency-valid-state-to-valid-state">12.4.2 C: Consistency: valid state to valid state</h3>
+<p>A transaction may only move the database from one <strong>valid</strong> state to another <strong>valid</strong> state, where &quot;valid&quot; means <em>all your declared rules hold</em>: types, <code>NOT NULL</code>, <code>UNIQUE</code>, <code>CHECK</code>, foreign keys. In the last row above, the overdraft violated <code>CHECK (balance &gt;= 0)</code>, so the whole transaction was refused and rolled back.</p>
+<p>Two honest notes:</p>
+<ul>
+<li>ACID&#39;s &quot;C&quot; is mostly <strong>your</strong> responsibility: the database enforces the rules <em>you declare</em>. If you declare none (no constraints), it has nothing to enforce. <strong>Declare your rules in the schema</strong> (<a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>).</li>
+<li>This &quot;consistency&quot; is <strong>not</strong> the same as CAP&#39;s &quot;consistency&quot; (§12.7). Same word, different meanings. A famous source of confusion.</li>
+</ul>
+<h3 id="12-4-3-i-isolation-concurrent-transactions-don-t-see-each-other-s-mess">12.4.3 I: Isolation: concurrent transactions don&#39;t see each other&#39;s mess</h3>
+<p>If two transactions run at the same moment, each should behave <em>as if it ran alone</em>. We saw this work in the lost-update demo: PostgreSQL&#39;s <code>UPDATE ... SET stock = stock - 1</code> locked the row per update, so 200 concurrent updates produced exactly 800.</p>
+<p>Perfect isolation is expensive, so databases offer <strong>isolation levels</strong> (Read Committed, Repeatable Read, Serializable) that trade strictness for speed. Each prevents different <strong>anomalies</strong> (dirty reads, non-repeatable reads, phantom reads, write skew). This is subtle and important enough for its own chapter (<a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>). For now remember: <em>isolation has levels, and the default isn&#39;t the strictest.</em></p>
+<h3 id="12-4-4-d-durability-committed-means-safe">12.4.4 D: Durability: committed means safe</h3>
+<p>Once the database says <strong>COMMIT succeeded</strong>, the data survives a crash, a power cut, a kernel panic. How, without writing every change all over the data files immediately (which is slow)? The <strong>Write-Ahead Log (WAL)</strong>:</p>
+<pre class="is-plain"><code> 1. Your UPDATE changes the page in memory (buffer cache)         ← fast
+ 2. The change is ALSO appended to the WAL, sequentially on disk   ← fast (sequential write)
+ 3. COMMIT waits until the WAL record is flushed (fsync) to disk
+ 4. Later, in the background, modified pages are written to the data files
+ 
+ CRASH?  On restart, the database REPLAYS the WAL to redo committed changes
+         and discard uncommitted ones. Nothing committed is lost.</code></pre>
+<p>Sequential appends are far faster than random writes, so the WAL gives both <strong>speed and safety</strong>. (The WAL also powers <strong>replication</strong> and <strong>point-in-time recovery</strong>, Chapters <a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">29</a> and 30.)</p>
+<p>Durability has a price you can <em>choose</em> to pay differently: PostgreSQL&#39;s <code>synchronous_commit = off</code> skips waiting for the WAL flush, making commits faster but risking loss of the last fraction of a second of commits on a crash (never corruption). Some data (analytics events, caches) can afford this; money cannot.</p>
+<h3 id="acid-in-one-table">ACID in one table</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Letter</th>
+<th>Promise</th>
+<th>Mechanism</th>
+<th>If violated</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>A</strong>tomicity</td>
+<td>All steps or none</td>
+<td>Undo/rollback, WAL</td>
+<td>Half-finished operations (vanishing money)</td>
+</tr>
+<tr>
+<td><strong>C</strong>onsistency</td>
+<td>Declared rules always hold</td>
+<td>Constraints, triggers</td>
+<td>Corrupt/impossible data</td>
+</tr>
+<tr>
+<td><strong>I</strong>solation</td>
+<td>Concurrent transactions don&#39;t interfere</td>
+<td>Locks, MVCC</td>
+<td>Lost updates, phantom data</td>
+</tr>
+<tr>
+<td><strong>D</strong>urability</td>
+<td>Committed data survives crashes</td>
+<td>WAL + fsync</td>
+<td>&quot;Successful&quot; writes that disappear</td>
+</tr>
+</tbody></table></div>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<p>&quot;Explain ACID with an example.&quot; Use the bank transfer: atomic (both updates or neither), consistent (balance can&#39;t go negative via a CHECK), isolated (two simultaneous transfers don&#39;t corrupt each other&#39;s reads), durable (survives a crash after COMMIT via the WAL). Then add the nuance: isolation has levels, and consistency in ACID differs from consistency in CAP.</p>
+</aside>
+<hr>
+
+<h2 id="12-5-how-a-database-stores-data-on-disk">12.5 How a Database Stores Data on Disk</h2>
+<p>Knowing the physical layout makes indexes, <code>EXPLAIN</code> output and performance advice make sense. We&#39;ll examine PostgreSQL concretely; MySQL (InnoDB) and others differ in details but share the ideas.</p>
+<h3 id="12-5-1-pages-the-unit-of-i-o">12.5.1 Pages: the unit of I/O</h3>
+<p>Databases don&#39;t read single rows from disk. They read fixed-size blocks called <strong>pages</strong>. PostgreSQL&#39;s page is <strong>8 KB</strong>. A table is a file made of pages; each page holds many rows (&quot;tuples&quot;).</p>
+<p>Let&#39;s insert 200,000 rows into a small table and measure:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> pages_demo (id <span class="hljs-type">int</span>, name text, price <span class="hljs-type">int</span>);
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> pages_demo <span class="hljs-keyword">SELECT</span> g, <span class="hljs-string">&#x27;product-&#x27;</span> <span class="hljs-operator">||</span> g, (g <span class="hljs-operator">%</span> <span class="hljs-number">1000</span>) <span class="hljs-keyword">FROM</span> generate_series(<span class="hljs-number">1</span>, <span class="hljs-number">200000</span>) g;</code></pre></div>
+<pre class="is-plain"><code>block size               8192 bytes
+table: bytes / pages / rows   10436608 / 1274 / 200000   → ~157 rows per 8 KB page</code></pre>
+<p>So 200,000 rows occupy 1,274 pages (about 10 MB). Each row (&quot;tuple&quot;) is roughly 52 bytes including its header.</p>
+<h3 id="12-5-2-where-does-a-row-live-the-ctid">12.5.2 Where does a row live? The <code>ctid</code></h3>
+<p>Every PostgreSQL row has a physical address called <code>ctid</code> = <code>(page number, slot within the page)</code>:</p>
+<pre class="is-plain"><code> SELECT ctid, id FROM pages_demo WHERE id IN (1, 2, 3, 100000);
+
+ (0,1)    id 1          ← page 0, slot 1
+ (0,2)    id 2
+ (0,3)    id 3
+ (636,148) id 100000    ← page 636, slot 148</code></pre>
+<p>Rows were laid down in insertion order. Row 100,000 is on page 636, slot 148: 636 × ~157 + 148 ≈ 100,000. ✔</p>
+<pre class="is-plain"><code> TABLE FILE (heap)
+ ┌────────── page 0 (8 KB) ─────────┐ ┌────────── page 1 ────────────┐       ┌─ page 1273 ─┐
+ │ header │ slot1 │ slot2 │ ... │ ← │ │ ... rows ...                 │  ...  │   ...       │
+ │ row 1  row 2  row 3 ... row 157   │ │                              │       │             │
+ └──────────────────────────────────┘ └──────────────────────────────┘       └─────────────┘</code></pre>
+<p>(Large values, over about 2 KB, are moved out-of-line by a mechanism called <strong>TOAST</strong>, which is why storing huge blobs in rows slows scans. Store big files in object storage, Chapter 20.)</p>
+<h3 id="12-5-3-without-an-index-a-sequential-scan">12.5.3 Without an index: a sequential scan</h3>
+<p>To find <code>id = 150000</code> with no index, the database has no choice but to read <em>every page</em> and check every row:</p>
+<pre class="is-plain"><code> EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM pages_demo WHERE id = 150000;
+
+ Seq Scan on pages_demo  (cost=0.00..3774.00 rows=1 ...) (actual time=6.675..9.207 rows=1 ...)
+   Buffers: shared hit=1274                      ← touched all 1,274 pages
+ Execution Time: 9.224 ms</code></pre>
+<p>1,274 pages read to return one row. Fine at 200k rows; at 200 million rows that is 1,000× worse, and it burns I/O for everyone else, too.</p>
+<h3 id="12-5-4-with-an-index-a-b-tree">12.5.4 With an index: a B-tree</h3>
+<p>An <strong>index</strong> is a separate, sorted structure that maps a column&#39;s values to row locations (<code>ctid</code>s). In PostgreSQL (and MySQL, SQLite and most others) the default index is a <strong>B-tree</strong>:</p>
+<pre class="is-plain"><code>                        [ 60000 | 120000 ]                  ← root page
+                       /         |          \
+          [20000|40000]   [80000|100000]   [140000|160000]  ← internal pages
+           /   |   \        /    |    \         /    |   \
+        leaf  leaf  leaf  leaf  leaf  leaf   leaf  leaf  leaf   ← leaf pages: (key → ctid), linked in order
+                                                  └─ &quot;id 150000 → ctid (954, 21)&quot;</code></pre>
+<p>A lookup walks root → internal → leaf (3–4 page reads even for hundreds of millions of rows, since each page holds hundreds of keys), then jumps straight to the row&#39;s page.</p>
+<pre class="is-plain"><code> CREATE INDEX pages_demo_id_idx ON pages_demo (id);
+
+ index size (B-tree on id)   4513792 bytes   (~4.5 MB)
+
+ Index Scan using pages_demo_id_idx on pages_demo  (cost=0.42..8.44 rows=1 ...) (actual time=0.066..0.067 rows=1 ...)
+   Buffers: shared hit=1 read=3
+ Execution Time: 0.095 ms</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Pages touched</th>
+<th>Time</th>
+</tr>
+</thead><tbody><tr>
+<td>Sequential scan (no index)</td>
+<td>1,274</td>
+<td>9.2 ms</td>
+</tr>
+<tr>
+<td><strong>Index scan</strong></td>
+<td><strong>4</strong></td>
+<td><strong>0.095 ms</strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>About 100× faster, with 300× fewer pages</strong>, and the gap widens as data grows (the scan grows linearly; the B-tree grows logarithmically, O(log n), exactly the binary-search idea from the DSA book&#39;s <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>, adapted for disks).</p>
+<p>The costs of an index (never free): <strong>disk space</strong> (4.5 MB here, about 43% of the table), and <strong>slower writes</strong>, since every INSERT/UPDATE/DELETE must also update every index. Indexes are a read-vs-write trade-off, which is why you don&#39;t index every column (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>).</p>
+<h3 id="12-5-4a-the-cost-hierarchy-a-callback-to-chapter-2">12.5.4a The cost hierarchy: a callback to Chapter 2</h3>
+<p>Remember the latency table? It explains the whole design:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Where the data is</th>
+<th>Latency</th>
+</tr>
+</thead><tbody><tr>
+<td>CPU cache / RAM</td>
+<td>nanoseconds – ~100 ns</td>
+</tr>
+<tr>
+<td>SSD random read</td>
+<td>~100 µs</td>
+</tr>
+<tr>
+<td>Same-datacenter network round trip</td>
+<td>~500 µs</td>
+</tr>
+<tr>
+<td>Disk (HDD) seek</td>
+<td>~5–10 ms</td>
+</tr>
+</tbody></table></div>
+<p>Everything a database does is an attempt to <strong>avoid disk reads</strong> (buffer cache, indexes that touch few pages) and to <strong>turn random I/O into sequential I/O</strong> (WAL, LSM trees). In the plans above, <code>shared hit</code> means a page was found already in RAM (the buffer cache); <code>read</code> means it had to come from disk. A well-tuned database serves the vast majority of reads from memory.</p>
+<h3 id="12-5-5-mvcc-how-updates-actually-work">12.5.5 MVCC: how updates actually work</h3>
+<p>When you <code>UPDATE</code> a row in PostgreSQL, it does <strong>not</strong> overwrite the row in place. It writes a <strong>new version</strong> of the row and marks the old one as no longer current. This is <strong>MVCC (Multi-Version Concurrency Control)</strong>.</p>
+<pre class="is-plain"><code> before:  page 5: [ row(id=7, price=100, valid) ]
+ UPDATE products SET price = 120 WHERE id = 7;
+ after:   page 5: [ row(id=7, price=100, DEAD)  row(id=7, price=120, valid) ]</code></pre>
+<p>Why? <strong>Readers never block writers, and writers never block readers.</strong> A transaction that started before your update keeps seeing the old version; new transactions see the new one. That&#39;s how PostgreSQL gives snapshot isolation without locking everything.</p>
+<p>Consequences you must know:</p>
+<ol>
+<li><strong>Dead versions accumulate</strong> (&quot;bloat&quot;) until <strong>VACUUM</strong> reclaims them (autovacuum runs in the background; it needs to keep up). A table with heavy updates and a stalled vacuum grows and slows.</li>
+<li><strong>Every update writes a new row version</strong>, so updating a row is like inserting one. Updating many rows is write-heavy.</li>
+<li><strong>Long-running transactions are dangerous</strong>: they pin old versions so VACUUM can&#39;t clean them (Chapter 16).</li>
+</ol>
+<h3 id="12-5-6-b-trees-vs-lsm-trees-two-storage-designs">12.5.6 B-trees vs LSM-trees: two storage designs</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>B-tree</strong> (PostgreSQL, MySQL InnoDB, SQLite)</th>
+<th><strong>LSM-tree</strong> (RocksDB, Cassandra, LevelDB, ScyllaDB)</th>
+</tr>
+</thead><tbody><tr>
+<td>Write path</td>
+<td>Update pages <strong>in place</strong> (random I/O)</td>
+<td>Append to a memory table + log; flush as <strong>sorted immutable files</strong>; merge (&quot;compact&quot;) in the background</td>
+</tr>
+<tr>
+<td>Reads</td>
+<td>Fast, predictable (O(log n))</td>
+<td>May check several files (mitigated by Bloom filters)</td>
+</tr>
+<tr>
+<td>Writes</td>
+<td>Good</td>
+<td><strong>Excellent</strong> (sequential)</td>
+</tr>
+<tr>
+<td>Weakness</td>
+<td>Write amplification from page updates</td>
+<td>Read amplification, compaction overhead</td>
+</tr>
+<tr>
+<td>Typical use</td>
+<td>General-purpose OLTP</td>
+<td>Write-heavy, huge-scale systems</td>
+</tr>
+</tbody></table></div>
+<p>You rarely choose this directly; you choose a database and inherit its engine. But it explains why Cassandra eats writes and PostgreSQL gives cleaner reads.</p>
+<hr>
+
+<h2 id="12-6-schemas-rigid-vs-flexible">12.6 Schemas: Rigid vs Flexible</h2>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Schema-on-write (relational)</th>
+<th>Schema-on-read (typical document DB)</th>
+</tr>
+</thead><tbody><tr>
+<td>Structure</td>
+<td>Declared up front: tables, columns, types, constraints</td>
+<td>Each document can differ; shape is enforced by app code (or optional validators)</td>
+</tr>
+<tr>
+<td>Pros</td>
+<td>Database guarantees data shape and integrity; self-documenting</td>
+<td>Fast iteration; natural for nested data</td>
+</tr>
+<tr>
+<td>Cons</td>
+<td>Changes need migrations</td>
+<td>Inconsistent data creeps in; every reader must handle every historical shape</td>
+</tr>
+</tbody></table></div>
+<p>&quot;Schemaless&quot; is a misnomer: there <em>is</em> always a schema. The only question is whether the <strong>database</strong> or <strong>every piece of your code</strong> enforces it. For core business data we prefer the database to guard it. For genuinely variable data (product attributes per category, event payloads) a <code>jsonb</code> column in PostgreSQL gives flexibility <em>inside</em> a relational structure.</p>
+<hr>
+
+<h2 id="12-7-cap-and-pacelc-distributed-databases-and-their-trade-offs">12.7 CAP and PACELC: Distributed Databases and Their Trade-offs</h2>
+<p>The moment data lives on <strong>more than one machine</strong> (for scale or safety), a new kind of problem appears: the network between machines can fail.</p>
+<h3 id="12-7-1-the-cap-theorem-brewer-2000-proved-by-gilbert-lynch-2002">12.7.1 The CAP theorem (Brewer 2000; proved by Gilbert &amp; Lynch 2002)</h3>
+<p>Consider a distributed database with data replicated on several nodes. Three properties:</p>
+<ul>
+<li><strong>C: Consistency (linearizability):</strong> every read sees the most recent write, as if there were one copy.</li>
+<li><strong>A: Availability:</strong> every request to a working node gets a (non-error) response.</li>
+<li><strong>P: Partition tolerance:</strong> the system keeps operating even if the network splits the nodes into groups that can&#39;t talk to each other.</li>
+</ul>
+<p><strong>The theorem:</strong> when a network partition happens, you must <strong>choose between C and A.</strong></p>
+<pre class="is-plain"><code>        NODE 1  ───✂ network partition ✂───  NODE 2
+        (client writes x = 5)                 (client reads x)
+
+   Option CP: Node 2 refuses to answer (or errors) until it can confirm the latest x.
+              → still CORRECT, but not AVAILABLE for that client.
+   Option AP: Node 2 answers with what it has (maybe the old x).
+              → AVAILABLE, but maybe not CONSISTENT (stale).</code></pre>
+<h3 id="the-most-common-misunderstandings">The most common misunderstandings</h3>
+<ol>
+<li><strong>&quot;Pick two of three&quot; is misleading.</strong> Partitions <em>will</em> happen in any real distributed system (networks fail), so <strong>P isn&#39;t optional.</strong> The real choice is <strong>C vs A <em>during</em> a partition.</strong> A single-node database has no partitions to tolerate, so CAP doesn&#39;t constrain it.</li>
+<li><strong>CAP says nothing about normal operation.</strong> Most of the time there&#39;s no partition. What then? That&#39;s PACELC.</li>
+<li><strong>It&#39;s not a label for whole databases.</strong> Many systems are configurable per operation (quorum reads/writes in Cassandra, read concerns in MongoDB).</li>
+<li><strong>CAP&#39;s &quot;consistency&quot; ≠ ACID&#39;s &quot;consistency.&quot;</strong> CAP&#39;s is about replicas agreeing; ACID&#39;s is about rules holding.</li>
+</ol>
+<h3 id="12-7-2-pacelc-abadi-2010-the-fuller-picture">12.7.2 PACELC (Abadi 2010): the fuller picture</h3>
+<blockquote>
+<p>If there&#39;s a <strong>P</strong>artition, choose <strong>A</strong> or <strong>C</strong>; <strong>E</strong>lse (normal operation), choose <strong>L</strong>atency or <strong>C</strong>onsistency.</p>
+</blockquote>
+<p>Even without failures, keeping replicas strongly consistent costs <strong>latency</strong> (you must wait for the other copies to confirm). Faster responses mean replicas may briefly disagree.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>System (typical default)</th>
+<th>During partition (PAC)</th>
+<th>Normal operation (ELC)</th>
+</tr>
+</thead><tbody><tr>
+<td>Single-primary PostgreSQL with sync replicas</td>
+<td>PC</td>
+<td>EC (consistent, slower commits)</td>
+</tr>
+<tr>
+<td>PostgreSQL with async replicas, read from replicas</td>
+<td>PC (writes)</td>
+<td>EL (replicas lag)</td>
+</tr>
+<tr>
+<td>Cassandra / DynamoDB (eventual)</td>
+<td>PA</td>
+<td>EL</td>
+</tr>
+<tr>
+<td>MongoDB (default, majority write concern)</td>
+<td>PC</td>
+<td>EC</td>
+</tr>
+<tr>
+<td>Google Spanner</td>
+<td>PC</td>
+<td>EC (paying latency for global consistency)</td>
+</tr>
+</tbody></table></div>
+<h3 id="12-7-3-consistency-models-from-strongest-to-weakest">12.7.3 Consistency models (from strongest to weakest)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Model</th>
+<th>Guarantee</th>
+<th>Example</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Strong / linearizable</strong></td>
+<td>Everyone sees the latest write immediately</td>
+<td>Primary-only reads in PostgreSQL</td>
+</tr>
+<tr>
+<td><strong>Read-your-writes</strong></td>
+<td><em>You</em> always see your own writes</td>
+<td>After posting a comment, you see it even if others briefly don&#39;t</td>
+</tr>
+<tr>
+<td><strong>Monotonic reads</strong></td>
+<td>You never see data go &quot;back in time&quot;</td>
+<td>Refreshing doesn&#39;t un-show a post</td>
+</tr>
+<tr>
+<td><strong>Causal</strong></td>
+<td>Effects appear after their causes</td>
+<td>A reply never appears before the question</td>
+</tr>
+<tr>
+<td><strong>Eventual</strong></td>
+<td>Replicas converge <em>if writes stop</em></td>
+<td>DNS, many AP systems, read replicas</td>
+</tr>
+</tbody></table></div>
+<p><strong>BASE</strong> (&quot;Basically Available, Soft state, Eventually consistent&quot;) was coined as the playful opposite of ACID, describing systems that prefer availability and accept temporary inconsistency.</p>
+<h3 id="why-this-matters-to-you-now">Why this matters to you now</h3>
+<p>As soon as you add a <strong>read replica</strong> (<a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>) to take read load off the primary, you&#39;ve entered this world: a user updates their profile, immediately reloads, and the replica hasn&#39;t received the change yet, so they see the old data. That&#39;s <em>replication lag</em> (eventual consistency) causing a real bug. The standard fixes (read-your-own-writes by routing a user&#39;s reads to the primary for a short window) come from this chapter&#39;s vocabulary.</p>
+<hr>
+
+<h2 id="12-8-replication-and-sharding-a-preview">12.8 Replication and Sharding: A Preview</h2>
+<p>Two techniques, often confused:</p>
+<pre class="is-plain"><code> REPLICATION: copies of the SAME data                 SHARDING (partitioning): DIFFERENT data on each node
+
+   ┌─────────┐ ──copies──▶ ┌─────────┐                 ┌──────────┐   ┌──────────┐   ┌──────────┐
+   │ PRIMARY │              │ REPLICA │                 │ shard A  │   │ shard B  │   │ shard C  │
+   │ (writes)│ ──copies──▶ │ REPLICA │                 │ users    │   │ users    │   │ users    │
+   └─────────┘              └─────────┘                 │ A–H      │   │ I–Q      │   │ R–Z      │
+   Goals: availability, read scaling, backups            └──────────┘   └──────────┘   └──────────┘
+                                                         Goal: scale WRITES and storage beyond one machine</code></pre>
+<ul>
+<li><strong>Replication</strong> gives high availability (a replica takes over if the primary dies) and read scaling, with the consistency caveats above.</li>
+<li><strong>Sharding</strong> splits the dataset by a <strong>shard key</strong> to scale writes/storage. It&#39;s powerful but costly: cross-shard joins and transactions become hard, and choosing a bad key creates &quot;hot&quot; shards. <strong>Delay sharding as long as you can</strong>: one well-indexed PostgreSQL server on modern hardware handles far more than most teams expect (often thousands of writes/second and terabytes). Chapter 29 covers both in depth.</li>
+</ul>
+<hr>
+
+<h2 id="12-9-choosing-a-database-a-practical-framework">12.9 Choosing a Database: A Practical Framework</h2>
+<p>Ask these questions in order:</p>
+<ol>
+<li><strong>What are the relationships and rules?</strong> Lots of related entities with integrity rules (orders ↔ customers ↔ products ↔ payments)? → <strong>Relational.</strong></li>
+<li><strong>What are the access patterns?</strong> List the 10 most important queries <em>first</em>. If you can&#39;t, you can&#39;t choose well.</li>
+<li><strong>Do you need transactions across multiple records?</strong> (Money, inventory.) → favour relational/ACID.</li>
+<li><strong>What&#39;s the scale, honestly?</strong> Numbers: rows, writes/sec, reads/sec, data size in 2 years. Compare with what one PostgreSQL box handles before reaching for distributed systems.</li>
+<li><strong>Is the data naturally a document, a graph, a time series, a blob?</strong> Consider specialization <em>in addition to</em> your primary store.</li>
+<li><strong>Does your team know it, and can you operate it?</strong> A database you can&#39;t run, back up, monitor and restore at 3 a.m. is a liability.</li>
+<li><strong>What&#39;s the failure/recovery requirement?</strong> RPO (how much data can we lose?) and RTO (how long can we be down?).</li>
+</ol>
+<h3 id="typical-outcome-for-a-product-like-shopline">Typical outcome for a product like ShopLine</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Need</th>
+<th>Store</th>
+</tr>
+</thead><tbody><tr>
+<td>Users, products, orders, payments (core truth)</td>
+<td><strong>PostgreSQL</strong></td>
+</tr>
+<tr>
+<td>Sessions, rate-limit counters, caches, queues</td>
+<td><strong>Redis</strong></td>
+</tr>
+<tr>
+<td>Product search with typo tolerance, facets</td>
+<td><strong>Elasticsearch / OpenSearch</strong> (or Postgres full-text at first)</td>
+</tr>
+<tr>
+<td>Product images, invoices (PDFs)</td>
+<td><strong>Object storage (S3)</strong></td>
+</tr>
+<tr>
+<td>Analytics and reporting</td>
+<td><strong>Warehouse</strong> (BigQuery/ClickHouse) fed from Postgres</td>
+</tr>
+<tr>
+<td>Flexible event/audit documents</td>
+<td><code>jsonb</code> in Postgres, or <strong>MongoDB</strong> if truly document-shaped</td>
+</tr>
+</tbody></table></div>
+<p>This arrangement of several stores, each used for its strength, is called <strong>polyglot persistence</strong>. The golden rule: <strong>exactly one store is the source of truth for each piece of data</strong>; the others hold <em>derived copies</em> that can be rebuilt. If two stores both &quot;own&quot; the same fact, they <em>will</em> disagree.</p>
+<aside class="callout callout-warn">
+<h3 id="common-mistake-choosing-by-hype" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake: Choosing by hype</span></h3>
+<p>&quot;MongoDB is web scale,&quot; &quot;NoSQL is faster,&quot; &quot;Postgres can&#39;t scale.&quot; All three are oversimplifications that have driven expensive migrations. NoSQL databases aren&#39;t inherently faster; they make different trade-offs. And plenty of companies serve enormous traffic on PostgreSQL or MySQL with proper indexing, caching and replicas.</p>
+</aside>
+<hr>
+
+<h2 id="12-10-using-postgresql-from-node-js">12.10 Using PostgreSQL From Node.js</h2>
+<h3 id="12-10-1-running-postgresql-locally">12.10.1 Running PostgreSQL locally</h3>
+<p>Docker is the easiest, most reproducible way:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">docker run -d --name shopline-pg \
+  -e POSTGRES_PASSWORD=devpassword -e POSTGRES_DB=shopline \
+  -p 127.0.0.1:5432:5432 \
+  postgres:17-alpine</code></pre></div>
+<p>Note <code>127.0.0.1:5432:5432</code>: it&#39;s reachable from your machine only, <strong>not from the network</strong>. (<a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a>: don&#39;t expose databases to the world.) <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a> turns this into a <code>docker-compose.yml</code>. Connect with <code>psql</code> (<code>docker exec -it shopline-pg psql -U postgres -d shopline</code>) or a GUI such as DBeaver, TablePlus or pgAdmin.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">Shell</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-bash">npm install pg</code></pre></div>
+<h3 id="12-10-2-sql-injection-the-vulnerability-that-has-burned-thousands-of-companies">12.10.2 SQL injection: the vulnerability that has burned thousands of companies</h3>
+<p>Never build SQL by gluing user input into a string. Here is a real run against a table holding an admin&#39;s secret:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// ❌ VULNERABLE: string concatenation</span>
+<span class="hljs-keyword">const</span> sql = <span class="hljs-string">`SELECT id, email FROM users_demo WHERE email = &#x27;<span class="hljs-subst">${email}</span>&#x27;`</span>;
+
+<span class="hljs-comment">// ✅ SAFE: parameterized query: the value travels separately from the SQL text</span>
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id, email FROM users_demo WHERE email = $1&#x27;</span>, [email]);</code></pre></div>
+<pre class="is-plain"><code>UNSAFE input=&quot;asha@example.com&quot;                -&gt; [{&quot;id&quot;:1,&quot;email&quot;:&quot;asha@example.com&quot;}]       ← normal use works
+UNSAFE input=&quot;' OR '1'='1&quot;                     -&gt; [{&quot;id&quot;:1,...},{&quot;id&quot;:2,&quot;email&quot;:&quot;root@example.com&quot;}]   ← EVERY user returned
+UNSAFE input=&quot;x' UNION SELECT id, secret FROM users_demo --&quot;
+                                               -&gt; [{&quot;id&quot;:2,&quot;email&quot;:&quot;ROOT-PASSWORD-HASH&quot;},{&quot;id&quot;:1,&quot;email&quot;:&quot;asha-secret&quot;}]   ← secrets leaked
+
+SAFE   input=&quot;asha@example.com&quot;                -&gt; [{&quot;id&quot;:1,&quot;email&quot;:&quot;asha@example.com&quot;}]
+SAFE   input=&quot;' OR '1'='1&quot;                     -&gt; []
+SAFE   input=&quot;x' UNION SELECT ...&quot;             -&gt; []</code></pre>
+<p>Look at the SQL the unsafe version actually sent for the third attack:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> id, email <span class="hljs-keyword">FROM</span> users_demo <span class="hljs-keyword">WHERE</span> email <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;x&#x27;</span> <span class="hljs-keyword">UNION</span> <span class="hljs-keyword">SELECT</span> id, secret <span class="hljs-keyword">FROM</span> users_demo <span class="hljs-comment">--&#x27;</span></code></pre></div>
+<p>The attacker&#39;s text <strong>became part of the SQL program</strong>: it closed the string, appended a second query, and commented out the rest (<code>--</code>). With <code>UNION</code> they read data from <em>any</em> table; with <code>;</code> and more statements, some drivers let them modify or delete. <strong>That is SQL injection.</strong></p>
+<p>With <code>$1</code> placeholders, the database receives the <strong>SQL text and the values separately</strong>. The value is <em>only ever data</em>; it can never become code, no matter what characters it contains.</p>
+<p><strong>Rules, without exceptions:</strong></p>
+<ol>
+<li><strong>Always use parameters</strong> (<code>$1, $2, …</code>) for <em>values</em>.</li>
+<li><strong>Parameters can&#39;t be used for identifiers</strong> (table/column names, <code>ORDER BY</code> columns, <code>ASC/DESC</code>). For those, map user input to a <strong>whitelist</strong> of allowed names you control:<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">SORTABLE</span> = { <span class="hljs-attr">price</span>: <span class="hljs-string">&#x27;price&#x27;</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-attr">newest</span>: <span class="hljs-string">&#x27;created_at&#x27;</span> };
+<span class="hljs-keyword">const</span> col = <span class="hljs-variable constant_">SORTABLE</span>[req.<span class="hljs-property">query</span>.<span class="hljs-property">sort</span>] ?? <span class="hljs-string">&#x27;created_at&#x27;</span>;          <span class="hljs-comment">// never interpolate the raw input</span>
+<span class="hljs-keyword">const</span> sql = <span class="hljs-string">`SELECT * FROM products ORDER BY <span class="hljs-subst">${col}</span> LIMIT $1`</span>;</code></pre></div>
+</li>
+<li>ORMs and query builders (<a href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely" title="ORMs vs Query Builders: Prisma, Drizzle">Chapter 17</a>) parameterize for you, <strong>but</strong> their &quot;raw SQL&quot; escape hatches don&#39;t (<code>sequelize.query(\</code>...${x}`)`). Same rule applies.</li>
+<li>Escaping by hand is a losing game. Don&#39;t.</li>
+<li>Least privilege: the app&#39;s DB user should not be a superuser; it shouldn&#39;t be able to <code>DROP</code> tables (limits the blast radius).</li>
+</ol>
+<h3 id="12-10-3-connection-pooling">12.10.3 Connection pooling</h3>
+<p>Opening a database connection is expensive: TCP handshake (<a href="/learn/backend-master/how-the-internet-works-dns-tcp-tls" title="How the Internet Works: DNS, TCP &amp; TLS">Chapter 2</a>), TLS, authentication, and in PostgreSQL a <strong>new operating-system process</strong> per connection (several MB of memory). PostgreSQL&#39;s default limit is <code>max_connections = 100</code>. If every web request opened its own connection, you&#39;d hit the limit at around 100 concurrent requests and spend most of your time handshaking.</p>
+<p>A <strong>connection pool</strong> keeps a small set of connections open and lends them out:</p>
+<pre class="is-plain"><code>  100 concurrent requests                       POOL (max 5)                     PostgreSQL
+  ───────────────────────          ┌───────────────────────────────┐        ──────────────
+  req 1  ───┐                      │ conn A ─ busy ────────────────│───────▶ backend A
+  req 2  ───┼──▶ wait for a free ─▶│ conn B ─ busy ────────────────│───────▶ backend B
+  ...       │    connection        │ conn C ─ idle                 │
+  req 100 ──┘                      │ conn D ─ busy                 │
+                                   │ conn E ─ idle                 │
+                                   └───────────────────────────────┘</code></pre>
+<p>I measured it: 100 concurrent queries, each taking 50 ms, through a pool capped at 5:</p>
+<pre class="is-plain"><code>max_connections on the server: 100
+100 queries x 50 ms each through a pool of 5: took 1297 ms (ideal ~ 1000 ms)
+peak server connections used by the pool : 5 (never above 5)</code></pre>
+<p>Twenty &quot;waves&quot; of 5 queries, about 1.3 seconds total, and PostgreSQL never saw more than 5 connections from this app. The pool <strong>queued</strong> the excess requests rather than flooding the database.</p>
+<h3 id="the-pg-pool-in-practice">The <code>pg</code> Pool in practice</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// src/db/pool.js</span>
+<span class="hljs-keyword">import</span> pg <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;pg&#x27;</span>;
+<span class="hljs-keyword">import</span> { config } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../config.js&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> pool = <span class="hljs-keyword">new</span> pg.<span class="hljs-title class_">Pool</span>({
+  <span class="hljs-attr">connectionString</span>: config.<span class="hljs-property">databaseUrl</span>,
+  <span class="hljs-attr">max</span>: <span class="hljs-number">10</span>,                          <span class="hljs-comment">// size it deliberately (see below)</span>
+  <span class="hljs-attr">idleTimeoutMillis</span>: <span class="hljs-number">30_000</span>,        <span class="hljs-comment">// close connections idle this long</span>
+  <span class="hljs-attr">connectionTimeoutMillis</span>: <span class="hljs-number">5_000</span>,   <span class="hljs-comment">// FAIL FAST instead of waiting forever for a free connection</span>
+  <span class="hljs-attr">statement_timeout</span>: <span class="hljs-number">10_000</span>,        <span class="hljs-comment">// the server kills any query that runs over 10 s</span>
+  <span class="hljs-attr">application_name</span>: <span class="hljs-string">&#x27;shopline-api&#x27;</span>, <span class="hljs-comment">// shows up in pg_stat_activity: makes debugging possible</span>
+});
+
+<span class="hljs-comment">// A network blip can error an IDLE client. Without this listener, that crashes Node.</span>
+pool.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;error&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;unexpected idle-client error&#x27;</span>, err.<span class="hljs-property">message</span>));
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">query</span> = (<span class="hljs-params">text, params</span>) =&gt; pool.<span class="hljs-title function_">query</span>(text, params);
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">withClient</span>(<span class="hljs-params">fn</span>) {
+  <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">connect</span>();
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">fn</span>(client);
+  } <span class="hljs-keyword">finally</span> {
+    client.<span class="hljs-title function_">release</span>();                <span class="hljs-comment">// ALWAYS release, even on error</span>
+  }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">closePool</span> = (<span class="hljs-params"></span>) =&gt; pool.<span class="hljs-title function_">end</span>();       <span class="hljs-comment">// call during graceful shutdown (Chapters 4–6)</span></code></pre></div>
+<h3 id="sizing-the-pool">Sizing the pool</h3>
+<p>Rule of thumb for <code>max</code>: <strong>small</strong>. A common starting formula is around <code>(CPU cores of the DB × 2) + spindles</code>, which for modern servers means tens, not hundreds, of <em>total</em> connections across <strong>all</strong> your app instances. More connections ≠ more throughput; beyond a point it <em>reduces</em> it (contention, context switching). Remember the multiplication: <strong><code>pool max × number of app instances ≤ max_connections</code></strong> (with headroom for admin tools and migrations). Ten instances × <code>max: 10</code> = 100 connections = the entire default budget. At larger scale, put an external pooler such as <strong>PgBouncer</strong> in front of PostgreSQL.</p>
+<h3 id="the-connection-leak-the-classic-production-outage">The connection leak (the classic production outage)</h3>
+<p>If code checks out a connection and <strong>never releases</strong> it, the pool slowly empties. I reproduced it: a pool of 2 where two connections were taken and never returned, then a normal query:</p>
+<pre class="is-plain"><code>leak symptom -&gt; timeout exceeded when trying to connect</code></pre>
+<p>Every later query fails or hangs, though PostgreSQL itself is perfectly healthy. (I also observed that <code>pool.end()</code> on a pool with leaked clients <strong>never finished</strong>, because it waits for checked-out clients to come back.) Hence the iron rule: <strong><code>pool.query()</code> for single statements (it releases automatically); <code>pool.connect()</code> only for transactions, always with <code>try/finally { client.release() }</code>.</strong></p>
+<h3 id="transactions-need-a-dedicated-client">Transactions need a dedicated client</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// ❌ WRONG: each pool.query may use a DIFFERENT connection; BEGIN/COMMIT mean nothing</span>
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>);
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE ...&#x27;</span>);
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>);
+
+<span class="hljs-comment">// ✅ RIGHT: one client for the whole transaction</span>
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">withClient</span>(<span class="hljs-keyword">async</span> (c) =&gt; {
+  <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>);
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE accounts SET balance = balance - $1 WHERE id = $2&#x27;</span>, [<span class="hljs-number">70</span>, <span class="hljs-number">1</span>]);
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE accounts SET balance = balance + $1 WHERE id = $2&#x27;</span>, [<span class="hljs-number">70</span>, <span class="hljs-number">2</span>]);
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>);
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;ROLLBACK&#x27;</span>);
+    <span class="hljs-keyword">throw</span> e;
+  }
+});</code></pre></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick-2" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Pool for one-offs, client for transactions, always release.&quot;</strong></p>
+</aside>
+<hr>
+
+<h2 id="12-11-wiring-into-shopline">12.11 Wiring Into ShopLine</h2>
+<p>Our repositories (<a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a>) get a PostgreSQL implementation behind the <em>same</em> interface:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-javascript"><span class="hljs-comment">// src/modules/products/product.repo.postgres.js  (the in-memory twin has identical methods)</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">createPgProductRepo</span>(<span class="hljs-params">{ query }</span>) {
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-keyword">async</span> <span class="hljs-title function_">findById</span>(<span class="hljs-params">id</span>) {
+      <span class="hljs-keyword">const</span> { rows } = <span class="hljs-keyword">await</span> <span class="hljs-title function_">query</span>(
+        <span class="hljs-string">&#x27;SELECT id, name, price_amount AS price, stock FROM products WHERE id = $1&#x27;</span>, [id]);
+      <span class="hljs-keyword">return</span> rows[<span class="hljs-number">0</span>] ?? <span class="hljs-literal">null</span>;
+    },
+    <span class="hljs-keyword">async</span> <span class="hljs-title function_">decrementStock</span>(<span class="hljs-params">id, qty</span>) {
+      <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> <span class="hljs-title function_">query</span>(
+        <span class="hljs-string">&#x27;UPDATE products SET stock = stock - $2 WHERE id = $1 AND stock &gt;= $2&#x27;</span>, [id, qty]);
+      <span class="hljs-keyword">if</span> (r.<span class="hljs-property">rowCount</span> === <span class="hljs-number">0</span>) <span class="hljs-keyword">throw</span> <span class="hljs-title function_">conflict</span>(<span class="hljs-string">&#x27;Insufficient stock&#x27;</span>);   <span class="hljs-comment">// the DB enforces it atomically</span>
+    },
+  };
+}</code></pre></div>
+<p>Look at <code>decrementStock</code>: the check and the decrement are <strong>one atomic statement</strong> (<code>WHERE ... stock &gt;= $2</code>), so two concurrent buyers can never both pass the check (the oversell bug from §11.11). We&#39;ll build the full schema and transactions in Chapters <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">13</a>–16, then swap this repo into the composition root with no service changes.</p>
+<hr>
+
+<h2 id="12-12-edge-cases-and-gotchas-checklist">12.12 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Storing business data in files or in process memory (lost updates, lost data on restart).</li>
+<li><input disabled="" type="checkbox"> Read-modify-write in application code (<code>SELECT</code> then <code>UPDATE</code>) instead of one atomic statement or a transaction.</li>
+<li><input disabled="" type="checkbox"> Multi-step writes with <strong>no transaction</strong> (partial failure destroys consistency).</li>
+<li><input disabled="" type="checkbox"> <code>BEGIN</code>/<code>COMMIT</code> issued through <code>pool.query</code> (different connections).</li>
+<li><input disabled="" type="checkbox"> Forgetting <code>client.release()</code> (leak) or releasing twice.</li>
+<li><input disabled="" type="checkbox"> String-concatenated SQL anywhere, including <code>ORDER BY</code> and <code>LIMIT</code>, and ORM raw-query escape hatches.</li>
+<li><input disabled="" type="checkbox"> App connecting as a superuser/owner with permission to drop tables.</li>
+<li><input disabled="" type="checkbox"> Database port exposed to the internet.</li>
+<li><input disabled="" type="checkbox"> <code>pool max × instances</code> greater than <code>max_connections</code>.</li>
+<li><input disabled="" type="checkbox"> No <code>connectionTimeoutMillis</code> or <code>statement_timeout</code> → requests pile up behind one slow query.</li>
+<li><input disabled="" type="checkbox"> No <code>pool.on(&#39;error&#39;)</code> listener → an idle-connection error crashes the process.</li>
+<li><input disabled="" type="checkbox"> No constraints declared; relying on application code alone for integrity.</li>
+<li><input disabled="" type="checkbox"> Running heavy analytics directly on the primary OLTP database.</li>
+<li><input disabled="" type="checkbox"> Reading from a replica right after a write without accounting for replication lag.</li>
+<li><input disabled="" type="checkbox"> Two stores both treated as the source of truth for the same data.</li>
+<li><input disabled="" type="checkbox"> Choosing a database from hype instead of access patterns and measured needs.</li>
+<li><input disabled="" type="checkbox"> Long-running transactions blocking VACUUM and holding locks.</li>
+<li><input disabled="" type="checkbox"> No backups or untested restores (a backup you haven&#39;t restored is a hope, not a backup).</li>
+</ul>
+<hr>
+
+<h2 id="12-13-chapter-summary">12.13 Chapter Summary</h2>
+<ul>
+<li>Files fail at <strong>concurrency, crash safety, querying, integrity and scale</strong>. We watched a JSON file lose 199 of 200 sales while PostgreSQL got all 200 right.</li>
+<li>A <strong>DBMS</strong> bundles a parser, <strong>cost-based planner</strong>, executor, transaction manager, buffer cache, storage engine and <strong>write-ahead log</strong>. SQL says <em>what</em>; the planner decides <em>how</em>.</li>
+<li>Database <strong>families</strong> fit different shapes: relational, document, key-value, wide-column, graph, time-series, search, vector, columnar, object. <strong>Default to PostgreSQL</strong> and add specialists for measured needs; keep <strong>one source of truth</strong> per fact (polyglot persistence).</li>
+<li><strong>ACID:</strong> Atomicity (rollback, demonstrated), Consistency (declared constraints), Isolation (levels; Chapter 16), Durability (WAL + fsync).</li>
+<li>Data lives in <strong>8 KB pages</strong>; a <strong>sequential scan</strong> touched 1,274 pages (9.2 ms) while a <strong>B-tree index</strong> touched about 4 (0.095 ms), a roughly 100× gain, at the cost of disk space and write speed. <strong>MVCC</strong> writes new row versions, so <strong>VACUUM</strong> matters.</li>
+<li><strong>CAP:</strong> during a partition choose consistency or availability (P isn&#39;t optional); <strong>PACELC</strong> adds the latency-vs-consistency trade-off in normal operation. Replicas bring <strong>eventual consistency</strong>.</li>
+<li><strong>Replication</strong> copies data (availability, read scale); <strong>sharding</strong> splits it (write scale), and should be delayed as long as possible.</li>
+<li>From Node: <strong>always parameterize</strong> (SQL injection demonstrated), whitelist identifiers, use a <strong>pool</strong> (sized small; <code>pool max × instances ≤ max_connections</code>), release every client, and use a dedicated client for transactions.</li>
+</ul>
+<hr>
+
+<h2 id="12-14-revision-notes">12.14 Revision Notes</h2>
+<ul>
+<li>Lost update = concurrent read-modify-write. Fix: atomic <code>UPDATE ... SET x = x - 1</code>, transactions, or locks.</li>
+<li>DBMS pipeline: parse → plan (optimizer) → execute → transaction manager → buffer cache → storage → WAL.</li>
+<li>ACID: <strong>A</strong>tomic (all/none), <strong>C</strong>onsistent (rules hold), <strong>I</strong>solated (levels), <strong>D</strong>urable (WAL).</li>
+<li>Page = 8 KB; <code>ctid</code> = (page, slot); seq scan reads all pages; B-tree lookup ≈ 3–4 page reads; index costs space + write time.</li>
+<li>MVCC = new version per update; VACUUM cleans dead rows; avoid long transactions.</li>
+<li>B-tree (in-place, balanced reads) vs LSM (append + compaction, write-heavy).</li>
+<li>CAP: C vs A <em>during partition</em>; PACELC: else L vs C. ACID-C ≠ CAP-C.</li>
+<li>Replication = copies; sharding = splits. Replica lag ⇒ stale reads.</li>
+<li><code>$1</code> params for values; whitelist for identifiers; never concatenate.</li>
+<li>Pool: <code>max</code> small; <code>connectionTimeoutMillis</code>; <code>statement_timeout</code>; <code>pool.on(&#39;error&#39;)</code>; release always; transactions on one client.</li>
+</ul>
+<hr>
+
+<h2 id="12-15-mind-map-ascii">12.15 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                            DATABASE FUNDAMENTALS (Ch. 12)
+                                         │
+   ┌──────────┬────────────┬────────────┼────────────┬──────────────┬─────────────┐
+ WHY DB      WHAT IT IS    FAMILIES      ACID        STORAGE         DISTRIBUTED   FROM NODE
+   │            │             │           │             │               │             │
+ files lose   parser         relational  Atomic:      8KB pages       CAP: C vs A     $1 params
+ updates      planner        document    rollback     ctid            under           (SQL injection)
+ (199/200!)   executor       key-value   Consistent:  seq scan        partition       whitelist
+ no crash     txn mgr        wide-col    constraints  vs B-tree       PACELC: L vs C  identifiers
+ safety       buffer cache   graph       Isolated:    MVCC+VACUUM     replication     connection pool
+ no integrity WAL            time-series levels       B-tree vs LSM   sharding        (small!)
+              storage        search      Durable:     row vs column   eventual        release always
+                             vector      WAL+fsync    OLTP vs OLAP    consistency     txn = 1 client
+                             → default PostgreSQL; one source of truth per fact</code></pre>
+<hr>
+
+<h2 id="12-16-cheat-sheet">12.16 Cheat Sheet</h2>
+<pre class="is-plain"><code>WHY DB       concurrency · crash-safety · querying · integrity · scale (C-C-Q-I-S)
+ACID         BEGIN; ... COMMIT;  |  ROLLBACK;   → all-or-nothing, rules enforced, isolated, durable (WAL)
+CONSTRAINTS  NOT NULL · UNIQUE · CHECK (stock &gt;= 0) · PRIMARY KEY · FOREIGN KEY   (declare them!)
+ATOMIC OP    UPDATE products SET stock = stock - $2 WHERE id = $1 AND stock &gt;= $2   (check + change in one statement)
+STORAGE      8 KB pages · ctid=(page,slot) · Seq Scan reads all pages · B-tree ≈ log n page reads
+             index = faster reads, slower writes, extra disk
+MVCC         UPDATE = new row version · VACUUM reclaims dead rows · long txns block cleanup
+CAP/PACELC   partition → choose C or A · else → choose Latency or Consistency
+SCALE        replicas copy (reads, HA, lag!) · shards split (writes, hard) · delay sharding
+PG (docker)  docker run -d --name pg -e POSTGRES_PASSWORD=pw -p 127.0.0.1:5432:5432 postgres:17-alpine
+NODE         npm i pg → new pg.Pool({ connectionString, max:10, connectionTimeoutMillis:5000, statement_timeout:10000 })
+SAFE SQL     pool.query('... WHERE email = $1', [email])     ORDER BY → whitelist map, never interpolate
+TXN          const c = await pool.connect(); try { BEGIN … COMMIT } catch { ROLLBACK } finally { c.release() }
+POOL MATH    pool.max × app instances ≤ max_connections (default 100); PgBouncer beyond that
+GOLDEN       One source of truth per fact. Parameterize everything. Release every connection.</code></pre>
+<hr>
+
+<h2 id="12-17-key-takeaways">12.17 Key Takeaways</h2>
+<ol>
+<li><strong>A database is concentrated engineering for concurrency, durability and querying.</strong> Don&#39;t rebuild it with files.</li>
+<li><strong>Transactions are what make multi-step changes safe</strong>; the database&#39;s constraints are your last line of defense, so declare them.</li>
+<li><strong>Indexes trade space and write speed for read speed</strong>: the difference between touching 4 pages and 1,274.</li>
+<li>In distributed setups you always trade <strong>consistency against availability/latency</strong>; replica lag is the everyday form of that trade.</li>
+<li><strong>Default to PostgreSQL</strong>; specialize only for measured needs; one source of truth per fact.</li>
+<li>In code: <strong>parameterize, pool, release</strong>, and keep transactions on a single client.</li>
+</ol>
+<hr>
+
+<h2 id="12-18-20-multiple-choice-questions">12.18 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Many requests read the same value then wrote back."><p class="quiz-text">What caused the JSON-file demo to lose almost all of its 200 sales?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Slow disk</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Concurrent read-modify-write operations overwrote one another (lost updates)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JSON syntax errors</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Node memory limits</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="d" data-why="Syntax isn't a reason."><p class="quiz-text">Which is NOT a main reason to use a database instead of a file?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Concurrency control</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Crash safety</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Indexed querying</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Prettier syntax</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="All or nothing."><p class="quiz-text">In ACID, what does Atomicity guarantee?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Queries are fast</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">All operations in a transaction succeed together or none take effect</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Data is encrypted</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Data is replicated</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="The DB enforces rules you declare."><p class="quiz-text">The &quot;C&quot; in ACID mainly depends on:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Replication lag</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Constraints and rules you declare in the schema</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The CPU</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The network</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="WAL is flushed first and replayed on recovery."><p class="quiz-text">How does the Write-Ahead Log provide durability?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">By caching queries</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">By recording changes sequentially on disk before the commit is acknowledged, so they can be replayed after a crash</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">By compressing data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">By sharding</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="8 KB I/O unit."><p class="quiz-text">What is a PostgreSQL page?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A web page</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A fixed-size (8 KB) block of storage holding many rows</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">An index</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A transaction</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="4 pages vs 1,274."><p class="quiz-text">In the experiment, why was the index lookup faster than the sequential scan?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It used more CPU</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It touched about 4 pages instead of all 1,274</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It cached the query</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It skipped the WHERE clause</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Space plus write overhead."><p class="quiz-text">What is a cost of adding an index?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">None</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Extra disk space and slower INSERT/UPDATE/DELETE</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Slower SELECTs</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Loss of constraints</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="MVCC row versions."><p class="quiz-text">What does MVCC do on an <code>UPDATE</code> in PostgreSQL?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Overwrites the row in place</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Writes a new row version and marks the old one dead</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Deletes the table</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Locks the whole database</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="VACUUM (autovacuum)."><p class="quiz-text">What reclaims dead row versions?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">COMMIT</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">VACUUM</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">ROLLBACK</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The OS</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="C vs A under partition."><p class="quiz-text">According to CAP, during a network partition a distributed database must choose between:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Speed and size</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Consistency and availability</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Durability and atomicity</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Reads and writes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Else latency vs consistency."><p class="quiz-text">What does PACELC add to CAP?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A third guarantee</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The latency-vs-consistency trade-off during normal (no-partition) operation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Encryption</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sharding rules</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Replica hadn't received the write."><p class="quiz-text">A user updates their profile, reloads, and sees old data from a read replica. This is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Corruption</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Replication lag (eventual consistency)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">SQL injection</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A deadlock</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Copies vs splits."><p class="quiz-text">What is the difference between replication and sharding?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">None</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Replication copies the same data to multiple nodes; sharding splits different data across nodes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sharding copies data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Replication splits data</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Values never become SQL code."><p class="quiz-text">Which defends against SQL injection?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Escaping quotes manually</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Parameterized queries (<code>$1</code>, <code>$2</code>) with values passed separately</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Using single quotes only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Lowercasing input</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Identifiers can't be parameters."><p class="quiz-text">How should a user-chosen sort column be handled?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Interpolate it directly</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Map it through a whitelist of allowed column names</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Pass it as <code>$1</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Strip spaces</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Cost and limits."><p class="quiz-text">What problem does a connection pool solve?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Slow SQL</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The expense of opening connections per request and exceeding the database&#39;s connection limit</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Missing indexes</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Encryption</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Pool hands out different connections."><p class="quiz-text">What&#39;s wrong with <code>pool.query(&#39;BEGIN&#39;); pool.query(&#39;UPDATE...&#39;); pool.query(&#39;COMMIT&#39;)</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Each call may use a different connection, so the transaction isn&#39;t one unit</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">COMMIT is invalid</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s too fast</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Pool exhaustion."><p class="quiz-text">If code takes a client from the pool and never releases it, what symptom appears?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Faster queries</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Eventually all queries time out waiting for a connection</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Automatic repair</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">More RAM free</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Default relational choice."><p class="quiz-text">Which is the best default database choice for core business data with relationships and integrity rules?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A key-value store</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">PostgreSQL (relational)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A flat file</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A graph database</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-d, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="12-19-20-hands-on-exercises">12.19 20 Hands-on Exercises</h2>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Start PostgreSQL in Docker (bound to <code>127.0.0.1</code>) and connect with <code>psql</code>. Run <code>SELECT version();</code>.</li>
+<li>Reproduce the JSON-file lost-update demo with 50, 200 and 1,000 concurrent &quot;sales&quot;. Chart the final stock vs the correct value.</li>
+<li>Create a table with <code>CHECK (stock &gt;= 0)</code> and try to violate it. Read the error code and constraint name.</li>
+<li>Run <code>SHOW max_connections;</code> and <code>SHOW block_size;</code>. Explain what each means for your app.</li>
+<li>Create a table, insert 100,000 rows using <code>generate_series</code>, and measure its size with <code>pg_relation_size</code>.</li>
+<li>Use <code>SELECT ctid, * FROM t LIMIT 5</code> and explain the <code>ctid</code> values.</li>
+<li>Write the parameterized version of three queries that currently use string concatenation.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="8">
+<li>Reproduce the transfer demo; add a deliberate crash between the two updates and show the effect with and without a transaction.</li>
+<li>Run <code>EXPLAIN (ANALYZE, BUFFERS)</code> before and after creating an index; record pages touched and time for 10k, 100k and 1M rows. Plot the growth of each.</li>
+<li>Measure how an index affects write speed: time inserting 100k rows into a table with 0, 1, 3 and 5 indexes.</li>
+<li>Demonstrate MVCC bloat: update the same 100k rows 5 times, check table size with <code>pg_relation_size</code>, run <code>VACUUM</code>, check again, and note <code>n_dead_tup</code> in <code>pg_stat_user_tables</code>.</li>
+<li>Reproduce the pool experiment with pool sizes 1, 5, 20 and 100 for 200 queries of <code>pg_sleep(0.05)</code>. Plot total time and peak connections; explain the shape.</li>
+<li>Reproduce a connection leak and observe the symptom; then fix it with <code>try/finally</code>. Add a pool-health log line (<code>totalCount</code>, <code>idleCount</code>, <code>waitingCount</code>).</li>
+<li>Build <code>withTransaction(fn)</code> that begins, commits, rolls back on error and always releases; test it with a failing callback.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="15">
+<li>Write a test proving a SQL injection works against an unsafe repository method and is blocked by the parameterized one. Add it to the test suite as a regression test.</li>
+<li>Implement a whitelisted <code>ORDER BY</code> helper supporting direction (<code>asc|desc</code>) and multiple columns; fuzz it with hostile inputs.</li>
+<li>Using two <code>psql</code> sessions, demonstrate that a long-open transaction prevents VACUUM from cleaning dead tuples (<code>pg_stat_activity</code>, <code>n_dead_tup</code>).</li>
+<li>Show replication lag: run a primary and a streaming replica (two Docker containers), write on the primary, read immediately from the replica, and measure lag with <code>pg_stat_replication</code>.</li>
+<li>Compare a row-oriented query (<code>SELECT *</code> by id) with an analytical query (<code>SELECT sum(price)</code> over 5M rows) in PostgreSQL vs a columnar engine (DuckDB or ClickHouse local). Record times and explain.</li>
+<li>Write a one-page database decision record for ShopLine: list its top 10 access patterns, pick stores for each data type, name the single source of truth for each fact, and state the measured threshold that would make you add a replica or shard.</li>
+</ol>
+<hr>
+
+<h2 id="12-20-5-interview-questions">12.20 5 Interview Questions</h2>
+<p><strong>1. Explain ACID using a real example. Which properties are enforced by what?</strong>
+<em>Model answer:</em> A bank transfer: atomicity (both updates or neither, via transactions/rollback); consistency (declared constraints such as <code>CHECK (balance &gt;= 0)</code> and foreign keys keep data valid); isolation (concurrent transfers don&#39;t see partial results, via locks/MVCC at a chosen isolation level); durability (a committed transfer survives a crash because the WAL is flushed before commit is acknowledged). I&#39;d note that &quot;consistency&quot; depends on the rules you declare, and that isolation has levels trading strictness for concurrency.</p>
+<p><strong>2. What does an index do, and when would it <em>not</em> help?</strong>
+<em>Model answer:</em> An index (typically a B-tree) maps key values to row locations so lookups touch O(log n) pages instead of scanning the table, which we measured at about 4 pages versus 1,274. It doesn&#39;t help when the query returns most of the table (a seq scan is cheaper), when the predicate can&#39;t use the index (function on the column, leading wildcard <code>LIKE &#39;%x&#39;</code>, type mismatch), on tiny tables, or for low-selectivity columns (a boolean). It also costs disk space and slows writes, so index what queries actually need and verify with <code>EXPLAIN ANALYZE</code>.</p>
+<p><strong>3. What is the CAP theorem? What are common misconceptions?</strong>
+<em>Model answer:</em> In a distributed system with replicated data, during a network partition you can&#39;t have both linearizable consistency and availability; you pick one. Misconceptions: it isn&#39;t &quot;choose any two&quot; (partitions are unavoidable, so P isn&#39;t optional), it says nothing about normal operation (PACELC covers latency vs consistency), systems are often tunable per operation, and CAP-consistency is not ACID-consistency.</p>
+<p><strong>4. How do you prevent SQL injection? Does an ORM make you immune?</strong>
+<em>Model answer:</em> Use parameterized queries/prepared statements so values are sent separately from SQL text; whitelist identifiers and sort directions since they can&#39;t be parameters; apply least-privilege DB credentials; validate input shape as defense in depth. ORMs parameterize their normal APIs but raw-query and string-interpolation escape hatches reintroduce the risk, so the same rules apply.</p>
+<p><strong>5. Your Node service intermittently hangs and logs &quot;timeout acquiring connection.&quot; How do you investigate?</strong>
+<em>Model answer:</em> Suspect pool exhaustion: check pool metrics (<code>totalCount/idleCount/waitingCount</code>), look for code paths that <code>pool.connect()</code> without <code>release()</code> in error paths, transactions held open across slow external calls, long-running queries (check <code>pg_stat_activity</code> and <code>statement_timeout</code>), and a pool too small or <code>max × instances</code> exceeding <code>max_connections</code>. Fix leaks with <code>try/finally</code>, add timeouts, keep transactions short, size the pool appropriately, and consider PgBouncer.</p>
+<hr>
+
+<h2 id="12-21-3-real-projects">12.21 3 Real Projects</h2>
+<p><strong>Project 1: Reproduce and Fix Race Conditions (beginner–intermediate, ~4 hours).</strong>
+Build a tiny &quot;tickets&quot; API with three storage backends: an in-memory variable, a JSON file, and PostgreSQL (<code>UPDATE ... WHERE remaining &gt; 0</code>). Write a load script firing 1,000 concurrent purchases for 100 tickets, and report oversold counts and final stock for each backend. Add a transaction-based variant and <code>SELECT ... FOR UPDATE</code> variant; explain the results.</p>
+<p><strong>Project 2: Index Lab (intermediate, ~6 hours).</strong>
+Generate a 5M-row <code>orders</code> table (users, status, amount, created_at). Write 10 realistic queries; for each capture the plan with no index, then design the minimal useful index (single, composite, partial) and measure speed-up, index size and write slowdown. Produce a table and a recommendation: which indexes you&#39;d keep, and which you&#39;d refuse.</p>
+<p><strong>Project 3: Pool Doctor (intermediate–advanced, ~6 hours).</strong>
+A reusable <code>createDb()</code> module wrapping <code>pg.Pool</code> with timeouts, health check endpoint, metrics (pool counts, query durations, slow-query log), a <code>withTransaction</code> helper, and graceful shutdown. Add a chaos test: kill PostgreSQL mid-traffic, introduce a connection leak, exceed <code>max_connections</code>, and show how the module surfaces and survives each failure. Document runbook steps for each alert.</p>
+<hr>
+
+<h2 id="12-22-further-reading">12.22 Further Reading</h2>
+<ul>
+<li><em>Designing Data-Intensive Applications</em> by Martin Kleppmann: chapters 2–3 (data models, storage engines), 5 (replication), 7 (transactions), 9 (consistency). The single best book for this part of the course.</li>
+<li>PostgreSQL documentation: <em>Internals</em> chapters on <em>Database Physical Storage</em>, <em>Write-Ahead Logging</em>, and <em>MVCC</em> (postgresql.org/docs).</li>
+<li><em>The Internals of PostgreSQL</em> by Hironobu Suzuki (interdb.jp): free and excellent.</li>
+<li>Use The Index, Luke! (use-the-index-luke.com): indexing explained for developers.</li>
+<li>Eric Brewer, <em>CAP Twelve Years Later</em>; Daniel Abadi, <em>Consistency Tradeoffs in Modern Distributed Database System Design</em> (PACELC).</li>
+<li>OWASP: <em>SQL Injection Prevention Cheat Sheet</em>.</li>
+<li><code>node-postgres</code> documentation (node-postgres.com): pooling, transactions and error handling.</li>
+<li>PgBouncer documentation for production connection pooling.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-13-sql-mastery-postgresql">Up next → Chapter 13: SQL Mastery (PostgreSQL)</h3>
+<p>You now know <em>why</em> databases work the way they do and how to talk to one safely from Node. Next you learn the language itself: from <code>SELECT</code> and <code>JOIN</code> through subqueries, CTEs, window functions and aggregations, building ShopLine&#39;s real schema and answering real business questions with a single query.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Database Fundamentals: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What does ACID mean?</h3></summary><p>Atomicity (all or nothing), Consistency (rules always hold), Isolation (concurrent transactions do not corrupt each other) and Durability (committed data survives a crash).</p></details>
+<details class="learn-faq-item"><summary><h3>Why use a connection pool?</h3></summary><p>Opening a database connection is slow and each one costs memory on the server. A pool reuses a small, bounded set of connections across requests.</p></details>
+<details class="learn-faq-item"><summary><h3>What is MVCC?</h3></summary><p>Multi-version concurrency control keeps several versions of a row so readers see a consistent snapshot without blocking writers.</p></details>
+<details class="learn-faq-item"><summary><h3>How do you prevent SQL injection?</h3></summary><p>Never build SQL by concatenating user input. Use parameterised queries ($1, $2) and whitelist any identifiers such as sort columns.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span>&larr; Previous &middot; Chapter 11</span><strong>Backend Architecture: Modular Monolith</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span>Next &middot; Chapter 13 &rarr;</span><strong>PostgreSQL SQL: Joins &amp; Window Functions</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#12-0-why-this-chapter-matters">12.0 Why This Chapter Matters</a></li><li><a href="#12-1-why-not-just-use-files">12.1 Why Not Just Use Files?</a></li><li><a href="#12-2-what-a-database-management-system-does">12.2 What a Database Management System Does</a></li><li><a href="#12-3-the-families-of-databases">12.3 The Families of Databases</a></li><li><a href="#12-4-acid-the-four-promises-of-a-transaction">12.4 ACID: The Four Promises of a Transaction</a></li><li><a href="#12-5-how-a-database-stores-data-on-disk">12.5 How a Database Stores Data on Disk</a></li><li><a href="#12-6-schemas-rigid-vs-flexible">12.6 Schemas: Rigid vs Flexible</a></li><li><a href="#12-7-cap-and-pacelc-distributed-databases-and-their-trade-offs">12.7 CAP and PACELC: Distributed Databases and Their Trade-offs</a></li><li><a href="#12-8-replication-and-sharding-a-preview">12.8 Replication and Sharding: A Preview</a></li><li><a href="#12-9-choosing-a-database-a-practical-framework">12.9 Choosing a Database: A Practical Framework</a></li><li><a href="#12-10-using-postgresql-from-node-js">12.10 Using PostgreSQL From Node.js</a></li><li><a href="#12-11-wiring-into-shopline">12.11 Wiring Into ShopLine</a></li><li><a href="#12-12-edge-cases-and-gotchas-checklist">12.12 Edge Cases and Gotchas Checklist</a></li><li><a href="#12-13-chapter-summary">12.13 Chapter Summary</a></li><li><a href="#12-14-revision-notes">12.14 Revision Notes</a></li><li><a href="#12-15-mind-map-ascii">12.15 Mind Map (ASCII)</a></li><li><a href="#12-16-cheat-sheet">12.16 Cheat Sheet</a></li><li><a href="#12-17-key-takeaways">12.17 Key Takeaways</a></li><li><a href="#12-18-20-multiple-choice-questions">12.18 20 Multiple Choice Questions</a></li><li><a href="#12-19-20-hands-on-exercises">12.19 20 Hands-on Exercises</a></li><li><a href="#12-20-5-interview-questions">12.20 5 Interview Questions</a></li><li><a href="#12-21-3-real-projects">12.21 3 Real Projects</a></li><li><a href="#12-22-further-reading">12.22 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "database-fundamentals-acid-cap-mvcc"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Error Handling &amp; Resilience: Retries | Backend Master</title>
+    <meta name="description" content="Design for failure in Node.js: operational vs programmer errors, timeouts, retries with jitter, circuit breakers, bulkheads, idempotency and chaos testing.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="error handling nodejs, retry with exponential backoff jitter, circuit breaker pattern, bulkhead pattern, timeouts, idempotency key, retry storm, graceful degradation, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/caching-strategies-http-cache-redis-invalidation">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="error handling nodejs">
+    <meta property="article:tag" content="retry with exponential backoff jitter">
+    <meta property="article:tag" content="circuit breaker pattern">
+    <meta property="article:tag" content="bulkhead pattern">
+    <meta property="article:tag" content="timeouts">
+    <meta property="article:tag" content="idempotency key">
+    <meta property="article:tag" content="retry storm">
+    <meta property="article:tag" content="graceful degradation">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Error Handling &amp; Resilience: Retries">
+    <meta property="og:description" content="Design for failure in Node.js: operational vs programmer errors, timeouts, retries with jitter, circuit breakers, bulkheads, idempotency and chaos testing.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/error-handling-resilience-retries-circuit-breaker.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Error Handling and Resilience: Timeouts, Retries, Circuit Breakers and Bulkheads: Backend Master chapter 26">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Error Handling &amp; Resilience: Retries">
+    <meta name="twitter:description" content="Design for failure in Node.js: operational vs programmer errors, timeouts, retries with jitter, circuit breakers, bulkheads, idempotency and chaos testing.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/error-handling-resilience-retries-circuit-breaker.png">
+    <meta name="twitter:image:alt" content="Error Handling and Resilience: Timeouts, Retries, Circuit Breakers and Bulkheads: Backend Master chapter 26">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker",
+          "name": "Error Handling & Resilience: Retries | Backend Master",
+          "description": "Design for failure in Node.js: operational vs programmer errors, timeouts, retries with jitter, circuit breakers, bulkheads, idempotency and chaos testing.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/error-handling-resilience-retries-circuit-breaker.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Error Handling and Resilience: Timeouts, Retries, Circuit Breakers and Bulkheads"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#webpage"
+          },
+          "headline": "Error Handling and Resilience: Timeouts, Retries, Circuit Breakers and Bulkheads",
+          "alternativeHeadline": "Error Handling and Resilience — Designing for Failure",
+          "description": "Design for failure in Node.js: operational vs programmer errors, timeouts, retries with jitter, circuit breakers, bulkheads, idempotency and chaos testing.",
+          "abstract": "Everything fails, so resilience is what the system does next. This chapter builds a small toolkit and tests it against simulated failing dependencies: timeouts, retries with backoff and jitter, the retry storm, a circuit breaker, a bulkhead that kept an unrelated endpoint fast, and why retries without idempotency keys caused extra charges.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/error-handling-resilience-retries-circuit-breaker.png",
+          "url": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6759,
+          "timeRequired": "PT31M",
+          "articleSection": "Backend Development",
+          "keywords": "error handling nodejs, retry with exponential backoff jitter, circuit breaker pattern, bulkhead pattern, timeouts, idempotency key, retry storm, graceful degradation",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "Operational versus programmer errors",
+            "Timeouts and why abort signals are not enough",
+            "Retries, backoff, jitter and retry storms",
+            "Circuit breakers and bulkheads",
+            "Idempotency, fallbacks and process-level error policy"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "error handling nodejs"
+          },
+          "isAccessibleForFree": true,
+          "position": 26,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability#article",
+            "name": "Logging, Monitoring, Tracing and Debugging a Live Node.js Service",
+            "url": "https://shivamthakur.me/learn/backend-master/logging-monitoring-tracing-nodejs-observability"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Error Handling & Resilience: Retries",
+              "item": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What should a Node.js process do on an uncaught exception?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Log it with context, flush logs and exit so a supervisor starts a clean process. Swallowing the error can leave corrupt state, as our half-completed money transfer showed."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why add jitter to retries?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Without jitter every client retries at the same moments, creating synchronized waves that can re-overload a recovering service. Jitter spreads retries over time."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What does a circuit breaker do?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "After repeated failures it stops calling the dependency for a while and fails fast, then probes occasionally to detect recovery, saving resources and letting the dependency recover."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why are retries dangerous for payments?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A timeout does not tell you whether the charge happened. Retrying without an idempotency key produced 40 extra charges in our simulation; with a key there was exactly one per order."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#quiz",
+          "name": "Error Handling & Resilience: Retries: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "error handling nodejs"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/error-handling-resilience-retries-circuit-breaker#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is an operational error?",
+              "text": "Which is an operational error?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A database connection refused"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "TypeError: x is not a function"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A forgotten await"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An off-by-one bug"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Right response to a programmer error:",
+              "text": "Right response to a programmer error:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Log, flush and crash so a clean process restarts"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Swallow and continue"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retry forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ignore"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is a call with no timeout dangerous?",
+              "text": "Why is a call with no timeout dangerous?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It can wait forever, holding resources until the pool is exhausted"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It uses more CPU"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It throws"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did my first withTimeout fail to time out?",
+              "text": "Why did my first withTimeout fail to time out?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Aborting a signal does nothing when the callee ignores the signal; the promise wasn't raced"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Wrong units"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Timer bug in Node"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retry interfered"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A timeout on a payment call means:",
+              "text": "A timeout on a payment call means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You don't know whether it happened; use an idempotency key"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The payment definitely failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The payment succeeded"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retry without a key"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which errors should normally NOT be retried?",
+              "text": "Which errors should normally NOT be retried?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "400/422/404 client errors"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "503"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Connection reset"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Timeouts"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "With a 50% failure rate and 3 retries, expected success is about:",
+              "text": "With a 50% failure rate and 3 retries, expected success is about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "93.8%"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "50%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "99.9%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "75%"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Retry cost: the dependency saw roughly what load multiplier in our test?",
+              "text": "Retry cost: the dependency saw roughly what load multiplier in our test?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "~1.9–2×"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1.0×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "10×"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0.5×"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Exponential backoff without jitter causes:",
+              "text": "Exponential backoff without jitter causes:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Synchronised retry pulses (thundering herd)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Faster retries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Fewer retries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "\"Full jitter\" waits:",
+              "text": "\"Full jitter\" waits:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A random time between 0 and the exponential cap"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Exactly the cap"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Zero"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Twice the cap"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Retrying at the browser, API, service and SDK layers (3 retries each) can yield:",
+              "text": "Retrying at the browser, API, service and SDK layers (3 retries each) can yield:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "81 attempts"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "3 attempts"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "12"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "4"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A circuit breaker in the open state:",
+              "text": "A circuit breaker in the open state:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Rejects calls immediately without calling the dependency"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Sends all calls through"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Restarts the service"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retries faster"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The half-open state is for:",
+              "text": "The half-open state is for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Probing whether the dependency has recovered"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Shutting down"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Logging"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Load balancing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our breaker test the p95 latency barely changed because:",
+              "text": "In our breaker test the p95 latency barely changed because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The remaining timeouts were >5% of requests; the benefit was reduced load and instant failures"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The breaker is useless"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The test was broken"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Timeouts were disabled"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The bulkhead experiment reduced the fast endpoint's p50 from about:",
+              "text": "The bulkhead experiment reduced the fast endpoint's p50 from about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "9 s to 159 ms"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "159 ms to 9 s"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "20 ms to 10 ms"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No change"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A bulkhead protects by:",
+              "text": "A bulkhead protects by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Limiting concurrent use of a shared resource per dependency, rejecting excess fast"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Making the slow dependency faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retrying"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Caching"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Timeouts+retries without idempotency in the chaos test produced:",
+              "text": "Timeouts+retries without idempotency in the chaos test produced:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "40 extra charges"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Perfect results"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "No change"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Fewer orders"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Idempotency keys should be generated:",
+              "text": "Idempotency keys should be generated:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Once per logical operation and reused across retries"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Per attempt"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Randomly each retry"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "By the provider"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In Node 22, an unhandled promise rejection:",
+              "text": "In Node 22, an unhandled promise rejection:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Crashes the process (exit code 1) by default"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is ignored"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only warns"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Restarts the server automatically"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why is swallowing uncaughtException dangerous?",
+              "text": "Why is swallowing uncaughtException dangerous?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The process continues in an unknown, possibly corrupt state (e.g., half-completed transfer)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It leaks memory only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Express forbids it"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Error Handling &amp; Resilience: Retries</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:72.2%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item active" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" aria-current="page"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 26 of 36 &middot; Advanced</p>
+                        <h1>Error Handling and Resilience: Timeouts, Retries, Circuit Breakers and Bulkheads</h1>
+                        <p class="learn-book-title">Error Handling and Resilience — Designing for Failure</p>
+                        <ul class="learn-meta text-caption">
+                            <li>31 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/error-handling-resilience-retries-circuit-breaker.webp"><img src="../../assets/images/learn/backend-master/error-handling-resilience-retries-circuit-breaker.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Error Handling and Resilience: Timeouts, Retries, Circuit Breakers and Bulkheads: Backend Master chapter 26 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Everything fails, so resilience is what the system does next. This chapter builds a small toolkit and tests it against simulated failing dependencies: timeouts, retries with backoff and jitter, the retry storm, a circuit breaker, a bulkhead that kept an unrelated endpoint fast, and why retries without idempotency keys caused extra charges.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Operational versus programmer errors</li><li>Timeouts and why abort signals are not enough</li><li>Retries, backoff, jitter and retry storms</li><li>Circuit breakers and bulkheads</li><li>Idempotency, fallbacks and process-level error policy</li></ul>
+                        </section>
+<hr>
+
+<h2 id="26-0-why-this-chapter-matters">26.0 Why This Chapter Matters</h2>
+<p>Everything fails. Disks fill. Networks drop packets. A payment gateway returns <code>503</code> for ninety seconds. A dependency doesn&#39;t fail at all: it just goes <em>slow</em>, which is worse. Your own code throws an exception nobody predicted.</p>
+<p>Beginners write the <em>happy path</em> and treat failure as a rare exception. Production engineers know the truth Werner Vogels (Amazon&#39;s CTO) put in one sentence: <strong>&quot;Everything fails, all the time.&quot;</strong> The difference between a resilient system and a fragile one is not whether failures happen; it&#39;s <strong>what the system does when they do</strong>:</p>
+<ul>
+<li>Does one slow dependency drag <strong>the whole site</strong> down with it?</li>
+<li>Does a retry loop turn a 10-second blip into a <strong>30-minute outage</strong>?</li>
+<li>Does a timeout after a <em>successful</em> payment cause the customer to be <strong>charged twice</strong>?</li>
+<li>When the recommendation service dies, does the product page <strong>break</strong>, or just show a plainer page?</li>
+</ul>
+<p><a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a> let you <em>see</em> failures. This chapter teaches you to <em>survive</em> them. Every pattern below is implemented in a small dependency-free toolkit (<a href="/learn/backend-master/resources/ch26/resilience.mjs">resilience.mjs</a>) and <strong>put through a simulated failing dependency</strong>, with measured numbers:</p>
+<ul>
+<li><strong>Error taxonomy</strong>: operational errors vs programmer errors, and what to do with each.</li>
+<li><strong>Timeouts</strong>: the one setting that prevents most cascading failures.</li>
+<li><strong>Retries</strong> with exponential backoff and jitter, and the <strong>retry storm</strong>.</li>
+<li><strong>Circuit breakers</strong> (fail fast, recover automatically).</li>
+<li><strong>Bulkheads</strong> (isolate failures so a slow dependency can&#39;t starve everything else).</li>
+<li><strong>Fallbacks and graceful degradation.</strong></li>
+<li><strong>Idempotency</strong>: why retries without it double-charge customers.</li>
+<li><strong>Process-level errors</strong>: <code>unhandledRejection</code>, <code>uncaughtException</code>, and why swallowing them is dangerous.</li>
+<li><strong>Chaos testing</strong> the whole stack.</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>All outputs are real, from the labs in <a href="/learn/backend-master/resources/ch26/README.txt">resources/ch26/</a> on Node 22.17. The dependencies are <strong>simulated</strong> (an in-process fake with controllable latency/failure, plus real HTTP sockets for the hung-server timeout test), so the numbers show <em>patterns</em>, not benchmarks of any real service. <strong>Not run:</strong> libraries such as <code>opossum</code> (circuit breaker), <code>cockatiel</code>, <code>p-retry</code>; service meshes (Envoy/Istio retries and outlier detection); Kubernetes restarts; real failure injection (Chaos Monkey, Toxiproxy, Gremlin). They&#39;re described only.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>On <strong>December 24, 2012</strong>, Amazon Web Services&#39; load-balancer metadata was accidentally deleted, causing an outage that hit Netflix&#39;s streaming for hours on Christmas Eve. Netflix, famous for resilience engineering, had built <strong>Chaos Monkey</strong> (a tool that randomly kills production instances) precisely so that such failures would be <em>routine</em> rather than catastrophic, and most of their services survived. The practice of breaking your own system on purpose to find weaknesses is now called <em>chaos engineering</em>.</p>
+</aside>
+<hr>
+
+<h2 id="26-1-error-taxonomy-operational-vs-programmer-errors">26.1 Error Taxonomy: Operational vs Programmer Errors</h2>
+<p>The most useful distinction in Node error handling (popularised by the Node.js &quot;Error Handling&quot; guidelines):</p>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Operational errors</strong></th>
+<th><strong>Programmer errors</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Meaning</td>
+<td>Expected failures of the <em>environment</em></td>
+<td><em>Bugs</em> in your code</td>
+</tr>
+<tr>
+<td>Examples</td>
+<td>DB connection refused, timeout, <code>ECONNRESET</code>, invalid user input, <code>404</code>, out of stock, rate-limited, disk full</td>
+<td><code>TypeError: undefined is not a function</code>, wrong argument type, off-by-one, forgotten <code>await</code>, assertion failure</td>
+</tr>
+<tr>
+<td>Can the code recover?</td>
+<td>Often yes: retry, fall back, report to the user</td>
+<td><strong>No</strong>: the program&#39;s state is now untrustworthy</td>
+</tr>
+<tr>
+<td>Right response</td>
+<td>Handle it: return the right status, retry, degrade</td>
+<td><strong>Crash</strong> (after logging), let the supervisor restart a clean process; fix the bug</td>
+</tr>
+</tbody></table></div>
+<p>You made this distinction implicitly in earlier chapters: <code>DomainError(&#39;OUT_OF_STOCK&#39;)</code> is an operational error mapped to <code>409</code> (Ch 11, 16); a <code>TypeError</code> from a bug falls to the global handler and returns a generic <code>500</code> (Ch 25).</p>
+<h3 id="make-error-handling-uniform">Make error handling uniform</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OperationalError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">code, message, { retryable = <span class="hljs-literal">false</span>, cause } = {}</span>) { <span class="hljs-variable language_">super</span>(message ?? code, { cause }); <span class="hljs-variable language_">this</span>.<span class="hljs-property">code</span> = code; <span class="hljs-variable language_">this</span>.<span class="hljs-property">retryable</span> = retryable; }
+}</code></pre></div>
+<ul>
+<li>A <strong>stable <code>code</code></strong> (<code>TIMEOUT</code>, <code>UPSTREAM_5XX</code>, <code>CIRCUIT_OPEN</code>, <code>OUT_OF_STOCK</code>) that code and dashboards branch on (never parse <code>message</code>).</li>
+<li>A <strong><code>retryable</code></strong> flag so generic retry logic can decide without knowing the dependency.</li>
+<li><strong><code>cause</code></strong> (<code>new Error(msg, { cause })</code>) to keep the original error and stack when wrapping.</li>
+<li>A <strong>single mapping layer</strong> from error → HTTP status/body (<a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>&#39;s <code>application/problem+json</code>), so handlers just <code>throw</code>.</li>
+</ul>
+<h3 id="express-5-and-async-errors">Express 5 and async errors</h3>
+<p>Express 5 <strong>forwards rejected promises from async handlers</strong> to the error middleware automatically (Express 4 required <code>try/catch</code>+<code>next(err)</code> or a wrapper). Your <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a> error handler therefore sees both thrown and rejected errors. But errors raised in <strong>callbacks not tied to the request</strong> (a <code>setTimeout</code>, an event emitter, a floating promise you forgot to <code>await</code>) are <em>not</em> caught by Express, which brings us to process-level policy (§26.8).</p>
+<h3 id="rules-of-thumb">Rules of thumb</h3>
+<ol>
+<li><strong>Throw early, catch late</strong>: detect problems where they occur; handle them where you know what to do (usually at the boundary: route handler, queue consumer).</li>
+<li><strong>Don&#39;t catch what you can&#39;t handle.</strong> Empty <code>catch {}</code> hides bugs.</li>
+<li><strong>Never swallow errors silently</strong>; log them once (Chapter 25) with context.</li>
+<li><strong>Fail fast on invalid state</strong> (validate config at startup, <a href="/learn/backend-master/linux-terminal-git-for-backend-developers" title="Linux, Terminal &amp; Git for Backend Devs">Chapter 4</a>/7).</li>
+<li><strong>Wrap and add context</strong> (<code>new OperationalError(&#39;PAYMENT_FAILED&#39;, &#39;…&#39;, { cause: err })</code>), don&#39;t leak raw driver errors to clients (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>).</li>
+</ol>
+<hr>
+
+<h2 id="26-2-timeouts-the-most-important-setting-you-aren-t-using">26.2 Timeouts: The Most Important Setting You Aren&#39;t Using</h2>
+<p><strong>A call without a timeout can wait forever.</strong> If a dependency accepts your connection and then never answers, each request that touches it holds a connection, a file descriptor, memory and a pool slot, indefinitely. Requests pile up, the pool empties, and <strong>your healthy service stops serving anyone</strong>. One slow dependency becomes a total outage.</p>
+<p>We tested it against a real HTTP server that accepts connections and never responds:</p>
+<pre class="is-plain"><code>without a timeout       : STILL WAITING after 3000 ms (it would wait forever)
+with a 300 ms timeout   : failed fast after 307 ms -&gt; TIMEOUT</code></pre>
+<h3 id="a-bug-in-my-first-timeout-wrapper">A bug in my first timeout wrapper</h3>
+<p>My first <code>withTimeout</code> aborted an <code>AbortController</code> when the timer fired, which is the standard advice. In the chaos test below it <strong>did nothing</strong>: calls that should have timed out kept going. Why? <strong>Aborting a signal only stops code that is <em>listening</em> to the signal.</strong> <code>fetch</code> honours it; my simulated gateway function ignored it, so the wrapper kept waiting. (A debugging run showed <code>timeouts: 0</code> where 66 were expected.) The fix: also <strong>race</strong> the promise against the deadline so the <em>caller</em> is always released, while still aborting the signal so cooperative code can stop its work:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">withTimeout</span>(<span class="hljs-params">fn, ms</span>) {
+  <span class="hljs-keyword">const</span> ctl = <span class="hljs-keyword">new</span> <span class="hljs-title class_">AbortController</span>(); <span class="hljs-keyword">let</span> timer;
+  <span class="hljs-keyword">const</span> deadline = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">_, reject</span>) =&gt;</span> { timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">const</span> e = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OperationalError</span>(<span class="hljs-string">&#x27;TIMEOUT&#x27;</span>, <span class="hljs-string">`timed out after <span class="hljs-subst">${ms}</span> ms`</span>, { <span class="hljs-attr">retryable</span>: <span class="hljs-literal">true</span> }); ctl.<span class="hljs-title function_">abort</span>(e); <span class="hljs-title function_">reject</span>(e); }, ms); });
+  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>([<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>().<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">fn</span>(ctl.<span class="hljs-property">signal</span>)), deadline]).<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearTimeout</span>(timer));
+}</code></pre></div>
+<p><strong>But note what a timeout does <em>not</em> do:</strong> the underlying work may still be running (and, as we&#39;ll see in §26.6, <strong>a payment may still complete after you gave up</strong>). A timeout frees <em>you</em>; it doesn&#39;t undo <em>them</em>.</p>
+<h3 id="where-to-set-timeouts-everywhere">Where to set timeouts (everywhere)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th>
+<th>Setting</th>
+</tr>
+</thead><tbody><tr>
+<td>Outbound HTTP</td>
+<td><code>fetch(url, { signal: AbortSignal.timeout(3000) })</code> or an Agent/<code>undici</code> timeouts</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td><code>statement_timeout</code>, <code>lock_timeout</code>, <code>idle_in_transaction_session_timeout</code> (Ch 12, 14, 16), pool <code>connectionTimeoutMillis</code></td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>command/connect timeouts in the client</td>
+</tr>
+<tr>
+<td>Inbound HTTP server</td>
+<td><code>server.requestTimeout</code>, <code>headersTimeout</code>, <code>keepAliveTimeout</code> (Ch 3, 6)</td>
+</tr>
+<tr>
+<td>Whole request</td>
+<td>A <strong>deadline</strong> for the entire user request</td>
+</tr>
+</tbody></table></div>
+<h3 id="deadline-propagation">Deadline propagation</h3>
+<p>If a user request has a 2-second budget and spends 1.5 s on the first call, the second call should get <strong>500 ms</strong>, not a fresh 3-second timeout. Pass an absolute <strong>deadline</strong> (or <code>AbortSignal.any([...])</code>) down the call chain, and have downstream services respect it (gRPC does this natively with deadlines, <a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a>). Timeouts should also decrease as you go deeper so inner calls give up <em>before</em> outer ones (otherwise the user has already left while the server keeps working).</p>
+<h3 id="choosing-values">Choosing values</h3>
+<p>Set timeouts from <strong>measured latency</strong> (e.g., slightly above the dependency&#39;s p99.9), not guesses, and monitor the timeout rate. Too short → false failures (and retry storms); too long → resource exhaustion. A <strong>hung</strong> dependency is the dangerous case; connection errors fail fast on their own.</p>
+<hr>
+
+<h2 id="26-3-retries-powerful-and-dangerous">26.3 Retries: Powerful and Dangerous</h2>
+<p>Many failures are <strong>transient</strong> (a dropped packet, a brief overload, a failover). A retry turns them into successes. We simulated a dependency that fails <strong>50%</strong> of calls and sent 2,000 requests:</p>
+<pre class="is-plain"><code>no retry                       success 51.0%  | dependency saw 2000 calls (1.00x load)
+retry x3, jittered backoff     success 93.3%  | dependency saw 3838 calls (1.92x load)
+retry x6, jittered backoff     success 99.1%  | dependency saw 4044 calls (2.02x load)
+theory: 0.5 → 50%;  0.5⁴ fails = 6.25% → 93.8%;  0.5⁷ = 0.8% → 99.2%</code></pre>
+<p>The measured success rates match the probability theory (each attempt independently fails 50%). Retrying nearly <strong>doubled the load</strong> on the dependency (≈1.9–2×), which is the hidden cost, and the key to the next experiment.</p>
+<h3 id="the-retry-implementation">The retry implementation</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">retry</span>(<span class="hljs-params">fn, { retries = <span class="hljs-number">3</span>, baseMs = <span class="hljs-number">50</span>, maxMs = <span class="hljs-number">2000</span>, jitter = <span class="hljs-literal">true</span>, isRetryable = (e) =&gt; e.retryable } = {}</span>) {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> attempt = <span class="hljs-number">0</span>; ; attempt++) {
+    <span class="hljs-keyword">try</span> { <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">fn</span>(attempt); }
+    <span class="hljs-keyword">catch</span> (e) {
+      <span class="hljs-keyword">if</span> (attempt &gt;= retries || !<span class="hljs-title function_">isRetryable</span>(e)) <span class="hljs-keyword">throw</span> e;            <span class="hljs-comment">// give up, or never retry non-retryable errors</span>
+      <span class="hljs-keyword">const</span> cap = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(maxMs, baseMs * <span class="hljs-number">2</span> ** attempt);            <span class="hljs-comment">// exponential backoff: 50, 100, 200, 400 ...</span>
+      <span class="hljs-keyword">await</span> <span class="hljs-title function_">sleep</span>(jitter ? <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * cap : cap);               <span class="hljs-comment">// &quot;full jitter&quot;: a random wait in [0, cap]</span>
+    }
+  }
+}</code></pre></div>
+<h3 id="the-rules-of-safe-retrying">The rules of safe retrying</h3>
+<ol>
+<li><strong>Retry only transient, retryable errors</strong> (timeouts, connection resets, <code>502/503/504</code>, <code>429</code> with <code>Retry-After</code>). <strong>Never</strong> retry <code>400/401/403/404/409/422</code>: the same request will fail the same way.</li>
+<li><strong>Retry only idempotent operations</strong>, or make them idempotent with a key (§26.6). Retrying <code>POST /charge</code> blindly double-charges.</li>
+<li><strong>Cap attempts and total time.</strong> 2–3 retries is usual; also respect the caller&#39;s deadline.</li>
+<li><strong>Use exponential backoff with jitter</strong> (below).</li>
+<li><strong>Retry in one layer only.</strong> If the browser retries, the API retries, the service retries and the SDK retries, 3 retries per layer = <strong>3⁴ = 81 attempts</strong> per user action. Pick one place (usually the layer closest to the failing call).</li>
+<li>Prefer a <strong>retry budget</strong> (e.g., retries may add at most 10% extra traffic) so a struggling dependency isn&#39;t buried.</li>
+</ol>
+<h3 id="the-retry-storm">The retry storm</h3>
+<p>Retries are <em>positive feedback</em>: failures cause retries, which cause more load, which cause more failures. We modelled a dependency that can handle <strong>100 concurrent calls</strong> and then received a burst of <strong>300 clients</strong>:</p>
+<pre class="is-plain"><code>no retries                         succeeded 100/300 | calls to dependency 300 | peak concurrency 101
+retries, backoff, NO jitter        succeeded 300/300 | calls to dependency 600
+retries, backoff + full jitter     succeeded 300/300 | calls to dependency ~625</code></pre>
+<p>Here the retries <em>rescued</em> all 300 clients (the overload cleared as earlier calls finished), at the cost of <strong>doubling</strong> the number of calls. The instructive part is the <strong>shape of the retry traffic</strong>, measured per 100 ms window:</p>
+<pre class="is-plain"><code>NO jitter    calls per 100 ms window:  300  200    0  100                  ← synchronized pulses
+full jitter  calls per 100 ms window:  464  111   44   14    4            ← retry pressure decays smoothly</code></pre>
+<p>Without jitter, every client that failed at the same instant waits <em>exactly</em> the same backoff and <strong>retries in lockstep</strong>: pulses of 200 and 100 simultaneous calls (a <em>thundering herd</em>), each capable of re-overloading a recovering service. With full jitter, retries spread out and fade quickly. A fair caveat from the data: the <strong>first window was busier with jitter</strong> (464 vs 300) because a random wait in <code>[0, cap]</code> can be near zero, so some clients retry almost immediately. Jitter doesn&#39;t reduce the <em>total</em> work; it <strong>spreads it in time</strong>. (AWS&#39;s well-known analysis of backoff variants recommends full or decorrelated jitter for this reason.) Real systems combine jitter with the circuit breaker below, so a dependency that&#39;s truly down stops receiving retries at all.</p>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Retry transient, idempotent, bounded, backed-off, jittered, once.&quot;</strong> Miss any adjective and the retry becomes an attack on your own dependency.</p>
+</aside>
+<hr>
+
+<h2 id="26-4-circuit-breakers-fail-fast-recover-automatically">26.4 Circuit Breakers: Fail Fast, Recover Automatically</h2>
+<p>If a dependency is <em>down</em>, retrying (even with backoff) just makes every caller wait for a timeout, wasting threads, connections and latency budget, and hammering a service that needs quiet to recover. A <strong>circuit breaker</strong> (named after the electrical device) <strong>stops calling</strong> a failing dependency for a while:</p>
+<pre class="is-plain"><code>        failures ≥ threshold                  after openMs
+CLOSED ───────────────────────► OPEN ───────────────────────► HALF-OPEN
+ (calls flow;                  (fail immediately,              (allow ONE probe call)
+  count failures)               no call made)                    │success        │failure
+   ▲                                                             ▼               ▼
+   └─────────────────────────────────────────────────────────  CLOSED         OPEN again</code></pre>
+<p>Our implementation (≈25 lines in <a href="/learn/backend-master/resources/ch26/resilience.mjs">resilience.mjs</a>) was tested against a dependency that <strong>hangs for 2 seconds and then recovers</strong>, with one request every 50 ms for 5 seconds, caller timeout 300 ms:</p>
+<pre class="is-plain"><code>no breaker   calls that reached the dependency: 100 | outcomes ok 65, TIMEOUT 35, CIRCUIT_OPEN 0 | caller p50 32 ms, p95 314 ms
+WITH breaker calls that reached the dependency:  74 | outcomes ok 63, TIMEOUT 11, CIRCUIT_OPEN 26 | caller p50 31 ms, p95 310 ms
+             transitions: closed-&gt;open, open-&gt;half-open, half-open-&gt;open, open-&gt;half-open, half-open-&gt;closed</code></pre>
+<p>What happened: after five failures the breaker <strong>opened</strong>; 26 requests were <strong>rejected instantly</strong> (<code>CIRCUIT_OPEN</code>) instead of each waiting 300 ms; periodically it went <strong>half-open</strong> and sent a probe (the first probe still hit the outage, so it re-opened); once the dependency recovered, a probe succeeded and the circuit <strong>closed</strong>. The dependency saw <strong>26% fewer calls</strong>, and 24 fewer callers sat through a full timeout (35 → 11). (Honesty note: the <strong>p95 latency barely changed</strong> because the 11 remaining timeouts, being 11% of requests, still sit at the 95th percentile. The breaker&#39;s wins are <em>load removed</em>, <em>threads/connections not held</em>, and <em>fast, explicit failure</em>, not a magic p95.)</p>
+<h3 id="using-breakers-well">Using breakers well</h3>
+<ul>
+<li><strong>One breaker per dependency</strong> (or per endpoint), so a bad payments provider doesn&#39;t open the circuit to inventory.</li>
+<li>Open on <strong>error rate over a window</strong> (e.g., 50% of ≥ 20 calls) <em>and/or</em> consecutive failures; count <strong>timeouts as failures</strong>.</li>
+<li>When open, return a <strong>fallback</strong> (§26.5) or a fast, explicit error (<code>503</code> + <code>Retry-After</code>), and <strong>emit a metric/log</strong> (Chapter 25: a state-change alert is valuable).</li>
+<li>Don&#39;t count <strong>client errors</strong> (4xx) as failures.</li>
+<li>In production, use a tested library (<code>opossum</code> in Node; Resilience4j/Polly elsewhere) or a mesh feature (Envoy <strong>outlier detection</strong>) <em>(not run here)</em>.</li>
+</ul>
+<hr>
+
+<h2 id="26-5-bulkheads-and-graceful-degradation">26.5 Bulkheads and Graceful Degradation</h2>
+<h3 id="bulkheads-contain-the-damage">Bulkheads: contain the damage</h3>
+<p>A ship&#39;s hull is divided into watertight compartments so one breach doesn&#39;t sink it. In software, give each dependency <strong>its own limited share of resources</strong>, so one slow dependency can&#39;t consume everything.</p>
+<p>The experiment: a <strong>shared pool of 10 connections</strong> serves both a <em>slow dependency</em> (each call holds a connection for 1.5 s) and an unrelated <em>fast endpoint</em> (20 ms). 60 slow requests arrive, then 30 fast ones:</p>
+<pre class="is-plain"><code>no bulkhead              FAST endpoint latency p50 9085 ms  p95 9120 ms | slow calls: 60 served, 0 rejected
+WITH bulkhead (3 slots)  FAST endpoint latency p50  159 ms  p95  217 ms | slow calls:  3 served, 57 rejected fast</code></pre>
+<p>Without isolation, the 60 slow calls took <strong>every</strong> connection for six rounds of 1.5 s, and the <em>unrelated</em> fast endpoint&#39;s p50 became <strong>9 seconds</strong>: a slow dependency took down a feature that didn&#39;t even use it. With a <strong>3-slot bulkhead</strong> on the slow dependency, the fast endpoint stayed at <strong>159 ms</strong> (still queueing behind its own 30 requests on 7 free connections). The price: the slow dependency got only 3 concurrent calls, and <strong>57 callers were rejected immediately</strong> (<code>BULKHEAD_FULL</code>) instead of waiting. That is the trade: <em>fail some work fast to protect all other work.</em> It&#39;s <strong>load shedding</strong> applied per dependency.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Bulkhead</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">{ maxConcurrent = <span class="hljs-number">5</span>, maxQueue = <span class="hljs-number">10</span> } = {}</span>) { <span class="hljs-comment">/* ... */</span> }
+  <span class="hljs-keyword">async</span> <span class="hljs-title function_">exec</span>(<span class="hljs-params">fn</span>) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">active</span> &gt;= <span class="hljs-variable language_">this</span>.<span class="hljs-property">maxConcurrent</span>) {
+      <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.<span class="hljs-property">queue</span>.<span class="hljs-property">length</span> &gt;= <span class="hljs-variable language_">this</span>.<span class="hljs-property">maxQueue</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">OperationalError</span>(<span class="hljs-string">&#x27;BULKHEAD_FULL&#x27;</span>, <span class="hljs-string">&#x27;too many concurrent calls&#x27;</span>);
+      <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">queue</span>.<span class="hljs-title function_">push</span>(res));
+    }
+    <span class="hljs-variable language_">this</span>.<span class="hljs-property">active</span>++; <span class="hljs-keyword">try</span> { <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">fn</span>(); } <span class="hljs-keyword">finally</span> { <span class="hljs-variable language_">this</span>.<span class="hljs-property">active</span>--; <span class="hljs-variable language_">this</span>.<span class="hljs-property">queue</span>.<span class="hljs-title function_">shift</span>()?.(); }
+  }
+}</code></pre></div>
+<p>(<em>A bug I fixed while testing:</em> my first connection-pool simulation woke a waiter and then incremented the free count, so two callers could grab one slot. Handing the slot <strong>directly</strong> to the next waiter fixed it. Concurrency primitives are easy to get subtly wrong; use well-tested ones (<code>p-limit</code>, <code>p-queue</code>, <code>generic-pool</code>) in real code.)</p>
+<p>Other bulkhead forms: <strong>separate pools</strong> per dependency (a dedicated DB pool for reports so a heavy report can&#39;t starve checkout), <strong>separate worker pools/queues</strong>, separate processes or services, and per-tenant limits (<a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a>).</p>
+<h3 id="graceful-degradation-a-worse-answer-beats-no-answer">Graceful degradation: a worse answer beats no answer</h3>
+<p>When a non-essential dependency fails, serve a reduced experience:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> <span class="hljs-title function_">recommend</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-title function_">withFallback</span>(
+  <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">callRecommendationService</span>(),
+  <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> ({ <span class="hljs-attr">degraded</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">reason</span>: e.<span class="hljs-property">code</span>, <span class="hljs-attr">items</span>: cachedPopularProducts }));     <span class="hljs-comment">// popular items instead of personalised</span></code></pre></div>
+<pre class="is-plain"><code>recommendation service down -&gt; {&quot;degraded&quot;:true,&quot;reason&quot;:&quot;UPSTREAM_5XX&quot;,&quot;items&quot;:[&quot;Gel Pen&quot;,&quot;Notebook A5&quot;,&quot;Backpack&quot;]}
+recommendation service up   -&gt; [&quot;personalised list&quot;]</code></pre>
+<p>Classify features by criticality:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Feature</th>
+<th>If its dependency fails…</th>
+</tr>
+</thead><tbody><tr>
+<td>Checkout, payment, stock decrement</td>
+<td><strong>Core</strong>: fail clearly, retry carefully, never fake success</td>
+</tr>
+<tr>
+<td>Product search</td>
+<td>Fall back to a simpler DB search (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>)</td>
+</tr>
+<tr>
+<td>Recommendations, reviews summary, &quot;recently viewed&quot;</td>
+<td><strong>Degrade</strong>: cached/popular/empty</td>
+</tr>
+<tr>
+<td>Analytics, audit enrichment</td>
+<td>Queue it and move on (<a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>)</td>
+</tr>
+<tr>
+<td>Inventory check during an outage</td>
+<td>Accept the order as <em>pending confirmation</em> (our chaos test, §26.7)</td>
+</tr>
+</tbody></table></div>
+<p>Design the <strong>degraded states explicitly</strong> (and mark them in the response/UI), and make sure fallbacks can&#39;t themselves fail (a fallback that calls the same broken service isn&#39;t one). Other techniques: <strong>stale-while-revalidate</strong> caching (serve slightly old data, <a href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation" title="Caching: HTTP Headers, Redis &amp; Invalidation">Chapter 27</a>), <strong>feature flags</strong> to switch features off during incidents, and <strong>load shedding</strong> (reject low-priority work first when saturated, returning <code>503</code> with <code>Retry-After</code> rather than slowing everyone down).</p>
+<hr>
+
+<h2 id="26-6-idempotency-why-retries-can-charge-twice">26.6 Idempotency: Why Retries Can Charge Twice</h2>
+<p>Timeouts create the nastiest ambiguity in distributed systems: <strong>you don&#39;t know whether the other side did the work.</strong> A payment request times out. Did the card get charged? If you retry blindly and it <em>had</em>, you&#39;ve charged twice.</p>
+<p>Our simulated payment gateway behaves like real ones: <strong>15%</strong> of calls fail with <code>503</code> <em>before</em> charging; another <strong>15%</strong> <em>charge the card and then respond too slowly</em>, so the caller times out even though the money moved. We ran a checkout across an inventory outage, 300 orders:</p>
+<pre class="is-plain"><code>naive (no timeouts, no retries)      completed 144/300 | failed 156 | latency p99 1083 ms | CHARGES 144 for 144 completed orders
+retries, NO idempotency key          completed 192/300 | failed 108 | latency p99  828 ms | CHARGES 232 for 192 completed orders  &lt;- 40 extra charge(s)
+resilient (timeouts+retries+key+breaker)  completed 300/300 (132 degraded) | failed 0 | latency p99 569 ms | CHARGES 300 for 300 completed orders</code></pre>
+<p>The middle row is the lesson: adding <strong>timeouts and retries without an idempotency key</strong> improved completion (144 → 192) but caused <strong>40 extra charges</strong>. Customers were billed for orders that &quot;failed&quot; or billed twice for ones that succeeded. A resilience feature became a <strong>financial bug</strong>.</p>
+<p>The fix, from Chapters <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">8</a> and 16: send a unique <strong><code>Idempotency-Key</code></strong> per logical operation (<code>order-&lt;id&gt;</code>); the server stores the first result under that key and <strong>replays it</strong> for repeats. In the third row every retry reused the key, so the gateway returned the original charge: <strong>exactly one charge per order</strong>, zero extras.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> <span class="hljs-title function_">retry</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">withTimeout</span>(<span class="hljs-function">() =&gt;</span> gateway.<span class="hljs-title function_">charge</span>({ <span class="hljs-attr">orderId</span>: id, <span class="hljs-attr">idemKey</span>: <span class="hljs-string">`order-<span class="hljs-subst">${id}</span>`</span> }), <span class="hljs-number">300</span>), { <span class="hljs-attr">retries</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">baseMs</span>: <span class="hljs-number">30</span> });</code></pre></div>
+<p>Rules: <strong>make every non-idempotent write idempotent before adding retries</strong>; generate the key <em>once</em> before the first attempt (not per attempt); store keys with a TTL; and for money, add a <strong>reconciliation job</strong> that compares your records with the provider&#39;s (because <em>even with keys</em>, you must handle &quot;I never learned the outcome&quot; cases). Payment providers (Stripe, Razorpay) support idempotency keys natively; use them.</p>
+<hr>
+
+<h2 id="26-7-putting-it-together-and-chaos-testing">26.7 Putting It Together, and Chaos Testing</h2>
+<p>The &quot;resilient&quot; checkout in the table above composes the patterns:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> cb = <span class="hljs-keyword">new</span> <span class="hljs-title class_">CircuitBreaker</span>({ <span class="hljs-attr">failureThreshold</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">windowMs</span>: <span class="hljs-number">2000</span>, <span class="hljs-attr">openMs</span>: <span class="hljs-number">400</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;inventory&#x27;</span> });
+<span class="hljs-keyword">return</span> <span class="hljs-keyword">async</span> (id) =&gt; {
+  <span class="hljs-keyword">let</span> degraded = <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">try</span> { <span class="hljs-keyword">await</span> cb.<span class="hljs-title function_">exec</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">retry</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">withTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">inventory</span>(), <span class="hljs-number">300</span>), { <span class="hljs-attr">retries</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">baseMs</span>: <span class="hljs-number">30</span> })); }   <span class="hljs-comment">// breaker( retry( timeout( call ) ) )</span>
+  <span class="hljs-keyword">catch</span> { degraded = <span class="hljs-literal">true</span>; }                  <span class="hljs-comment">// inventory unavailable: accept as &quot;pending stock confirmation&quot;</span>
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">retry</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">withTimeout</span>(<span class="hljs-function">() =&gt;</span> gateway.<span class="hljs-title function_">charge</span>({ <span class="hljs-attr">orderId</span>: id, <span class="hljs-attr">idemKey</span>: <span class="hljs-string">`order-<span class="hljs-subst">${id}</span>`</span> }), <span class="hljs-number">300</span>), { <span class="hljs-attr">retries</span>: <span class="hljs-number">4</span>, <span class="hljs-attr">baseMs</span>: <span class="hljs-number">30</span> });
+  <span class="hljs-keyword">return</span> { degraded };
+};</code></pre></div>
+<p>The <strong>layering order</strong> matters: <em>timeout innermost</em> (bound each attempt), <em>retry around it</em> (handle transient failures), <em>breaker around the retries</em> (stop calling when it&#39;s clearly down), <em>bulkhead on the outside</em> (cap concurrency). Under the same chaos (30% gateway faults + a 1.2-second inventory outage) the three versions produced:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Version</th>
+<th>Completed</th>
+<th>Failed</th>
+<th>p99 latency</th>
+<th>Charge integrity</th>
+</tr>
+</thead><tbody><tr>
+<td>Naive</td>
+<td>144 / 300</td>
+<td>156</td>
+<td>1083 ms</td>
+<td>OK (but half the customers lost)</td>
+</tr>
+<tr>
+<td>Timeouts + retries, no key</td>
+<td>192 / 300</td>
+<td>108</td>
+<td>828 ms</td>
+<td><strong>40 extra charges</strong></td>
+</tr>
+<tr>
+<td><strong>Resilient</strong></td>
+<td><strong>300 / 300</strong> (132 <em>degraded</em>)</td>
+<td><strong>0</strong></td>
+<td><strong>569 ms</strong></td>
+<td><strong>300 charges for 300 orders</strong></td>
+</tr>
+</tbody></table></div>
+<p>The resilient version completed everything, <strong>132 of them in degraded mode</strong> (accepted as &quot;pending stock confirmation&quot; during the inventory outage: a business decision you must make explicitly, with a follow-up process to cancel/backorder if stock can&#39;t be confirmed), and was faster at the tail because timeouts cut off the 1-second hangs.</p>
+<h3 id="chaos-engineering">Chaos engineering</h3>
+<p>You only know your system is resilient if you&#39;ve <em>seen</em> it survive failure. <strong>Chaos engineering</strong> injects failures <strong>deliberately and in a controlled way</strong>: kill an instance, add 500 ms latency to a dependency, make a dependency return errors, fill a disk, partition the network. Start in staging with a <strong>hypothesis</strong> (&quot;if inventory is down, checkout still completes in degraded mode and no customer is double-charged&quot;), a <strong>blast radius</strong> limit, and abort conditions; graduate to production <strong>game days</strong>. Tools: <strong>Toxiproxy</strong> (a TCP proxy that adds latency/timeouts between your app and a database), Chaos Mesh/Litmus (Kubernetes), Gremlin, AWS Fault Injection Simulator <em>(none run here; my chaos was in-process simulation)</em>. Each experiment should end with an action item (a missing timeout, alert, or fallback).</p>
+<hr>
+
+<h2 id="26-8-process-level-errors-unhandledrejection-and-uncaughtexception">26.8 Process-Level Errors: <code>unhandledRejection</code> and <code>uncaughtException</code></h2>
+<p>What does Node do when an error escapes all your <code>try/catch</code>? We ran four tiny child processes and captured the exit codes (Node 22):</p>
+<pre class="is-plain"><code>unhandled promise rejection       -&gt; exit code 1 | stdout: &quot;&quot;  | stderr: Error: forgot to await
+uncaught exception in a callback  -&gt; exit code 1 | stdout: &quot;&quot;  | stderr: Error: thrown in a timer
+handler that logs then exits      -&gt; exit code 1 | stdout: &quot;logged: boom&quot;       (supervisor restarts a clean process)
+handler that SWALLOWS the error   -&gt; exit code 0 | stdout: &quot;swallowed: credit step failed | process kept running with balance = 50&quot;</code></pre>
+<ul>
+<li><strong>Unhandled rejections and uncaught exceptions now crash the process</strong> (since Node 15 the default for rejections is <code>throw</code>). In the first two, the &quot;still running&quot; line never printed: the process died first.</li>
+<li>The third is the recommended pattern: <strong>log (flush!), then exit</strong>, and let the supervisor (Kubernetes, systemd, PM2, Docker restart policy) start a fresh process.</li>
+<li>The fourth is the anti-pattern. The handler <strong>swallowed</strong> the error, the process lived on, and its state was corrupt: a money transfer debited <code>balance</code> (100 → <strong>50</strong>) and then <em>failed before crediting</em>, and nobody noticed. After a programmer error you cannot know what is half-done. <strong>A crash is safer than corruption.</strong></li>
+</ul>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js">process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;uncaughtException&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> { logger.<span class="hljs-title function_">fatal</span>({ err }, <span class="hljs-string">&#x27;uncaught exception&#x27;</span>); logger.<span class="hljs-title function_">flush</span>(); process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>); });
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;unhandledRejection&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> { <span class="hljs-keyword">throw</span> reason; });     <span class="hljs-comment">// turn it into an uncaught exception → same path</span></code></pre></div>
+<p>Because crashes will happen, design for them: <strong>graceful shutdown</strong> for the planned case (Chapter 25), plus <strong>idempotent, resumable work</strong> so a crash mid-task leaves nothing half-done (transactions, <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>; queue visibility timeouts, <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>). Run <strong>multiple instances</strong> so one crash isn&#39;t an outage, and put a <strong>restart backoff</strong> (CrashLoopBackOff) in place so a bug that crashes at startup doesn&#39;t spin forever. Worker threads and <code>cluster</code> (<a href="/learn/backend-master/nodejs-event-loop-streams-worker-threads" title="Node.js Event Loop, Streams &amp; Threads">Chapter 5</a>) isolate crashes per worker.</p>
+<h3 id="other-classic-traps">Other classic traps</h3>
+<ul>
+<li><strong>Floating promises</strong>: calling an async function without <code>await</code> or <code>.catch()</code>. Lint with <code>@typescript-eslint/no-floating-promises</code> or <code>eslint-plugin-promise</code>.</li>
+<li><code>Promise.all</code> rejects on the first failure while other promises keep running (use <code>Promise.allSettled</code> when you need every result).</li>
+<li>Errors thrown inside <strong>event emitters</strong> (<code>&#39;error&#39;</code> events with no listener crash the process, as we saw with the idle-in-transaction timeout in <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>).</li>
+<li><code>try/catch</code> around a non-awaited promise catches nothing.</li>
+<li>Catching an error just to rethrow a <em>different</em> one and <strong>losing the original</strong> (use <code>cause</code>).</li>
+</ul>
+<hr>
+
+<h2 id="26-9-a-resilience-checklist-for-every-dependency-call">26.9 A Resilience Checklist for Every Dependency Call</h2>
+<p>For each outbound call (HTTP service, DB, cache, queue, provider), ask:</p>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>Timeout</strong> set (connect + total), shorter than the caller&#39;s deadline?</li>
+<li><input disabled="" type="checkbox"> Is it <strong>idempotent</strong>? If not, is there an idempotency key?</li>
+<li><input disabled="" type="checkbox"> <strong>Retry</strong> policy: only transient errors, bounded, exponential backoff with jitter, in one layer only?</li>
+<li><input disabled="" type="checkbox"> <strong>Circuit breaker</strong> so a dead dependency is isolated and recovers?</li>
+<li><input disabled="" type="checkbox"> <strong>Bulkhead/concurrency limit</strong> so it can&#39;t consume all resources?</li>
+<li><input disabled="" type="checkbox"> <strong>Fallback/degraded mode</strong> defined, or a clear failure if it&#39;s core?</li>
+<li><input disabled="" type="checkbox"> <strong>Metrics and logs</strong>: latency, errors, timeouts, breaker state, retries (Chapter 25)?</li>
+<li><input disabled="" type="checkbox"> <strong>Tested</strong> with injected failures (slow, error, hang, partial)?</li>
+<li><input disabled="" type="checkbox"> Failure of <em>this</em> call: what does the <strong>user</strong> see? Is it honest and recoverable?</li>
+</ul>
+<hr>
+
+<h2 id="26-10-edge-cases-and-gotchas-checklist">26.10 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> No timeouts on HTTP/DB/Redis calls; timeouts relying on <code>AbortSignal</code> that the callee ignores.</li>
+<li><input disabled="" type="checkbox"> Timeout longer than the user&#39;s patience / caller&#39;s own deadline; no deadline propagation.</li>
+<li><input disabled="" type="checkbox"> Retrying non-idempotent operations; no idempotency keys; key regenerated per attempt.</li>
+<li><input disabled="" type="checkbox"> Retrying non-retryable errors (4xx); infinite retries; retries at every layer (multiplicative).</li>
+<li><input disabled="" type="checkbox"> Backoff without jitter (synchronised retry pulses); no retry budget.</li>
+<li><input disabled="" type="checkbox"> One shared pool/queue for everything (no bulkheads); unbounded queues.</li>
+<li><input disabled="" type="checkbox"> Circuit breaker counting 4xx as failures; one breaker for many dependencies; no alert on state changes.</li>
+<li><input disabled="" type="checkbox"> Fallbacks that depend on the failing service; fallback results not marked as degraded.</li>
+<li><input disabled="" type="checkbox"> Swallowing <code>uncaughtException</code>/<code>unhandledRejection</code> and continuing; not flushing logs before exit.</li>
+<li><input disabled="" type="checkbox"> Floating promises; <code>Promise.all</code> where partial results matter; empty <code>catch {}</code> blocks.</li>
+<li><input disabled="" type="checkbox"> Leaking raw errors/stack traces to clients; losing <code>cause</code> when wrapping.</li>
+<li><input disabled="" type="checkbox"> Resilience features never tested with injected failures; no chaos drills; no reconciliation for money.</li>
+<li><input disabled="" type="checkbox"> A single instance (no redundancy); no restart/backoff policy; no graceful degradation plan for core flows.</li>
+</ul>
+<hr>
+
+<h2 id="26-11-chapter-summary">26.11 Chapter Summary</h2>
+<ul>
+<li><strong>Everything fails</strong>; resilience is what the system does next. Distinguish <strong>operational errors</strong> (handle: retry, fall back, report) from <strong>programmer errors</strong> (log and <strong>crash</strong>, restart clean). Use a uniform <code>OperationalError</code> with <code>code</code>, <code>retryable</code>, <code>cause</code>.</li>
+<li><strong>Timeouts everywhere</strong>: a hung dependency made a call wait forever; a 300 ms timeout failed fast in 307 ms. <strong>Aborting a signal doesn&#39;t stop code that ignores it</strong>: my first wrapper silently failed (0 of 66 timeouts) until I raced the deadline. A timeout frees the caller, not the work.</li>
+<li><strong>Retries</strong> (transient + idempotent + bounded + backoff + jitter + one layer): 50%-flaky → <strong>93.3%</strong> at 3 retries, <strong>99.1%</strong> at 6, matching theory, at <strong>~2× load</strong>. Without jitter retries arrive in <strong>synchronised pulses</strong> (300, 200, 0, 100); with jitter pressure decays smoothly (464, 111, 44, 14, 4), though not smaller in total.</li>
+<li><strong>Circuit breakers</strong> (closed → open → half-open): during a 2 s hang, calls reaching the dependency fell 100 → 74, timeouts 35 → 11, with 26 instant rejections and a clean recovery; p95 barely moved: the win is load and resource relief.</li>
+<li><strong>Bulkheads</strong>: an unrelated fast endpoint went from <strong>p50 9,085 ms to 159 ms</strong> once the slow dependency was capped at 3 concurrent calls (57 rejected fast). <strong>Graceful degradation</strong>: cached/popular items instead of failure.</li>
+<li><strong>Idempotency</strong>: retries + timeouts without a key caused <strong>40 extra charges</strong>; with a key, <strong>300 charges for 300 orders</strong>. Compose: bulkhead(breaker(retry(timeout(call)))).</li>
+<li><strong>Process errors</strong>: Node 22 crashes on unhandled rejections/exceptions; <strong>log, flush, exit</strong>; swallowing them left a corrupted balance. Chaos-test, reconcile money, and run multiple instances.</li>
+</ul>
+<hr>
+
+<h2 id="26-12-revision-notes">26.12 Revision Notes</h2>
+<ul>
+<li>Operational → handle; programmer → crash. <code>OperationalError { code, retryable, cause }</code>.</li>
+<li>Timeouts on every call; race the deadline (AbortSignal only helps cooperative code); propagate deadlines; inner &lt; outer.</li>
+<li>Retry: transient + idempotent only; exponential backoff <code>base·2ⁿ</code>, full jitter <code>rand(0, cap)</code>; 2–3 tries; one layer; retry budget.</li>
+<li>Breaker: closed/open/half-open; per dependency; fail fast; alert on transitions.</li>
+<li>Bulkhead: cap concurrency per dependency; reject fast beyond queue.</li>
+<li>Fallback: degrade non-core, fail clearly for core; mark degraded.</li>
+<li>Idempotency key per logical op, generated once; reconcile money.</li>
+<li>Crash on <code>uncaughtException</code>/<code>unhandledRejection</code> after logging + flushing; never swallow.</li>
+<li>Layer order: bulkhead → breaker → retry → timeout → call. Test with injected faults.</li>
+</ul>
+<hr>
+
+<h2 id="26-13-mind-map-ascii">26.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                          RESILIENCE
+                               │
+   ┌───────────┬───────────┬───┴───────┬────────────┬──────────────┬───────────┐
+ ERRORS     TIMEOUTS    RETRIES    BREAKERS    ISOLATION      IDEMPOTENCY   PROCESS
+   │           │           │           │           │               │            │
+ operational  every call  transient   closed      bulkhead       key per op    crash &gt;
+ vs bug       deadlines   backoff     open        pools          replay        swallow
+ code/cause   AbortSignal jitter      half-open   load shedding  reconcile     flush+exit
+ retryable    + race      budget      per dep     degrade        (money)       supervisor
+                          one layer   alert       fallback                     chaos tests</code></pre>
+<hr>
+
+<h2 id="26-14-cheat-sheet">26.14 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> bulkhead.<span class="hljs-title function_">exec</span>(<span class="hljs-function">() =&gt;</span> breaker.<span class="hljs-title function_">exec</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">retry</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">withTimeout</span>(<span class="hljs-function">(<span class="hljs-params">signal</span>) =&gt;</span> <span class="hljs-title function_">callDep</span>({ signal }), <span class="hljs-number">300</span>),
+                    { <span class="hljs-attr">retries</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">baseMs</span>: <span class="hljs-number">50</span>, <span class="hljs-attr">maxMs</span>: <span class="hljs-number">1000</span> })));          <span class="hljs-comment">// outer → inner</span>
+<span class="hljs-keyword">const</span> delay = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(maxMs, baseMs * <span class="hljs-number">2</span> ** attempt);     <span class="hljs-comment">// full jitter</span>
+<span class="hljs-title function_">fetch</span>(url, { <span class="hljs-attr">signal</span>: <span class="hljs-title class_">AbortSignal</span>.<span class="hljs-title function_">timeout</span>(<span class="hljs-number">3000</span>) });                        <span class="hljs-comment">// built-in timeout (cooperative)</span>
+headers[<span class="hljs-string">&#x27;Idempotency-Key&#x27;</span>] = <span class="hljs-string">`order-<span class="hljs-subst">${orderId}</span>`</span>;                          <span class="hljs-comment">// generate ONCE, reuse on retries</span>
+process.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;uncaughtException&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> { logger.<span class="hljs-title function_">fatal</span>({ e }); logger.<span class="hljs-title function_">flush</span>(); process.<span class="hljs-title function_">exit</span>(<span class="hljs-number">1</span>); });</code></pre></div>
+<hr>
+
+<h2 id="26-15-key-takeaways">26.15 Key Takeaways</h2>
+<ol>
+<li><strong>Timeouts first</strong>: a dependency that hangs is more dangerous than one that errors.</li>
+<li><strong>Retries need idempotency, bounds, backoff and jitter</strong>, or they become the outage.</li>
+<li><strong>Fail fast and isolate</strong>: breakers stop hammering the dead; bulkheads protect the healthy.</li>
+<li><strong>Degrade gracefully</strong> on non-core features; fail <em>clearly</em> on core ones.</li>
+<li><strong>Never swallow a programmer error</strong>: log, flush, crash, restart clean.</li>
+<li><strong>Prove it with failure injection</strong>; resilience you haven&#39;t tested is a hope.</li>
+</ol>
+<hr>
+
+<h2 id="26-16-20-multiple-choice-questions">26.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Environment failure."><p class="quiz-text">Which is an <em>operational</em> error?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>TypeError: x is not a function</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A database connection refused</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A forgotten <code>await</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">An off-by-one bug</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="State untrustworthy."><p class="quiz-text">Right response to a <em>programmer</em> error:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Swallow and continue</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Log, flush and crash so a clean process restarts</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Retry forever</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Ignore</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Resource exhaustion."><p class="quiz-text">Why is a call with no timeout dangerous?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It can wait forever, holding resources until the pool is exhausted</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It uses more CPU</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It throws</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Signal only works for cooperating code."><p class="quiz-text">Why did my first <code>withTimeout</code> fail to time out?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Wrong units</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Aborting a signal does nothing when the callee ignores the signal; the promise wasn&#39;t raced</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Timer bug in Node</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Retry interfered</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Ambiguous outcome."><p class="quiz-text">A timeout on a payment call means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The payment definitely failed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">You don&#39;t know whether it happened; use an idempotency key</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The payment succeeded</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Retry without a key</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Same request fails again."><p class="quiz-text">Which errors should normally NOT be retried?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">503</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Connection reset</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">400/422/404 client errors</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Timeouts</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="1 − 0.5⁴."><p class="quiz-text">With a 50% failure rate and 3 retries, expected success is about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">50%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">93.8%</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">99.9%</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">75%</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="~1.9–2×."><p class="quiz-text">Retry cost: the dependency saw roughly what load multiplier in our test?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1.0×</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">~1.9–2×</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">10×</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0.5×</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Lockstep retries."><p class="quiz-text">Exponential backoff <em>without</em> jitter causes:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Faster retries</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Synchronised retry pulses (thundering herd)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Fewer retries</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Random in [0, cap]."><p class="quiz-text">&quot;Full jitter&quot; waits:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Exactly the cap</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A random time between 0 and the exponential cap</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Zero</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Twice the cap</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="3⁴ = 81."><p class="quiz-text">Retrying at the browser, API, service and SDK layers (3 retries each) can yield:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">3 attempts</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">12</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">81 attempts</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">4</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Fail fast."><p class="quiz-text">A circuit breaker in the <em>open</em> state:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Sends all calls through</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Rejects calls immediately without calling the dependency</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Restarts the service</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Retries faster</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Probe."><p class="quiz-text">The half-open state is for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Shutting down</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Probing whether the dependency has recovered</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Logging</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Load balancing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Load/resources benefit."><p class="quiz-text">In our breaker test the p95 latency barely changed because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The breaker is useless</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The remaining timeouts were &gt;5% of requests; the benefit was reduced load and instant failures</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The test was broken</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Timeouts were disabled</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="9085 → 159 ms."><p class="quiz-text">The bulkhead experiment reduced the fast endpoint&#39;s p50 from about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">9 s to 159 ms</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">159 ms to 9 s</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">20 ms to 10 ms</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">No change</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Isolation by limiting."><p class="quiz-text">A bulkhead protects by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Making the slow dependency faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Limiting concurrent use of a shared resource per dependency, rejecting excess fast</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Retrying</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Caching</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="40 extra charges."><p class="quiz-text">Timeouts+retries <em>without</em> idempotency in the chaos test produced:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Perfect results</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">40 extra charges</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">No change</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Fewer orders</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Reuse the same key."><p class="quiz-text">Idempotency keys should be generated:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Per attempt</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Once per logical operation and reused across retries</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Randomly each retry</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">By the provider</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Crash by default."><p class="quiz-text">In Node 22, an unhandled promise rejection:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is ignored</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Crashes the process (exit code 1) by default</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only warns</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Restarts the server automatically</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Corrupt state."><p class="quiz-text">Why is swallowing <code>uncaughtException</code> dangerous?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The process continues in an unknown, possibly corrupt state (e.g., half-completed transfer)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It leaks memory only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Express forbids it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-c, 7-b, 8-b, 9-b, 10-b, 11-c, 12-b, 13-b, 14-b, 15-a, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="26-17-20-hands-on-exercises">26.17 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch26/README.txt">resources/ch26/</a>.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run <code>lab1.mjs</code>; confirm the retry success rates match 1 − pⁿ.</li>
+<li>Remove the <code>Promise.race</code> from <code>withTimeout</code> and observe the chaos test break.</li>
+<li>Add <code>AbortSignal.timeout(2000)</code> to a real <code>fetch</code> and test against a server that hangs.</li>
+<li>Make <code>isRetryable</code> return false for 4xx and test with a 404 and a 503.</li>
+<li>Trigger and read each process-level failure mode in <code>lab3.mjs</code>.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Add a retry budget (max 10% extra requests) to <code>retry</code> and test under a 50% failing dependency.</li>
+<li>Implement decorrelated jitter and compare the per-window timeline with full jitter.</li>
+<li>Extend the breaker to open on error <em>rate</em> over a rolling window (≥20 calls, ≥50% failures).</li>
+<li>Add metrics (state gauge, rejected counter) to the breaker and graph transitions (Ch 25).</li>
+<li>Build a deadline-propagation helper (<code>withDeadline(ms)</code>, <code>remaining()</code>), and use it across three chained calls.</li>
+<li>Replace my <code>Bulkhead</code> with <code>p-limit</code>/<code>p-queue</code> and compare behaviour under the same experiment.</li>
+<li>Add a stale-cache fallback with TTL and mark degraded responses with a header.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Place Toxiproxy between your app and PostgreSQL; add latency and timeouts; verify your pool/timeouts/readiness (Ch 25) behave.</li>
+<li>Implement the full checkout with a real idempotency-key store in PostgreSQL (unique key + stored response) and a reconciliation job.</li>
+<li>Write a chaos script that randomly breaks each dependency for 10 s while a load test runs; assert SLOs hold.</li>
+<li>Implement load shedding: reject lowest-priority requests when event-loop lag exceeds a threshold.</li>
+<li>Build &quot;hedged requests&quot; (send a second request after p95 delay to another replica) and measure tail-latency improvement vs extra load.</li>
+<li>Show a retry storm taking down a capacity-limited dependency, then fix it with breaker + jitter + budget; plot requests/second.</li>
+<li>Simulate a crash in the middle of a multi-step order process and make it resumable (outbox/queue + idempotent steps).</li>
+<li>Run a game day: pick three failure scenarios for ShopLine, predict outcomes, execute, and write the resulting action items.</li>
+</ol>
+<hr>
+
+<h2 id="26-18-5-interview-questions">26.18 5 Interview Questions</h2>
+<p><strong>1. What&#39;s the difference between operational and programmer errors, and how do you handle each?</strong>
+<em>Model answer:</em> Operational errors come from the environment (timeouts, refused connections, bad input, out of stock) and are handled: retry if transient, fall back, or return the right status. Programmer errors are bugs (TypeError, wrong argument); the process state can&#39;t be trusted, so log, flush and crash so a supervisor restarts a clean process, then fix the bug. Never swallow <code>uncaughtException</code>.</p>
+<p><strong>2. Design a safe retry strategy.</strong>
+<em>Model answer:</em> Retry only transient errors on idempotent operations (or with idempotency keys), bounded to 2–3 attempts within the caller&#39;s deadline, with exponential backoff and jitter, in a single layer, ideally under a retry budget, and combined with a circuit breaker so a dead dependency isn&#39;t hammered. Verify with tests: our simulation showed 50% failures → 93% success at 3 retries at ~2× load, and synchronized pulses without jitter.</p>
+<p><strong>3. What is a circuit breaker and when does it help?</strong>
+<em>Model answer:</em> A state machine (closed/open/half-open) around a dependency that stops calling it after repeated failures, failing fast and probing periodically for recovery. It protects the dependency from extra load and the caller from waiting on timeouts, and frees threads/connections. It needs per-dependency scope, sensible thresholds, fallbacks and alerts on state changes.</p>
+<p><strong>4. What is a bulkhead? Give an example.</strong>
+<em>Model answer:</em> Resource isolation so one failing component can&#39;t exhaust shared resources: separate pools/concurrency limits per dependency. Example: capping calls to a slow third-party at 3 concurrent kept an unrelated endpoint at 159 ms instead of 9 s in our shared-pool test, at the cost of rejecting excess calls quickly.</p>
+<p><strong>5. A payment request times out. What do you do?</strong>
+<em>Model answer:</em> The outcome is unknown. Use an idempotency key generated once per order so retrying returns the original result instead of charging again, check the provider&#39;s status API or webhook before declaring failure, record a pending state, and reconcile periodically. In my simulation, retries without keys produced 40 extra charges; with keys, exactly one per order.</p>
+<hr>
+
+<h2 id="26-19-3-real-projects">26.19 3 Real Projects</h2>
+<p><strong>Project 1: Resilience Library (intermediate, ~10 hours).</strong>
+Package the toolkit with tests: timeout (cooperative and racing), retry (backoff, jitter, budget, retryable predicates), circuit breaker (rate-based, rolling window, events), bulkhead, and fallback. Property-test the retry maths and the breaker state machine; publish a README showing before/after experiments like this chapter&#39;s.</p>
+<p><strong>Project 2: Failure-Injection Harness (intermediate–advanced, ~12 hours).</strong>
+Build a Toxiproxy-based harness for ShopLine that injects latency, errors, resets and partitions between the app, PostgreSQL and Redis while running a load test, with automated assertions on SLOs, breaker states, readiness, and absence of duplicate side effects.</p>
+<p><strong>Project 3: Payments Reliability (advanced, ~14 hours).</strong>
+Implement an idempotent payment flow (keys, stored responses, states <code>pending/succeeded/failed/unknown</code>), a reconciliation worker against a mock provider with deliberate timeout-after-success behaviour, and a chaos suite proving no double charges and no lost orders under crashes, timeouts, and duplicate webhooks.</p>
+<hr>
+
+<h2 id="26-20-further-reading">26.20 Further Reading</h2>
+<ul>
+<li>Michael Nygard, <strong>Release It!</strong> (Stability Patterns: Timeouts, Circuit Breaker, Bulkheads, Fail Fast, Steady State).</li>
+<li>AWS Architecture Blog: <em>Exponential Backoff and Jitter</em> (Marc Brooker) and the Amazon Builders&#39; Library: <em>Timeouts, retries and backoff with jitter</em>; <em>Using load shedding to avoid overload</em>.</li>
+<li>Google SRE Book: <em>Handling Overload</em>, <em>Addressing Cascading Failures</em>.</li>
+<li>Node.js docs: <em>Process events (<code>uncaughtException</code>, <code>unhandledRejection</code>)</em>, <em>AbortController / <code>AbortSignal.timeout</code></em>; Joyent&#39;s <em>Error Handling in Node.js</em> (operational vs programmer errors).</li>
+<li>Principles of Chaos Engineering (principlesofchaos.org); Netflix tech blog on Chaos Monkey; Toxiproxy docs.</li>
+<li>Libraries: <code>opossum</code>, <code>cockatiel</code>, <code>p-retry</code>, <code>p-limit</code>, <code>p-queue</code>, <code>generic-pool</code>; Resilience4j and Polly docs for the concepts.</li>
+<li>Stripe docs: <em>Idempotent requests</em>.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-27-caching-part-5-performance-and-scale">Up next → Chapter 27: Caching (Part 5: Performance and Scale)</h3>
+<p>Part 4 (security, testing, reliability) is complete. Part 5 asks: how do you make ShopLine fast and make it big? It starts with caching at every level: HTTP caching (<code>Cache-Control</code>, ETag, CDNs), application caches, cache invalidation strategies, stampede protection revisited, and the consistency trade-offs, measured against the Redis and PostgreSQL setup you&#39;ve already built.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Error Handling: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>What should a Node.js process do on an uncaught exception?</h3></summary><p>Log it with context, flush logs and exit so a supervisor starts a clean process. Swallowing the error can leave corrupt state, as our half-completed money transfer showed.</p></details>
+<details class="learn-faq-item"><summary><h3>Why add jitter to retries?</h3></summary><p>Without jitter every client retries at the same moments, creating synchronized waves that can re-overload a recovering service. Jitter spreads retries over time.</p></details>
+<details class="learn-faq-item"><summary><h3>What does a circuit breaker do?</h3></summary><p>After repeated failures it stops calling the dependency for a while and fails fast, then probes occasionally to detect recovery, saving resources and letting the dependency recover.</p></details>
+<details class="learn-faq-item"><summary><h3>Why are retries dangerous for payments?</h3></summary><p>A timeout does not tell you whether the charge happened. Retrying without an idempotency key produced 40 extra charges in our simulation; with a key there was exactly one per order.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span>&larr; Previous &middot; Chapter 25</span><strong>Logging, Monitoring &amp; Tracing in Node.js</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span>Next &middot; Chapter 27 &rarr;</span><strong>Caching: HTTP Headers, Redis &amp; Invalidation</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#26-0-why-this-chapter-matters">26.0 Why This Chapter Matters</a></li><li><a href="#26-1-error-taxonomy-operational-vs-programmer-errors">26.1 Error Taxonomy: Operational vs Programmer Errors</a></li><li><a href="#26-2-timeouts-the-most-important-setting-you-aren-t-using">26.2 Timeouts: The Most Important Setting You Aren't Using</a></li><li><a href="#26-3-retries-powerful-and-dangerous">26.3 Retries: Powerful and Dangerous</a></li><li><a href="#26-4-circuit-breakers-fail-fast-recover-automatically">26.4 Circuit Breakers: Fail Fast, Recover Automatically</a></li><li><a href="#26-5-bulkheads-and-graceful-degradation">26.5 Bulkheads and Graceful Degradation</a></li><li><a href="#26-6-idempotency-why-retries-can-charge-twice">26.6 Idempotency: Why Retries Can Charge Twice</a></li><li><a href="#26-7-putting-it-together-and-chaos-testing">26.7 Putting It Together, and Chaos Testing</a></li><li><a href="#26-8-process-level-errors-unhandledrejection-and-uncaughtexception">26.8 Process-Level Errors: unhandledRejection and uncaughtException</a></li><li><a href="#26-9-a-resilience-checklist-for-every-dependency-call">26.9 A Resilience Checklist for Every Dependency Call</a></li><li><a href="#26-10-edge-cases-and-gotchas-checklist">26.10 Edge Cases and Gotchas Checklist</a></li><li><a href="#26-11-chapter-summary">26.11 Chapter Summary</a></li><li><a href="#26-12-revision-notes">26.12 Revision Notes</a></li><li><a href="#26-13-mind-map-ascii">26.13 Mind Map (ASCII)</a></li><li><a href="#26-14-cheat-sheet">26.14 Cheat Sheet</a></li><li><a href="#26-15-key-takeaways">26.15 Key Takeaways</a></li><li><a href="#26-16-20-multiple-choice-questions">26.16 20 Multiple Choice Questions</a></li><li><a href="#26-17-20-hands-on-exercises">26.17 20 Hands-on Exercises</a></li><li><a href="#26-18-5-interview-questions">26.18 5 Interview Questions</a></li><li><a href="#26-19-3-real-projects">26.19 3 Real Projects</a></li><li><a href="#26-20-further-reading">26.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "error-handling-resilience-retries-circuit-breaker"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>ORMs vs Query Builders: Prisma, Drizzle | Backend Master</title>
+    <meta name="description" content="Compare Knex, Kysely, Drizzle and Prisma on one ShopLine feature: generated SQL, N+1, transactions, types and how to choose between ORM and raw SQL.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="prisma vs drizzle, knex vs kysely, orm vs query builder, orm n+1 problem, drizzle orm tutorial, prisma 7, raw sql vs orm, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/mongodb-data-modeling-aggregation-mongoose">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="prisma vs drizzle">
+    <meta property="article:tag" content="knex vs kysely">
+    <meta property="article:tag" content="orm vs query builder">
+    <meta property="article:tag" content="orm n+1 problem">
+    <meta property="article:tag" content="drizzle orm tutorial">
+    <meta property="article:tag" content="prisma 7">
+    <meta property="article:tag" content="raw sql vs orm">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="ORMs vs Query Builders: Prisma, Drizzle">
+    <meta property="og:description" content="Compare Knex, Kysely, Drizzle and Prisma on one ShopLine feature: generated SQL, N+1, transactions, types and how to choose between ORM and raw SQL.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="ORMs and Query Builders: Knex, Kysely, Drizzle and Prisma Compared: Backend Master chapter 17">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ORMs vs Query Builders: Prisma, Drizzle">
+    <meta name="twitter:description" content="Compare Knex, Kysely, Drizzle and Prisma on one ShopLine feature: generated SQL, N+1, transactions, types and how to choose between ORM and raw SQL.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely.png">
+    <meta name="twitter:image:alt" content="ORMs and Query Builders: Knex, Kysely, Drizzle and Prisma Compared: Backend Master chapter 17">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely",
+          "name": "ORMs vs Query Builders: Prisma, Drizzle | Backend Master",
+          "description": "Compare Knex, Kysely, Drizzle and Prisma on one ShopLine feature: generated SQL, N+1, transactions, types and how to choose between ORM and raw SQL.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "ORMs and Query Builders: Knex, Kysely, Drizzle and Prisma Compared"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#webpage"
+          },
+          "headline": "ORMs and Query Builders: Knex, Kysely, Drizzle and Prisma Compared",
+          "alternativeHeadline": "ORMs and Query Builders — Raw SQL, Builders, and ORMs (and How to Choose)",
+          "description": "Compare Knex, Kysely, Drizzle and Prisma on one ShopLine feature: generated SQL, N+1, transactions, types and how to choose between ORM and raw SQL.",
+          "abstract": "ORMs and query builders trade control for convenience but never remove the need to understand SQL. This chapter runs the same feature through Knex, Kysely, Drizzle and Prisma, prints the SQL each generates, compares eager loading, transactions and type handling, and gives a decision checklist.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely.png",
+          "url": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 6454,
+          "timeRequired": "PT29M",
+          "articleSection": "Backend Development",
+          "keywords": "prisma vs drizzle, knex vs kysely, orm vs query builder, orm n+1 problem, drizzle orm tutorial, prisma 7, raw sql vs orm",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "The spectrum from raw driver to ORM",
+            "Reading the SQL a library generates",
+            "Eager loading versus N+1",
+            "Transactions and raw escape hatches",
+            "Choosing a tool and keeping it behind repositories"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "prisma vs drizzle"
+          },
+          "isAccessibleForFree": true,
+          "position": 17,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#article",
+            "name": "Transactions, Isolation Levels and Concurrency Control in PostgreSQL",
+            "url": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "ORMs vs Query Builders: Prisma, Drizzle",
+              "item": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Should I use an ORM or raw SQL?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use both. A builder or ORM suits CRUD and relations, raw parameterised SQL suits reports and performance-critical queries, and both belong behind repository modules so the choice stays local."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Do ORMs prevent N+1 queries?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Only if you use their eager-loading features and check the SQL. Kysely and Drizzle loaded nested data in one query in our test, Prisma used three batched queries, and a manual loop made five."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do ids differ between Prisma and Drizzle?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The same bigint column arrived as a string, a JavaScript number or a BigInt depending on the library. Pick one convention and convert at the repository boundary."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are raw queries in ORMs safe?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tagged templates and bound parameters are safe; string-built raw queries are injectable. Never pass user input to unsafe or raw functions without parameters."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#quiz",
+          "name": "ORMs vs Query Builders: Prisma, Drizzle: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "prisma vs drizzle"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What is the main trade-off of moving from raw SQL toward an ORM?",
+              "text": "What is the main trade-off of moving from raw SQL toward an ORM?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Control for convenience"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Speed for nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Safety for speed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing changes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Active Record means:",
+              "text": "Active Record means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each object represents a row and can save itself"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Rows are plain data and a separate mapper persists them"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Records are immutable"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SQL is generated at startup"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which pairing is Data Mapper-style?",
+              "text": "Which pairing is Data Mapper-style?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Prisma / MikroORM / Drizzle with a separate persistence layer"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Rails models"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "user.save()"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sequelize instances"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In our test, which library loaded orders with items in ONE query (via JSON/lateral)?",
+              "text": "In our test, which library loaded orders with items in ONE query (via JSON/lateral)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Kysely and Drizzle"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Prisma include"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Knex"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "None"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Prisma include of orders → items → products produced:",
+              "text": "Prisma include of orders → items → products produced:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Three batched queries with IN"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "One huge join"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "N+1 queries"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A stored procedure"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did Prisma's introspection warn about constraints?",
+              "text": "Why did Prisma's introspection warn about constraints?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It doesn't model CHECK constraints (they still exist in the DB)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They were invalid"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They were slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They were duplicates"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "bigint ids arrived as strings, numbers and BigInt across tools. The right response is:",
+              "text": "bigint ids arrived as strings, numbers and BigInt across tools. The right response is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pick one convention and convert at the repository boundary"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Ignore it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Always use floats"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Avoid bigint"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In knex.transaction(async (trx) => …), you should run queries with:",
+              "text": "In knex.transaction(async (trx) => …), you should run queries with:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "trx"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "knex"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A new pool"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Either"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why was knex.raw(\\… id = ${evil}\\) dangerous?",
+              "text": "Why was knex.raw(\\… id = ${evil}\\) dangerous?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The input became part of the SQL text and matched every row"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It was slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Knex forbids it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It used a transaction"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a parameterized raw form?",
+              "text": "Which is a parameterized raw form?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "$queryRaw… ${id}"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "$queryRawUnsafe('… ' + id)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "sql.raw(userInput)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "String concatenation"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Prisma's { stock: { decrement: 2 } } is notable because it:",
+              "text": "Prisma's { stock: { decrement: 2 } } is notable because it:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Becomes stock = stock - $1 in SQL (atomic)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Reads in JS then writes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Locks the table"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is a no-op"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "An N+1 in Knex looks like:",
+              "text": "An N+1 in Knex looks like:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A list query followed by one query per row"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "One join query"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A batched IN query"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A transaction"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why shouldn't you pick a library from a simple-query micro-benchmark?",
+              "text": "Why shouldn't you pick a library from a simple-query micro-benchmark?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Round trip and noise dominate; differences are tiny"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Benchmarks are illegal"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They're always wrong"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Prisma is slower"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Auto-generated ORM migrations can be dangerous because they may:",
+              "text": "Auto-generated ORM migrations can be dangerous because they may:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Rename via drop+add (data loss) or rewrite/ lock tables"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Be too small"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Use SQL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Require psql"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best place for ORM/builder imports in a layered ShopLine is:",
+              "text": "The best place for ORM/builder imports in a layered ShopLine is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Only .repo.pg.js files"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Controllers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Services"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Everywhere"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which statement about the ORM schema is true?",
+              "text": "Which statement about the ORM schema is true?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It is a (possibly smaller) model of the database; constraints/indexes live in migrations"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It is the database"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It replaces migrations"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It's always complete"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Kysely's main distinguishing feature is:",
+              "text": "Kysely's main distinguishing feature is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Compile-time type-safe query building that still maps 1:1 to SQL"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Decorators"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An active-record model"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A GUI"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is NOT a safe way to build dynamic ORDER BY?",
+              "text": "Which is NOT a safe way to build dynamic ORDER BY?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "orderBy(req.query.sort) unchecked"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Whitelist map from allowed keys to column names"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A fixed enum"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Lookup in a constant object"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A hybrid approach means:",
+              "text": "A hybrid approach means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "ORM/builder for CRUD, raw SQL for hard queries, behind repositories"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Two databases"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Mixing JS and TS"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Using two ORMs everywhere"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which question is most important to ask about any ORM?",
+              "text": "Which question is most important to ask about any ORM?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Can I see and verify the SQL it generates?"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Does it have a logo?"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Does it have decorators?"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Is it the most downloaded?"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">ORMs vs Query Builders: Prisma, Drizzle</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:47.2%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item active" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely" aria-current="page"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 17 of 36 &middot; Intermediate</p>
+                        <h1>ORMs and Query Builders: Knex, Kysely, Drizzle and Prisma Compared</h1>
+                        <p class="learn-book-title">ORMs and Query Builders — Raw SQL, Builders, and ORMs (and How to Choose)</p>
+                        <ul class="learn-meta text-caption">
+                            <li>29 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely.webp"><img src="../../assets/images/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="ORMs and Query Builders: Knex, Kysely, Drizzle and Prisma Compared: Backend Master chapter 17 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>ORMs and query builders trade control for convenience but never remove the need to understand SQL. This chapter runs the same feature through Knex, Kysely, Drizzle and Prisma, prints the SQL each generates, compares eager loading, transactions and type handling, and gives a decision checklist.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>The spectrum from raw driver to ORM</li><li>Reading the SQL a library generates</li><li>Eager loading versus N+1</li><li>Transactions and raw escape hatches</li><li>Choosing a tool and keeping it behind repositories</li></ul>
+                        </section>
+<hr>
+
+<h2 id="17-0-why-this-chapter-matters">17.0 Why This Chapter Matters</h2>
+<p>You can now write correct, fast, concurrent SQL by hand. So why would anyone use an ORM or a query builder?</p>
+<p>Because in a real codebase with 200 queries, hand-written SQL strings have costs: typos that only fail at runtime, repeated boilerplate for mapping rows to objects, hard-to-compose dynamic filters, and no help when a column is renamed. Libraries promise to fix that. They also carry real dangers: <strong>hidden N+1 queries</strong>, <strong>inefficient generated SQL</strong>, <strong>leaky abstractions</strong>, and the temptation to <em>stop knowing SQL</em>.</p>
+<p>There is no universal winner. This chapter gives you the facts to choose, built on one rule:</p>
+<blockquote>
+<p><strong>Whatever tool you use, you must be able to see and judge the SQL it sends.</strong></p>
+</blockquote>
+<p>We run the <strong>same ShopLine feature</strong> (order history, nested items, dynamic filters, a transaction) through <strong>four real libraries</strong> (Knex, Kysely, Drizzle ORM and Prisma 7) against PostgreSQL 17, print the SQL each one generates, and compare.</p>
+<p>By the end you&#39;ll be able to:</p>
+<ul>
+<li>Explain the <strong>spectrum</strong>: raw driver → query builder → ORM, and what each trades.</li>
+<li>Understand the <strong>Active Record vs Data Mapper</strong> patterns and the <strong>object-relational impedance mismatch</strong>.</li>
+<li>Read the SQL a library generates and spot <strong>N+1</strong>, over-fetching and bad joins.</li>
+<li>Use <strong>eager loading</strong>, <strong>raw escape hatches</strong> and <strong>transactions</strong> correctly in each tool.</li>
+<li>Choose between <strong>Knex, Kysely, Drizzle, Prisma</strong> (and know where TypeORM/Sequelize/MikroORM fit).</li>
+<li>Keep your <strong>schema and migrations</strong> (Ch 14) in sync with the code.</li>
+</ul>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p>Versions installed for this chapter: <strong>knex 3.3.0, kysely 0.29.8, drizzle-orm 0.45.4, Prisma 7.10.1 (with <code>@prisma/adapter-pg</code>), pg 8.23.1</strong>, Node 22.17, PostgreSQL 17. Everything marked with SQL output was <strong>actually executed</strong> against the <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a> ShopLine data. <strong>Not run:</strong> TypeORM, Sequelize, MikroORM (described from their documentation, clearly marked), and each library&#39;s own migration tool. Library APIs change quickly; check the current docs for exact signatures, but the <em>concepts</em> will outlast the syntax.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The phrase <strong>&quot;object-relational impedance mismatch&quot;</strong> was popularised in the 1990s. Objects form graphs with inheritance and references; relational databases hold flat, typed tables joined by keys. Ted Neward famously called ORMs &quot;the Vietnam of computer science&quot; (2006): easy to enter, hard to get out of. That&#39;s a bit dramatic, but it&#39;s why this chapter is about <em>informed</em> use.</p>
+</aside>
+<hr>
+
+<h2 id="17-1-the-spectrum">17.1 The Spectrum</h2>
+<pre class="is-plain"><code> more control, more code                                         more convenience, more magic
+ ────────────────────────────────────────────────────────────────────────────────────────────►
+  raw driver (pg)  →  SQL-first helpers  →  query builder  →  schema-first ORM  →  full ORM
+                      (tagged templates)    (Knex, Kysely)    (Drizzle, Prisma)   (TypeORM, MikroORM, Sequelize)</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th>
+<th>What you write</th>
+<th>What it gives you</th>
+<th>What it costs</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Raw driver</strong> (<code>pg</code>)</td>
+<td>SQL strings</td>
+<td>Full SQL power, zero surprises</td>
+<td>Strings are unchecked; manual mapping; manual composition</td>
+</tr>
+<tr>
+<td><strong>Query builder</strong> (Knex, Kysely)</td>
+<td>Chained JS that mirrors SQL</td>
+<td>Composable queries, safe parameters, (Kysely) full type-safety</td>
+<td>You still think in SQL (a feature)</td>
+</tr>
+<tr>
+<td><strong>ORM</strong> (Drizzle, Prisma, TypeORM…)</td>
+<td>Models/schema + high-level queries</td>
+<td>Typed results, relations, nested loading, migrations tooling</td>
+<td>Generated SQL you must inspect; abstraction limits</td>
+</tr>
+</tbody></table></div>
+<h3 id="two-orm-patterns-you-should-be-able-to-name">Two ORM patterns you should be able to name</h3>
+<ul>
+<li><strong>Active Record</strong> (Rails, Sequelize models, TypeORM <code>BaseEntity</code>): each object <em>is</em> a row and saves itself (<code>user.save()</code>). Simple, but domain logic and persistence are glued together.</li>
+<li><strong>Data Mapper</strong> (Prisma, MikroORM, TypeORM repositories, Drizzle): plain data/objects, plus a separate component that maps them to rows. Fits the <strong>repository</strong> pattern from <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a> better.</li>
+</ul>
+<h3 id="what-an-orm-can-never-hide">What an ORM can never hide</h3>
+<ol>
+<li><strong>Round trips</strong> (N+1): the ORM can&#39;t know you&#39;re in a loop.</li>
+<li><strong>Transactions and isolation</strong>: <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>&#39;s rules apply unchanged.</li>
+<li><strong>Indexes and query plans</strong>: <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a> applies unchanged.</li>
+<li><strong>The database&#39;s data types</strong> (<code>bigint</code>, <code>numeric</code>, <code>timestamptz</code>): you&#39;ll see them leak through (§17.6).</li>
+</ol>
+<hr>
+
+<h2 id="17-2-the-same-feature-four-ways">17.2 The Same Feature Four Ways</h2>
+<p>All four libraries run against the live ShopLine tables. Setup and complete scripts are in <a href="/learn/backend-master/resources/ch17/README.txt">resources/ch17/</a>.</p>
+<p><strong>The feature:</strong></p>
+<ul>
+<li><strong>A.</strong> The three newest orders of user 1 with their totals (join + group + sort).</li>
+<li><strong>B.</strong> Each order with its items and product names (nested data, the N+1 danger zone).</li>
+<li><strong>C.</strong> Product listing with optional filters (dynamic composition).</li>
+<li><strong>D.</strong> A stock decrement + order insert in a transaction that we deliberately <strong>roll back</strong>.</li>
+</ul>
+<h3 id="17-2-1-knex-query-builder-the-veteran">17.2.1 Knex (query builder, the veteran)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> knexLib <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;knex&#x27;</span>;
+<span class="hljs-keyword">const</span> knex = <span class="hljs-title function_">knexLib</span>({ <span class="hljs-attr">client</span>: <span class="hljs-string">&#x27;pg&#x27;</span>, <span class="hljs-attr">connection</span>: conn, <span class="hljs-attr">pool</span>: { <span class="hljs-attr">min</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">max</span>: <span class="hljs-number">5</span> } });
+knex.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;query&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> log.<span class="hljs-title function_">push</span>(q.<span class="hljs-property">sql</span>, q.<span class="hljs-property">bindings</span>));         <span class="hljs-comment">// ← ALWAYS wire up SQL logging</span>
+
+<span class="hljs-comment">// A. join + aggregate</span>
+<span class="hljs-keyword">const</span> A = <span class="hljs-keyword">await</span> <span class="hljs-title function_">knex</span>(<span class="hljs-string">&#x27;orders as o&#x27;</span>).<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27;order_items as oi&#x27;</span>, <span class="hljs-string">&#x27;oi.order_id&#x27;</span>, <span class="hljs-string">&#x27;o.id&#x27;</span>)
+  .<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;o.user_id&#x27;</span>, <span class="hljs-number">1</span>).<span class="hljs-title function_">groupBy</span>(<span class="hljs-string">&#x27;o.id&#x27;</span>).<span class="hljs-title function_">select</span>(<span class="hljs-string">&#x27;o.id&#x27;</span>, <span class="hljs-string">&#x27;o.status&#x27;</span>)
+  .<span class="hljs-title function_">sum</span>({ <span class="hljs-attr">total</span>: knex.<span class="hljs-title function_">raw</span>(<span class="hljs-string">&#x27;oi.quantity * oi.unit_price_minor&#x27;</span>) }).<span class="hljs-title function_">orderBy</span>(<span class="hljs-string">&#x27;o.id&#x27;</span>, <span class="hljs-string">&#x27;desc&#x27;</span>).<span class="hljs-title function_">limit</span>(<span class="hljs-number">3</span>);</code></pre></div>
+<p>Generated SQL (exactly as captured):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">select</span> &quot;o&quot;.&quot;id&quot;, &quot;o&quot;.&quot;status&quot;, <span class="hljs-built_in">sum</span>(oi.quantity <span class="hljs-operator">*</span> oi.unit_price_minor) <span class="hljs-keyword">as</span> &quot;total&quot;
+<span class="hljs-keyword">from</span> &quot;orders&quot; <span class="hljs-keyword">as</span> &quot;o&quot; <span class="hljs-keyword">inner</span> <span class="hljs-keyword">join</span> &quot;order_items&quot; <span class="hljs-keyword">as</span> &quot;oi&quot; <span class="hljs-keyword">on</span> &quot;oi&quot;.&quot;order_id&quot; <span class="hljs-operator">=</span> &quot;o&quot;.&quot;id&quot;
+<span class="hljs-keyword">where</span> &quot;o&quot;.&quot;user_id&quot; <span class="hljs-operator">=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">group</span> <span class="hljs-keyword">by</span> &quot;o&quot;.&quot;id&quot; <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> &quot;o&quot;.&quot;id&quot; <span class="hljs-keyword">desc</span> limit $<span class="hljs-number">2</span>        <span class="hljs-comment">-- [1,3]</span></code></pre></div>
+<p>Result: <code>[ { id: &#39;9&#39;, status: &#39;delivered&#39;, total: &#39;91400&#39; }, … ]</code>. Note <code>id</code> and <code>total</code> are <strong>strings</strong>: that&#39;s the raw <code>pg</code> driver&#39;s <code>bigint</code>/<code>numeric</code> behaviour from <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>, passing straight through the builder.</p>
+<p><strong>Dynamic filters</strong> are Knex&#39;s strong suit:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> rows = <span class="hljs-keyword">await</span> <span class="hljs-title function_">knex</span>(<span class="hljs-string">&#x27;products&#x27;</span>)
+  .<span class="hljs-title function_">modify</span>(<span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> { <span class="hljs-keyword">if</span> (f.<span class="hljs-property">category</span>) q.<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;category_id&#x27;</span>, f.<span class="hljs-property">category</span>);
+                   <span class="hljs-keyword">if</span> (f.<span class="hljs-property">maxPrice</span> != <span class="hljs-literal">null</span>) q.<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;price_minor&#x27;</span>, <span class="hljs-string">&#x27;&lt;=&#x27;</span>, f.<span class="hljs-property">maxPrice</span>); })
+  .<span class="hljs-title function_">orderBy</span>(f.<span class="hljs-property">sort</span>, f.<span class="hljs-property">dir</span>).<span class="hljs-title function_">select</span>(<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;price_minor&#x27;</span>);
+<span class="hljs-comment">// → select &quot;id&quot;,&quot;name&quot;,&quot;price_minor&quot; from &quot;products&quot; where &quot;category_id&quot; = $1 and &quot;price_minor&quot; &lt;= $2 order by &quot;price_minor&quot; desc</span></code></pre></div>
+<p>(Careful: <code>orderBy(f.sort, …)</code> with an unchecked <code>f.sort</code> from a request is the identifier-injection hole from Ch 13. Whitelist it.)</p>
+<p><strong>Transaction</strong> (the callback form commits on success, rolls back on a throw):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> knex.<span class="hljs-title function_">transaction</span>(<span class="hljs-keyword">async</span> (trx) =&gt; {
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">trx</span>(<span class="hljs-string">&#x27;products&#x27;</span>).<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-number">1</span>).<span class="hljs-title function_">andWhere</span>(<span class="hljs-string">&#x27;stock&#x27;</span>, <span class="hljs-string">&#x27;&gt;=&#x27;</span>, <span class="hljs-number">2</span>).<span class="hljs-title function_">decrement</span>(<span class="hljs-string">&#x27;stock&#x27;</span>, <span class="hljs-number">2</span>);
+  <span class="hljs-keyword">const</span> [o] = <span class="hljs-keyword">await</span> <span class="hljs-title function_">trx</span>(<span class="hljs-string">&#x27;orders&#x27;</span>).<span class="hljs-title function_">insert</span>({ <span class="hljs-attr">user_id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">status</span>: <span class="hljs-string">&#x27;paid&#x27;</span>, <span class="hljs-attr">created_at</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>() }).<span class="hljs-title function_">returning</span>(<span class="hljs-string">&#x27;id&#x27;</span>);
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">trx</span>(<span class="hljs-string">&#x27;order_items&#x27;</span>).<span class="hljs-title function_">insert</span>({ <span class="hljs-attr">order_id</span>: o.<span class="hljs-property">id</span>, <span class="hljs-attr">product_id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">quantity</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">unit_price_minor</span>: <span class="hljs-number">100</span> });
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;demo: force rollback&#x27;</span>);
+});</code></pre></div>
+<pre class="is-plain"><code>[1] BEGIN;
+[2] update &quot;products&quot; set &quot;stock&quot; = &quot;stock&quot; - $1 where &quot;id&quot; = $2 and &quot;stock&quot; &gt;= $3   -- [2,1,2]
+[3] insert into &quot;orders&quot; (&quot;created_at&quot;,&quot;status&quot;,&quot;user_id&quot;) values ($1,$2,$3) returning &quot;id&quot;
+[4] insert into &quot;order_items&quot; (...) values ($1,$2,$3,$4)   -- [&quot;10&quot;,1,2,100]
+[5] ROLLBACK
+orders after rollback: { n: '9' }        ← same 9 orders as before: nothing leaked</code></pre>
+<p>You can see <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>&#39;s lesson implemented for you: <strong>one connection</strong> (<code>trx</code>) for the whole block. The classic bug in Knex is using <code>knex(...)</code> instead of <code>trx(...)</code> <em>inside</em> the callback, which runs outside the transaction.</p>
+<h3 id="17-2-2-kysely-type-safe-query-builder">17.2.2 Kysely (type-safe query builder)</h3>
+<p>Kysely is &quot;Knex for TypeScript people&quot;: every column name, table name and result type is checked <strong>at compile time</strong> from a <code>Database</code> interface you provide (hand-written or generated by <code>kysely-codegen</code>). Here we run it as plain JS, which works identically at runtime.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> db = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Kysely</span>({ <span class="hljs-attr">dialect</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">PostgresDialect</span>({ <span class="hljs-attr">pool</span>: <span class="hljs-keyword">new</span> pg.<span class="hljs-title class_">Pool</span>({ ...conn, <span class="hljs-attr">max</span>: <span class="hljs-number">5</span> }) }),
+                        <span class="hljs-attr">log</span>: <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> e.<span class="hljs-property">level</span> === <span class="hljs-string">&#x27;query&#x27;</span> &amp;&amp; log.<span class="hljs-title function_">push</span>(e.<span class="hljs-property">query</span>.<span class="hljs-property">sql</span>, e.<span class="hljs-property">query</span>.<span class="hljs-property">parameters</span>) });
+
+<span class="hljs-keyword">const</span> A = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">selectFrom</span>(<span class="hljs-string">&#x27;orders as o&#x27;</span>).<span class="hljs-title function_">innerJoin</span>(<span class="hljs-string">&#x27;order_items as oi&#x27;</span>, <span class="hljs-string">&#x27;oi.order_id&#x27;</span>, <span class="hljs-string">&#x27;o.id&#x27;</span>)
+  .<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;o.user_id&#x27;</span>, <span class="hljs-string">&#x27;=&#x27;</span>, <span class="hljs-number">1</span>).<span class="hljs-title function_">groupBy</span>(<span class="hljs-string">&#x27;o.id&#x27;</span>)
+  .<span class="hljs-title function_">select</span>([<span class="hljs-string">&#x27;o.id&#x27;</span>, <span class="hljs-string">&#x27;o.status&#x27;</span>, sql<span class="hljs-string">`sum(oi.quantity * oi.unit_price_minor)`</span>.<span class="hljs-title function_">as</span>(<span class="hljs-string">&#x27;total&#x27;</span>)])
+  .<span class="hljs-title function_">orderBy</span>(<span class="hljs-string">&#x27;o.id&#x27;</span>, <span class="hljs-string">&#x27;desc&#x27;</span>).<span class="hljs-title function_">limit</span>(<span class="hljs-number">3</span>).<span class="hljs-title function_">execute</span>();</code></pre></div>
+<p>The SQL is <em>identical</em> to Knex&#39;s (that&#39;s the point of a builder: what you write is what you get).</p>
+<p><strong>Nested data in ONE query</strong>: Kysely&#39;s PostgreSQL helpers build JSON subqueries:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">import</span> { jsonArrayFrom } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;kysely/helpers/postgres&#x27;</span>;
+<span class="hljs-keyword">const</span> nested = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">selectFrom</span>(<span class="hljs-string">&#x27;orders as o&#x27;</span>).<span class="hljs-title function_">where</span>(<span class="hljs-string">&#x27;o.user_id&#x27;</span>, <span class="hljs-string">&#x27;=&#x27;</span>, <span class="hljs-number">1</span>).<span class="hljs-title function_">select</span>([<span class="hljs-string">&#x27;o.id&#x27;</span>, <span class="hljs-string">&#x27;o.status&#x27;</span>])
+  .<span class="hljs-title function_">select</span>(<span class="hljs-function">(<span class="hljs-params">eb</span>) =&gt;</span> <span class="hljs-title function_">jsonArrayFrom</span>(
+      eb.<span class="hljs-title function_">selectFrom</span>(<span class="hljs-string">&#x27;order_items as oi&#x27;</span>).<span class="hljs-title function_">innerJoin</span>(<span class="hljs-string">&#x27;products as p&#x27;</span>, <span class="hljs-string">&#x27;p.id&#x27;</span>, <span class="hljs-string">&#x27;oi.product_id&#x27;</span>)
+        .<span class="hljs-title function_">select</span>([<span class="hljs-string">&#x27;p.name&#x27;</span>, <span class="hljs-string">&#x27;oi.quantity&#x27;</span>]).<span class="hljs-title function_">whereRef</span>(<span class="hljs-string">&#x27;oi.order_id&#x27;</span>, <span class="hljs-string">&#x27;=&#x27;</span>, <span class="hljs-string">&#x27;o.id&#x27;</span>)).<span class="hljs-title function_">as</span>(<span class="hljs-string">&#x27;items&#x27;</span>))
+  .<span class="hljs-title function_">orderBy</span>(<span class="hljs-string">&#x27;o.id&#x27;</span>).<span class="hljs-title function_">execute</span>();</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">select</span> &quot;o&quot;.&quot;id&quot;, &quot;o&quot;.&quot;status&quot;,
+  (<span class="hljs-keyword">select</span> <span class="hljs-built_in">coalesce</span>(json_agg(agg), <span class="hljs-string">&#x27;[]&#x27;</span>) <span class="hljs-keyword">from</span> (<span class="hljs-keyword">select</span> &quot;p&quot;.&quot;name&quot;, &quot;oi&quot;.&quot;quantity&quot; <span class="hljs-keyword">from</span> &quot;order_items&quot; <span class="hljs-keyword">as</span> &quot;oi&quot;
+     <span class="hljs-keyword">inner</span> <span class="hljs-keyword">join</span> &quot;products&quot; <span class="hljs-keyword">as</span> &quot;p&quot; <span class="hljs-keyword">on</span> &quot;p&quot;.&quot;id&quot; <span class="hljs-operator">=</span> &quot;oi&quot;.&quot;product_id&quot; <span class="hljs-keyword">where</span> &quot;oi&quot;.&quot;order_id&quot; <span class="hljs-operator">=</span> &quot;o&quot;.&quot;id&quot;) <span class="hljs-keyword">as</span> agg) <span class="hljs-keyword">as</span> &quot;items&quot;
+<span class="hljs-keyword">from</span> &quot;orders&quot; <span class="hljs-keyword">as</span> &quot;o&quot; <span class="hljs-keyword">where</span> &quot;o&quot;.&quot;user_id&quot; <span class="hljs-operator">=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> &quot;o&quot;.&quot;id&quot;</code></pre></div>
+<p>Result (one row of the output): <code>{&quot;id&quot;:&quot;1&quot;,&quot;status&quot;:&quot;delivered&quot;,&quot;items&quot;:[{&quot;name&quot;:&quot;Notebook A5&quot;,&quot;quantity&quot;:2},{&quot;name&quot;:&quot;Gel Pen&quot;,&quot;quantity&quot;:5}]}</code></p>
+<p><strong>One round trip</strong> for orders <em>and</em> their items, with no row multiplication (a plain join would repeat the order columns for each item). This is the best answer to the N+1 problem in the book so far, and you can read exactly what it does.</p>
+<p>An upsert, typed, and run inside a transaction that we rolled back (the review kept its original rating 5 afterwards):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> &quot;reviews&quot; (...) <span class="hljs-keyword">values</span> ($<span class="hljs-number">1</span>,$<span class="hljs-number">2</span>,$<span class="hljs-number">3</span>,$<span class="hljs-number">4</span>)
+<span class="hljs-keyword">on</span> conflict (&quot;product_id&quot;,&quot;user_id&quot;) do <span class="hljs-keyword">update</span> <span class="hljs-keyword">set</span> &quot;rating&quot; <span class="hljs-operator">=</span> $<span class="hljs-number">5</span>, &quot;body&quot; <span class="hljs-operator">=</span> $<span class="hljs-number">6</span> returning <span class="hljs-operator">*</span></code></pre></div>
+<p><em>(My demo issued a manual <code>ROLLBACK</code> inside Kysely&#39;s own transaction wrapper, which then issued a harmless <code>commit</code>. In real code, throw an error and let the library roll back.)</em></p>
+<h3 id="17-2-3-drizzle-orm-schema-in-code-sql-like">17.2.3 Drizzle ORM (schema-in-code, SQL-like)</h3>
+<p>Drizzle defines tables in TypeScript/JS and gives you both an SQL-like builder and a relational query API:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> orders = <span class="hljs-title function_">pgTable</span>(<span class="hljs-string">&#x27;orders&#x27;</span>, {
+  <span class="hljs-attr">id</span>: <span class="hljs-title function_">bigint</span>({ <span class="hljs-attr">mode</span>: <span class="hljs-string">&#x27;number&#x27;</span> }).<span class="hljs-title function_">primaryKey</span>().<span class="hljs-title function_">generatedAlwaysAsIdentity</span>(),
+  <span class="hljs-attr">userId</span>: <span class="hljs-title function_">bigint</span>(<span class="hljs-string">&#x27;user_id&#x27;</span>, { <span class="hljs-attr">mode</span>: <span class="hljs-string">&#x27;number&#x27;</span> }).<span class="hljs-title function_">notNull</span>(),
+  <span class="hljs-attr">status</span>: <span class="hljs-title function_">text</span>().<span class="hljs-title function_">notNull</span>(),
+  <span class="hljs-attr">createdAt</span>: <span class="hljs-title function_">timestamp</span>(<span class="hljs-string">&#x27;created_at&#x27;</span>, { <span class="hljs-attr">withTimezone</span>: <span class="hljs-literal">true</span> }).<span class="hljs-title function_">notNull</span>(),
+});</code></pre></div>
+<p><strong>Note <code>bigint({ mode: &#39;number&#39; })</code></strong>: Drizzle lets you choose how bigints arrive. Our results came back as real numbers (<code>id: 9</code>), not strings. That&#39;s convenient, but it&#39;s a <strong>precision trap above 2⁵³</strong> (Ch 13); use <code>mode: &#39;bigint&#39;</code> or keep strings for ids that may exceed it.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> A = <span class="hljs-keyword">await</span> db.<span class="hljs-title function_">select</span>({ <span class="hljs-attr">id</span>: orders.<span class="hljs-property">id</span>, <span class="hljs-attr">status</span>: orders.<span class="hljs-property">status</span>,
+    <span class="hljs-attr">total</span>: sql<span class="hljs-string">`sum(<span class="hljs-subst">${orderItems.quantity}</span> * <span class="hljs-subst">${orderItems.unitPriceMinor}</span>)`</span>.<span class="hljs-title function_">mapWith</span>(<span class="hljs-title class_">Number</span>) })
+  .<span class="hljs-title function_">from</span>(orders).<span class="hljs-title function_">innerJoin</span>(orderItems, <span class="hljs-title function_">eq</span>(orderItems.<span class="hljs-property">orderId</span>, orders.<span class="hljs-property">id</span>))
+  .<span class="hljs-title function_">where</span>(<span class="hljs-title function_">eq</span>(orders.<span class="hljs-property">userId</span>, <span class="hljs-number">1</span>)).<span class="hljs-title function_">groupBy</span>(orders.<span class="hljs-property">id</span>).<span class="hljs-title function_">orderBy</span>(<span class="hljs-title function_">desc</span>(orders.<span class="hljs-property">id</span>)).<span class="hljs-title function_">limit</span>(<span class="hljs-number">3</span>);
+<span class="hljs-comment">// [ { id: 9, status: &#x27;delivered&#x27;, total: 91400 }, ... ]   ← numbers, thanks to the schema and mapWith</span></code></pre></div>
+<p><strong>The relational query API (eager loading):</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> rel = <span class="hljs-keyword">await</span> db.<span class="hljs-property">query</span>.<span class="hljs-property">orders</span>.<span class="hljs-title function_">findMany</span>({
+  <span class="hljs-attr">where</span>: <span class="hljs-title function_">eq</span>(orders.<span class="hljs-property">userId</span>, <span class="hljs-number">1</span>), <span class="hljs-attr">with</span>: { <span class="hljs-attr">items</span>: { <span class="hljs-attr">columns</span>: { <span class="hljs-attr">quantity</span>: <span class="hljs-literal">true</span> } } }, <span class="hljs-attr">orderBy</span>: orders.<span class="hljs-property">id</span>, <span class="hljs-attr">limit</span>: <span class="hljs-number">2</span> });</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">select</span> &quot;orders&quot;.&quot;id&quot;, &quot;orders&quot;.&quot;user_id&quot;, &quot;orders&quot;.&quot;status&quot;, &quot;orders&quot;.&quot;created_at&quot;, &quot;orders_items&quot;.&quot;data&quot; <span class="hljs-keyword">as</span> &quot;items&quot;
+<span class="hljs-keyword">from</span> &quot;orders&quot; &quot;orders&quot;
+<span class="hljs-keyword">left</span> <span class="hljs-keyword">join</span> <span class="hljs-keyword">lateral</span> (<span class="hljs-keyword">select</span> <span class="hljs-built_in">coalesce</span>(json_agg(json_build_array(&quot;orders_items&quot;.&quot;quantity&quot;)), <span class="hljs-string">&#x27;[]&#x27;</span>::json) <span class="hljs-keyword">as</span> &quot;data&quot;
+                   <span class="hljs-keyword">from</span> &quot;order_items&quot; &quot;orders_items&quot; <span class="hljs-keyword">where</span> &quot;orders_items&quot;.&quot;order_id&quot; <span class="hljs-operator">=</span> &quot;orders&quot;.&quot;id&quot;) &quot;orders_items&quot; <span class="hljs-keyword">on</span> <span class="hljs-literal">true</span>
+<span class="hljs-keyword">where</span> &quot;orders&quot;.&quot;user_id&quot; <span class="hljs-operator">=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">order</span> <span class="hljs-keyword">by</span> &quot;orders&quot;.&quot;id&quot; limit $<span class="hljs-number">2</span></code></pre></div>
+<p>Again <strong>one query</strong>: a <code>LEFT JOIN LATERAL</code> with <code>json_agg</code>: the exact technique from Chapter 13 (§ lateral joins). The ORM generated the very SQL an expert would write.</p>
+<p><strong>Transaction + rollback:</strong></p>
+<pre class="is-plain"><code>[1] begin
+[2] update &quot;products&quot; set &quot;stock&quot; = &quot;products&quot;.&quot;stock&quot; - 2 where (&quot;products&quot;.&quot;id&quot; = $1 and &quot;products&quot;.&quot;stock&quot; &gt;= 2) returning &quot;id&quot;,&quot;stock&quot;
+[3] rollback
+after decrement (inside tx): [ { id: 1, stock: 48 } ]
+stock of product 1 now: { stock: 50 }</code></pre>
+<h3 id="17-2-4-prisma-7-schema-first-generated-client">17.2.4 Prisma 7 (schema-first, generated client)</h3>
+<p>Prisma uses its own schema language (<code>schema.prisma</code>) as the single source of truth, then <strong>generates</strong> a typed client.</p>
+<p><strong>Introspection</strong>: with an existing database you start from <code>npx prisma db pull</code>. It read all ShopLine tables and produced (excerpt):</p>
+<pre class="is-plain"><code>model orders {
+  id          BigInt        @id @default(autoincrement())
+  user_id     BigInt
+  status      String
+  created_at  DateTime      @db.Timestamptz(6)
+  order_items order_items[]
+  users       users         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}</code></pre>
+<p>It also honestly told us what it <strong>could not</strong> represent:</p>
+<pre class="is-plain"><code>These constraints are not supported by Prisma Client, because Prisma currently does not fully support check constraints:
+  - Model: &quot;orders&quot;, constraint: &quot;orders_status_check&quot; ... &quot;products_stock_check&quot; ... (8 in total)
+The following models were ignored as they do not have a valid unique identifier: &quot;pages_demo&quot;</code></pre>
+<p>That&#39;s the <strong>schema-first trade-off in one screen</strong>: the ORM&#39;s model of your database is <em>smaller</em> than the database. <code>CHECK</code> constraints (<a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>) still protect your data, but Prisma doesn&#39;t know them, and a table without a primary key is invisible. (In Prisma 7 you also configure the connection in <code>prisma.config.ts</code> and pass a <strong>driver adapter</strong> such as <code>@prisma/adapter-pg</code>; our files are in <a href="/learn/backend-master/resources/ch17/README.txt">resources/ch17/</a>.)</p>
+<p>Queries and the SQL they produced:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> nested = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">orders</span>.<span class="hljs-title function_">findMany</span>({ <span class="hljs-attr">where</span>: { <span class="hljs-attr">user_id</span>: <span class="hljs-number">1n</span> },
+  <span class="hljs-attr">include</span>: { <span class="hljs-attr">order_items</span>: { <span class="hljs-attr">include</span>: { <span class="hljs-attr">products</span>: { <span class="hljs-attr">select</span>: { <span class="hljs-attr">name</span>: <span class="hljs-literal">true</span> } } } } }, <span class="hljs-attr">orderBy</span>: { <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;asc&#x27;</span> }, <span class="hljs-attr">take</span>: <span class="hljs-number">2</span> });</code></pre></div>
+<pre class="is-plain"><code>[1] SELECT &quot;id&quot;,&quot;user_id&quot;,&quot;status&quot;,&quot;created_at&quot; FROM &quot;orders&quot; WHERE &quot;user_id&quot; = $1 ORDER BY &quot;id&quot; ASC LIMIT $2 OFFSET $3
+[2] SELECT … FROM &quot;order_items&quot; WHERE &quot;order_id&quot; IN ($1,$2) OFFSET $3
+[3] SELECT &quot;id&quot;,&quot;name&quot; FROM &quot;products&quot; WHERE &quot;id&quot; IN ($1,$2,$3) OFFSET $4</code></pre>
+<p><strong>Three queries, not one</strong>: Prisma&#39;s <code>include</code> loads each relation level with a batched <code>IN (…)</code> query and stitches the results together in memory. That avoids N+1 (it&#39;s 3 queries for any number of orders), but it is <em>not</em> a join. Fine for most cases; for very large <code>IN</code> lists or when you want one round trip, you&#39;d choose differently. <em>(Newer Prisma versions have a <code>relationLoadStrategy: &quot;join&quot;</code> option for PostgreSQL; I did not test it.)</em></p>
+<p>Where Prisma&#39;s query API runs out, you drop to raw SQL, as a <strong>tagged template</strong> that is parameterized:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> total = <span class="hljs-keyword">await</span> prisma.<span class="hljs-property">$queryRaw</span><span class="hljs-string">`SELECT o.id, sum(oi.quantity * oi.unit_price_minor)::int AS total
+  FROM orders o JOIN order_items oi ON oi.order_id = o.id WHERE o.user_id = <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> GROUP BY o.id ORDER BY o.id DESC LIMIT 3`</span>;
+<span class="hljs-comment">// SQL sent: ... WHERE o.user_id = $1 ...   -- [1]        ← ${1} became a parameter, not string concatenation</span></code></pre></div>
+<p><code>groupBy</code> can sum a <em>single column</em> (<code>_sum: { quantity: 7 }</code>), but not <code>quantity * unit_price_minor</code>; the &quot;revenue&quot; query needs raw SQL. <em>Expect this regularly: the ORM covers CRUD and relations; analytics-style queries are usually raw.</em></p>
+<p><strong>Transaction:</strong></p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> prisma.$transaction(<span class="hljs-keyword">async</span> (tx) =&gt; {
+  <span class="hljs-keyword">await</span> tx.<span class="hljs-property">products</span>.<span class="hljs-title function_">updateMany</span>({ <span class="hljs-attr">where</span>: { <span class="hljs-attr">id</span>: <span class="hljs-number">1n</span>, <span class="hljs-attr">stock</span>: { <span class="hljs-attr">gte</span>: <span class="hljs-number">2</span> } }, <span class="hljs-attr">data</span>: { <span class="hljs-attr">stock</span>: { <span class="hljs-attr">decrement</span>: <span class="hljs-number">2</span> } } });
+  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&#x27;demo rollback&#x27;</span>);
+});
+<span class="hljs-comment">// UPDATE &quot;products&quot; SET &quot;stock&quot; = (&quot;stock&quot; - $1) WHERE (&quot;id&quot; = $2 AND &quot;stock&quot; &gt;= $3)  -- [2,&quot;1&quot;,2]</span>
+<span class="hljs-comment">// ROLLBACK        stock now: { stock: 50 }</span></code></pre></div>
+<p>Note <code>updateMany({ where: { stock: { gte: 2 } }, data: { stock: { decrement: 2 } } })</code>: the same <strong>atomic conditional update</strong> pattern from Chapter 16 (strategy 2), expressed through the ORM. <code>{ decrement: 2 }</code> becomes <code>stock - $1</code> <em>in SQL</em>, not &quot;read, subtract in JS, write&quot;. <strong>Know which of your ORM&#39;s operations are atomic in SQL and which are read-modify-write.</strong></p>
+<p>Also note Prisma returns <code>BigInt</code> values (<code>1n</code>, <code>order_id: 1n</code>), a <em>third</em> behaviour for 64-bit ids (the driver gave strings, Drizzle gave numbers). JSON serialization of a <code>BigInt</code> throws, so you must convert it (we used a replacer when printing).</p>
+<hr>
+
+<h2 id="17-3-the-comparison-table-measured-and-observed">17.3 The Comparison Table (Measured and Observed)</h2>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Knex</strong></th>
+<th><strong>Kysely</strong></th>
+<th><strong>Drizzle</strong></th>
+<th><strong>Prisma 7</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Style</td>
+<td>Query builder</td>
+<td>Typed query builder</td>
+<td>SQL-like ORM + relational API</td>
+<td>Schema-first ORM, generated client</td>
+</tr>
+<tr>
+<td>You write</td>
+<td>JS chains</td>
+<td>TS chains</td>
+<td>TS schema + chains</td>
+<td><code>schema.prisma</code> + client API</td>
+</tr>
+<tr>
+<td>Type safety</td>
+<td>Weak (manual)</td>
+<td><strong>Strong</strong>, compile-time</td>
+<td>Strong (from schema)</td>
+<td>Strong (generated)</td>
+</tr>
+<tr>
+<td>Source of truth</td>
+<td>Your DB</td>
+<td>Your DB (+ types)</td>
+<td>Code schema</td>
+<td><code>schema.prisma</code></td>
+</tr>
+<tr>
+<td>Nested loading</td>
+<td>Manual (batch/join)</td>
+<td>JSON subqueries: <strong>1 query</strong></td>
+<td>Lateral JSON: <strong>1 query</strong></td>
+<td><code>include</code>: <strong>3 queries</strong> (batched <code>IN</code>)</td>
+</tr>
+<tr>
+<td>Raw SQL escape</td>
+<td><code>knex.raw</code></td>
+<td><code>sql`…`</code></td>
+<td><code>sql`…`</code></td>
+<td><code>$queryRaw`…`</code></td>
+</tr>
+<tr>
+<td><code>bigint</code> arrives as</td>
+<td>string</td>
+<td>string</td>
+<td>number (configurable)</td>
+<td><code>BigInt</code></td>
+</tr>
+<tr>
+<td>Own migrations</td>
+<td>Yes (knex migrate)</td>
+<td>Basic</td>
+<td><code>drizzle-kit</code></td>
+<td><code>prisma migrate</code></td>
+</tr>
+<tr>
+<td>Unsupported DB features</td>
+<td>Few</td>
+<td>Few</td>
+<td>Few</td>
+<td><code>CHECK</code> constraints not modelled; tables without PK ignored</td>
+</tr>
+<tr>
+<td>Generated code step</td>
+<td>No</td>
+<td>Optional codegen</td>
+<td>No</td>
+<td><strong>Yes</strong> (<code>prisma generate</code>)</td>
+</tr>
+<tr>
+<td>Best at</td>
+<td>Flexible SQL composition</td>
+<td>Type-safe SQL</td>
+<td>Type-safe + relations in code</td>
+<td>Developer experience, fast CRUD</td>
+</tr>
+</tbody></table></div>
+<h3 id="performance-it-s-the-round-trip-not-the-library">Performance: it&#39;s the round trip, not the library</h3>
+<p>I timed 3,000 sequential primary-key lookups on one connection per library (after warm-up), repeating the run three times:</p>
+<pre class="is-plain"><code>raw pg   2431 µs   3364 µs   3590 µs
+knex     2314 µs   4224 µs   2273 µs
+kysely   2549 µs   2722 µs   3762 µs
+drizzle  6203 µs   2822 µs   3918 µs
+prisma   3302 µs   (one run)</code></pre>
+<p>The honest reading: <strong>the numbers are dominated by network round trip and noise</strong> (≈2–4 ms per query through Docker on Windows; run-to-run swings of 2× are larger than any difference between libraries). The builders add microseconds of CPU, which vanish next to one round trip. Don&#39;t choose a library on micro-benchmarks of simple queries; choose on <strong>the SQL it generates</strong> and <strong>the number of round trips</strong> it makes. (A real benchmark would use many runs and a quiet machine, which I did not have.)</p>
+<hr>
+
+<h2 id="17-4-the-dangers-all-tools">17.4 The Dangers (All Tools)</h2>
+<h3 id="17-4-1-n-1-again-disguised-as-innocent-code">17.4.1 N+1, again, disguised as innocent code</h3>
+<p>Any tool with <em>lazy</em> relation access (TypeORM/Sequelize lazy relations, an accidental loop around <code>findUnique</code>) can recreate <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>&#39;s N+1 invisibly. Our Knex demo made the problem explicit:</p>
+<pre class="is-plain"><code>## Knex B1: N+1 loop (4 orders)
+  [1] select &quot;id&quot; from &quot;orders&quot; where &quot;user_id&quot; = $1   -- [1]
+  [2] select * from &quot;order_items&quot; where &quot;order_id&quot; = $1   -- [&quot;1&quot;]
+  [3] select * from &quot;order_items&quot; where &quot;order_id&quot; = $1   -- [&quot;2&quot;]
+  [4] select * from &quot;order_items&quot; where &quot;order_id&quot; = $1   -- [&quot;5&quot;]
+  [5] select * from &quot;order_items&quot; where &quot;order_id&quot; = $1   -- [&quot;9&quot;]
+
+## Knex B2: one batched query
+  [1] select &quot;oi&quot;.&quot;order_id&quot;,&quot;p&quot;.&quot;name&quot;,&quot;oi&quot;.&quot;quantity&quot; from &quot;order_items&quot; as &quot;oi&quot; inner join &quot;products&quot; as &quot;p&quot; ... where &quot;oi&quot;.&quot;order_id&quot; in ($1,$2,$3,$4)</code></pre>
+<p>5 queries vs 1. At 500 orders the difference was 1.9 s vs 25 ms (Ch 15). <strong>Use eager loading (<code>include</code>, <code>with</code>, JSON subqueries) or batch by hand; log queries in development and count them per request.</strong></p>
+<h3 id="17-4-2-raw-escape-hatches-reintroduce-injection">17.4.2 Raw escape hatches reintroduce injection</h3>
+<p>Every tool lets you run raw SQL. Parameterized forms are safe; string-built forms are not. Proven with Knex:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> evil = <span class="hljs-string">&quot;1 OR 1=1&quot;</span>;
+knex.<span class="hljs-title function_">raw</span>(<span class="hljs-string">&#x27;select count(*)::int n from users where id = ?&#x27;</span>, [evil]);
+<span class="hljs-comment">//   → error: invalid input syntax for type bigint: &quot;1 OR 1=1&quot;     (treated as a VALUE, rejected safely)</span>
+knex.<span class="hljs-title function_">raw</span>(<span class="hljs-string">`select count(*)::int n from users where id = <span class="hljs-subst">${evil}</span>`</span>);
+<span class="hljs-comment">//   → [ { n: 5 } ]     ← every row matched: INJECTION</span></code></pre></div>
+<p>The equivalents to be suspicious of: <code>knex.raw</code> / <code>whereRaw</code> with interpolation, Prisma <code>$queryRawUnsafe</code> / <code>$executeRawUnsafe</code>, Drizzle <code>sql.raw()</code>, Kysely <code>sql.raw()</code>. <em>(I executed only the Knex one; the others are from documentation.)</em> Tagged templates (<code>sql`…${x}`</code>, <code>$queryRaw`…${x}`</code>) parameterize interpolations automatically. <strong>Never pass user input to an &quot;unsafe/raw&quot; function, and whitelist identifiers</strong> (sort columns, table names).</p>
+<h3 id="17-4-3-over-fetching-and-select">17.4.3 Over-fetching and <code>SELECT *</code></h3>
+<p><code>knex(&#39;order_items&#39;).where(...)</code> generated <code>select * from &quot;order_items&quot;</code>. ORMs often fetch every column by default; on wide tables or <code>jsonb</code> columns that wastes bandwidth and blocks index-only scans (Ch 15). Select what you need (<code>select</code>/<code>columns</code>/<code>select: {…}</code>).</p>
+<h3 id="17-4-4-types-leak-bigint-numeric-dates">17.4.4 Types leak: <code>bigint</code>, <code>numeric</code>, dates</h3>
+<p>We saw three different representations of the same bigint column across libraries. Decide a convention for your whole project (e.g., ids as strings at the API boundary; money as integers) and <strong>enforce it in one mapping layer</strong>. Never let <code>BigInt</code> or <code>Decimal</code> objects drift into <code>JSON.stringify</code> unconverted.</p>
+<h3 id="17-4-5-the-model-isn-t-the-whole-database">17.4.5 The model isn&#39;t the whole database</h3>
+<p>Prisma ignored our <code>CHECK</code> constraints and a PK-less table. Other ORMs may mis-model partial indexes, exclusion constraints, generated columns, triggers, or RLS. These still <strong>work</strong> in the database; the ORM just doesn&#39;t know. Treat the ORM schema as a <em>view</em> of the database, and keep constraints/indexes in your migrations (Ch 14), not only in the ORM model.</p>
+<h3 id="17-4-6-orm-migrations-can-generate-dangerous-sql">17.4.6 &quot;ORM migrations&quot; can generate dangerous SQL</h3>
+<p>Auto-generated migrations diff your model against the DB and will happily emit <code>ALTER COLUMN … TYPE</code> (table rewrite), <code>CREATE INDEX</code> without <code>CONCURRENTLY</code>, or a <strong>drop + add</strong> for a rename (data loss!). <strong>Always read generated migration SQL</strong> before applying it, using <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>&#39;s checklist. <em>(I did not run <code>prisma migrate</code> or <code>drizzle-kit</code> here.)</em></p>
+<h3 id="17-4-7-transactions-use-the-handle-you-re-given">17.4.7 Transactions: use the handle you&#39;re given</h3>
+<p>Inside <code>knex.transaction((trx) =&gt; …)</code>, <code>prisma.$transaction((tx) =&gt; …)</code>, <code>db.transaction((tx) =&gt; …)</code>: <strong>use <code>trx</code>/<code>tx</code> for every query</strong>. Calling the outer <code>knex</code>/<code>prisma</code>/<code>db</code> runs on another connection, outside the transaction: the exact <code>pool.query(&#39;BEGIN&#39;)</code> bug of Chapter 16. And remember <code>40001</code>/<code>40P01</code> retry logic still applies at higher isolation levels.</p>
+<hr>
+
+<h2 id="17-5-the-other-orms-from-documentation-not-run-here">17.5 The Other ORMs (From Documentation; Not Run Here)</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Tool</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>TypeORM</strong></td>
+<td>Decorator-based entities; supports Active Record <em>and</em> Data Mapper; lazy relations are a classic N+1 source; long-standing maintenance/typing complaints; very common in NestJS tutorials.</td>
+</tr>
+<tr>
+<td><strong>Sequelize</strong></td>
+<td>The oldest Node ORM; Active Record style; typings are weaker; widely deployed in legacy systems.</td>
+</tr>
+<tr>
+<td><strong>MikroORM</strong></td>
+<td>Data Mapper + <strong>Unit of Work</strong> + identity map (like Hibernate/Doctrine); powerful for rich domain models; steeper learning curve.</td>
+</tr>
+<tr>
+<td><strong>Objection.js</strong></td>
+<td>Models on top of Knex; relation graphs; less active.</td>
+</tr>
+<tr>
+<td><strong>Slonik / postgres.js / pg-typed / sqlc-style</strong></td>
+<td>SQL-first: you write SQL, tooling gives you types. Excellent if your team is SQL-fluent.</td>
+</tr>
+</tbody></table></div>
+<p><em>(The notes above are my summary of their documentation and ecosystem reputation; I did not install or test them. Check current maintenance status before adopting any library.)</em></p>
+<hr>
+
+<h2 id="17-6-how-to-choose">17.6 How to Choose</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Your situation</th>
+<th>Good fit</th>
+<th>Why</th>
+</tr>
+</thead><tbody><tr>
+<td>Team strong in SQL; complex reporting; want type safety</td>
+<td><strong>Kysely</strong> (or SQL-first like <code>pg-typed</code>)</td>
+<td>You see/control every query; compile-time safety</td>
+</tr>
+<tr>
+<td>Want a code-defined schema, relations, and SQL-like control</td>
+<td><strong>Drizzle</strong></td>
+<td>One-query relational loading; thin layer</td>
+</tr>
+<tr>
+<td>Product team, many CRUD screens, want best DX and docs</td>
+<td><strong>Prisma</strong></td>
+<td>Fast to start; great tooling; accept generated-client step and <code>include</code> semantics</td>
+</tr>
+<tr>
+<td>Legacy JS project with moving parts</td>
+<td><strong>Knex</strong></td>
+<td>Stable, flexible, no build step</td>
+</tr>
+<tr>
+<td>Rich domain model with Unit of Work</td>
+<td><strong>MikroORM / TypeORM</strong></td>
+<td>Object-graph persistence</td>
+</tr>
+<tr>
+<td>Tiny service, few queries</td>
+<td><strong>Raw <code>pg</code> + a small query module</strong></td>
+<td>The best abstraction is sometimes none</td>
+</tr>
+</tbody></table></div>
+<h3 id="the-pragmatic-hybrid">The pragmatic hybrid</h3>
+<p>Most mature codebases use <strong>an ORM/builder for CRUD</strong> and <strong>raw SQL for hard queries</strong> (reports, bulk operations, CTEs, window functions, upserts with special rules), keeping those queries in dedicated, tested repository methods (<a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a>&#39;s repository pattern). That&#39;s not a failure; it&#39;s the right split.</p>
+<h3 id="the-decision-checklist">The decision checklist</h3>
+<ol>
+<li>Can I <strong>see the SQL</strong> (and log it in dev)?</li>
+<li>Can I <strong>eager-load without N+1</strong>, and verify the query count?</li>
+<li>Does it support <strong>my DB features</strong> (CHECK, partial indexes, RLS, JSONB operators)? What happens to those in migrations?</li>
+<li>How are <strong>transactions</strong> exposed (explicit handle, isolation level, retries)?</li>
+<li>How does it map <strong>bigint/numeric/timestamptz</strong>?</li>
+<li>What&#39;s the <strong>escape hatch</strong> to raw parameterized SQL?</li>
+<li>Is it <strong>actively maintained</strong>, and can the team debug it at 3 a.m.?</li>
+</ol>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;ORM or raw SQL?&quot;</em> A good answer is never one word. &quot;ORM for CRUD and relations, query builder or raw SQL for reporting and performance-critical paths; I always log generated SQL, eager-load to avoid N+1, whitelist identifiers, and review generated migrations. I&#39;d pick the tool by team SQL skill, type-safety needs, and how much of my database design (constraints, indexes) it can express.&quot;</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="17-7-putting-it-in-shopline-s-architecture">17.7 Putting It in ShopLine&#39;s Architecture</h2>
+<p>Chapter 11 gave ShopLine <strong>repositories behind an interface</strong> (<code>productRepo.findById</code>, <code>decrementStock</code>), with in-memory and PostgreSQL implementations. Where does a library fit?</p>
+<pre class="is-plain"><code>modules/orders/
+  order.service.js            ← business rules; knows only the repository interface
+  order.repo.js               ← interface (documented shape)
+  order.repo.memory.js        ← for unit tests
+  order.repo.pg.js            ← THE ONLY FILE that imports knex/kysely/drizzle/prisma</code></pre>
+<p>The library never leaks past the <code>*.repo.pg.js</code> file: services receive plain objects (<code>{ id: &#39;9&#39;, status: &#39;paid&#39;, totalMinor: 91400 }</code>) with a single, consistent id/money convention. Swapping Knex for Kysely later (or hand-written SQL for one hot query) then touches <strong>one file per module</strong>, and the service tests (using the in-memory repo) don&#39;t change at all. This is the practical payoff of hexagonal design (Ch 11).</p>
+<p>A repository method using a transaction handle passed from the service layer (a &quot;unit of work&quot;):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-comment">// service</span>
+<span class="hljs-keyword">await</span> uow.<span class="hljs-title function_">run</span>(<span class="hljs-keyword">async</span> ({ orders, products }) =&gt; {                 <span class="hljs-comment">// uow opens ONE transaction/connection</span>
+  <span class="hljs-keyword">await</span> products.<span class="hljs-title function_">decrementStock</span>(items);                         <span class="hljs-comment">// uses the tx handle internally</span>
+  <span class="hljs-keyword">return</span> orders.<span class="hljs-title function_">create</span>({ userId, items });
+});</code></pre></div>
+<p><em>(This sketch shows the design; the tested transaction code is the library-specific snippets above.)</em></p>
+<hr>
+
+<h2 id="17-8-edge-cases-and-gotchas-checklist">17.8 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Never looked at the SQL the library generated.</li>
+<li><input disabled="" type="checkbox"> N+1 from loops or lazy relations; no per-request query count.</li>
+<li><input disabled="" type="checkbox"> <code>$queryRawUnsafe</code> / <code>sql.raw</code> / string-interpolated <code>raw</code> with user input.</li>
+<li><input disabled="" type="checkbox"> Dynamic <code>orderBy</code> / table names from user input without a whitelist.</li>
+<li><input disabled="" type="checkbox"> <code>bigint</code>/<code>numeric</code> surprising types (string vs number vs <code>BigInt</code>); <code>JSON.stringify</code> on <code>BigInt</code>.</li>
+<li><input disabled="" type="checkbox"> ORM model missing DB-level constraints/indexes; assuming the ORM schema <em>is</em> the schema.</li>
+<li><input disabled="" type="checkbox"> Blindly applying auto-generated migrations (renames → drop/add).</li>
+<li><input disabled="" type="checkbox"> Using the outer client inside a transaction callback.</li>
+<li><input disabled="" type="checkbox"> Read-modify-write in JS where the library offers an atomic SQL operation (<code>decrement</code>, <code>stock = stock - n</code>).</li>
+<li><input disabled="" type="checkbox"> <code>SELECT *</code> / loading whole entities when you need two columns.</li>
+<li><input disabled="" type="checkbox"> Very large <code>IN (…)</code> lists from batched loaders.</li>
+<li><input disabled="" type="checkbox"> No retry on serialization failures/deadlocks (Ch 16).</li>
+<li><input disabled="" type="checkbox"> Letting ORM entities cross layer boundaries into services/controllers.</li>
+<li><input disabled="" type="checkbox"> Choosing a library from a micro-benchmark or a blog post instead of its SQL output and maintenance health.</li>
+</ul>
+<hr>
+
+<h2 id="17-9-chapter-summary">17.9 Chapter Summary</h2>
+<ul>
+<li>Spectrum: <strong>raw driver → query builder → ORM</strong>. You trade control for convenience; you never trade away responsibility for SQL, transactions, indexes or types.</li>
+<li>Patterns: <strong>Active Record</strong> (row objects that save themselves) vs <strong>Data Mapper</strong> (separate mapping; fits repositories).</li>
+<li>Same feature, four tools: Knex and Kysely generated identical readable SQL; Kysely and Drizzle loaded nested data in <strong>one query</strong> (JSON subquery / lateral join); Prisma <code>include</code> used <strong>three batched queries</strong>.</li>
+<li>Transactions: always use the provided handle; each library rolled back cleanly (stock stayed 50, order count stayed 9).</li>
+<li>Types leak: the same <code>bigint</code> came back as a <strong>string</strong> (Knex/Kysely/pg), a <strong>number</strong> (Drizzle <code>mode: &#39;number&#39;</code>) and a <strong><code>BigInt</code></strong> (Prisma).</li>
+<li>Prisma introspection <strong>ignored 8 <code>CHECK</code> constraints and a PK-less table</strong>: an ORM&#39;s model can be smaller than your database.</li>
+<li>Raw escapes are the injection risk: proven with Knex (<code>id = 1 OR 1=1</code> matched all 5 users when interpolated).</li>
+<li>Library overhead is negligible next to a round trip in our test (noise exceeded differences).</li>
+<li>Choose by SQL visibility, eager-loading story, DB-feature support, transaction ergonomics, type mapping, escape hatch and maintenance. Use a <strong>hybrid</strong>: ORM/builder for CRUD, raw SQL for hard queries, all behind repositories.</li>
+</ul>
+<hr>
+
+<h2 id="17-10-revision-notes">17.10 Revision Notes</h2>
+<ul>
+<li>Always log SQL in dev; count queries per request.</li>
+<li>Eager load: Kysely <code>jsonArrayFrom</code>, Drizzle <code>with:</code>, Prisma <code>include</code>; or batch with <code>IN</code>/<code>ANY</code>.</li>
+<li>Use <code>trx</code> / <code>tx</code> inside transaction callbacks; retry <code>40001</code>/<code>40P01</code>.</li>
+<li>Atomic ops: <code>decrement</code>, <code>stock = stock - n WHERE stock &gt;= n</code>.</li>
+<li>Raw: tagged templates are safe; <code>*Unsafe</code>, <code>sql.raw</code>, string-built <code>raw</code> are not.</li>
+<li>bigint: string vs number vs BigInt: pick one convention at the repo boundary.</li>
+<li>ORM schema ≠ DB schema; keep constraints and indexes in migrations; read generated migrations.</li>
+<li>Repositories isolate the library to one file per module.</li>
+</ul>
+<hr>
+
+<h2 id="17-11-mind-map-ascii">17.11 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                          ORMs &amp; QUERY BUILDERS
+                                   │
+        ┌───────────────┬──────────┼────────────┬──────────────────┐
+     SPECTRUM        TOOLS       DANGERS      CHOOSING          ARCHITECTURE
+        │              │            │             │                  │
+   raw pg           Knex       N+1 / lazy     see the SQL        repository pattern
+   builder          Kysely     raw injection  eager loading      lib only in *.repo.pg.js
+   ORM              Drizzle    bigint types   tx ergonomics      unit of work
+   Active Record    Prisma     model≠DB       DB features        hybrid: ORM + raw SQL
+   Data Mapper      (TypeORM…) bad migrations maintenance</code></pre>
+<hr>
+
+<h2 id="17-12-cheat-sheet">17.12 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-comment">// Knex          knex(&#x27;t&#x27;).where(..).modify(q =&gt; …).select(..)      knex.transaction(async trx =&gt; trx(&#x27;t&#x27;)…)</span>
+<span class="hljs-comment">// Kysely        db.selectFrom(&#x27;t&#x27;).select([..]).where(&#x27;c&#x27;,&#x27;=&#x27;,v)    jsonArrayFrom(sub).as(&#x27;items&#x27;)   db.transaction().execute(trx =&gt; …)</span>
+<span class="hljs-comment">// Drizzle       db.select({..}).from(t).where(eq(t.c, v))           db.query.t.findMany({ with: { rel: true } })   db.transaction(tx =&gt; …)</span>
+<span class="hljs-comment">// Prisma        prisma.t.findMany({ where, include, select })       prisma.$queryRaw`… ${v} …`   prisma.$transaction(async tx =&gt; …)</span>
+<span class="hljs-comment">// Raw safe      tagged template / ? bindings / $1 params            NEVER string-concatenate input</span>
+<span class="hljs-comment">// Debug         knex.on(&#x27;query&#x27;) · Kysely log · Drizzle logger · Prisma log:[{emit:&#x27;event&#x27;,level:&#x27;query&#x27;}]</span></code></pre></div>
+<hr>
+
+<h2 id="17-13-key-takeaways">17.13 Key Takeaways</h2>
+<ol>
+<li><strong>Read the SQL.</strong> If you can&#39;t see it, you can&#39;t judge it.</li>
+<li>Eager loading beats loops; <strong>count queries per request</strong>.</li>
+<li>Raw escape hatches are fine, <strong>if parameterized</strong>.</li>
+<li>The ORM&#39;s schema is a <em>view</em> of your database, not the database.</li>
+<li>Use a hybrid, and keep the library <strong>behind repositories</strong>.</li>
+</ol>
+<hr>
+
+<h2 id="17-14-20-multiple-choice-questions">17.14 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Control for convenience."><p class="quiz-text">What is the main trade-off of moving from raw SQL toward an ORM?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Speed for nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Control for convenience</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Safety for speed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing changes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Row object saves itself."><p class="quiz-text">Active Record means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Rows are plain data and a separate mapper persists them</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Each object represents a row and can save itself</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Records are immutable</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">SQL is generated at startup</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Separate mapper."><p class="quiz-text">Which pairing is Data Mapper-style?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Rails models</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Prisma / MikroORM / Drizzle with a separate persistence layer</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>user.save()</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sequelize instances</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="JSON subquery / lateral join."><p class="quiz-text">In our test, which library loaded orders with items in ONE query (via JSON/lateral)?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Prisma <code>include</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Knex</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Kysely and Drizzle</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">None</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Three queries."><p class="quiz-text">Prisma <code>include</code> of orders → items → products produced:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">One huge join</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Three batched queries with <code>IN</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">N+1 queries</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A stored procedure</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="CHECK not modelled."><p class="quiz-text">Why did Prisma&#39;s introspection warn about constraints?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They were invalid</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It doesn&#39;t model <code>CHECK</code> constraints (they still exist in the DB)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They were slow</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">They were duplicates</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="One convention, one mapping layer."><p class="quiz-text"><code>bigint</code> ids arrived as strings, numbers and <code>BigInt</code> across tools. The right response is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Ignore it</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Pick one convention and convert at the repository boundary</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Always use floats</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Avoid bigint</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="The transaction handle."><p class="quiz-text">In <code>knex.transaction(async (trx) =&gt; …)</code>, you should run queries with:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>knex</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>trx</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A new pool</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Either</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Interpolation = injection."><p class="quiz-text">Why was <code>knex.raw(\</code>… id = ${evil}`)` dangerous?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It was slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The input became part of the SQL text and matched every row</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Knex forbids it</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It used a transaction</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Tagged template parameterizes."><p class="quiz-text">Which is a parameterized raw form?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>$queryRaw`… ${id}`</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>$queryRawUnsafe(&#39;… &#39; + id)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>sql.raw(userInput)</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">String concatenation</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Atomic in SQL."><p class="quiz-text">Prisma&#39;s <code>{ stock: { decrement: 2 } }</code> is notable because it:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Reads in JS then writes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Becomes <code>stock = stock - $1</code> in SQL (atomic)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Locks the table</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Is a no-op</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="1 + N."><p class="quiz-text">An N+1 in Knex looks like:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">One join query</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A list query followed by one query per row</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A batched <code>IN</code> query</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A transaction</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Noise ≫ library overhead."><p class="quiz-text">Why shouldn&#39;t you pick a library from a simple-query micro-benchmark?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Benchmarks are illegal</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Round trip and noise dominate; differences are tiny</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They&#39;re always wrong</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Prisma is slower</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Rename drops data; rewrites lock."><p class="quiz-text">Auto-generated ORM migrations can be dangerous because they may:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Be too small</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Rename via drop+add (data loss) or rewrite/ lock tables</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Use SQL</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Require psql</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="Isolate the library."><p class="quiz-text">The best place for ORM/builder imports in a layered ShopLine is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Controllers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Services</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only <code>*.repo.pg.js</code> files</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Everywhere</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="A view of the DB."><p class="quiz-text">Which statement about the ORM schema is true?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It is the database</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It is a (possibly smaller) model of the database; constraints/indexes live in migrations</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It replaces migrations</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It&#39;s always complete</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Typed, SQL-shaped."><p class="quiz-text">Kysely&#39;s main distinguishing feature is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Decorators</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Compile-time type-safe query building that still maps 1:1 to SQL</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">An active-record model</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A GUI</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Unchecked identifier."><p class="quiz-text">Which is NOT a safe way to build dynamic <code>ORDER BY</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Whitelist map from allowed keys to column names</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>orderBy(req.query.sort)</code> unchecked</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A fixed enum</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Lookup in a constant object</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Right tool per query."><p class="quiz-text">A hybrid approach means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Two databases</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">ORM/builder for CRUD, raw SQL for hard queries, behind repositories</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Mixing JS and TS</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Using two ORMs everywhere</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Visibility of SQL."><p class="quiz-text">Which question is most important to ask about any ORM?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Does it have a logo?</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Can I see and verify the SQL it generates?</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Does it have decorators?</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Is it the most downloaded?</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-c, 5-b, 6-b, 7-b, 8-b, 9-b, 10-a, 11-b, 12-b, 13-b, 14-b, 15-c, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="17-15-20-hands-on-exercises">17.15 20 Hands-on Exercises</h2>
+<p><em>(Use <a href="/learn/backend-master/resources/ch17/README.txt">resources/ch17/</a> and the ShopLine data from Ch 13.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Install Knex; log every generated query; reproduce query A and read the SQL.</li>
+<li>Write the N+1 loop, then replace it with a <code>whereIn</code> batch; compare query counts.</li>
+<li>Add a whitelist for the <code>sort</code> column in the dynamic product filter.</li>
+<li>Show the injection with an interpolated <code>knex.raw</code>, then fix it with bindings.</li>
+<li>Run each tool&#39;s transaction demo and verify the rollback by re-querying.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Build the &quot;orders with items&quot; query in Kysely using <code>jsonArrayFrom</code>; explain each SQL clause.</li>
+<li>Define the ShopLine tables in Drizzle; use <code>db.query</code> with <code>with:</code> and print the SQL.</li>
+<li>Run <code>prisma db pull</code>; list everything the model omitted vs the real database.</li>
+<li>Pass a <code>bigint</code> id through each tool and write a function normalising it to a string.</li>
+<li>Write one revenue-by-month report as raw SQL and as an ORM query; note what&#39;s lost in the ORM version.</li>
+<li>Implement an atomic &quot;decrement stock&quot; in each tool and test with 50 concurrent calls (Ch 16 harness).</li>
+<li>Time the three loading strategies (N+1, batched, JSON subquery) for 500 orders.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Create <code>order.repo.pg.js</code> using Kysely and <code>order.repo.memory.js</code>; run the same contract test against both.</li>
+<li>Implement a <code>uow.run()</code> unit-of-work helper that gives repositories a shared transaction handle, with retry on <code>40001</code>.</li>
+<li>Try Prisma&#39;s <code>relationLoadStrategy: &quot;join&quot;</code> (if available in your version); compare SQL and timing.</li>
+<li>Generate a migration with <code>drizzle-kit</code> or <code>prisma migrate</code> for a column <em>rename</em>; show what SQL it emits and rewrite it as expand/contract (Ch 14).</li>
+<li>Write a query-counter middleware (AsyncLocalStorage) that fails a test when an endpoint exceeds N queries.</li>
+<li>Add <code>CHECK</code> and a partial unique index in a migration; show your ORM neither models nor breaks them.</li>
+<li>Benchmark all libraries properly (≥30 runs, quiet machine, report median and p95) and write up the result.</li>
+<li>Port the same feature to TypeORM or MikroORM and compare the generated SQL and N+1 behaviour with the four tools here.</li>
+</ol>
+<hr>
+
+<h2 id="17-16-5-interview-questions">17.16 5 Interview Questions</h2>
+<p><strong>1. ORM or raw SQL: which do you choose and why?</strong>
+<em>Model answer:</em> Both, by case. ORM/builder for CRUD, relations and type safety; raw parameterized SQL for reports, bulk operations and anything where I need CTEs, windows or exact plans; all behind repositories so the choice is local. Non-negotiables: log SQL, eager-load to avoid N+1, whitelist identifiers, review generated migrations.</p>
+<p><strong>2. What is the N+1 problem and how do ORMs help or hurt?</strong>
+<em>Model answer:</em> A list query followed by one query per row. ORMs hurt when relations are lazy or when code loops around single lookups; they help with eager loading (<code>include</code>/<code>with</code>/JSON subqueries). Strategies differ: Prisma issued 3 batched <code>IN</code> queries, Kysely/Drizzle one query with JSON aggregation. I verify by counting queries per request.</p>
+<p><strong>3. Active Record vs Data Mapper?</strong>
+<em>Model answer:</em> Active Record: an object is a row and saves itself, simple but couples domain and persistence. Data Mapper: plain objects plus a mapper/repository that persists them; better separation, testability and fit with hexagonal architecture.</p>
+<p><strong>4. How do transactions work with an ORM and what can go wrong?</strong>
+<em>Model answer:</em> The library gives a transaction handle bound to one connection; all queries inside must use it. Using the outer client runs queries outside the transaction. Isolation levels, <code>40001</code>/<code>40P01</code> retries and short transactions from Ch 16 still apply, and atomic operations (<code>decrement</code>) are preferable to read-modify-write in JS.</p>
+<p><strong>5. What are the risks of relying on an ORM&#39;s schema and migrations?</strong>
+<em>Model answer:</em> The ORM model may not represent CHECK constraints, partial indexes, triggers or RLS (Prisma ignored 8 CHECKs in our test); auto-generated migrations can drop/re-add on rename or rewrite big tables without <code>CONCURRENTLY</code>. So treat migrations as reviewed code, keep DB-level rules in SQL migrations, and use expand/contract for risky changes.</p>
+<hr>
+
+<h2 id="17-17-3-real-projects">17.17 3 Real Projects</h2>
+<p><strong>Project 1: Same API, Four Data Layers (intermediate, ~10 hours).</strong>
+Implement ShopLine&#39;s orders module with a repository interface, then four implementations (Knex, Kysely, Drizzle, Prisma) passing one shared contract test suite. Capture generated SQL per operation, query counts, and a median/p95 benchmark; write a recommendation memo.</p>
+<p><strong>Project 2: Query Budget Guard (intermediate, ~6 hours).</strong>
+A development-time middleware that counts and fingerprints queries per request for any of the libraries, warns on duplicates and <code>SELECT *</code>, and fails CI if a route exceeds its declared &quot;query budget&quot;. Include a dashboard of the worst routes.</p>
+<p><strong>Project 3: Safe Migration Pipeline (advanced, ~10 hours).</strong>
+A CI step that takes ORM-generated migration SQL, lints it against Chapter 14&#39;s dangerous-operation rules (rename as drop/add, type change, non-concurrent index, NOT NULL without default), blocks or annotates PRs, and runs the migration against a production-sized snapshot to measure lock time.</p>
+<hr>
+
+<h2 id="17-18-further-reading">17.18 Further Reading</h2>
+<ul>
+<li>Documentation: Knex.js, Kysely (kysely.dev), Drizzle ORM (orm.drizzle.team), Prisma (prisma.io/docs), including each tool&#39;s <em>relations/eager loading</em> and <em>raw queries</em> sections.</li>
+<li><em>Patterns of Enterprise Application Architecture</em> by Martin Fowler: Active Record, Data Mapper, Unit of Work, Repository.</li>
+<li>Ted Neward, &quot;The Vietnam of Computer Science&quot; (2006): the classic critique of ORMs.</li>
+<li><em>SQL Antipatterns</em> by Bill Karwin: why generated SQL needs reviewing.</li>
+<li><code>kysely-codegen</code>, <code>drizzle-kit</code>, <code>prisma migrate</code> documentation (generating types and migrations).</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-18-mongodb-and-document-modeling">Up next → Chapter 18: MongoDB and Document Modeling</h3>
+<p>PostgreSQL isn&#39;t the only answer. Next: when a document database is the <em>right</em> tool, BSON and the MongoDB data model, embedding vs referencing, indexes and the aggregation pipeline, transactions, schema validation, and Mongoose, tested against a real MongoDB 8 container, with an honest comparison to what you just learned in PostgreSQL.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">ORMs vs Query Builders: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Should I use an ORM or raw SQL?</h3></summary><p>Use both. A builder or ORM suits CRUD and relations, raw parameterised SQL suits reports and performance-critical queries, and both belong behind repository modules so the choice stays local.</p></details>
+<details class="learn-faq-item"><summary><h3>Do ORMs prevent N+1 queries?</h3></summary><p>Only if you use their eager-loading features and check the SQL. Kysely and Drizzle loaded nested data in one query in our test, Prisma used three batched queries, and a manual loop made five.</p></details>
+<details class="learn-faq-item"><summary><h3>Why do ids differ between Prisma and Drizzle?</h3></summary><p>The same bigint column arrived as a string, a JavaScript number or a BigInt depending on the library. Pick one convention and convert at the repository boundary.</p></details>
+<details class="learn-faq-item"><summary><h3>Are raw queries in ORMs safe?</h3></summary><p>Tagged templates and bound parameters are safe; string-built raw queries are injectable. Never pass user input to unsafe or raw functions without parameters.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span>&larr; Previous &middot; Chapter 16</span><strong>Transactions, Isolation &amp; Concurrency</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span>Next &middot; Chapter 18 &rarr;</span><strong>MongoDB Data Modeling &amp; Aggregation</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#17-0-why-this-chapter-matters">17.0 Why This Chapter Matters</a></li><li><a href="#17-1-the-spectrum">17.1 The Spectrum</a></li><li><a href="#17-2-the-same-feature-four-ways">17.2 The Same Feature Four Ways</a></li><li><a href="#17-3-the-comparison-table-measured-and-observed">17.3 The Comparison Table (Measured and Observed)</a></li><li><a href="#17-4-the-dangers-all-tools">17.4 The Dangers (All Tools)</a></li><li><a href="#17-5-the-other-orms-from-documentation-not-run-here">17.5 The Other ORMs (From Documentation; Not Run Here)</a></li><li><a href="#17-6-how-to-choose">17.6 How to Choose</a></li><li><a href="#17-7-putting-it-in-shopline-s-architecture">17.7 Putting It in ShopLine's Architecture</a></li><li><a href="#17-8-edge-cases-and-gotchas-checklist">17.8 Edge Cases and Gotchas Checklist</a></li><li><a href="#17-9-chapter-summary">17.9 Chapter Summary</a></li><li><a href="#17-10-revision-notes">17.10 Revision Notes</a></li><li><a href="#17-11-mind-map-ascii">17.11 Mind Map (ASCII)</a></li><li><a href="#17-12-cheat-sheet">17.12 Cheat Sheet</a></li><li><a href="#17-13-key-takeaways">17.13 Key Takeaways</a></li><li><a href="#17-14-20-multiple-choice-questions">17.14 20 Multiple Choice Questions</a></li><li><a href="#17-15-20-hands-on-exercises">17.15 20 Hands-on Exercises</a></li><li><a href="#17-16-5-interview-questions">17.16 5 Interview Questions</a></li><li><a href="#17-17-3-real-projects">17.17 3 Real Projects</a></li><li><a href="#17-18-further-reading">17.18 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "orm-vs-query-builder-prisma-drizzle-knex-kysely"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

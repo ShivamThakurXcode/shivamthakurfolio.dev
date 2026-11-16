@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Transactions, Isolation &amp; Concurrency | Backend Master</title>
+    <meta name="description" content="Handle concurrent users safely: transactions, isolation levels with real anomalies, write skew, row locks, deadlocks, optimistic locking and Node.js patterns.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="database transactions, isolation levels postgresql, write skew, select for update skip locked, deadlock postgresql, optimistic locking, lost update, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="database transactions">
+    <meta property="article:tag" content="isolation levels postgresql">
+    <meta property="article:tag" content="write skew">
+    <meta property="article:tag" content="select for update skip locked">
+    <meta property="article:tag" content="deadlock postgresql">
+    <meta property="article:tag" content="optimistic locking">
+    <meta property="article:tag" content="lost update">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Transactions, Isolation &amp; Concurrency">
+    <meta property="og:description" content="Handle concurrent users safely: transactions, isolation levels with real anomalies, write skew, row locks, deadlocks, optimistic locking and Node.js patterns.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/database-transactions-isolation-levels-concurrency.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Transactions, Isolation Levels and Concurrency Control in PostgreSQL: Backend Master chapter 16">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Transactions, Isolation &amp; Concurrency">
+    <meta name="twitter:description" content="Handle concurrent users safely: transactions, isolation levels with real anomalies, write skew, row locks, deadlocks, optimistic locking and Node.js patterns.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/database-transactions-isolation-levels-concurrency.png">
+    <meta name="twitter:image:alt" content="Transactions, Isolation Levels and Concurrency Control in PostgreSQL: Backend Master chapter 16">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency",
+          "name": "Transactions, Isolation & Concurrency | Backend Master",
+          "description": "Handle concurrent users safely: transactions, isolation levels with real anomalies, write skew, row locks, deadlocks, optimistic locking and Node.js patterns.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/database-transactions-isolation-levels-concurrency.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Transactions, Isolation Levels and Concurrency Control in PostgreSQL"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#webpage"
+          },
+          "headline": "Transactions, Isolation Levels and Concurrency Control in PostgreSQL",
+          "alternativeHeadline": "Transactions, Isolation Levels and Concurrency — When Two Users Act at Once",
+          "description": "Handle concurrent users safely: transactions, isolation levels with real anomalies, write skew, row locks, deadlocks, optimistic locking and Node.js patterns.",
+          "abstract": "Concurrency bugs are silent and costly. This chapter runs 50 simultaneous buyers against a 10-item stock to show a naive read-modify-write confirming 50 orders, then fixes it six ways, demonstrates isolation anomalies including write skew, row locks and SKIP LOCKED queues, deadlocks and the correct transaction pattern in Node.js.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/database-transactions-isolation-levels-concurrency.png",
+          "url": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 7631,
+          "timeRequired": "PT35M",
+          "articleSection": "Backend Development",
+          "keywords": "database transactions, isolation levels postgresql, write skew, select for update skip locked, deadlock postgresql, optimistic locking, lost update",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "Atomic conditional updates and row locks",
+            "Isolation levels and their anomalies",
+            "Write skew and SERIALIZABLE retries",
+            "Deadlocks and consistent lock ordering",
+            "A correct withTransaction helper for Node.js"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "database transactions"
+          },
+          "isAccessibleForFree": true,
+          "position": 16,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance#article",
+            "name": "PostgreSQL Indexes and Query Performance: Reading EXPLAIN ANALYZE",
+            "url": "https://shivamthakur.me/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Transactions, Isolation & Concurrency",
+              "item": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do I prevent overselling stock?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Make the check and the update one atomic statement: UPDATE products SET stock = stock - $q WHERE id = $1 AND stock >= $q, then check the affected row count. Alternatives are SELECT FOR UPDATE or optimistic version checks."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is write skew?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Two transactions read overlapping data, each decide safely, then write different rows, together breaking a rule neither broke alone. REPEATABLE READ allows it; SERIALIZABLE prevents it by aborting one transaction."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I avoid deadlocks?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Lock rows in a consistent order, keep transactions short and retry on error 40P01. In our test, unordered transfers took 114 seconds because deadlocks are detected after one second."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is pool.query('BEGIN') a bug?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A transaction belongs to one connection, but a pool can send each query to a different one. Check out a single client and run BEGIN, the queries and COMMIT on it."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#quiz",
+          "name": "Transactions, Isolation & Concurrency: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "database transactions"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/database-transactions-isolation-levels-concurrency#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In the naive read-modify-write test, 50 buyers were confirmed for 10 items because:",
+              "text": "In the naive read-modify-write test, 50 buyers were confirmed for 10 items because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Each read the same stock, then wrote an absolute value"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The CHECK constraint failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The pool was too small"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "PostgreSQL has a bug"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The fastest correct strategy in our test was:",
+              "text": "The fastest correct strategy in our test was:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Atomic UPDATE … WHERE stock >= 1"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "FOR UPDATE"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Optimistic version"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SERIALIZABLE"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "After an error inside a PostgreSQL transaction, the next statement fails with:",
+              "text": "After an error inside a PostgreSQL transaction, the next statement fails with:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "25P02 (transaction aborted)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "23505"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "40001"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing, it works"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What lets you continue a transaction after a failed statement?",
+              "text": "What lets you continue a transaction after a failed statement?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A SAVEPOINT and ROLLBACK TO"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "COMMIT"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "RETRY"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Autocommit"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "PostgreSQL's default isolation level is:",
+              "text": "PostgreSQL's default isolation level is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Read Committed"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Read Uncommitted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Repeatable Read"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Serializable"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "At READ COMMITTED, reading the same row twice in one transaction can:",
+              "text": "At READ COMMITTED, reading the same row twice in one transaction can:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Differ if another transaction committed in between"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Never differ"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Block"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Error"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which anomaly can still occur at REPEATABLE READ in PostgreSQL?",
+              "text": "Which anomaly can still occur at REPEATABLE READ in PostgreSQL?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Write skew"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Dirty read"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Non-repeatable read"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Phantom read"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What did SERIALIZABLE do in the on-call doctors demo?",
+              "text": "What did SERIALIZABLE do in the on-call doctors demo?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Aborted one transaction with 40001"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Allowed both"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Deadlocked"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Ignored the rule"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "40001 means:",
+              "text": "40001 means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Serialization failure, retry the transaction"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Deadlock"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Syntax error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Lock timeout"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "SELECT … FOR UPDATE SKIP LOCKED is ideal for:",
+              "text": "SELECT … FOR UPDATE SKIP LOCKED is ideal for:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A multi-worker job queue"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Reports"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Schema migrations"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Bulk inserts"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "NOWAIT makes a locked-row request:",
+              "text": "NOWAIT makes a locked-row request:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Fail immediately with 55P03"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Wait forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Skip the row"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Upgrade the lock"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did 30 transfers take 114 s?",
+              "text": "Why did 30 transfers take 114 s?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "208 deadlocks, each detected only after deadlock_timeout (1 s)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Slow disk"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The pool was exhausted"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Large rows"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The best structural fix for transfer deadlocks is:",
+              "text": "The best structural fix for transfer deadlocks is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Lock rows in a consistent (ascending id) order"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Longer timeouts"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A bigger pool"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "SERIALIZABLE only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is optimistic locking?",
+              "text": "Which is optimistic locking?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "UPDATE … WHERE id=$1 AND version=$2"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "FOR UPDATE"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "LOCK TABLE"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Advisory lock"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why must BEGIN/COMMIT run on a single checked-out client?",
+              "text": "Why must BEGIN/COMMIT run on a single checked-out client?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A transaction belongs to one connection; the pool may give each pool.query a different one"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Style"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Speed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Authentication"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What went wrong in pool.query('BEGIN'); pool.query('UPDATE…'); pool.query('ROLLBACK')?",
+              "text": "What went wrong in pool.query('BEGIN'); pool.query('UPDATE…'); pool.query('ROLLBACK')?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The UPDATE autocommitted on another connection, so ROLLBACK didn't undo it"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A syntax error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The pool closed"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Retrying a transaction function is only safe if it:",
+              "text": "Retrying a transaction function is only safe if it:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Has no external side effects (emails, charges) inside it"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Is short"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Uses SERIALIZABLE"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Uses a pool"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "ON CONFLICT (key) DO NOTHING with a UNIQUE key makes an insert:",
+              "text": "ON CONFLICT (key) DO NOTHING with a UNIQUE key makes an insert:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Idempotent under concurrency"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Slower"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Transactional"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why did failed checkout attempts not reduce product #2's stock permanently?",
+              "text": "Why did failed checkout attempts not reduce product #2's stock permanently?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Their transaction rolled back, undoing the earlier stock decrement"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "They never ran"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Stock was refilled"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Triggers"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A standalone pg.Client crashed the process on an idle-in-transaction timeout because:",
+              "text": "A standalone pg.Client crashed the process on an idle-in-transaction timeout because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The server's FATAL arrived as an unhandled 'error' event"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The query was slow"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The pool was full"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The timeout was too long"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Transactions, Isolation &amp; Concurrency</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:44.4%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item active" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency" aria-current="page"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 16 of 36 &middot; Advanced</p>
+                        <h1>Transactions, Isolation Levels and Concurrency Control in PostgreSQL</h1>
+                        <p class="learn-book-title">Transactions, Isolation Levels and Concurrency — When Two Users Act at Once</p>
+                        <ul class="learn-meta text-caption">
+                            <li>35 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/database-transactions-isolation-levels-concurrency.webp"><img src="../../assets/images/learn/backend-master/database-transactions-isolation-levels-concurrency.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Transactions, Isolation Levels and Concurrency Control in PostgreSQL: Backend Master chapter 16 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Concurrency bugs are silent and costly. This chapter runs 50 simultaneous buyers against a 10-item stock to show a naive read-modify-write confirming 50 orders, then fixes it six ways, demonstrates isolation anomalies including write skew, row locks and SKIP LOCKED queues, deadlocks and the correct transaction pattern in Node.js.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>Atomic conditional updates and row locks</li><li>Isolation levels and their anomalies</li><li>Write skew and SERIALIZABLE retries</li><li>Deadlocks and consistent lock ordering</li><li>A correct withTransaction helper for Node.js</li></ul>
+                        </section>
+<hr>
+
+<h2 id="16-0-why-this-chapter-matters">16.0 Why This Chapter Matters</h2>
+<p>Everything so far worked because <em>one thing happened at a time</em>. Real systems don&#39;t work like that. Fifty people click &quot;Buy&quot; on the last pair of sneakers in the same second. Two admins edit the same product. A payment webhook arrives while the user refreshes the page.</p>
+<p>Concurrency bugs are the nastiest in backend work because they are:</p>
+<ul>
+<li><strong>Invisible in testing.</strong> Your single-user tests pass forever.</li>
+<li><strong>Rare in production, until a sale day.</strong> Then they happen hundreds of times.</li>
+<li><strong>Silent.</strong> The system doesn&#39;t crash; it quietly sells ten items you only have three of, or loses a payment.</li>
+</ul>
+<p>In this chapter you will <em>cause</em> these bugs on purpose, with a 50-buyer stampede on a 10-item stock, and then fix them six different ways, measuring each. You&#39;ll learn:</p>
+<ul>
+<li>What a <strong>transaction</strong> guarantees, and what it doesn&#39;t.</li>
+<li>The <strong>four isolation levels</strong>, and what PostgreSQL actually does (with reproducible anomalies, including <strong>write skew</strong>).</li>
+<li><strong>Row locks</strong>: <code>FOR UPDATE</code>, <code>NOWAIT</code>, <code>SKIP LOCKED</code> (and how to build a job queue with it).</li>
+<li><strong>Deadlocks</strong>: how they happen, why they can cripple you for seconds, and how to prevent them.</li>
+<li><strong>Optimistic vs pessimistic</strong> locking, and when to use which.</li>
+<li>The right way to use transactions from <strong>Node.js</strong> (and the pool bug that silently breaks them).</li>
+<li><strong>Idempotency</strong> and the <strong>all-or-nothing checkout</strong> for ShopLine.</li>
+</ul>
+<p>Everything here ran on <strong>PostgreSQL 17</strong> with Node 22 and <code>pg</code>. Outputs are real. Concurrency results can vary slightly run to run (that&#39;s the nature of races); the <em>patterns</em> are stable.</p>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>The &quot;last seat on a flight&quot; and &quot;double-spent balance&quot; problems were the original reason transactions were invented, in the IBM System R and Tandem systems of the 1970s. Jim Gray won the Turing Award (1998) largely for formalizing transaction processing. Every time you book a ticket online, his ideas are what stops two people getting seat 14C.</p>
+</aside>
+<hr>
+
+<h2 id="16-1-transactions-the-basics">16.1 Transactions: The Basics</h2>
+<p>A <strong>transaction</strong> is a group of statements that succeed or fail <strong>together</strong>. (<a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">Chapter 12</a> introduced ACID; here we use it.)</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">BEGIN</span>;
+<span class="hljs-keyword">UPDATE</span> wallets <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">-</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;
+<span class="hljs-keyword">UPDATE</span> wallets <span class="hljs-keyword">SET</span> balance <span class="hljs-operator">=</span> balance <span class="hljs-operator">+</span> <span class="hljs-number">100</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;
+<span class="hljs-keyword">COMMIT</span>;          <span class="hljs-comment">-- both changes become visible, atomically</span>
+<span class="hljs-comment">-- or ROLLBACK;  -- neither happened</span></code></pre></div>
+<ul>
+<li>Outside a <code>BEGIN</code>, every statement is its own tiny transaction (<strong>autocommit</strong>).</li>
+<li>If the server crashes before <code>COMMIT</code>, none of it happened. After <code>COMMIT</code>, it survives a crash (the WAL; Ch 12).</li>
+<li>Other sessions <strong>never see half-done work</strong>.</li>
+</ul>
+<h3 id="what-happens-when-a-statement-fails-inside-a-transaction">What happens when a statement fails inside a transaction</h3>
+<p>PostgreSQL is strict: after any error, <strong>the whole transaction is &quot;aborted&quot;</strong> and every later command is refused until you <code>ROLLBACK</code>:</p>
+<pre class="is-plain"><code>BEGIN;
+INSERT INTO sp VALUES (1,'first');
+INSERT INTO sp VALUES (2,'x'), (1,'dup');     -- ERROR 23505 duplicate key
+INSERT INTO sp VALUES (3,'y');                -- ERROR 25P02:
+   current transaction is aborted, commands ignored until end of transaction block</code></pre>
+<p>If you <em>want</em> to recover from one failing step and continue, use a <strong>savepoint</strong>: a named checkpoint inside the transaction.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">BEGIN</span>;
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> sp <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;first&#x27;</span>);
+<span class="hljs-keyword">SAVEPOINT</span> s1;
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> sp <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;dup&#x27;</span>);          <span class="hljs-comment">-- fails (23505)</span>
+<span class="hljs-keyword">ROLLBACK</span> <span class="hljs-keyword">TO</span> <span class="hljs-keyword">SAVEPOINT</span> s1;                 <span class="hljs-comment">-- undo just that step; the transaction is alive again</span>
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> sp <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">3</span>,<span class="hljs-string">&#x27;y&#x27;</span>);
+<span class="hljs-keyword">COMMIT</span>;                                   <span class="hljs-comment">-- result: rows 1 and 3</span></code></pre></div>
+<p>Real output of that run: <code>rows: 1,3</code>.</p>
+<blockquote>
+<p><strong>MySQL users:</strong> PostgreSQL even has <strong>transactional DDL</strong> (<code>CREATE TABLE</code>, <code>ALTER TABLE</code> roll back too; Ch 14 relied on it).</p>
+</blockquote>
+<h3 id="what-a-transaction-does-not-do">What a transaction does <em>not</em> do</h3>
+<p>A transaction <strong>does not automatically make concurrent code correct.</strong> This is the number-one misunderstanding. Wrapping &quot;read stock, then write stock&quot; in <code>BEGIN … COMMIT</code> does <em>not</em> stop another transaction from reading the same stock in between. What protects you is the <strong>isolation level</strong> and <strong>locks</strong>, which is the rest of this chapter.</p>
+<hr>
+
+<h2 id="16-2-the-stampede-overselling-the-last-items">16.2 The Stampede: Overselling the Last Items</h2>
+<p>Setup: a product has <strong>10</strong> in stock. <strong>50 buyers</strong> try to buy <strong>1</strong> each, all at once, from Node (a pool of 20 connections). Correct outcome: exactly 10 confirmations, 40 &quot;sold out&quot;, final stock 0. A business-rule <code>CHECK (stock &gt;= 0)</code> is on the column.</p>
+<p>Each strategy below is real code; the harness fires 50 concurrent buyers using <code>Promise.allSettled</code>. The complete lab is <a href="/learn/backend-master/resources/ch16-oversell-lab.mjs">resources/ch16-oversell-lab.mjs</a>.</p>
+<h3 id="strategy-1-the-naive-read-modify-write">Strategy 1: The naive read-modify-write</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [p] } = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT stock FROM products WHERE id = 1&#x27;</span>);
+<span class="hljs-keyword">if</span> (p.<span class="hljs-property">stock</span> &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-number">5</span>);                                   <span class="hljs-comment">// &quot;business logic&quot;: check payment, fraud, etc.</span>
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE products SET stock = $1 WHERE id = 1&#x27;</span>, [p.<span class="hljs-property">stock</span> - <span class="hljs-number">1</span>]);
+<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;</code></pre></div>
+<pre class="is-plain"><code>1 naive read-modify-write          confirmed=50 sold_out= 0 errors=0     final_stock=9     297 ms</code></pre>
+<p><strong>We confirmed 50 orders for 10 items, and the database says 9 are still in stock.</strong> Every buyer read <code>stock = 10</code>, every buyer thought it was fine, and every buyer wrote <code>9</code>. The <code>CHECK</code> constraint never fired because the <em>wrong number was perfectly legal</em>. This is the <strong>lost update</strong> from <a href="/learn/backend-master/database-fundamentals-acid-cap-mvcc" title="Database Fundamentals: ACID, CAP &amp; MVCC">Chapter 12</a>, now with money attached.</p>
+<h3 id="strategy-2-one-atomic-conditional-update-the-best-answer-for-this-case">Strategy 2: One atomic conditional <code>UPDATE</code> (the best answer for this case)</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE products SET stock = stock - 1 WHERE id = 1 AND stock &gt;= 1&#x27;</span>);
+<span class="hljs-keyword">return</span> r.<span class="hljs-property">rowCount</span> === <span class="hljs-number">1</span>;                          <span class="hljs-comment">// 1 = we got one, 0 = sold out</span></code></pre></div>
+<pre class="is-plain"><code>2 atomic UPDATE ... WHERE stock&gt;=1 confirmed=10 sold_out=40 errors=0     final_stock=0     85 ms</code></pre>
+<p>Correct, and the <strong>fastest</strong> (85 ms). The &quot;check&quot; and the &quot;write&quot; are one statement; PostgreSQL locks the row for that statement, so concurrent updates queue up and each one re-checks <code>stock &gt;= 1</code> against the latest value. <strong>Whenever the rule can be expressed inside one SQL statement, do that.</strong></p>
+<h3 id="strategy-3-pessimistic-lock-select-for-update">Strategy 3: Pessimistic lock, <code>SELECT … FOR UPDATE</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> <span class="hljs-title function_">withTx</span>(<span class="hljs-keyword">async</span> (c) =&gt; {
+  <span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [p] } = <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT stock FROM products WHERE id = 1 FOR UPDATE&#x27;</span>);   <span class="hljs-comment">// lock the row</span>
+  <span class="hljs-keyword">if</span> (p.<span class="hljs-property">stock</span> &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-number">5</span>);
+  <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE products SET stock = $1 WHERE id = 1&#x27;</span>, [p.<span class="hljs-property">stock</span> - <span class="hljs-number">1</span>]);
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+});</code></pre></div>
+<pre class="is-plain"><code>3 SELECT FOR UPDATE                confirmed=10 sold_out=40 errors=0     final_stock=0     385 ms</code></pre>
+<p>Correct. The first buyer locks the row; the other 49 <em>wait</em> at the <code>SELECT</code>. Each in turn reads the <em>current</em> stock. It&#39;s slower (385 ms vs 85) because buyers now line up one after another <strong>including the 5 ms of &quot;business logic&quot; held inside the lock</strong>. That illustrates a key rule: <em>locks should be held for as short a time as possible.</em></p>
+<h3 id="strategy-4-optimistic-locking-with-a-version-column">Strategy 4: Optimistic locking with a version column</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">200</span>; i++) {
+  <span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [p] } = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT stock, version FROM products WHERE id = 1&#x27;</span>);
+  <span class="hljs-keyword">if</span> (p.<span class="hljs-property">stock</span> &lt; <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-number">5</span>);
+  <span class="hljs-keyword">const</span> r = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(
+    <span class="hljs-string">&#x27;UPDATE products SET stock = stock - 1, version = version + 1 WHERE id = 1 AND version = $1&#x27;</span>, [p.<span class="hljs-property">version</span>]);
+  <span class="hljs-keyword">if</span> (r.<span class="hljs-property">rowCount</span> === <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;              <span class="hljs-comment">// nobody changed it since we read it</span>
+}                                                  <span class="hljs-comment">// else: somebody beat us — loop and retry</span></code></pre></div>
+<pre class="is-plain"><code>4 optimistic version + retry       confirmed=10 sold_out=40 errors=0     final_stock=0     448 ms</code></pre>
+<p>Correct. No locks held while thinking; instead the write says &quot;<em>apply this only if the row is still at the version I saw</em>.&quot; Conflicts are detected and retried. Under heavy contention many retries are wasted work (448 ms here).</p>
+<h3 id="strategy-5-repeatable-read-no-retry">Strategy 5: <code>REPEATABLE READ</code>, no retry</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> <span class="hljs-title function_">withTx</span>(<span class="hljs-keyword">async</span> (c) =&gt; { <span class="hljs-comment">/* read stock, then UPDATE stock = stock - 1 */</span> }, { <span class="hljs-attr">isolation</span>: <span class="hljs-string">&#x27;REPEATABLE READ&#x27;</span> });</code></pre></div>
+<pre class="is-plain"><code>5 REPEATABLE READ no retry         confirmed= 3 sold_out= 0 errors=47 (40001)   final_stock=7</code></pre>
+<p><strong>Safe, but not what the customer wants.</strong> PostgreSQL refused to let a transaction overwrite a row that changed after its snapshot began, throwing <strong><code>40001 serialization_failure</code></strong> to 47 buyers. The data is <em>consistent</em> (3 confirmed, stock dropped by exactly 3). We just didn&#39;t <em>retry</em>.</p>
+<h3 id="strategy-6-repeatable-read-automatic-retry">Strategy 6: <code>REPEATABLE READ</code> + automatic retry</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> <span class="hljs-title function_">retry</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">withTx</span>(<span class="hljs-comment">/* same body */</span>, { <span class="hljs-attr">isolation</span>: <span class="hljs-string">&#x27;REPEATABLE READ&#x27;</span> }), { <span class="hljs-attr">tries</span>: <span class="hljs-number">60</span> });</code></pre></div>
+<pre class="is-plain"><code>6 REPEATABLE READ + retry          confirmed=10 sold_out=40 errors=0     final_stock=0     525 ms
+   (retries performed in run 6: 138)</code></pre>
+<p>Correct. 138 retries happened silently. <strong>A strong isolation level is a promise that <em>the database will refuse</em> wrong outcomes; your code must be ready to retry.</strong></p>
+<h3 id="the-scoreboard">The scoreboard</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>#</th>
+<th>Strategy</th>
+<th>Correct?</th>
+<th>Time</th>
+<th>Notes</th>
+</tr>
+</thead><tbody><tr>
+<td>1</td>
+<td>Naive read-modify-write</td>
+<td>❌ <strong>50 sold / stock 9</strong></td>
+<td>297 ms</td>
+<td>The bug</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Atomic <code>UPDATE … WHERE stock &gt;= 1</code></td>
+<td>✅</td>
+<td><strong>85 ms</strong></td>
+<td>Best when logic fits one statement</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>SELECT … FOR UPDATE</code></td>
+<td>✅</td>
+<td>385 ms</td>
+<td>Simple mental model; holds locks</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Optimistic <code>version</code> + retry</td>
+<td>✅</td>
+<td>448 ms</td>
+<td>No locks; wasted work under contention</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>REPEATABLE READ</code>, no retry</td>
+<td>🟡 consistent, but 47 errors</td>
+<td>103 ms</td>
+<td>Needs a retry loop</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>REPEATABLE READ</code> + retry</td>
+<td>✅</td>
+<td>525 ms</td>
+<td>Generic safety net</td>
+</tr>
+</tbody></table></div>
+<aside class="callout callout-memory">
+<h3 id="memory-trick" class="callout-title" data-callout="memory"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span><span>Memory Trick</span></h3>
+<p><strong>&quot;Make the check and the write one atomic step.&quot;</strong> Either in one SQL statement (best), under a lock (<code>FOR UPDATE</code>), or guarded by a version (optimistic). <em>Never</em> &quot;read in the app, decide in the app, write in the app&quot; with nothing protecting the gap.</p>
+</aside>
+<aside class="callout callout-warn">
+<h3 id="common-mistake" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>Common Mistake</span></h3>
+<blockquote>
+<p><em>&quot;I wrapped it in a transaction, so it&#39;s safe.&quot;</em> Strategy 1 inside <code>BEGIN … COMMIT</code> at the default isolation level is still wrong; transactions give you atomicity, not mutual exclusion.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="16-3-isolation-levels-with-reproducible-anomalies">16.3 Isolation Levels, with Reproducible Anomalies</h2>
+<p><strong>Isolation</strong> answers: <em>&quot;While my transaction runs, how much of other people&#39;s concurrent work can I see?&quot;</em> The SQL standard names four levels and three classic anomalies:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Anomaly</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Dirty read</strong></td>
+<td>Reading another transaction&#39;s <em>uncommitted</em> data</td>
+</tr>
+<tr>
+<td><strong>Non-repeatable read</strong></td>
+<td>Reading the same row twice in one transaction and getting different values</td>
+</tr>
+<tr>
+<td><strong>Phantom read</strong></td>
+<td>Running the same query twice and getting <em>new rows</em> the second time</td>
+</tr>
+<tr>
+<td><strong>Write skew</strong> (not in the standard&#39;s list)</td>
+<td>Two transactions each read overlapping data, make a decision, and write <em>different</em> rows, violating a rule neither alone broke</td>
+</tr>
+</tbody></table></div>
+<p>PostgreSQL implements isolation with <strong>MVCC snapshots</strong> (Ch 12): a transaction sees a consistent <em>snapshot</em> of committed data, and writers don&#39;t block readers. What differs by level is <strong>when the snapshot is taken</strong>.</p>
+<h3 id="what-postgresql-gives-you-at-each-level">What PostgreSQL gives you at each level</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Level</th>
+<th>Snapshot taken</th>
+<th>Dirty read</th>
+<th>Non-repeatable</th>
+<th>Phantom</th>
+<th>Write skew</th>
+</tr>
+</thead><tbody><tr>
+<td><code>READ UNCOMMITTED</code></td>
+<td>(behaves as Read Committed)</td>
+<td>no</td>
+<td><strong>yes</strong></td>
+<td><strong>yes</strong></td>
+<td><strong>yes</strong></td>
+</tr>
+<tr>
+<td><code>READ COMMITTED</code> (<strong>default</strong>)</td>
+<td>per <strong>statement</strong></td>
+<td>no</td>
+<td><strong>yes</strong></td>
+<td><strong>yes</strong></td>
+<td><strong>yes</strong></td>
+</tr>
+<tr>
+<td><code>REPEATABLE READ</code></td>
+<td>once, at first statement</td>
+<td>no</td>
+<td>no</td>
+<td><strong>no</strong> (stricter than the standard)</td>
+<td><strong>yes</strong></td>
+</tr>
+<tr>
+<td><code>SERIALIZABLE</code></td>
+<td>once, plus conflict tracking</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td><strong>no</strong></td>
+</tr>
+</tbody></table></div>
+<p>Let&#39;s <em>prove</em> the table.</p>
+<h3 id="demo-1-read-committed-vs-repeatable-read">Demo 1: Read Committed vs Repeatable Read</h3>
+<p>Session A opens a transaction and reads a balance (100) and a count of <code>shoes</code> items (2). Session B then <strong>commits</strong> an update (balance → 50) and an insert (a third <code>shoes</code> row). A reads again:</p>
+<pre class="is-plain"><code>=== READ COMMITTED ===
+non-repeatable read: first=100 second=50   &lt;- CHANGED inside one transaction
+phantom read:        first=2 second=3      &lt;- a new row APPEARED
+
+=== REPEATABLE READ ===
+non-repeatable read: first=100 second=100  (stable snapshot)
+phantom read:        first=2 second=2      (stable snapshot)</code></pre>
+<p>At the default, each <em>statement</em> sees the latest committed data, so two reads in one transaction can disagree. At <code>REPEATABLE READ</code>, A lives inside a frozen snapshot. (Handy for <strong>reports</strong>: all the numbers in one report come from the same instant.)</p>
+<h3 id="demo-2-dirty-reads-don-t-exist-in-postgresql">Demo 2: Dirty reads don&#39;t exist in PostgreSQL</h3>
+<p>B updates a balance to 999 and <em>does not commit</em>. A runs at <code>READ UNCOMMITTED</code>:</p>
+<pre class="is-plain"><code>A sees: 100 (B has uncommitted 999)</code></pre>
+<p>PostgreSQL treats <code>READ UNCOMMITTED</code> as <code>READ COMMITTED</code>: you can never see uncommitted data.</p>
+<h3 id="demo-3-write-skew-the-anomaly-that-surprises-even-experienced-engineers">Demo 3: Write skew, the anomaly that surprises even experienced engineers</h3>
+<p><strong>The rule:</strong> &quot;At least one doctor must stay on call.&quot; Two doctors, Asha and Ravi, are both on call. Each goes off-call at the same moment. Each transaction does:</p>
+<pre class="is-plain"><code>1. SELECT count(*) FROM doctors WHERE on_call      → 2   (&quot;OK, someone else is still on call&quot;)
+2. UPDATE doctors SET on_call = false WHERE name = &lt;me&gt;
+3. COMMIT</code></pre>
+<p>They update <strong>different rows</strong>, so there&#39;s no row conflict, and each saw a perfectly valid snapshot where the rule would hold. Result:</p>
+<pre class="is-plain"><code>REPEATABLE READ  Ravi:committed  Asha:committed  -&gt; doctors still on call: 0     ← rule broken!
+SERIALIZABLE     Asha:40001  Ravi:committed      -&gt; doctors still on call: 1     ← database stopped it</code></pre>
+<p>Even <code>REPEATABLE READ</code> lets this through. <strong><code>SERIALIZABLE</code></strong> detects the dangerous pattern of reads and writes and aborts one transaction with <code>40001</code>. In the ShopLine world, write skew looks like:</p>
+<ul>
+<li>&quot;A customer may have at most 3 active coupons&quot; (two concurrent claims),</li>
+<li>&quot;Don&#39;t allow overlapping bookings&quot; (use an exclusion constraint instead, Ch 14),</li>
+<li>&quot;Total of all line items must not exceed the budget&quot;.</li>
+</ul>
+<p><strong>Three ways to prevent write skew:</strong> (1) a <strong>constraint</strong> that encodes the rule (unique, exclusion, check), (2) <strong>explicit locks</strong> (<code>SELECT … FOR UPDATE</code> on the rows the decision depends on, or on a parent row), or (3) <strong><code>SERIALIZABLE</code> + retry</strong>.</p>
+<h3 id="which-level-should-you-use">Which level should you use?</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Situation</th>
+<th>Choice</th>
+</tr>
+</thead><tbody><tr>
+<td>Typical CRUD, rules enforced by atomic statements/constraints</td>
+<td><code>READ COMMITTED</code> (default)</td>
+</tr>
+<tr>
+<td>Reports needing a consistent view across several queries</td>
+<td><code>REPEATABLE READ</code> (read-only)</td>
+</tr>
+<tr>
+<td>Complex read-then-write rules you can&#39;t express as a constraint</td>
+<td><code>SERIALIZABLE</code> <strong>with a retry loop</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>Higher isolation is not &quot;more correct for free&quot;: it buys safety by <strong>aborting transactions</strong>. You pay with retries and a little throughput. Choose the lowest level where your invariants are protected by a constraint, lock or atomic statement.</p>
+</blockquote>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;What isolation level does PostgreSQL use by default and what anomalies does it allow?&quot;</em> → <code>READ COMMITTED</code>: no dirty reads, but non-repeatable reads, phantoms and write skew are possible. Mention that it uses MVCC (readers don&#39;t block writers), that <code>REPEATABLE READ</code> is snapshot isolation (no phantoms, but write skew possible), and that only <code>SERIALIZABLE</code> prevents write skew, at the cost of <code>40001</code> retries.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="16-4-locks">16.4 Locks</h2>
+<h3 id="16-4-1-row-locks-for-update-and-friends">16.4.1 Row locks: <code>FOR UPDATE</code> and friends</h3>
+<p><code>SELECT … FOR UPDATE</code> locks the selected rows until the transaction ends: other transactions trying to update/lock the same rows <strong>wait</strong>. Variants:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Clause</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody><tr>
+<td><code>FOR UPDATE</code></td>
+<td>I intend to modify these rows; nobody else may lock or modify them</td>
+</tr>
+<tr>
+<td><code>FOR NO KEY UPDATE</code></td>
+<td>Like above but allows concurrent inserts of rows referencing these (FKs); what a plain <code>UPDATE</code> takes</td>
+</tr>
+<tr>
+<td><code>FOR SHARE</code> / <code>FOR KEY SHARE</code></td>
+<td>I need these rows not to change/disappear while I read; others may also share-lock</td>
+</tr>
+<tr>
+<td><code>… NOWAIT</code></td>
+<td>Don&#39;t wait: error immediately if locked</td>
+</tr>
+<tr>
+<td><code>… SKIP LOCKED</code></td>
+<td>Skip rows that are locked and take the next ones</td>
+</tr>
+</tbody></table></div>
+<h3 id="16-4-2-nowait-and-lock-timeout-don-t-wait-forever">16.4.2 <code>NOWAIT</code> and <code>lock_timeout</code>: don&#39;t wait forever</h3>
+<p>Session A holds a row lock; session B tries:</p>
+<pre class="is-plain"><code>NOWAIT -&gt; 55P03 could not obtain lock on row in relation &quot;wallets&quot;
+lock_timeout -&gt; 55P03 after 304 ms: canceling statement due to lock timeout</code></pre>
+<p><code>SET LOCAL lock_timeout = &#39;300ms&#39;</code> made the wait give up (after 304 ms measured). Use these when a user is waiting: a fast &quot;try again&quot; beats a hung request holding a pool connection.</p>
+<h3 id="16-4-3-skip-locked-a-job-queue-in-plain-postgresql">16.4.3 <code>SKIP LOCKED</code>: a job queue in plain PostgreSQL</h3>
+<p>Many workers must each claim <em>different</em> jobs without duplicates and without blocking each other:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">BEGIN</span>;
+<span class="hljs-keyword">SELECT</span> id <span class="hljs-keyword">FROM</span> jobs <span class="hljs-keyword">WHERE</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;queued&#x27;</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> id LIMIT <span class="hljs-number">2</span> <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">SKIP</span> LOCKED;
+<span class="hljs-comment">-- ... do the work ...</span>
+<span class="hljs-keyword">UPDATE</span> jobs <span class="hljs-keyword">SET</span> status <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;done&#x27;</span>, worker <span class="hljs-operator">=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-keyword">ANY</span>($<span class="hljs-number">2</span>);
+<span class="hljs-keyword">COMMIT</span>;</code></pre></div>
+<p>Three workers over 12 jobs:</p>
+<pre class="is-plain"><code>w1 1,2,5,6,11,12
+w2 7,8
+w3 3,4,9,10
+jobs processed: 12  unique: 12  still queued: 0</code></pre>
+<p>Every job was handled <strong>exactly once</strong>; no worker waited on another (they skipped each other&#39;s locked rows). If a worker crashes mid-job, its transaction rolls back and the row becomes <code>queued</code> again for someone else. This is the foundation of many production queues; <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a> compares it with Redis queues and message brokers.</p>
+<h3 id="16-4-4-seeing-who-blocks-whom">16.4.4 Seeing who blocks whom</h3>
+<p>When &quot;everything is stuck&quot;, ask the database:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> pid, state, wait_event_type, wait_event, pg_blocking_pids(pid) <span class="hljs-keyword">AS</span> blocked_by, <span class="hljs-keyword">left</span>(query, <span class="hljs-number">40</span>) <span class="hljs-keyword">AS</span> query
+<span class="hljs-keyword">FROM</span> pg_stat_activity <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">cardinality</span>(pg_blocking_pids(pid)) <span class="hljs-operator">&gt;</span> <span class="hljs-number">0</span>;</code></pre></div>
+<pre class="is-plain"><code>{ pid: 297, state: 'active', wait_event_type: 'Lock', wait_event: 'transactionid',
+  blocked_by: [ 296 ], query: &quot;UPDATE sp SET note = 'B' WHERE id = 1&quot; }</code></pre>
+<p>Session 297 waits for 296 (the one that hasn&#39;t committed). The culprit is almost always <strong>a transaction someone forgot to close</strong> (§16.7).</p>
+<h3 id="16-4-5-advisory-locks">16.4.5 Advisory locks</h3>
+<p>Application-defined locks on arbitrary numbers (<code>pg_advisory_lock(727274)</code>); we used one in <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a> so only one migration runner works at a time. Useful for &quot;only one instance runs this cron job&quot;.</p>
+<hr>
+
+<h2 id="16-5-deadlocks">16.5 Deadlocks</h2>
+<p>A <strong>deadlock</strong> is a circle of waiting: A holds lock 1 and wants lock 2; B holds lock 2 and wants lock 1. Neither can ever proceed.</p>
+<pre class="is-plain"><code>  Transfer A→B (10)              Transfer B→A (20)
+  UPDATE wallets id=1  ✔ locks 1   UPDATE wallets id=2  ✔ locks 2
+  UPDATE wallets id=2  ⏳ waits for B   UPDATE wallets id=1  ⏳ waits for A     ← circle!</code></pre>
+<p>PostgreSQL notices and kills one of them:</p>
+<pre class="is-plain"><code>rejected 40P01: deadlock detected
+   detail: Process 227 waits for ShareLock on transaction 1953; blocked by process 226.</code></pre>
+<p>The other transaction then completes. You must handle the <code>40P01</code> error: <strong>retry the transaction.</strong></p>
+<h3 id="deadlock-detection-is-slow-1-second-by-default">Deadlock detection is <em>slow</em>: 1 second by default</h3>
+<p>The database doesn&#39;t check for cycles on every wait: it waits <code>deadlock_timeout</code> (default <strong>1 s</strong>) first, because most waits are harmless. We stress-tested this. 30 transfers, half <code>1 → 2</code>, half <code>2 → 1</code>, <strong>with retry on deadlock</strong>:</p>
+<pre class="is-plain"><code>fulfilled 30  rejected 0  deadlock retries: 208  114203 ms
+total money: 2000 (must be 2000)
+deadlock_timeout = 1s</code></pre>
+<p>Everything was <strong>correct</strong>: all 30 succeeded, no money created or destroyed. But <strong>30 tiny transfers took 114 seconds</strong>, with 208 deadlocks. Each deadlock froze two transactions for about a second. Under real load, a hot spot of deadlocks looks like a site-wide freeze and a flood of timeouts, even though &quot;nothing is wrong&quot; with the data.</p>
+<p>(My retry helper used a very short random backoff, 10 ms × 2ⁿ × random, so many retries collided again immediately. More jitter, or fewer concurrent attempts on the same rows, would help; the <em>real</em> fix is below.)</p>
+<h3 id="the-cure-always-lock-in-a-consistent-order">The cure: always lock in a consistent order</h3>
+<p>If every transaction locks wallets in <strong>ascending id</strong>, a cycle is impossible: whoever gets the lowest id first wins and the other simply waits behind them.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">safeTransfer</span>(<span class="hljs-params"><span class="hljs-keyword">from</span>, to, amt</span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">withTx</span>(<span class="hljs-keyword">async</span> (c) =&gt; {
+    <span class="hljs-keyword">const</span> [first, second] = [<span class="hljs-keyword">from</span>, to].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a - b);
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT 1 FROM wallets WHERE id IN ($1,$2) ORDER BY id FOR UPDATE&#x27;</span>, [first, second]);   <span class="hljs-comment">// lock both, in order</span>
+    <span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [w] } = <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT balance FROM wallets WHERE id = $1&#x27;</span>, [<span class="hljs-keyword">from</span>]);
+    <span class="hljs-keyword">if</span> (w.<span class="hljs-property">balance</span> &lt; amt) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE wallets SET balance = balance - $1 WHERE id = $2&#x27;</span>, [amt, <span class="hljs-keyword">from</span>]);
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE wallets SET balance = balance + $1 WHERE id = $2&#x27;</span>, [amt, to]);
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+  });
+}</code></pre></div>
+<p>200 opposing transfers (100 each way), fired together:</p>
+<pre class="is-plain"><code>200 opposing transfers: fulfilled 200 rejected 0
+total money: 2000 (must be 2000)</code></pre>
+<p>Zero deadlocks. I timed this run separately: <strong>200 transfers took 11.8 s</strong> (an earlier run took 58 s: this laptop&#39;s Docker disk makes each commit slow and timings are noisy). That is roughly 60 ms per transfer even though all 200 fight over the same two rows and must queue, versus <strong>about 3.8 s per transfer</strong> (114 s ÷ 30) when deadlocks were involved. The absolute numbers are poor because every commit waits for a disk flush; the <em>ratio</em> is the point.</p>
+<h3 id="deadlock-prevention-checklist">Deadlock prevention checklist</h3>
+<ol>
+<li><strong>Lock rows in a global order</strong> (by primary key) whenever a transaction touches several.</li>
+<li><strong>Keep transactions short</strong>; no network calls or user waits while holding locks.</li>
+<li>Touch tables in the <strong>same order</strong> everywhere (e.g., always <code>products</code> then <code>orders</code>).</li>
+<li>Prefer <strong>one atomic statement</strong> over multi-step read/lock/write.</li>
+<li><strong>Retry on <code>40P01</code> and <code>40001</code></strong>, always.</li>
+<li>Keep an index on foreign keys (un-indexed FKs lock/scan more; Ch 15).</li>
+</ol>
+<hr>
+
+<h2 id="16-6-optimistic-vs-pessimistic-locking">16.6 Optimistic vs Pessimistic Locking</h2>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Pessimistic</strong> (<code>FOR UPDATE</code>)</th>
+<th><strong>Optimistic</strong> (version column / <code>ETag</code>)</th>
+</tr>
+</thead><tbody><tr>
+<td>Philosophy</td>
+<td>&quot;Conflicts are likely: lock first&quot;</td>
+<td>&quot;Conflicts are rare: detect afterwards&quot;</td>
+</tr>
+<tr>
+<td>Cost when there&#39;s no conflict</td>
+<td>Lock overhead</td>
+<td>Almost nothing</td>
+</tr>
+<tr>
+<td>Cost under heavy contention</td>
+<td>Queueing (predictable)</td>
+<td>Wasted work + retries</td>
+</tr>
+<tr>
+<td>Holds locks across user think-time?</td>
+<td>Dangerous: never do this</td>
+<td>Fine: nothing is locked</td>
+</tr>
+<tr>
+<td>Typical use</td>
+<td>Inventory, counters, queues, money</td>
+<td><strong>Edit forms</strong> (&quot;someone else changed this&quot;), APIs</td>
+</tr>
+</tbody></table></div>
+<p>The <strong>HTTP version</strong> of optimistic locking is exactly what <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a> taught: return an <code>ETag</code>, require <code>If-Match</code> on <code>PUT/PATCH</code>, and answer <code>412 Precondition Failed</code> if it no longer matches. Under the hood that is:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">UPDATE</span> products <span class="hljs-keyword">SET</span> name <span class="hljs-operator">=</span> $<span class="hljs-number">1</span>, price_minor <span class="hljs-operator">=</span> $<span class="hljs-number">2</span>, version <span class="hljs-operator">=</span> version <span class="hljs-operator">+</span> <span class="hljs-number">1</span>
+<span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> $<span class="hljs-number">3</span> <span class="hljs-keyword">AND</span> version <span class="hljs-operator">=</span> $<span class="hljs-number">4</span>;              <span class="hljs-comment">-- rowCount 0 → 412 (or re-read and retry)</span></code></pre></div>
+<p><strong>Never hold a database lock while waiting for a human.</strong> A user who opens an edit page and goes to lunch must not hold a row lock. That is what optimistic locking is for.</p>
+<hr>
+
+<h2 id="16-7-transactions-from-node-js-the-right-pattern">16.7 Transactions from Node.js: The Right Pattern</h2>
+<h3 id="16-7-1-one-transaction-one-connection">16.7.1 One transaction = one <em>connection</em></h3>
+<p>A pool hands different connections to different <code>pool.query()</code> calls, and a transaction belongs to <strong>one connection</strong>. So this is wrong:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>);                       <span class="hljs-comment">// connection X begins a transaction</span>
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;UPDATE wallets SET balance = 0 WHERE id = 1&#x27;</span>);   <span class="hljs-comment">// maybe connection Y — autocommitted!</span>
+<span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;ROLLBACK&#x27;</span>);                    <span class="hljs-comment">// maybe connection Z — rolls back nothing</span></code></pre></div>
+<p>We reproduced it under realistic conditions (two connections busy elsewhere, as under traffic):</p>
+<pre class="is-plain"><code>balance after &quot;ROLLBACK&quot;: 0     (should be 1000 if it had been one transaction)
+connections left &quot;idle in transaction&quot;: 1</code></pre>
+<p>The &quot;rolled-back&quot; update <strong>stuck</strong>, and a connection was left holding an open transaction. With one request at a time the pool will typically hand back the same idle connection, so this tends to look fine in development and break only under concurrency (the pool behaviour is why I had to hold two connections busy to reproduce it). <strong>Rule: check out a single client, and run BEGIN…COMMIT on it.</strong></p>
+<h3 id="16-7-2-a-correct-withtransaction-helper">16.7.2 A correct <code>withTransaction</code> helper</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">withTx</span>(<span class="hljs-params">fn, { isolation } = {}</span>) {
+  <span class="hljs-keyword">const</span> c = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">connect</span>();                     <span class="hljs-comment">// one connection for the whole transaction</span>
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(isolation ? <span class="hljs-string">`BEGIN ISOLATION LEVEL <span class="hljs-subst">${isolation}</span>`</span> : <span class="hljs-string">&#x27;BEGIN&#x27;</span>);
+    <span class="hljs-keyword">const</span> out = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fn</span>(c);                          <span class="hljs-comment">// the callback uses ONLY `c`</span>
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>);
+    <span class="hljs-keyword">return</span> out;
+  } <span class="hljs-keyword">catch</span> (e) {
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;ROLLBACK&#x27;</span>).<span class="hljs-title function_">catch</span>(<span class="hljs-function">() =&gt;</span> {});        <span class="hljs-comment">// never mask the original error</span>
+    <span class="hljs-keyword">throw</span> e;
+  } <span class="hljs-keyword">finally</span> {
+    c.<span class="hljs-title function_">release</span>();                                      <span class="hljs-comment">// ALWAYS give the connection back</span>
+  }
+}</code></pre></div>
+<p>Points to notice: <code>isolation</code> is a <strong>whitelisted</strong> value from your own code (never user input: it&#39;s interpolated); <code>release()</code> is in <code>finally</code> (a leaked connection starves the pool: Ch 12); the callback must not call <code>pool.query</code> for its writes.</p>
+<h3 id="16-7-3-a-retry-helper-for-40001-and-40p01">16.7.3 A <code>retry</code> helper for <code>40001</code> and <code>40P01</code></h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">retry</span>(<span class="hljs-params">fn, { tries = <span class="hljs-number">6</span> } = {}</span>) {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; ; i++) {
+    <span class="hljs-keyword">try</span> { <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title function_">fn</span>(); }
+    <span class="hljs-keyword">catch</span> (e) {
+      <span class="hljs-keyword">if</span> (![<span class="hljs-string">&#x27;40001&#x27;</span>, <span class="hljs-string">&#x27;40P01&#x27;</span>].<span class="hljs-title function_">includes</span>(e.<span class="hljs-property">code</span>) || i &gt;= tries) <span class="hljs-keyword">throw</span> e;     <span class="hljs-comment">// only retry these two</span>
+      <span class="hljs-keyword">await</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-number">10</span> * <span class="hljs-number">2</span> ** i * <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>());                           <span class="hljs-comment">// exponential backoff + jitter</span>
+    }
+  }
+}</code></pre></div>
+<p><strong>Retry the whole transaction function</strong>, not one statement, and make sure the function has <strong>no side effects outside the database</strong> (sending an email, charging a card) because it may run more than once. Side effects belong <em>after</em> commit (§16.9).</p>
+<h3 id="16-7-4-don-t-hold-transactions-open">16.7.4 Don&#39;t hold transactions open</h3>
+<ul>
+<li><strong>No HTTP calls, no <code>await sleep</code>, no user input</strong> inside a transaction. Our <code>FOR UPDATE</code> strategy was 4.5× slower than the atomic <code>UPDATE</code> (385 ms vs 85 ms); holding locks during the 5 ms of &quot;logic&quot; and the extra round trips are the likely reasons (I didn&#39;t isolate each).</li>
+<li>A transaction left <strong>&quot;idle in transaction&quot;</strong> holds its locks and prevents VACUUM from cleaning (bloat; Ch 12/15). Set a safety net in production:</li>
+</ul>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SET</span> idle_in_transaction_session_timeout <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;30s&#x27;</span>;     <span class="hljs-comment">-- per role/database in production</span></code></pre></div>
+<p>We tested it with a 300 ms timeout; the server killed the session:</p>
+<pre class="is-plain"><code>FATAL 25P03: terminating connection due to idle-in-transaction timeout</code></pre>
+<p><strong>A real gotcha:</strong> this arrived in Node as an <code>&#39;error&#39;</code> event on the <code>Client</code>, and because I had not attached an error handler, <strong>the process crashed</strong> (<code>Unhandled &#39;error&#39; event</code>). A standalone <code>pg.Client</code> needs <code>client.on(&#39;error&#39;, …)</code>; a <code>pg.Pool</code> forwards errors from idle clients to <code>pool.on(&#39;error&#39;, …)</code>, which you should also always register. <em>(I only tested the standalone-client case.)</em></p>
+<h3 id="16-7-5-what-goes-in-a-transaction">16.7.5 What goes in a transaction?</h3>
+<p>Put in <strong>one</strong> transaction the writes that must be all-or-nothing (an order and its lines and the stock decrement). Keep <strong>out</strong> of it: calls to payment providers, emails, webhooks, file uploads, and slow reads that don&#39;t need consistency.</p>
+<hr>
+
+<h2 id="16-8-idempotency-safe-retries-under-concurrency">16.8 Idempotency: Safe Retries Under Concurrency</h2>
+<p>Clients retry (network timeouts), queues redeliver, webhooks fire twice. An operation is <strong>idempotent</strong> if running it twice has the same effect as once. The database can enforce it with a unique key:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> pay (key text <span class="hljs-keyword">PRIMARY</span> KEY, amount <span class="hljs-type">int</span>, created_at timestamptz <span class="hljs-keyword">DEFAULT</span> now());
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> pay (key, amount) <span class="hljs-keyword">VALUES</span> (<span class="hljs-string">&#x27;order-77-attempt&#x27;</span>, <span class="hljs-number">500</span>) <span class="hljs-keyword">ON</span> CONFLICT (key) DO NOTHING;</code></pre></div>
+<p>We fired <strong>20 concurrent</strong> identical inserts:</p>
+<pre class="is-plain"><code>rows inserted per call: 10000000000000000000   total rows: 1</code></pre>
+<p>Exactly one call inserted (<code>rowCount</code> 1); 19 were no-ops (<code>rowCount</code> 0); one row exists. No race, no duplicates, because the <strong>unique index serializes the contenders</strong>. This is the mechanism behind <a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>&#39;s <code>Idempotency-Key</code> header: store the key with the result; a repeat returns the stored result.</p>
+<hr>
+
+<h2 id="16-9-shopline-the-all-or-nothing-checkout">16.9 ShopLine: The All-or-Nothing Checkout</h2>
+<p>Putting it together. <code>placeOrder</code> must: avoid selling what we don&#39;t have, never half-create an order, survive retries, and never deadlock when orders contain several products. The complete tested file is <a href="/learn/backend-master/resources/ch16-checkout.mjs">resources/ch16-checkout.mjs</a>; the core:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">placeOrder</span>(<span class="hljs-params">{ userId, items, idempotencyKey }</span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">retry</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">withTx</span>(<span class="hljs-keyword">async</span> (c) =&gt; {
+    <span class="hljs-comment">// 1. idempotency: have we already done this?</span>
+    <span class="hljs-keyword">const</span> dup = <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;SELECT id FROM orders WHERE idempotency_key = $1&#x27;</span>, [idempotencyKey]);
+    <span class="hljs-keyword">if</span> (dup.<span class="hljs-property">rowCount</span>) <span class="hljs-keyword">return</span> { <span class="hljs-attr">orderId</span>: dup.<span class="hljs-property">rows</span>[<span class="hljs-number">0</span>].<span class="hljs-property">id</span>, <span class="hljs-attr">replayed</span>: <span class="hljs-literal">true</span> };
+
+    <span class="hljs-comment">// 2. reserve stock atomically, in product-id order (deadlock-free)</span>
+    <span class="hljs-keyword">const</span> sorted = [...items].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a.<span class="hljs-property">productId</span> - b.<span class="hljs-property">productId</span>);
+    <span class="hljs-keyword">let</span> total = <span class="hljs-number">0</span>; <span class="hljs-keyword">const</span> priced = [];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> { productId, quantity } <span class="hljs-keyword">of</span> sorted) {
+      <span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [p] } = <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(
+        <span class="hljs-string">&#x27;UPDATE products SET stock = stock - $2 WHERE id = $1 AND stock &gt;= $2 RETURNING price_minor&#x27;</span>,
+        [productId, quantity]);
+      <span class="hljs-keyword">if</span> (!p) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">OutOfStock</span>(productId);                 <span class="hljs-comment">// rolls back EVERYTHING above</span>
+      total += p.<span class="hljs-property">price_minor</span> * quantity;
+      priced.<span class="hljs-title function_">push</span>({ productId, quantity, <span class="hljs-attr">price</span>: p.<span class="hljs-property">price_minor</span> });
+    }
+
+    <span class="hljs-comment">// 3. the order and its lines, with the price snapshot (Ch 14)</span>
+    <span class="hljs-keyword">const</span> { <span class="hljs-attr">rows</span>: [o] } = <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(
+      <span class="hljs-string">&#x27;INSERT INTO orders (user_id, status, total_minor, idempotency_key) VALUES ($1,$2,$3,$4) RETURNING id&#x27;</span>,
+      [userId, <span class="hljs-string">&#x27;paid&#x27;</span>, total, idempotencyKey]);
+    <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(
+      <span class="hljs-string">&#x27;INSERT INTO order_items (order_id, product_id, quantity, unit_price_minor) &#x27;</span> +
+      <span class="hljs-string">&#x27;SELECT $1, * FROM unnest($2::int[], $3::int[], $4::int[])&#x27;</span>,
+      [o.<span class="hljs-property">id</span>, priced.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i.<span class="hljs-property">productId</span>), priced.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i.<span class="hljs-property">quantity</span>), priced.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">i</span>) =&gt;</span> i.<span class="hljs-property">price</span>)]);
+    <span class="hljs-keyword">return</span> { <span class="hljs-attr">orderId</span>: o.<span class="hljs-property">id</span>, total, <span class="hljs-attr">replayed</span>: <span class="hljs-literal">false</span> };
+  }), { <span class="hljs-attr">tries</span>: <span class="hljs-number">8</span> });
+}</code></pre></div>
+<h3 id="the-test">The test</h3>
+<p>Products: #1 (stock 5, untouched), #2 (stock 100), #3 (stock <strong>3</strong>, the scarce one). <strong>20 shoppers</strong> each buy 1×#3 + 2×#2, half of them listing the items in the <em>opposite order</em>, all firing at once:</p>
+<pre class="is-plain"><code>orders placed: 3  out of stock: 17  other errors: 0
+[ { id: 1, stock: 5 }, { id: 2, stock: 94 }, { id: 3, stock: 0 } ]
+orders rows: 3  order_items rows: 6
+stock of product 2 consumed by failed attempts (should be 0 extra): 6 expected 6
+replay of k1 -&gt; { orderId: '2', replayed: true }</code></pre>
+<p>Read it carefully:</p>
+<ul>
+<li><strong>Exactly 3 orders</strong> for the 3 scarce items; <strong>17 clean &quot;out of stock&quot;</strong>; zero unexpected errors, zero deadlocks despite the opposite item order (sorting).</li>
+<li>Product #3&#39;s stock is <strong>0, never negative</strong>; product #2 dropped by exactly <strong>6</strong> (3 orders × 2). The 17 failed shoppers had already <em>decremented</em> product #2 before failing on #3, but <strong>their transactions rolled back</strong>, so none of those decrements stuck. That is atomicity earning its keep.</li>
+<li>Orders and lines are consistent: 3 orders, 6 lines.</li>
+<li><strong>Replaying</strong> the idempotency key <code>k1</code> returned the original order instead of creating a duplicate. <em>(Note <code>orderId</code> is the string <code>&#39;2&#39;</code>: bigint arrives as a string, Ch 13.)</em></li>
+</ul>
+<h3 id="what-s-deliberately-not-in-the-transaction">What&#39;s deliberately <em>not</em> in the transaction</h3>
+<p>Charging the card and sending the confirmation email. The robust approach (<strong>outbox pattern</strong>): in the <em>same</em> transaction, insert a row into an <code>outbox</code> table (&quot;send confirmation for order 2&quot;); a separate worker (using <code>SKIP LOCKED</code>, §16.4.3) reads it after commit and performs the side effect, retrying until it succeeds. That way a crash can never leave &quot;order saved, email never sent.&quot; <em>(Outbox described here; not implemented in this chapter. It returns in Ch 28/29.)</em></p>
+<blockquote>
+<p><strong>A caveat I want you to hear.</strong> The idempotency check above has a tiny race: two simultaneous requests with the <em>same new key</em> could both pass the <code>SELECT</code> and then both try to <code>INSERT</code>. The <code>UNIQUE (idempotency_key)</code> constraint makes the loser fail with <code>23505</code>; the robust version catches that and re-reads the winner&#39;s order. I did not write or test that branch here.</p>
+</blockquote>
+<hr>
+
+<h2 id="16-10-edge-cases-and-gotchas-checklist">16.10 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Read-modify-write in application code with nothing protecting the gap (lost update).</li>
+<li><input disabled="" type="checkbox"> Assuming <code>BEGIN…COMMIT</code> gives mutual exclusion.</li>
+<li><input disabled="" type="checkbox"> <code>pool.query(&#39;BEGIN&#39;)</code>: transaction spread over connections.</li>
+<li><input disabled="" type="checkbox"> Forgetting <code>client.release()</code> (use <code>finally</code>).</li>
+<li><input disabled="" type="checkbox"> Not retrying <code>40001</code> / <code>40P01</code>.</li>
+<li><input disabled="" type="checkbox"> Side effects (email, charge) inside a retried transaction.</li>
+<li><input disabled="" type="checkbox"> Locking multiple rows in inconsistent order → deadlocks (and 1 s stalls).</li>
+<li><input disabled="" type="checkbox"> Holding locks across network calls or user think time.</li>
+<li><input disabled="" type="checkbox"> <code>idle in transaction</code> sessions; no <code>idle_in_transaction_session_timeout</code>.</li>
+<li><input disabled="" type="checkbox"> Standalone <code>pg.Client</code> without an <code>&#39;error&#39;</code> handler.</li>
+<li><input disabled="" type="checkbox"> Write skew on rules spanning several rows (use constraints, locks or <code>SERIALIZABLE</code>).</li>
+<li><input disabled="" type="checkbox"> Using <code>SERIALIZABLE</code> without retries.</li>
+<li><input disabled="" type="checkbox"> Interpolating an isolation level from user input.</li>
+<li><input disabled="" type="checkbox"> Assuming <code>SELECT … FOR UPDATE</code> locks rows that don&#39;t exist yet (it can&#39;t; use unique constraints or advisory locks).</li>
+<li><input disabled="" type="checkbox"> Idempotency enforced only by a <code>SELECT</code> (race): add a <code>UNIQUE</code> constraint.</li>
+<li><input disabled="" type="checkbox"> Long reports at <code>READ COMMITTED</code> that need a consistent snapshot (use <code>REPEATABLE READ READ ONLY</code>).</li>
+</ul>
+<hr>
+
+<h2 id="16-11-chapter-summary">16.11 Chapter Summary</h2>
+<ul>
+<li>A <strong>transaction</strong> is atomic, but <strong>atomic ≠ isolated from races</strong>. Gaps between read and write are where bugs live.</li>
+<li>After an error inside a transaction PostgreSQL aborts it (<code>25P02</code>); use <strong>savepoints</strong> to recover partially.</li>
+<li>Overselling lab (50 buyers, stock 10): the naive code confirmed <strong>50 and left stock 9</strong>. Fixes: an <strong>atomic conditional <code>UPDATE</code></strong> (fastest), <code>FOR UPDATE</code>, optimistic <code>version</code>, or <code>REPEATABLE READ</code>/<code>SERIALIZABLE</code> <strong>plus retry</strong>.</li>
+<li>PostgreSQL isolation: default <code>READ COMMITTED</code> (per-statement snapshot); <code>REPEATABLE READ</code> = snapshot isolation (no phantoms, but <strong>write skew</strong> possible, demonstrated); only <code>SERIALIZABLE</code> stops write skew (error <code>40001</code>). Dirty reads never happen.</li>
+<li>Row locks: <code>FOR UPDATE</code>, <code>NOWAIT</code>, <code>lock_timeout</code>, <strong><code>SKIP LOCKED</code></strong> (a correct multi-worker job queue); find blockers with <code>pg_blocking_pids</code>.</li>
+<li><strong>Deadlocks</strong> are detected after <code>deadlock_timeout</code> (1 s): 30 transfers took <strong>114 s</strong> with 208 deadlocks; <strong>consistent lock ordering</strong> fixed it (200 transfers, 0 deadlocks, ~60 ms each vs ~3.8 s each).</li>
+<li><strong>Optimistic</strong> locking for edits and APIs (<code>ETag</code>/<code>If-Match</code>/<code>version</code>); <strong>pessimistic</strong> for hot counters and money. Never hold locks across user think time.</li>
+<li>In Node: one transaction = one <strong>checked-out client</strong>; <code>withTx</code> + <code>retry</code>; no side effects inside; set <code>idle_in_transaction_session_timeout</code>; handle client <code>&#39;error&#39;</code> events.</li>
+<li><strong>Idempotency</strong> via a <code>UNIQUE</code> key + <code>ON CONFLICT DO NOTHING</code> (20 concurrent inserts → 1 row). The ShopLine checkout is atomic, deadlock-free, idempotent and retry-safe.</li>
+</ul>
+<hr>
+
+<h2 id="16-12-revision-notes">16.12 Revision Notes</h2>
+<ul>
+<li>Lost update fix order of preference: <strong>atomic SQL</strong> → <code>FOR UPDATE</code> → optimistic version → <code>SERIALIZABLE</code> + retry.</li>
+<li>Isolation (PG): RC statement snapshot · RR transaction snapshot (no phantoms) · SERIALIZABLE (no write skew). Errors: <code>40001</code> serialization, <code>40P01</code> deadlock, <code>55P03</code> lock not available, <code>25P02</code> aborted tx, <code>25P03</code> idle-in-tx timeout.</li>
+<li><code>FOR UPDATE SKIP LOCKED</code> = work queue; <code>NOWAIT</code> = fail fast; <code>SET LOCAL lock_timeout</code>.</li>
+<li>Lock order = ascending id. Keep transactions short. Retry the whole function.</li>
+<li>Node: <code>const c = await pool.connect(); try { BEGIN … COMMIT } catch { ROLLBACK } finally { c.release() }</code>.</li>
+<li>Idempotent: <code>INSERT … ON CONFLICT DO NOTHING</code> + <code>UNIQUE</code>.</li>
+<li>Side effects → after commit / outbox.</li>
+</ul>
+<hr>
+
+<h2 id="16-13-mind-map-ascii">16.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                          CONCURRENCY
+                               │
+      ┌────────────┬───────────┼────────────┬───────────────────┐
+ TRANSACTIONS   ISOLATION     LOCKS       DEADLOCKS         NODE.JS
+      │             │            │            │                │
+  BEGIN/COMMIT   READ COMMITTED  FOR UPDATE   cycle of waits   withTx (1 client)
+  ROLLBACK       REPEATABLE READ NOWAIT       1 s detection    retry 40001/40P01
+  SAVEPOINT      SERIALIZABLE    SKIP LOCKED  lock in order    no side effects inside
+  25P02          anomalies:      lock_timeout retry            idle-in-tx timeout
+                  non-repeatable advisory                      client 'error' handler
+                  phantom        pg_blocking_pids
+                  write skew
+      │
+  PATTERNS: atomic UPDATE · pessimistic · optimistic(version/ETag) · idempotency key · outbox</code></pre>
+<hr>
+
+<h2 id="16-14-cheat-sheet">16.14 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">BEGIN</span> ISOLATION LEVEL REPEATABLE READ;     <span class="hljs-comment">-- or SERIALIZABLE; then handle 40001</span>
+<span class="hljs-keyword">SELECT</span> … <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span>;                        <span class="hljs-comment">-- lock rows (add NOWAIT or SKIP LOCKED)</span>
+<span class="hljs-keyword">UPDATE</span> t <span class="hljs-keyword">SET</span> n <span class="hljs-operator">=</span> n <span class="hljs-operator">-</span> <span class="hljs-number">1</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> n <span class="hljs-operator">&gt;=</span> <span class="hljs-number">1</span>;      <span class="hljs-comment">-- atomic check-and-write (rowCount!)</span>
+<span class="hljs-keyword">UPDATE</span> t <span class="hljs-keyword">SET</span> …, version <span class="hljs-operator">=</span> version <span class="hljs-operator">+</span> <span class="hljs-number">1</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> $<span class="hljs-number">1</span> <span class="hljs-keyword">AND</span> version <span class="hljs-operator">=</span> $<span class="hljs-number">2</span>;   <span class="hljs-comment">-- optimistic</span>
+<span class="hljs-keyword">INSERT</span> … <span class="hljs-keyword">ON</span> CONFLICT (key) DO NOTHING;      <span class="hljs-comment">-- idempotent</span>
+<span class="hljs-keyword">SAVEPOINT</span> s; … <span class="hljs-keyword">ROLLBACK</span> <span class="hljs-keyword">TO</span> <span class="hljs-keyword">SAVEPOINT</span> s;
+<span class="hljs-keyword">SET</span> <span class="hljs-keyword">LOCAL</span> lock_timeout <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;300ms&#x27;</span>;
+<span class="hljs-keyword">SET</span> idle_in_transaction_session_timeout <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;30s&#x27;</span>;
+<span class="hljs-keyword">SELECT</span> pid, pg_blocking_pids(pid), query <span class="hljs-keyword">FROM</span> pg_stat_activity <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">cardinality</span>(pg_blocking_pids(pid)) <span class="hljs-operator">&gt;</span> <span class="hljs-number">0</span>;</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">const</span> c = <span class="hljs-keyword">await</span> pool.<span class="hljs-title function_">connect</span>();
+<span class="hljs-keyword">try</span> { <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;BEGIN&#x27;</span>); <span class="hljs-comment">/* use c only */</span> <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;COMMIT&#x27;</span>); }
+<span class="hljs-keyword">catch</span> (e) { <span class="hljs-keyword">await</span> c.<span class="hljs-title function_">query</span>(<span class="hljs-string">&#x27;ROLLBACK&#x27;</span>).<span class="hljs-title function_">catch</span>(<span class="hljs-function">() =&gt;</span> {}); <span class="hljs-keyword">throw</span> e; }
+<span class="hljs-keyword">finally</span> { c.<span class="hljs-title function_">release</span>(); }</code></pre></div>
+<hr>
+
+<h2 id="16-15-key-takeaways">16.15 Key Takeaways</h2>
+<ol>
+<li><strong>Close the gap between check and write</strong>: one statement, a lock, or a version.</li>
+<li><strong>Isolation isn&#39;t free</strong>: higher levels abort transactions; always pair them with retries.</li>
+<li><strong>Lock in a consistent order</strong>; deadlocks cost seconds, not milliseconds.</li>
+<li><strong>One transaction, one connection</strong>; never <code>pool.query(&#39;BEGIN&#39;)</code>.</li>
+<li><strong>Keep transactions short and side-effect-free</strong>; do emails and charges after commit (outbox).</li>
+</ol>
+<hr>
+
+<h2 id="16-16-20-multiple-choice-questions">16.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Absolute-value writes after stale reads."><p class="quiz-text">In the naive read-modify-write test, 50 buyers were confirmed for 10 items because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The CHECK constraint failed</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Each read the same stock, then wrote an absolute value</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The pool was too small</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">PostgreSQL has a bug</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="c" data-why="85 ms, one statement."><p class="quiz-text">The fastest correct strategy in our test was:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>FOR UPDATE</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Optimistic version</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Atomic <code>UPDATE … WHERE stock &gt;= 1</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>SERIALIZABLE</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Aborted transaction."><p class="quiz-text">After an error inside a PostgreSQL transaction, the next statement fails with:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">23505</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">25P02 (transaction aborted)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">40001</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing, it works</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Savepoints."><p class="quiz-text">What lets you continue a transaction after a failed statement?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>COMMIT</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A <code>SAVEPOINT</code> and <code>ROLLBACK TO</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>RETRY</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Autocommit</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Read Committed."><p class="quiz-text">PostgreSQL&#39;s default isolation level is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Read Uncommitted</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Read Committed</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Repeatable Read</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Serializable</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Statement-level snapshots."><p class="quiz-text">At <code>READ COMMITTED</code>, reading the same row twice in one transaction can:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Never differ</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Differ if another transaction committed in between</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Block</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Error</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="d" data-why="Write skew (shown)."><p class="quiz-text">Which anomaly can still occur at <code>REPEATABLE READ</code> in PostgreSQL?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Dirty read</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Non-repeatable read</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Phantom read</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Write skew</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="One doctor stayed on call."><p class="quiz-text">What did <code>SERIALIZABLE</code> do in the on-call doctors demo?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Allowed both</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Aborted one transaction with <code>40001</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Deadlocked</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Ignored the rule</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Retry."><p class="quiz-text"><code>40001</code> means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Deadlock</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Serialization failure, retry the transaction</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Syntax error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Lock timeout</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Queue workers skip locked rows."><p class="quiz-text"><code>SELECT … FOR UPDATE SKIP LOCKED</code> is ideal for:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Reports</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A multi-worker job queue</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Schema migrations</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Bulk inserts</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Immediate error 55P03."><p class="quiz-text"><code>NOWAIT</code> makes a locked-row request:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Wait forever</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Fail immediately with <code>55P03</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Skip the row</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Upgrade the lock</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Detection delay × many deadlocks."><p class="quiz-text">Why did 30 transfers take 114 s?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Slow disk</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">208 deadlocks, each detected only after <code>deadlock_timeout</code> (1 s)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The pool was exhausted</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Large rows</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Prevents cycles."><p class="quiz-text">The best structural fix for transfer deadlocks is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Longer timeouts</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Lock rows in a consistent (ascending id) order</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A bigger pool</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t"><code>SERIALIZABLE</code> only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Version check."><p class="quiz-text">Which is optimistic locking?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>FOR UPDATE</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t"><code>UPDATE … WHERE id=$1 AND version=$2</code></span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>LOCK TABLE</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Advisory lock</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Transaction ↔ connection."><p class="quiz-text">Why must <code>BEGIN</code>/<code>COMMIT</code> run on a single checked-out client?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Style</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A transaction belongs to one connection; the pool may give each <code>pool.query</code> a different one</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Speed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Authentication</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Different connections."><p class="quiz-text">What went wrong in <code>pool.query(&#39;BEGIN&#39;); pool.query(&#39;UPDATE…&#39;); pool.query(&#39;ROLLBACK&#39;)</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The UPDATE autocommitted on another connection, so ROLLBACK didn&#39;t undo it</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A syntax error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The pool closed</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="May run more than once."><p class="quiz-text">Retrying a transaction function is only safe if it:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Is short</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Has no external side effects (emails, charges) inside it</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Uses SERIALIZABLE</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Uses a pool</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Race-free duplicates handling."><p class="quiz-text"><code>ON CONFLICT (key) DO NOTHING</code> with a UNIQUE key makes an insert:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Idempotent under concurrency</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Slower</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Transactional</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Atomicity."><p class="quiz-text">Why did failed checkout attempts not reduce product #2&#39;s stock permanently?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">They never ran</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Their transaction rolled back, undoing the earlier stock decrement</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Stock was refilled</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Triggers</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Needs client.on('error')."><p class="quiz-text">A standalone <code>pg.Client</code> crashed the process on an idle-in-transaction timeout because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The query was slow</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The server&#39;s FATAL arrived as an unhandled <code>&#39;error&#39;</code> event</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The pool was full</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The timeout was too long</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-c, 3-b, 4-b, 5-b, 6-b, 7-d, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="16-17-20-hands-on-exercises">16.17 20 Hands-on Exercises</h2>
+<p><em>(Run <code>node ch16-setup.mjs</code> from <a href="/learn/backend-master/resources/README.txt">resources/</a> first. Install <code>pg</code>. The container from Ch 12 must be running.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Run the oversell lab and record all six strategies&#39; results on your machine.</li>
+<li>Open two <code>psql</code> sessions; reproduce a non-repeatable read at READ COMMITTED.</li>
+<li>Repeat at REPEATABLE READ; confirm the value is stable.</li>
+<li>Reproduce <code>25P02</code>, then fix it with a savepoint.</li>
+<li>In one session <code>SELECT … FOR UPDATE</code> a row; in another, try <code>NOWAIT</code> and <code>lock_timeout</code>.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Reproduce the on-call write skew with two <code>psql</code> sessions at REPEATABLE READ, then SERIALIZABLE.</li>
+<li>Fix write skew a third way: <code>SELECT … FOR UPDATE</code> on both doctor rows before deciding.</li>
+<li>Build the 3-worker <code>SKIP LOCKED</code> queue; then kill a worker mid-job and watch the job return to the queue.</li>
+<li>Implement <code>withTx</code> and <code>retry</code>; write a test that injects a fake <code>40001</code> twice and verifies the third attempt succeeds.</li>
+<li>Add a <code>version</code> column and build an <code>updateProduct</code> that returns <code>409</code>/<code>412</code> on a stale version.</li>
+<li>Use <code>pg_blocking_pids</code> to build a &quot;who is blocking&quot; script, and trigger it with a forgotten transaction.</li>
+<li>Demonstrate the <code>pool.query(&#39;BEGIN&#39;)</code> bug with a pool of size 5 under 20 concurrent requests.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Reproduce the deadlock, then reduce the <em>impact</em> using only <code>deadlock_timeout</code> (note the trade-off), then fix with ordering.</li>
+<li>Add a <code>UNIQUE (idempotency_key)</code> race test: 50 simultaneous requests with the <em>same new key</em>; make <code>placeOrder</code> handle the <code>23505</code> and return the winner&#39;s order.</li>
+<li>Implement the outbox pattern: insert an <code>outbox</code> row in the checkout transaction; write a worker that processes it with <code>SKIP LOCKED</code> and is itself idempotent.</li>
+<li>Add a &quot;max 3 active coupons per user&quot; rule, break it with concurrent claims, then fix it by (a) <code>SERIALIZABLE</code>+retry and (b) locking the user row.</li>
+<li>Benchmark strategies 2, 3, 4 and 6 with 10, 100 and 1,000 buyers; chart time and retry counts.</li>
+<li>Write a chaos test: random transfers among 10 wallets from 50 workers; assert total money is constant and no balance is negative.</li>
+<li>Make <code>withTx</code> emit metrics (duration, retries, final error code) via a callback, and find your longest transactions.</li>
+<li>Implement optimistic concurrency for an HTTP <code>PATCH</code> using <code>ETag</code>/<code>If-Match</code> end to end in Express (Ch 7/8), with a test sending two conflicting edits.</li>
+</ol>
+<hr>
+
+<h2 id="16-18-5-interview-questions">16.18 5 Interview Questions</h2>
+<p><strong>1. What isolation levels does PostgreSQL support, and what is the default?</strong>
+<em>Model answer:</em> Four names, three real behaviours: Read Uncommitted is the same as Read Committed. Read Committed (default) takes a new snapshot per statement, so non-repeatable reads and phantoms are possible. Repeatable Read takes one snapshot per transaction (snapshot isolation: no phantoms; concurrent updates to the same row raise <code>40001</code>), but write skew is possible. Serializable adds predicate tracking and aborts transactions that could produce non-serializable results; you must retry <code>40001</code>.</p>
+<p><strong>2. Fifty users buy the last 10 items. How do you prevent overselling?</strong>
+<em>Model answer:</em> Make check-and-decrement atomic: <code>UPDATE products SET stock = stock - $q WHERE id = $1 AND stock &gt;= $q</code> and check <code>rowCount</code>. Alternatives: <code>SELECT … FOR UPDATE</code> in a transaction, optimistic <code>version</code>, or a stronger isolation level with retries. Put the order creation in the same transaction so failures roll back everything; keep a <code>CHECK (stock &gt;= 0)</code> as a last line of defence; don&#39;t read-then-write in the app.</p>
+<p><strong>3. What is a deadlock and how do you prevent and handle it?</strong>
+<em>Model answer:</em> A cycle of transactions each waiting for a lock another holds. PostgreSQL detects it after <code>deadlock_timeout</code> (1 s default) and aborts one with <code>40P01</code>. Prevent by acquiring locks in a consistent order (e.g., by primary key), keeping transactions short, and avoiding unnecessary multi-row lock sequences. Handle by retrying the transaction. In my test, 30 opposing transfers took 114 s (208 deadlocks) with unordered locks, while 200 took about 12 s (no deadlocks) with ordered locks.</p>
+<p><strong>4. Optimistic vs pessimistic locking?</strong>
+<em>Model answer:</em> Pessimistic locks first (<code>FOR UPDATE</code>): good under high contention and for short critical sections like inventory and balances. Optimistic uses a version/ETag and fails the write if it changed (<code>UPDATE … WHERE version = $n</code>): no locks held, ideal for user edits and HTTP APIs (<code>If-Match</code> → 412), but wasteful with frequent conflicts. Never hold a lock across user think-time.</p>
+<p><strong>5. Why is <code>pool.query(&#39;BEGIN&#39;)</code> a bug, and what&#39;s the right way?</strong>
+<em>Model answer:</em> A transaction is bound to one connection, but a pool may route each <code>pool.query</code> call to a different connection, so statements run outside the transaction (autocommit) and <code>ROLLBACK</code> can&#39;t undo them, and a connection may be left &quot;idle in transaction.&quot; Use <code>pool.connect()</code> to get one client, run <code>BEGIN</code>/statements/<code>COMMIT</code> on it, <code>ROLLBACK</code> on error, and <code>release()</code> in <code>finally</code>. We reproduced it: after &quot;ROLLBACK&quot; the balance was 0 instead of 1000.</p>
+<hr>
+
+<h2 id="16-19-3-real-projects">16.19 3 Real Projects</h2>
+<p><strong>Project 1: The Inventory Stampede Lab (beginner–intermediate, ~6 hours).</strong>
+Build a small HTTP service with six interchangeable &quot;buy&quot; endpoints (naive, atomic, <code>FOR UPDATE</code>, optimistic, RR+retry, SERIALIZABLE+retry). Use autocannon/k6 to hit each with 1,000 concurrent buyers on 100 items; chart correctness (oversell count), p50/p99 latency, retries and DB CPU. Write up when you&#39;d choose each.</p>
+<p><strong>Project 2: A PostgreSQL Job Queue (intermediate, ~10 hours).</strong>
+Implement a durable queue table with <code>SKIP LOCKED</code>: enqueue, claim with a lease (<code>locked_until</code>), heartbeat, complete, retry with backoff, dead-letter after N attempts, and a scheduled &quot;reaper&quot; for crashed workers. Add idempotent handlers, metrics (queue depth, age of oldest), and a chaos test that kills workers randomly while verifying every job completes exactly once (effectively).</p>
+<p><strong>Project 3: Money Movement Ledger (intermediate–advanced, ~12 hours).</strong>
+Design a double-entry ledger (<code>accounts</code>, <code>entries</code>, <code>transfers</code>) where every transfer inserts two entries summing to zero. Enforce invariants with constraints and triggers, make transfers idempotent and deadlock-free, and run a fuzz test with 100 concurrent workers verifying that balances always reconcile with the sum of entries. Compare <code>FOR UPDATE</code>-ordered, <code>SERIALIZABLE</code>+retry and optimistic approaches.</p>
+<hr>
+
+<h2 id="16-20-further-reading">16.20 Further Reading</h2>
+<ul>
+<li>PostgreSQL docs: <em>Concurrency Control</em> (MVCC, Transaction Isolation, Explicit Locking, Serialization Failure Handling).</li>
+<li><em>Designing Data-Intensive Applications</em> by Martin Kleppmann, <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a> (Transactions): the clearest treatment of lost updates, write skew and snapshot isolation.</li>
+<li>Cahill, Röhm &amp; Fekete, <em>Serializable Isolation for Snapshot Databases</em>: the SSI algorithm PostgreSQL uses.</li>
+<li>Jepsen.io analyses (e.g., of PostgreSQL) for what &quot;serializable&quot; means in practice.</li>
+<li><em>Release It!</em> by Michael Nygard: timeouts, retries and stability patterns.</li>
+<li>Chris Richardson, <em>Microservices Patterns</em>: the outbox pattern (see also Ch 29/33 here).</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-17-orms-and-query-builders">Up next → Chapter 17: ORMs and Query Builders</h3>
+<p>You can now write correct, fast, concurrent SQL by hand. Should you always? Next: when raw SQL is the right tool and when an ORM or query builder helps (Prisma, Drizzle, Knex/Kysely, TypeORM), how they map to everything you just learned (transactions, N+1, migrations), the traps they hide, and how to choose, with the same ShopLine feature built three ways.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Transactions, Isolation: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>How do I prevent overselling stock?</h3></summary><p>Make the check and the update one atomic statement: UPDATE products SET stock = stock - $q WHERE id = $1 AND stock &gt;= $q, then check the affected row count. Alternatives are SELECT FOR UPDATE or optimistic version checks.</p></details>
+<details class="learn-faq-item"><summary><h3>What is write skew?</h3></summary><p>Two transactions read overlapping data, each decide safely, then write different rows, together breaking a rule neither broke alone. REPEATABLE READ allows it; SERIALIZABLE prevents it by aborting one transaction.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I avoid deadlocks?</h3></summary><p>Lock rows in a consistent order, keep transactions short and retry on error 40P01. In our test, unordered transfers took 114 seconds because deadlocks are detected after one second.</p></details>
+<details class="learn-faq-item"><summary><h3>Why is pool.query('BEGIN') a bug?</h3></summary><p>A transaction belongs to one connection, but a pool can send each query to a different one. Check out a single client and run BEGIN, the queries and COMMIT on it.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span>&larr; Previous &middot; Chapter 15</span><strong>PostgreSQL Indexes &amp; EXPLAIN ANALYZE</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span>Next &middot; Chapter 17 &rarr;</span><strong>ORMs vs Query Builders: Prisma, Drizzle</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#16-0-why-this-chapter-matters">16.0 Why This Chapter Matters</a></li><li><a href="#16-1-transactions-the-basics">16.1 Transactions: The Basics</a></li><li><a href="#16-2-the-stampede-overselling-the-last-items">16.2 The Stampede: Overselling the Last Items</a></li><li><a href="#16-3-isolation-levels-with-reproducible-anomalies">16.3 Isolation Levels, with Reproducible Anomalies</a></li><li><a href="#16-4-locks">16.4 Locks</a></li><li><a href="#16-5-deadlocks">16.5 Deadlocks</a></li><li><a href="#16-6-optimistic-vs-pessimistic-locking">16.6 Optimistic vs Pessimistic Locking</a></li><li><a href="#16-7-transactions-from-node-js-the-right-pattern">16.7 Transactions from Node.js: The Right Pattern</a></li><li><a href="#16-8-idempotency-safe-retries-under-concurrency">16.8 Idempotency: Safe Retries Under Concurrency</a></li><li><a href="#16-9-shopline-the-all-or-nothing-checkout">16.9 ShopLine: The All-or-Nothing Checkout</a></li><li><a href="#16-10-edge-cases-and-gotchas-checklist">16.10 Edge Cases and Gotchas Checklist</a></li><li><a href="#16-11-chapter-summary">16.11 Chapter Summary</a></li><li><a href="#16-12-revision-notes">16.12 Revision Notes</a></li><li><a href="#16-13-mind-map-ascii">16.13 Mind Map (ASCII)</a></li><li><a href="#16-14-cheat-sheet">16.14 Cheat Sheet</a></li><li><a href="#16-15-key-takeaways">16.15 Key Takeaways</a></li><li><a href="#16-16-20-multiple-choice-questions">16.16 20 Multiple Choice Questions</a></li><li><a href="#16-17-20-hands-on-exercises">16.17 20 Hands-on Exercises</a></li><li><a href="#16-18-5-interview-questions">16.18 5 Interview Questions</a></li><li><a href="#16-19-3-real-projects">16.19 3 Real Projects</a></li><li><a href="#16-20-further-reading">16.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "database-transactions-isolation-levels-concurrency"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Search, OLAP, Time-Series &amp; Object Storage | Backend Master</title>
+    <meta name="description" content="Know when to add another data store: PostgreSQL full-text search vs Elasticsearch, partitioning, columnar analytics with DuckDB and object storage.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="postgresql full text search, elasticsearch vs postgres, table partitioning, duckdb columnar analytics, object storage presigned url, polyglot persistence, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="postgresql full text search">
+    <meta property="article:tag" content="elasticsearch vs postgres">
+    <meta property="article:tag" content="table partitioning">
+    <meta property="article:tag" content="duckdb columnar analytics">
+    <meta property="article:tag" content="object storage presigned url">
+    <meta property="article:tag" content="polyglot persistence">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Search, OLAP, Time-Series &amp; Object Storage">
+    <meta property="og:description" content="Know when to add another data store: PostgreSQL full-text search vs Elasticsearch, partitioning, columnar analytics with DuckDB and object storage.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/full-text-search-time-series-olap-object-storage.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Other Data Stores: Search, Time-Series, Analytics and Object Storage: Backend Master chapter 20">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Search, OLAP, Time-Series &amp; Object Storage">
+    <meta name="twitter:description" content="Know when to add another data store: PostgreSQL full-text search vs Elasticsearch, partitioning, columnar analytics with DuckDB and object storage.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/full-text-search-time-series-olap-object-storage.png">
+    <meta name="twitter:image:alt" content="Other Data Stores: Search, Time-Series, Analytics and Object Storage: Backend Master chapter 20">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage",
+          "name": "Search, OLAP, Time-Series & Object Storage | Backend Master",
+          "description": "Know when to add another data store: PostgreSQL full-text search vs Elasticsearch, partitioning, columnar analytics with DuckDB and object storage.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/full-text-search-time-series-olap-object-storage.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Other Data Stores: Search, Time-Series, Analytics and Object Storage"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#webpage"
+          },
+          "headline": "Other Data Stores: Search, Time-Series, Analytics and Object Storage",
+          "alternativeHeadline": "Other Data Stores and Choosing the Right One — Search, Analytics, Time-Series, Files",
+          "description": "Know when to add another data store: PostgreSQL full-text search vs Elasticsearch, partitioning, columnar analytics with DuckDB and object storage.",
+          "abstract": "Every extra data store is a copy that must be kept in sync. This chapter measures PostgreSQL full-text search against ILIKE, tries Elasticsearch, shows partitioning and columnar analytics with DuckDB, explains object storage and presigned uploads, and gives a framework for deciding when PostgreSQL is enough.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/full-text-search-time-series-olap-object-storage.png",
+          "url": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 5476,
+          "timeRequired": "PT25M",
+          "articleSection": "Backend Development",
+          "keywords": "postgresql full text search, elasticsearch vs postgres, table partitioning, duckdb columnar analytics, object storage presigned url, polyglot persistence",
+          "proficiencyLevel": "Intermediate",
+          "educationalLevel": "Intermediate",
+          "teaches": [
+            "PostgreSQL full-text search and trigram matching",
+            "When Elasticsearch is worth it",
+            "Time-series partitioning and retention",
+            "Columnar analytics and Parquet",
+            "Polyglot persistence and the dual-write problem"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "postgresql full text search"
+          },
+          "isAccessibleForFree": true,
+          "position": 20,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams#article",
+            "name": "Redis and In-Memory Data: Caching, Rate Limiting, Locks and Streams",
+            "url": "https://shivamthakur.me/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Search, OLAP, Time-Series & Object Storage",
+              "item": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do I need Elasticsearch for search?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Often not. PostgreSQL full-text search took a 300,000-row query from 910 ms to 3 ms. Elasticsearch adds typo tolerance, relevance tuning and facets at scale, but is a copy that needs syncing."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the dual-write problem?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Updating the database and a second system in two steps with no shared transaction, so a failure between them leaves them inconsistent. Use an outbox or change data capture."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why use columnar storage for analytics?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Analytical queries read a few columns of many rows. Columnar engines read only those columns and compress well; DuckDB ran our aggregation several times faster than PostgreSQL."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Where should uploaded files be stored?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "In object storage such as S3, with metadata in the database. Let browsers upload directly using short-lived presigned URLs."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#quiz",
+          "name": "Search, OLAP, Time-Series & Object Storage: 20 multiple choice questions",
+          "educationalLevel": "Intermediate",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "postgresql full text search"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/full-text-search-time-series-olap-object-storage#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why was ILIKE '%waterproof%' slow?",
+              "text": "Why was ILIKE '%waterproof%' slow?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It required a sequential scan of every row"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Too many indexes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Collation"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Network"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A generated tsvector column is preferred because:",
+              "text": "A generated tsvector column is preferred because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The database keeps it in sync with the text"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It's faster to type"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It compresses data"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It adds typo tolerance"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "What did PostgreSQL FTS return for the typo waterprof?",
+              "text": "What did PostgreSQL FTS return for the typo waterprof?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Zero rows"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The right rows"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "An error"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "All rows"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Stemming means:",
+              "text": "Stemming means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Reducing words to a root (leaking, leaked → leak)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Removing punctuation"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sorting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Compression"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Elasticsearch right after bulk indexing returned 80,000 of 100,000 docs because it is:",
+              "text": "Elasticsearch right after bulk indexing returned 80,000 of 100,000 docs because it is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Near-real-time: documents become searchable after a refresh"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Broken"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Eventually deleting"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Sharded wrongly"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The biggest operational risk of adding Elasticsearch is:",
+              "text": "The biggest operational risk of adding Elasticsearch is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Keeping it in sync with the source of truth"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Query syntax"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "JSON"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Licensing only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a reliable way to keep a search index in sync?",
+              "text": "Which is a reliable way to keep a search index in sync?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Outbox (or CDC) + reconcile + rebuild path"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Dual-write in the handler"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Hope"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Cron DROP"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In partitioned ev, the primary key must include:",
+              "text": "In partitioned ev, the primary key must include:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The partition key column"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "user_id"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "kind"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Partition pruning means:",
+              "text": "Partition pruning means:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The planner skips partitions that can't match the query"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Deleting partitions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Compressing partitions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Merging them"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "In my retention test at 178k rows, DETACH+DROP vs DELETE:",
+              "text": "In my retention test at 178k rows, DETACH+DROP vs DELETE:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Was not faster; the benefits are structural (no dead rows, immediate space return)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Was 100× faster"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Failed"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Locked forever"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A columnar store speeds analytics because:",
+              "text": "A columnar store speeds analytics because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It reads only needed columns, compresses well and works in vectorised batches"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It uses more RAM"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It avoids SQL"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It has more indexes"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "DuckDB's Parquet file was roughly how much smaller than the CSV?",
+              "text": "DuckDB's Parquet file was roughly how much smaller than the CSV?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "2.8× smaller"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Same"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100× smaller"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Larger"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Why avoid running heavy dashboards on the production OLTP database?",
+              "text": "Why avoid running heavy dashboards on the production OLTP database?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "They compete with transactional workload"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "SQL forbids it"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "They return wrong numbers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Parquet requires it"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Files like product images belong in:",
+              "text": "Files like product images belong in:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Object storage, with metadata in the database"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A bytea column"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Redis"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The Git repo"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Presigned upload URLs let:",
+              "text": "Presigned upload URLs let:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The browser upload directly to storage with a time-limited signed URL"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Anyone upload forever"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The server proxy bytes"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Users skip auth"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A graph database shines when:",
+              "text": "A graph database shines when:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Deep relationship traversals are the core workload"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "You have a few joins"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "You need transactions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "You have time-series"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Kafka differs from a simple queue because:",
+              "text": "Kafka differs from a simple queue because:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "It is a durable, replayable partitioned log with consumer offsets"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "It is smaller"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It stores files"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "It has no ordering"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The \"dual-write trap\" is:",
+              "text": "The \"dual-write trap\" is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Writing to two systems with no shared transaction, so a failure leaves them inconsistent"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Writing twice to one DB"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Two replicas"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A cache hit"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Before adding a new data store you should:",
+              "text": "Before adding a new data store you should:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Name the measured limit PostgreSQL hit, and plan sync and operations"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Check which is trendiest"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Add it everywhere"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Remove PostgreSQL"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which statement about ShopLine's launch architecture is most sensible?",
+              "text": "Which statement about ShopLine's launch architecture is most sensible?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "PostgreSQL + Redis + object storage, adding others on measured need"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Five databases on day one"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "MongoDB only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Kafka first"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Search, OLAP, Time-Series &amp; Object Storage</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:55.6%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item active" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage" aria-current="page"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 20 of 36 &middot; Intermediate</p>
+                        <h1>Other Data Stores: Search, Time-Series, Analytics and Object Storage</h1>
+                        <p class="learn-book-title">Other Data Stores and Choosing the Right One — Search, Analytics, Time-Series, Files</p>
+                        <ul class="learn-meta text-caption">
+                            <li>25 min read</li>
+                            <li>Intermediate</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/full-text-search-time-series-olap-object-storage.webp"><img src="../../assets/images/learn/backend-master/full-text-search-time-series-olap-object-storage.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Other Data Stores: Search, Time-Series, Analytics and Object Storage: Backend Master chapter 20 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Every extra data store is a copy that must be kept in sync. This chapter measures PostgreSQL full-text search against ILIKE, tries Elasticsearch, shows partitioning and columnar analytics with DuckDB, explains object storage and presigned uploads, and gives a framework for deciding when PostgreSQL is enough.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>PostgreSQL full-text search and trigram matching</li><li>When Elasticsearch is worth it</li><li>Time-series partitioning and retention</li><li>Columnar analytics and Parquet</li><li>Polyglot persistence and the dual-write problem</li></ul>
+                        </section>
+<hr>
+
+<h2 id="20-0-why-this-chapter-matters">20.0 Why This Chapter Matters</h2>
+<p>You now know a relational database (PostgreSQL), a document database (MongoDB) and an in-memory store (Redis). Real systems also need things none of those do well:</p>
+<ul>
+<li><strong>&quot;Search as you type, with typos, ranked by relevance&quot;</strong> (the box at the top of every shop).</li>
+<li><strong>Dashboards over hundreds of millions of rows</strong> that would take a row-store minutes.</li>
+<li><strong>Billions of timestamped events</strong> that must be queried recently and deleted when old.</li>
+<li><strong>Photos, invoices and videos</strong>, which don&#39;t belong inside a database at all.</li>
+<li><strong>Relationships of relationships</strong> (&quot;friends of friends who bought this&quot;).</li>
+</ul>
+<p>Each has a specialist tool, and each specialist tool brings the same hidden cost: <strong>a second copy of your data that can disagree with the first.</strong> This chapter surveys the main categories, <em>runs the ones we can run locally</em>, and ends with the decision framework that matters most:</p>
+<blockquote>
+<p><strong>Start with PostgreSQL. Add a specialist only when you can name the specific limit you hit, and plan how it stays in sync.</strong></p>
+</blockquote>
+<p>We test on real engines: <strong>PostgreSQL 17</strong> full-text search and partitioning, <strong>Elasticsearch 8.15.0</strong>, and <strong>DuckDB</strong> (columnar analytics) via the <code>@duckdb/node-api</code> package.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run</span></h3>
+<p><strong>Run:</strong> PostgreSQL full-text search (300,000 rows), PostgreSQL declarative partitioning (2,000,000 rows), Elasticsearch single node (100,000 documents), DuckDB vs PostgreSQL on 1,000,000 orders. <strong>Not run</strong> (described from documentation, marked as such): S3/object storage (the MinIO image could not be pulled in my environment, so presigned URLs and multipart upload are <em>not</em> tested), ClickHouse, TimescaleDB, graph databases (Neo4j), Kafka, Cassandra/DynamoDB. Treat those sections as orientation, not verified results.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>Elasticsearch, OpenSearch, Solr and many others are built on <strong>Apache Lucene</strong>, a Java library by Doug Cutting (1999), the same person who later co-created Hadoop. Almost every &quot;search box&quot; you&#39;ve ever used is a Lucene <strong>inverted index</strong> underneath: a dictionary from <em>word → list of documents containing it</em>, exactly the structure of a book&#39;s index.</p>
+</aside>
+<hr>
+
+<h2 id="20-1-pick-by-access-pattern-not-by-hype">20.1 Pick by Access Pattern, Not by Hype</h2>
+<p>The first question is never &quot;which database?&quot; It is <strong>&quot;how will this data be read and written?&quot;</strong></p>
+<div class="table-wrap"><table><thead><tr>
+<th>Access pattern</th>
+<th>Needs</th>
+<th>Typical tool</th>
+</tr>
+</thead><tbody><tr>
+<td>Transactions on related entities; integrity</td>
+<td>ACID, constraints, joins</td>
+<td><strong>PostgreSQL</strong> (Ch 12–16)</td>
+</tr>
+<tr>
+<td>Self-contained documents with flexible shape</td>
+<td>Nested data, sharding</td>
+<td>MongoDB (Ch 18)</td>
+</tr>
+<tr>
+<td>Sub-millisecond lookups, counters, queues, caches</td>
+<td>RAM speed</td>
+<td>Redis (Ch 19)</td>
+</tr>
+<tr>
+<td><strong>Text search</strong>, relevance, typo tolerance, facets</td>
+<td>Inverted index, analyzers</td>
+<td>PostgreSQL FTS / <strong>Elasticsearch / OpenSearch</strong> / Typesense / Meilisearch</td>
+</tr>
+<tr>
+<td><strong>Large scans and aggregations</strong> (analytics, BI)</td>
+<td>Columnar storage</td>
+<td><strong>DuckDB / ClickHouse / BigQuery / Snowflake / Redshift</strong></td>
+</tr>
+<tr>
+<td><strong>Time-series</strong> (metrics, events, IoT)</td>
+<td>Append-heavy, time-range queries, retention</td>
+<td>PostgreSQL partitions / TimescaleDB / InfluxDB / ClickHouse</td>
+</tr>
+<tr>
+<td><strong>Graphs</strong> (deep relationship traversal)</td>
+<td>Pointer-chasing</td>
+<td>Neo4j / recursive SQL (Ch 13)</td>
+</tr>
+<tr>
+<td><strong>Large binary files</strong></td>
+<td>Cheap, durable blobs, CDN</td>
+<td><strong>Object storage</strong> (S3, GCS, R2, MinIO)</td>
+</tr>
+<tr>
+<td><strong>Ordered, replayable event log</strong></td>
+<td>Durable log, consumer offsets</td>
+<td>Kafka / Redpanda / streams (Ch 28)</td>
+</tr>
+</tbody></table></div>
+<p>Also ask: <strong>how big?</strong> (a table of 1 M rows is tiny; PostgreSQL handles 1 B rows with partitioning), <strong>how fresh?</strong> (is 5-minute-old data acceptable?), <strong>who queries it?</strong> (the app? analysts?), and <strong>what happens if it&#39;s wrong or lost?</strong></p>
+<h3 id="the-hidden-tax-of-every-extra-store">The hidden tax of every extra store</h3>
+<p>Each additional data store means:</p>
+<ol>
+<li>A <strong>sync pipeline</strong> from the source of truth (and its failures, lag, and backfills).</li>
+<li><strong>Another thing to run, monitor, secure, back up, upgrade, and be paged for.</strong></li>
+<li><strong>Another failure mode</strong> in every request that touches it.</li>
+<li><strong>Another skill</strong> the team must have.</li>
+</ol>
+<blockquote>
+<p>A common and expensive mistake is adopting Elasticsearch, Kafka and a graph database for a system whose data would fit comfortably in one PostgreSQL instance. PostgreSQL&#39;s ecosystem (full-text search, <code>jsonb</code>, partitioning, <code>LISTEN/NOTIFY</code>, recursive CTEs, extensions) covers a surprising amount.</p>
+</blockquote>
+<hr>
+
+<h2 id="20-2-search">20.2 Search</h2>
+<h3 id="20-2-1-why-like-word-isn-t-search">20.2.1 Why <code>LIKE &#39;%word%&#39;</code> isn&#39;t search</h3>
+<p>Test dataset: <strong>300,000 product reviews</strong> (12–19 words each; 42 MB), with the word &quot;waterproof&quot; planted in 300 of them.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql">EXPLAIN (ANALYZE) <span class="hljs-keyword">SELECT</span> id <span class="hljs-keyword">FROM</span> reviews <span class="hljs-keyword">WHERE</span> body ILIKE <span class="hljs-string">&#x27;%waterproof%&#x27;</span>;
+<span class="hljs-comment">-- Seq Scan on reviews (actual rows=300)   Rows Removed by Filter: 299700   Execution Time: 910.576 ms</span></code></pre></div>
+<p>It reads every row, can&#39;t use an ordinary index, doesn&#39;t know that &quot;leaks&quot;, &quot;leaking&quot; and &quot;leaked&quot; are the same idea, and can&#39;t rank results. A search engine solves four problems: <strong>speed</strong> (inverted index), <strong>linguistics</strong> (stemming, stop-words), <strong>ranking</strong> (best matches first), and <strong>forgiveness</strong> (typos, synonyms).</p>
+<h3 id="20-2-2-postgresql-full-text-search-fts-often-enough">20.2.2 PostgreSQL full-text search (FTS): often enough</h3>
+<p>PostgreSQL has a built-in search engine: <code>tsvector</code> (a document reduced to normalised words) and <code>tsquery</code>, indexed with <strong>GIN</strong> (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>).</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> reviews <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> tsv tsvector GENERATED ALWAYS <span class="hljs-keyword">AS</span> (to_tsvector(<span class="hljs-string">&#x27;english&#x27;</span>, body)) STORED;
+<span class="hljs-keyword">CREATE</span> INDEX reviews_tsv_idx <span class="hljs-keyword">ON</span> reviews <span class="hljs-keyword">USING</span> gin (tsv);
+<span class="hljs-keyword">SELECT</span> id <span class="hljs-keyword">FROM</span> reviews <span class="hljs-keyword">WHERE</span> tsv @@ to_tsquery(<span class="hljs-string">&#x27;english&#x27;</span>, <span class="hljs-string">&#x27;waterproof&#x27;</span>);</code></pre></div>
+<pre class="is-plain"><code>gin_size: 4464 kB
+Bitmap Heap Scan on reviews (actual rows=300)   Heap Blocks: exact=17
+Execution Time: 3.048 ms                         ← from 910 ms</code></pre>
+<p><strong>910 ms → 3 ms (≈300×)</strong> for the same 300 hits, with a 4.4 MB index. Using a <strong>generated column</strong> (<a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>) means the vector can never drift from the text; the database maintains it.</p>
+<p>What the normalisation does:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> to_tsvector(<span class="hljs-string">&#x27;english&#x27;</span>, <span class="hljs-string">&#x27;The pens were leaking and the notebooks leaked&#x27;</span>);
+<span class="hljs-comment">--  &#x27;leak&#x27;:4,8 &#x27;notebook&#x27;:7 &#x27;pen&#x27;:2</span></code></pre></div>
+<p>Stop words (&quot;the&quot;, &quot;were&quot;, &quot;and&quot;) vanished; &quot;pens&quot; → <code>pen</code>, &quot;notebooks&quot; → <code>notebook</code>; &quot;leaking&quot; and &quot;leaked&quot; both → <code>leak</code> (with their positions). That&#39;s <strong>stemming</strong>.</p>
+<p><strong>Web-search-style queries</strong> (<code>websearch_to_tsquery</code> accepts quotes and <code>-</code>):</p>
+<pre class="is-plain"><code>stem_leak = 125331   (query &quot;leak&quot;)
+leaking_pen_not_refund = 30856     (query: leaking pen -refund)
+phrase_fast_shipping = 4965        (query: &quot;fast shipping&quot;)</code></pre>
+<p><strong>Ranking</strong> with <code>ts_rank</code>:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> id, ts_rank(tsv, q) <span class="hljs-keyword">AS</span> rank, <span class="hljs-keyword">left</span>(body, <span class="hljs-number">70</span>) <span class="hljs-keyword">FROM</span> reviews, websearch_to_tsquery(<span class="hljs-string">&#x27;english&#x27;</span>, <span class="hljs-string">&#x27;waterproof notebook&#x27;</span>) q
+<span class="hljs-keyword">WHERE</span> tsv @@ q <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> rank <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">3</span>;
+<span class="hljs-comment">--  258007 | 0.1780 | color pen zipper waste fast paper ...</span></code></pre></div>
+<h3 id="what-postgresql-fts-does-not-do-well">What PostgreSQL FTS does <em>not</em> do (well)</h3>
+<p><strong>Typos.</strong> A query for <code>waterprof</code>:</p>
+<pre class="is-plain"><code>fts_typo = 0        ← zero matches</code></pre>
+<p>For fuzzy matching, add the <strong>trigram</strong> extension (<a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">Chapter 15</a>), which compares letter triples:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> word, similarity(word, <span class="hljs-string">&#x27;waterprof&#x27;</span>) <span class="hljs-keyword">FROM</span> words <span class="hljs-keyword">WHERE</span> word <span class="hljs-operator">%</span> <span class="hljs-string">&#x27;waterprof&#x27;</span> <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">2</span> <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">3</span>;
+<span class="hljs-comment">--  waterproof | 0.75</span></code></pre></div>
+<p>A common approach: use trigram similarity against a <strong>dictionary of words</strong> to suggest a correction, then run the FTS query. Other gaps: advanced relevance tuning (BM25, boosting, synonyms), &quot;did you mean&quot;, facet counts at scale, and distributed search across many nodes.</p>
+<h3 id="20-2-3-elasticsearch-opensearch-the-dedicated-engine">20.2.3 Elasticsearch / OpenSearch: the dedicated engine</h3>
+<p>We ran <strong>Elasticsearch 8.15.0</strong> as a single node (security disabled, <strong>local test only</strong>), indexed <strong>100,000</strong> of those reviews with the <code>english</code> analyzer, and searched:</p>
+<pre class="is-plain"><code>bulk indexed 100000 docs in 10.1 s
+searchable immediately? 80000 (of 100000)        ← near-real-time
+after _refresh:         100000
+index size: 9.1 MB
+
+match waterproof                      hits=   100  took(server)= 144 ms (first query, cold)
+fuzzy: &quot;waterprof&quot; (typo)             hits=   100  took(server)=  49 ms
+phrase &quot;fast shipping&quot;                hits=  1659
+bool: leaking pen NOT refund          hits= 10000  (capped: default total-hit counting stops at 10,000)
+highlight + rank   top hit score 7.46 | highlight: &quot;durable paper [notebook] pen quality broke ...&quot;
+aggregation top products mentioning refund: 3176:18, 3471:17, 1568:16</code></pre>
+<p>Observe:</p>
+<ul>
+<li><strong>Fuzzy search works out of the box</strong> (<code>fuzziness: &#39;AUTO&#39;</code> found the 100 &quot;waterproof&quot; documents from &quot;waterprof&quot;), where PostgreSQL FTS returned zero.</li>
+<li><strong>Highlighting</strong> returns snippets with matches wrapped, and <strong>aggregations</strong> give facet counts (top products mentioning &quot;refund&quot;), the shop&#39;s &quot;filter by brand/price/rating&quot; sidebar.</li>
+<li><strong>Near-real-time, not real-time:</strong> immediately after bulk loading, only <strong>80,000 of 100,000</strong> documents were searchable; after a <code>refresh</code> (by default every ~1 s) all were. A just-written document may not appear in search for about a second.</li>
+<li>Timings above were measured on a laptop in Docker on the first queries, so they&#39;re not a benchmark. Both engines answered in milliseconds; the choice is about <strong>features and operations</strong>, not speed on a small dataset.</li>
+</ul>
+<p>The critical lesson: <strong>Elasticsearch is a copy.</strong> I changed a review in PostgreSQL:</p>
+<pre class="is-plain"><code>after UPDATE in PostgreSQL, ES finds &quot;brandnewword&quot;: 0   &lt;- search index is a COPY that must be synced</code></pre>
+<p>Nothing told Elasticsearch. You need a sync mechanism (§20.8), and you must handle its failure modes: lag, missed events, full re-index (rebuilding 100k documents took 10 s here; 100M takes hours).</p>
+<h3 id="postgresql-fts-vs-elasticsearch">PostgreSQL FTS vs Elasticsearch</h3>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>PostgreSQL FTS (+ trigram)</strong></th>
+<th><strong>Elasticsearch / OpenSearch</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Setup</td>
+<td>Already there</td>
+<td>A cluster to run (Java, memory-hungry)</td>
+</tr>
+<tr>
+<td>Consistency with your data</td>
+<td><strong>Transactional</strong>: the index is updated with the row</td>
+<td>Eventual; needs sync</td>
+</tr>
+<tr>
+<td>Typo tolerance</td>
+<td>Via <code>pg_trgm</code> (extra work)</td>
+<td>Built in</td>
+</tr>
+<tr>
+<td>Relevance tuning, synonyms, boosting</td>
+<td>Limited</td>
+<td>Rich (BM25, analyzers, function score)</td>
+</tr>
+<tr>
+<td>Facets/aggregations</td>
+<td>SQL <code>GROUP BY</code></td>
+<td>Native, fast at scale</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>One node (millions of docs: fine)</td>
+<td>Distributed shards (billions)</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Simple/medium search inside an app</td>
+<td>Search-centric products, big corpora, logs</td>
+</tr>
+</tbody></table></div>
+<p><strong>Rule of thumb:</strong> start with PostgreSQL FTS; move to a search engine when you need fuzziness, relevance tuning, facets over big data, or scale that PostgreSQL can&#39;t give. Lighter dedicated engines (<strong>Typesense</strong>, <strong>Meilisearch</strong>) offer typo-tolerant search with far less operational weight <em>(not run here)</em>.</p>
+<hr>
+
+<h2 id="20-3-time-series-and-partitioning">20.3 Time-Series and Partitioning</h2>
+<p><strong>Time-series data</strong> (events, metrics, logs, sensor readings) is append-heavy, queried by time range, and <strong>expires</strong> (you keep 90 days). General-purpose B-tree tables handle it poorly at scale: huge indexes, deletes that leave bloat (Ch 12). The tool in PostgreSQL itself is <strong>declarative partitioning</strong>: one logical table, physically split into child tables by range.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ev (id <span class="hljs-type">bigint</span> GENERATED ALWAYS <span class="hljs-keyword">AS</span> <span class="hljs-keyword">IDENTITY</span>, <span class="hljs-keyword">at</span> timestamptz <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>, user_id <span class="hljs-type">int</span>, kind text,
+                 <span class="hljs-keyword">PRIMARY</span> KEY (id, <span class="hljs-keyword">at</span>)) <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">RANGE</span> (<span class="hljs-keyword">at</span>);
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ev_2025_03 <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">OF</span> ev <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">VALUES</span> <span class="hljs-keyword">FROM</span> (<span class="hljs-string">&#x27;2025-03-01&#x27;</span>) <span class="hljs-keyword">TO</span> (<span class="hljs-string">&#x27;2025-04-01&#x27;</span>);   <span class="hljs-comment">-- one per month (12 created)</span>
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> ev (<span class="hljs-keyword">at</span>, user_id, kind) <span class="hljs-keyword">SELECT</span> …  <span class="hljs-keyword">FROM</span> generate_series(<span class="hljs-number">1</span>, <span class="hljs-number">2000000</span>) g;            <span class="hljs-comment">-- 2,000,000 rows</span></code></pre></div>
+<p>(The primary key <strong>must include the partition column</strong>: a rule worth remembering.) Rows distributed: <code>ev_2025_01</code> 178,559, <code>ev_2025_02</code> 161,280, <code>ev_2025_03</code> 178,560…</p>
+<h3 id="partition-pruning">Partition pruning</h3>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql">EXPLAIN (ANALYZE) <span class="hljs-keyword">SELECT</span> <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">FROM</span> ev <span class="hljs-keyword">WHERE</span> <span class="hljs-keyword">at</span> <span class="hljs-operator">&gt;=</span> <span class="hljs-string">&#x27;2025-03-10&#x27;</span> <span class="hljs-keyword">AND</span> <span class="hljs-keyword">at</span> <span class="hljs-operator">&lt;</span> <span class="hljs-string">&#x27;2025-03-11&#x27;</span>;
+<span class="hljs-comment">-- Aggregate</span>
+<span class="hljs-comment">--   -&gt; Index Only Scan using ev_2025_03_at_idx on ev_2025_03 ev (actual rows=5760)      Execution Time: 9.978 ms</span></code></pre></div>
+<p>The plan touches <strong>only <code>ev_2025_03</code></strong>; the other eleven partitions are never opened (&quot;pruned&quot;). For this <em>one-day</em> query on a <em>2M-row</em> table a plain index would also be fast, so pruning isn&#39;t the headline benefit at this size. It matters when tables reach billions of rows and indexes no longer fit in memory.</p>
+<h3 id="retention-dropping-old-data">Retention: dropping old data</h3>
+<p>The main operational win. I compared removing January (about 178,000 rows) from an equivalent <em>unpartitioned</em> copy and from the partitioned table:</p>
+<pre class="is-plain"><code>DELETE FROM ev_flat WHERE at &lt; '2025-02-01';                  1031 ms
+ALTER TABLE ev DETACH PARTITION ev_2025_01;                    792 ms
+DROP TABLE ev_2025_01;                                         306 ms</code></pre>
+<p><strong>An honest result:</strong> at this size, <code>DETACH</code> + <code>DROP</code> (≈1.1 s combined) was <strong>not faster</strong> than the <code>DELETE</code> (1.0 s) in my run, which surprised me (I expected <code>DETACH</code> to be near-instant; it can be slower on busy systems because it takes locks and <code>DETACH ... CONCURRENTLY</code> exists for that). The real advantages are <strong>structural</strong>, and I did not measure them here: <code>DROP</code> returns disk space immediately and creates <strong>no dead rows for VACUUM to clean</strong> (a big <code>DELETE</code> leaves dead tuples and a table file that doesn&#39;t shrink; the unpartitioned table file was still 111 MB for 1.82M remaining rows), and it scales as a <em>metadata</em> operation instead of per-row work. Partition-by-time is the standard design for log/event tables, with a job that creates next month&#39;s partition ahead of time and drops the oldest.</p>
+<p><strong>Specialised time-series databases</strong> (TimescaleDB = PostgreSQL extension with automatic partitioning and compression; InfluxDB; ClickHouse; Prometheus for metrics) add compression, continuous aggregates, and downsampling. <em>(Not run here.)</em> For many apps, partitioned PostgreSQL + a BRIN index (Chapter 15: 24 kB vs 21 MB) is plenty.</p>
+<hr>
+
+<h2 id="20-4-columnar-and-analytical-stores-olap">20.4 Columnar and Analytical Stores (OLAP)</h2>
+<p><strong>OLTP</strong> (what we&#39;ve done): many small transactions touching a few rows each, stored <strong>row by row</strong>. <strong>OLAP</strong> (analytics): few queries scanning <em>millions of rows but only a few columns</em> (&quot;average order value by status&quot;). A <strong>columnar</strong> store keeps each <em>column</em> together: scanning one column reads only that column, it compresses extremely well (same-typed values), and it processes data in vectorised batches.</p>
+<p>We exported the <strong>1,000,000 orders</strong> from Chapter 15 to CSV (53.2 MB) and ran the same aggregation in PostgreSQL and in <strong>DuckDB</strong>, an embedded analytical database (think &quot;SQLite for analytics&quot;, runs inside your Node process):</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">SELECT</span> status, <span class="hljs-built_in">count</span>(<span class="hljs-operator">*</span>), <span class="hljs-built_in">avg</span>(total_minor)::<span class="hljs-type">int</span>, <span class="hljs-built_in">sum</span>(total_minor) <span class="hljs-keyword">FROM</span> orders <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> status <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> <span class="hljs-number">2</span> <span class="hljs-keyword">DESC</span>;</code></pre></div>
+<pre class="is-plain"><code>PostgreSQL (row store, 1 worker)                393 ms
+DuckDB: query the CSV directly                  686 ms     (parses the text each time)
+DuckDB: in-memory table (columnar)               78 ms
+DuckDB: query the Parquet file                   52 ms</code></pre>
+<p>All four returned identical numbers (<code>delivered 799588 …</code>). The columnar form was <strong>5–7× faster</strong> than PostgreSQL even though PostgreSQL was already doing a simple scan, and the <strong>Parquet</strong> file (an open columnar file format) was <strong>19.2 MB vs 53.2 MB CSV</strong> (2.8× smaller). (PostgreSQL here used one worker; with parallel query its gap narrows, and on much bigger data the columnar advantage grows.)</p>
+<p>What this means in practice:</p>
+<ul>
+<li>Don&#39;t run heavy BI dashboards against your <strong>production OLTP database</strong>: they compete with your orders. Copy data (nightly or via CDC) to an analytical store.</li>
+<li><strong>Parquet files on object storage</strong> + DuckDB/ClickHouse/Athena is a cheap, powerful analytics stack.</li>
+<li>Managed warehouses: <strong>BigQuery, Snowflake, Redshift</strong>; open-source: <strong>ClickHouse</strong>. <em>(Described, not run.)</em> They use the same columnar idea at cluster scale.</li>
+<li>This split is the <strong>OLTP/OLAP separation</strong>; the pipeline that feeds the warehouse is ELT/ETL.</li>
+</ul>
+<hr>
+
+<h2 id="20-5-graph-databases-orientation">20.5 Graph Databases (Orientation)</h2>
+<p>A <strong>graph database</strong> (Neo4j, Amazon Neptune) stores nodes and relationships as first-class data and is optimised for <strong>deep traversals</strong>: &quot;friends of friends&quot;, recommendation paths, fraud rings, dependency graphs. In SQL, each extra hop is another join; in a graph database, following a relationship is a pointer lookup.</p>
+<p>But recall <a href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions" title="PostgreSQL SQL: Joins &amp; Window Functions">Chapter 13</a>&#39;s <strong>recursive CTE</strong>: PostgreSQL can walk trees and graphs up to a decent depth (our category tree). The honest guidance: use a recursive CTE for hierarchies and 2–4 hops; consider a graph database when <strong>relationship depth and traversal speed are the core of the product</strong> (recommendation engines, social graphs, knowledge graphs). <em>(Neo4j and Cypher were not run here.)</em></p>
+<hr>
+
+<h2 id="20-6-object-storage-and-file-uploads">20.6 Object Storage and File Uploads</h2>
+<p><strong>Never store large files in your database</strong> (it bloats backups, kills caching, and a DB connection is an expensive way to stream a video). Store <strong>files in object storage</strong> (Amazon S3, Google Cloud Storage, Cloudflare R2, MinIO for self-hosting), and keep only <strong>metadata</strong> in your database:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> product_images (
+  id <span class="hljs-type">bigint</span> GENERATED ALWAYS <span class="hljs-keyword">AS</span> <span class="hljs-keyword">IDENTITY</span> <span class="hljs-keyword">PRIMARY</span> KEY,
+  product_id <span class="hljs-type">bigint</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">REFERENCES</span> products(id),
+  object_key text <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">UNIQUE</span>,         <span class="hljs-comment">-- &#x27;products/42/9f8a-front.webp&#x27;</span>
+  content_type text <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>, bytes <span class="hljs-type">int</span> <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span>, created_at timestamptz <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">NULL</span> <span class="hljs-keyword">DEFAULT</span> now()
+);</code></pre></div>
+<p>Object storage is a flat key → blob store with HTTP access, huge durability (11 nines on S3), and cheap capacity. Key patterns:</p>
+<h3 id="presigned-urls-let-the-browser-upload-directly">Presigned URLs: let the browser upload directly</h3>
+<p>Streaming a 50 MB upload <em>through</em> your Node server wastes your bandwidth and a worker. Instead:</p>
+<pre class="is-plain"><code>1. Browser → API:   &quot;I want to upload front.webp (image/webp, 800 KB)&quot;
+2. API validates (auth, type, size limit), makes an object key, and signs a time-limited URL
+3. API → Browser:   { uploadUrl: &quot;https://bucket.s3…/products/42/9f8a-front.webp?X-Amz-Signature=…&quot;, key }
+4. Browser → S3:    PUT the file straight to storage (your server never sees the bytes)
+5. Browser → API:   &quot;done, key = …&quot;   → API verifies the object exists, then saves the metadata row</code></pre>
+<p>Reads are the same idea: public files behind a <strong>CDN</strong>, private files via short-lived <strong>presigned GET</strong> URLs. For files over ~100 MB use <strong>multipart upload</strong>. Validate content type <strong>and</strong> size server-side when signing, scan uploads if users share them, never trust the client&#39;s filename, and set <strong>lifecycle rules</strong> to expire temp objects.</p>
+<p><em>(This section is conceptual. I attempted to run MinIO for a hands-on test but its image could not be pulled in my environment, so I have <strong>not</strong> executed presigned URLs or multipart uploads here. <a href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware" title="Express 5 &amp; Fastify: Validation &amp; Security">Chapter 7</a>&#39;s <code>multer</code> covers server-side uploads that go through your API.)</em></p>
+<hr>
+
+<h2 id="20-7-message-logs-kafka-and-friends-orientation">20.7 Message Logs (Kafka and Friends): Orientation</h2>
+<p><strong>Kafka</strong> (and Redpanda, Pulsar) is a distributed, durable, partitioned <strong>log</strong>. Producers append events; consumers track their own offsets and can <strong>replay</strong> history. It&#39;s the backbone of event-driven systems and data pipelines at scale. Compare with what you&#39;ve met:</p>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th>Redis streams (Ch 19)</th>
+<th>PostgreSQL <code>SKIP LOCKED</code> queue (Ch 16)</th>
+<th>RabbitMQ / SQS</th>
+<th>Kafka</th>
+</tr>
+</thead><tbody><tr>
+<td>Model</td>
+<td>Log + consumer groups</td>
+<td>Table as queue</td>
+<td>Broker queues, routing</td>
+<td>Partitioned replayable log</td>
+</tr>
+<tr>
+<td>Replay old events</td>
+<td>Yes (within retention)</td>
+<td>Only if you keep rows</td>
+<td>Usually no</td>
+<td><strong>Yes</strong>, core feature</td>
+</tr>
+<tr>
+<td>Throughput</td>
+<td>High</td>
+<td>Moderate</td>
+<td>High</td>
+<td>Very high</td>
+</tr>
+<tr>
+<td>Operational weight</td>
+<td>Low</td>
+<td>None (it&#39;s your DB)</td>
+<td>Medium</td>
+<td><strong>High</strong></td>
+</tr>
+</tbody></table></div>
+<p><a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a> compares them properly. The principle holds: start with the simplest (PostgreSQL table or Redis stream) and graduate when you hit a measured limit.</p>
+<hr>
+
+<h2 id="20-8-polyglot-persistence-and-the-sync-problem">20.8 Polyglot Persistence and the Sync Problem</h2>
+<p>Using several stores for their strengths is <strong>polyglot persistence</strong>. The discipline is to name, for every piece of data:</p>
+<blockquote>
+<p><strong>Which store is the source of truth? Which stores hold derived copies? How do copies get updated, and what happens when that fails?</strong></p>
+</blockquote>
+<h3 id="the-dual-write-trap">The dual-write trap</h3>
+<p>The naive approach: in the request handler, write PostgreSQL, then write Elasticsearch.</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-keyword">await</span> db.<span class="hljs-title function_">updateProduct</span>(...);          <span class="hljs-comment">// ✔ committed</span>
+<span class="hljs-keyword">await</span> search.<span class="hljs-title function_">indexProduct</span>(...);       <span class="hljs-comment">// ✘ network error / crash → the search index is now permanently wrong</span></code></pre></div>
+<p>There is no transaction spanning both. If the second call fails, the stores <strong>silently disagree</strong>, and nobody is alerted. Our Elasticsearch test showed the base case: with no sync, a change in PostgreSQL was invisible to search.</p>
+<h3 id="reliable-patterns">Reliable patterns</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Pattern</th>
+<th>Idea</th>
+<th>Trade-off</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Outbox</strong> (Chapters <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">16</a>, 28, 29)</td>
+<td>In the <em>same DB transaction</em> as the change, insert an event row; a worker publishes/indexes it afterwards, retrying until success</td>
+<td>Needs a worker; at-least-once → idempotent consumers</td>
+</tr>
+<tr>
+<td><strong>CDC</strong> (change data capture, e.g., Debezium)</td>
+<td>Read the database&#39;s write-ahead log and stream changes to other systems</td>
+<td>Infrastructure heavy; very robust</td>
+</tr>
+<tr>
+<td><strong>Periodic re-index / reconcile</strong></td>
+<td>A job compares source and copy, fixing differences</td>
+<td>Simple safety net; use <em>in addition</em> to the above</td>
+</tr>
+<tr>
+<td><strong>Dual-write (don&#39;t)</strong></td>
+<td>Both writes in the handler</td>
+<td>Drifts; only acceptable for disposable caches</td>
+</tr>
+</tbody></table></div>
+<p>Always build the <strong>full rebuild path</strong> (&quot;re-index everything from PostgreSQL&quot;), because eventually you will need it, and test it. Treat derived stores as <strong>disposable</strong>, as in <a href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams" title="Redis: Caching, Rate Limits &amp; Streams">Chapter 19</a>&#39;s cache.</p>
+<h3 id="shopline-s-data-architecture">ShopLine&#39;s data architecture</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Data</th>
+<th>Store</th>
+<th>Why</th>
+<th>Fed by</th>
+</tr>
+</thead><tbody><tr>
+<td>Users, orders, payments, stock</td>
+<td><strong>PostgreSQL</strong> (source of truth)</td>
+<td>Integrity, transactions</td>
+<td>App</td>
+</tr>
+<tr>
+<td>Product search</td>
+<td>PostgreSQL FTS first → Elasticsearch/Typesense if needed</td>
+<td>Typos, facets</td>
+<td>Outbox → indexer; nightly reconcile</td>
+</tr>
+<tr>
+<td>Product catalogue with variable attributes</td>
+<td><code>jsonb</code> column (or MongoDB if it outgrows that)</td>
+<td>Flexible attrs</td>
+<td>App</td>
+</tr>
+<tr>
+<td>Sessions, rate limits, caches, best-seller ranking</td>
+<td><strong>Redis</strong></td>
+<td>Speed, TTL</td>
+<td>App (disposable)</td>
+</tr>
+<tr>
+<td>Product images, invoices</td>
+<td><strong>Object storage</strong> + CDN</td>
+<td>Cheap, durable</td>
+<td>Presigned uploads</td>
+</tr>
+<tr>
+<td>Analytics/BI</td>
+<td>Parquet + DuckDB/ClickHouse/warehouse</td>
+<td>Columnar scans</td>
+<td>Nightly export / CDC</td>
+</tr>
+<tr>
+<td>Event/audit log</td>
+<td>Partitioned PostgreSQL table (or Kafka at scale)</td>
+<td>Retention by dropping partitions</td>
+<td>App / outbox</td>
+</tr>
+</tbody></table></div>
+<p>Five engines is <em>the ceiling</em>, not the starting point. A real early-stage ShopLine launches with <strong>PostgreSQL + Redis + object storage</strong> and adds the rest when a measured need appears.</p>
+<hr>
+
+<h2 id="20-9-a-decision-framework">20.9 A Decision Framework</h2>
+<p>Ask in order:</p>
+<ol>
+<li><strong>Can PostgreSQL do it acceptably?</strong> (FTS, <code>jsonb</code>, partitioning, queues, recursive CTEs, extensions.) If yes, stop.</li>
+<li><strong>What <em>specific</em> limit am I hitting?</strong> (Latency? Feature? Scale? Cost?) Measure it, with data and <code>EXPLAIN</code>.</li>
+<li><strong>Which tool addresses exactly that limit?</strong> (Use the table in §20.1.)</li>
+<li><strong>How will the copy stay in sync, and what if it&#39;s wrong or down?</strong> (Outbox/CDC, rebuild path, degraded mode.)</li>
+<li><strong>Who runs it?</strong> (Managed service vs self-host; on-call burden.)</li>
+<li><strong>Can we leave?</strong> (Open formats and protocols reduce lock-in: Parquet, SQL, S3 API, OpenSearch-compatible APIs.)</li>
+</ol>
+<aside class="callout callout-pattern">
+<h3 id="interview-pattern" class="callout-title" data-callout="pattern"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Interview Pattern</span></h3>
+<blockquote>
+<p><em>&quot;Design search for an e-commerce site.&quot;</em> Start with requirements (typo tolerance, facets, scale). Propose PostgreSQL FTS for the MVP (transactional, no sync), and a dedicated engine (Elasticsearch/Typesense) when needs grow, <strong>with the sync strategy</strong> (outbox → indexer, reconcile job, full rebuild) and the consistency trade-off (near-real-time). Mentioning the sync problem is what distinguishes strong answers.</p>
+</blockquote>
+</aside>
+<hr>
+
+<h2 id="20-10-edge-cases-and-gotchas-checklist">20.10 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Adopting a specialist store before PostgreSQL&#39;s limit was measured.</li>
+<li><input disabled="" type="checkbox"> <strong>Dual writes</strong> to two stores with no outbox/CDC.</li>
+<li><input disabled="" type="checkbox"> No rebuild path for a derived store (search index, cache, warehouse).</li>
+<li><input disabled="" type="checkbox"> Treating a derived copy as a source of truth.</li>
+<li><input disabled="" type="checkbox"> Running analytics/BI on the production OLTP database.</li>
+<li><input disabled="" type="checkbox"> <code>LIKE &#39;%x%&#39;</code> as &quot;search&quot;; FTS without a GIN index or generated column.</li>
+<li><input disabled="" type="checkbox"> Expecting FTS to handle typos; expecting Elasticsearch results instantly after a write.</li>
+<li><input disabled="" type="checkbox"> Elasticsearch with security disabled, exposed to a network.</li>
+<li><input disabled="" type="checkbox"> Unbounded time-series tables; retention via giant <code>DELETE</code>s instead of dropping partitions.</li>
+<li><input disabled="" type="checkbox"> Partitioned table primary key missing the partition column; forgetting to pre-create future partitions.</li>
+<li><input disabled="" type="checkbox"> Large files inside the database; uploads streamed through the API server.</li>
+<li><input disabled="" type="checkbox"> Trusting client-supplied file names/types; no size limits on presigned uploads.</li>
+<li><input disabled="" type="checkbox"> Choosing Kafka (or any heavyweight) for a small, simple queue.</li>
+<li><input disabled="" type="checkbox"> Not defining who is the source of truth for each datum.</li>
+</ul>
+<hr>
+
+<h2 id="20-11-chapter-summary">20.11 Chapter Summary</h2>
+<ul>
+<li><strong>Pick by access pattern.</strong> Every extra store costs a sync pipeline, operations and failure modes. <strong>Start with PostgreSQL</strong>; add a specialist for a <em>named, measured</em> limit.</li>
+<li><strong>Search:</strong> <code>ILIKE &#39;%x%&#39;</code> took 910 ms (seq scan); PostgreSQL <strong>FTS</strong> with a generated <code>tsvector</code> + GIN took <strong>3 ms</strong>, with stemming, stop-words, phrases, negation and ranking, but <strong>no typo tolerance</strong> (0 hits for &quot;waterprof&quot;). <strong>Elasticsearch</strong> gave fuzzy matching, highlights and facets, is <strong>near-real-time</strong> (80,000/100,000 visible before refresh), and is a <strong>copy</strong> that went stale after a PostgreSQL update.</li>
+<li><strong>Time-series:</strong> declarative <strong>partitioning</strong> prunes to one partition; dropping partitions avoids dead rows/bloat (in my run <code>DETACH+DROP</code> was not faster than <code>DELETE</code> at 178k rows, so the benefit is structural). Specialised engines (Timescale, ClickHouse) add compression and rollups <em>(not run)</em>.</li>
+<li><strong>Analytics:</strong> a <strong>columnar</strong> engine (DuckDB) ran the aggregation in <strong>52–78 ms vs PostgreSQL&#39;s 393 ms</strong>, and Parquet was 2.8× smaller than CSV. Keep BI off the OLTP database.</li>
+<li><strong>Files:</strong> object storage + metadata rows + <strong>presigned URLs</strong> <em>(concept; not run)</em>.</li>
+<li><strong>Polyglot persistence</strong> needs a source of truth, a sync mechanism (<strong>outbox/CDC</strong>, not dual writes), reconciliation, and a rebuild path.</li>
+</ul>
+<hr>
+
+<h2 id="20-12-revision-notes">20.12 Revision Notes</h2>
+<ul>
+<li>Access pattern first; PostgreSQL first; name the limit before adding a store.</li>
+<li>FTS: <code>tsvector</code> (generated column) + GIN + <code>websearch_to_tsquery</code> + <code>ts_rank</code>; typos need <code>pg_trgm</code>.</li>
+<li>ES: analyzers, fuzzy, highlight, aggs; near-real-time (refresh ≈ 1 s); a COPY needing sync.</li>
+<li>Partition by time; PK includes partition key; pre-create partitions; drop to expire.</li>
+<li>OLAP = columnar (DuckDB/ClickHouse/warehouse) + Parquet; not on the OLTP primary.</li>
+<li>Files in object storage, metadata in DB, presigned URLs, CDN.</li>
+<li>Sync via outbox/CDC + reconcile + rebuild; never rely on dual writes.</li>
+</ul>
+<hr>
+
+<h2 id="20-13-mind-map-ascii">20.13 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                      CHOOSING DATA STORES
+                              │
+   ┌────────┬────────┬────────┼─────────┬──────────┬───────────┐
+ SEARCH  TIME-SERIES OLAP   GRAPH     FILES      LOG/QUEUE   SYNC
+   │         │        │       │         │            │          │
+ PG FTS   partitions columnar recursive object     Kafka/     outbox
+ trigram  retention  DuckDB   CTE ≤ few storage    Redis      CDC
+ Elastic  BRIN       Parquet  Neo4j   presigned    streams    reconcile
+ (copy!)  Timescale  warehouse        URLs + CDN              rebuild path</code></pre>
+<hr>
+
+<h2 id="20-14-cheat-sheet">20.14 Cheat Sheet</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">SQL</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-sql"><span class="hljs-comment">-- FTS</span>
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> t <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> tsv tsvector GENERATED ALWAYS <span class="hljs-keyword">AS</span> (to_tsvector(<span class="hljs-string">&#x27;english&#x27;</span>, body)) STORED;
+<span class="hljs-keyword">CREATE</span> INDEX <span class="hljs-keyword">ON</span> t <span class="hljs-keyword">USING</span> gin (tsv);
+<span class="hljs-keyword">SELECT</span> … <span class="hljs-keyword">FROM</span> t, websearch_to_tsquery(<span class="hljs-string">&#x27;english&#x27;</span>, $<span class="hljs-number">1</span>) q <span class="hljs-keyword">WHERE</span> tsv @@ q <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> ts_rank(tsv, q) <span class="hljs-keyword">DESC</span>;
+<span class="hljs-comment">-- fuzzy:  CREATE INDEX ON words USING gin (word gin_trgm_ops);  WHERE word % &#x27;typo&#x27;</span>
+<span class="hljs-comment">-- partitioning</span>
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ev (…, <span class="hljs-keyword">PRIMARY</span> KEY (id, <span class="hljs-keyword">at</span>)) <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> <span class="hljs-keyword">RANGE</span> (<span class="hljs-keyword">at</span>);
+<span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> ev_2026_11 <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">OF</span> ev <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">VALUES</span> <span class="hljs-keyword">FROM</span> (<span class="hljs-string">&#x27;2026-11-01&#x27;</span>) <span class="hljs-keyword">TO</span> (<span class="hljs-string">&#x27;2026-12-01&#x27;</span>);
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> ev DETACH <span class="hljs-keyword">PARTITION</span> ev_2026_01;  <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">TABLE</span> ev_2026_01;</code></pre></div>
+<div class="code-block"><div class="code-head"><span class="code-lang">JavaScript</span><button type="button" class="code-copy" aria-label="Copy code">Copy</button></div><pre><code class="hljs language-js"><span class="hljs-comment">// Elasticsearch: PUT /idx {mappings}; POST /idx/_bulk (NDJSON); POST /idx/_refresh;</span>
+<span class="hljs-comment">// POST /idx/_search { query:{ match:{ body:{ query:&#x27;waterprof&#x27;, fuzziness:&#x27;AUTO&#x27; } } }, highlight:{…}, aggs:{…} }</span>
+<span class="hljs-comment">// DuckDB: SELECT … FROM read_parquet(&#x27;orders.parquet&#x27;) GROUP BY …</span></code></pre></div>
+<hr>
+
+<h2 id="20-15-key-takeaways">20.15 Key Takeaways</h2>
+<ol>
+<li><strong>PostgreSQL first.</strong> It covers more than people expect (FTS, jsonb, partitions, queues).</li>
+<li><strong>Every extra store is a copy</strong> with sync, ops and failure costs; name the limit that justifies it.</li>
+<li><strong>Search engines are copies</strong>: use outbox/CDC + reconcile + a rebuild path, never bare dual writes.</li>
+<li><strong>Analytics belongs on columnar storage</strong>, away from your OLTP database.</li>
+<li><strong>Files go in object storage</strong>; the database holds metadata; browsers upload via presigned URLs.</li>
+</ol>
+<hr>
+
+<h2 id="20-16-20-multiple-choice-questions">20.16 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Seq scan, 910 ms."><p class="quiz-text">Why was <code>ILIKE &#39;%waterproof%&#39;</code> slow?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Too many indexes</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It required a sequential scan of every row</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Collation</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Network</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No drift."><p class="quiz-text">A generated <code>tsvector</code> column is preferred because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It&#39;s faster to type</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The database keeps it in sync with the text</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It compresses data</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It adds typo tolerance</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="0 hits."><p class="quiz-text">What did PostgreSQL FTS return for the typo <code>waterprof</code>?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The right rows</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Zero rows</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">An error</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">All rows</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Roots."><p class="quiz-text">Stemming means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Removing punctuation</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Reducing words to a root (leaking, leaked → leak)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Sorting</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Compression</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Refresh interval."><p class="quiz-text">Elasticsearch right after bulk indexing returned 80,000 of 100,000 docs because it is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Broken</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Near-real-time: documents become searchable after a refresh</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Eventually deleting</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Sharded wrongly</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Sync."><p class="quiz-text">The biggest operational risk of adding Elasticsearch is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Query syntax</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Keeping it in sync with the source of truth</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">JSON</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Licensing only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Outbox/CDC."><p class="quiz-text">Which is a reliable way to keep a search index in sync?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Dual-write in the handler</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Outbox (or CDC) + reconcile + rebuild path</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Hope</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Cron <code>DROP</code></span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="PK must include partition column."><p class="quiz-text">In partitioned <code>ev</code>, the primary key must include:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t"><code>user_id</code></span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The partition key column</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t"><code>kind</code></span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Nothing</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Skips irrelevant partitions."><p class="quiz-text">Partition pruning means:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Deleting partitions</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The planner skips partitions that can&#39;t match the query</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Compressing partitions</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Merging them</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Measured not faster."><p class="quiz-text">In my retention test at 178k rows, <code>DETACH</code>+<code>DROP</code> vs <code>DELETE</code>:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Was 100× faster</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Was not faster; the benefits are structural (no dead rows, immediate space return)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Failed</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Locked forever</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Columnar benefits."><p class="quiz-text">A columnar store speeds analytics because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It uses more RAM</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It reads only needed columns, compresses well and works in vectorised batches</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It avoids SQL</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It has more indexes</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="19.2 MB vs 53.2 MB."><p class="quiz-text">DuckDB&#39;s Parquet file was roughly how much smaller than the CSV?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Same</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">2.8× smaller</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">100× smaller</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Larger</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Resource contention."><p class="quiz-text">Why avoid running heavy dashboards on the production OLTP database?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">SQL forbids it</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">They compete with transactional workload</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">They return wrong numbers</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Parquet requires it</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Object storage."><p class="quiz-text">Files like product images belong in:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A <code>bytea</code> column</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Object storage, with metadata in the database</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Redis</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The Git repo</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="a" data-why="Direct, time-limited upload."><p class="quiz-text">Presigned upload URLs let:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The browser upload directly to storage with a time-limited signed URL</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Anyone upload forever</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The server proxy bytes</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Users skip auth</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Deep traversals."><p class="quiz-text">A graph database shines when:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">You have a few joins</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Deep relationship traversals are the core workload</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">You need transactions</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">You have time-series</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Replayable log."><p class="quiz-text">Kafka differs from a simple queue because:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">It is smaller</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">It is a durable, replayable partitioned log with consumer offsets</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">It stores files</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">It has no ordering</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="No shared transaction."><p class="quiz-text">The &quot;dual-write trap&quot; is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Writing twice to one DB</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Writing to two systems with no shared transaction, so a failure leaves them inconsistent</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Two replicas</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A cache hit</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Measure, plan sync."><p class="quiz-text">Before adding a new data store you should:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Check which is trendiest</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Name the measured limit PostgreSQL hit, and plan sync and operations</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Add it everywhere</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Remove PostgreSQL</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Start lean."><p class="quiz-text">Which statement about ShopLine&#39;s launch architecture is most sensible?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Five databases on day one</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">PostgreSQL + Redis + object storage, adding others on measured need</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">MongoDB only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Kafka first</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-a, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="20-17-20-hands-on-exercises">20.17 20 Hands-on Exercises</h2>
+<p><em>(See <a href="/learn/backend-master/resources/ch20/README.txt">resources/ch20/README.txt</a>.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>Reproduce the <code>ILIKE</code> vs GIN full-text comparison on your own text column.</li>
+<li>Show stemming with <code>to_tsvector</code> on three sentences.</li>
+<li>Use <code>websearch_to_tsquery</code> with a phrase and a negation.</li>
+<li>Rank results with <code>ts_rank</code> and explain the order of the top 3.</li>
+<li>Create a monthly partitioned table and prove pruning with <code>EXPLAIN</code>.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Add trigram similarity to suggest corrections for typos; combine with FTS.</li>
+<li>Index 100k documents into Elasticsearch; compare fuzzy search with your PostgreSQL approach.</li>
+<li>Demonstrate the near-real-time gap (count before/after <code>_refresh</code>).</li>
+<li>Write a script that detects drift between PostgreSQL and Elasticsearch (compare ids and <code>updated_at</code>).</li>
+<li>Automate monthly partition creation and old-partition dropping with a script.</li>
+<li>Export a table to Parquet and run the same aggregation in PostgreSQL and DuckDB; record sizes and times.</li>
+<li>Design the metadata table and key naming scheme for product images in object storage.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Implement an outbox table and an indexer worker (using <code>SKIP LOCKED</code>) that keeps Elasticsearch in sync; kill the worker mid-run and prove no updates are lost.</li>
+<li>Implement a full re-index with zero downtime using an alias swap in Elasticsearch.</li>
+<li>Measure <code>DETACH PARTITION CONCURRENTLY</code> vs <code>DELETE</code> under concurrent writes at 20M rows.</li>
+<li>Compare BRIN vs B-tree vs partitioning for a 50M-row event table.</li>
+<li>Build presigned upload flow against MinIO or an S3-compatible service; test oversize and wrong-type rejection.</li>
+<li>Benchmark PostgreSQL parallel query vs DuckDB on a 50M-row aggregation; explain the gap.</li>
+<li>Implement CDC-style sync using PostgreSQL logical decoding (<code>wal2json</code>/<code>pgoutput</code>) into a search index.</li>
+<li>Write a design doc choosing stores for a ride-sharing app (geo, trips, payments, chat, analytics), justifying each store and its sync.</li>
+</ol>
+<hr>
+
+<h2 id="20-18-5-interview-questions">20.18 5 Interview Questions</h2>
+<p><strong>1. How would you add search to an existing PostgreSQL-backed app?</strong>
+<em>Model answer:</em> Start with PostgreSQL FTS: a generated <code>tsvector</code> column with a GIN index, <code>websearch_to_tsquery</code>, <code>ts_rank</code>, plus <code>pg_trgm</code> for typos. It&#39;s transactional and has no sync problem. If requirements outgrow it (fuzziness, relevance tuning, facets at scale), introduce Elasticsearch/Typesense fed by an outbox or CDC with a reconcile job and a full-rebuild path, accepting near-real-time freshness.</p>
+<p><strong>2. What is the dual-write problem?</strong>
+<em>Model answer:</em> Updating two systems (DB and search index) from application code without a shared transaction; if the second fails, they diverge silently. Solutions: outbox pattern (write the event in the same DB transaction, publish asynchronously, idempotent consumers), CDC from the WAL, plus periodic reconciliation.</p>
+<p><strong>3. Why are analytical queries slow on a row-store and what do you do about it?</strong>
+<em>Model answer:</em> Row stores read whole rows even when a query needs two columns, and don&#39;t compress or vectorise as well. Copy data to a columnar engine (ClickHouse, BigQuery, DuckDB over Parquet); keep BI off the OLTP primary. In my test the columnar engine took 52–78 ms vs 393 ms in PostgreSQL for a 1M-row aggregation.</p>
+<p><strong>4. How would you store and serve user-uploaded images?</strong>
+<em>Model answer:</em> Object storage (S3-compatible) with metadata in the DB; the API authenticates and validates, returns a short-lived presigned PUT URL so the browser uploads directly; the API then confirms the object and records it. Serve via CDN; derive thumbnails asynchronously; lifecycle rules for temp objects; validate type/size and never trust filenames.</p>
+<p><strong>5. How do you manage retention for a billion-row events table?</strong>
+<em>Model answer:</em> Partition by time (range), pre-create future partitions, use BRIN or small per-partition indexes, and drop/detach old partitions instead of mass <code>DELETE</code>s (no bloat, immediate space return). Consider compression/rollups (TimescaleDB, ClickHouse) and archive old partitions to Parquet in object storage.</p>
+<hr>
+
+<h2 id="20-19-3-real-projects">20.19 3 Real Projects</h2>
+<p><strong>Project 1: Search Upgrade Path (intermediate, ~10 hours).</strong>
+Build ShopLine product search three ways (PostgreSQL FTS+trigram, Elasticsearch/Typesense via outbox, and a hybrid), with relevance test sets (precision@k), typo and synonym handling, latency benchmarks, and an operations comparison.</p>
+<p><strong>Project 2: Analytics Pipeline (intermediate, ~10 hours).</strong>
+Nightly export of ShopLine orders to Parquet (partitioned by date), a DuckDB/ClickHouse query layer, five business dashboards, and reconciliation checks proving totals match PostgreSQL.</p>
+<p><strong>Project 3: Media Service (intermediate–advanced, ~12 hours).</strong>
+Presigned-upload service with MinIO/S3, content validation, async thumbnailing via a queue, signed private downloads, CDN-friendly cache headers, and cleanup of orphaned objects.</p>
+<hr>
+
+<h2 id="20-20-further-reading">20.20 Further Reading</h2>
+<ul>
+<li>PostgreSQL docs: <em>Full Text Search</em>, <em>Table Partitioning</em>, <code>pg_trgm</code>.</li>
+<li>Elasticsearch / OpenSearch guides: analyzers, mapping, relevance (BM25), near-real-time search.</li>
+<li>DuckDB documentation; the Apache Parquet format; <em>Designing Data-Intensive Applications</em> <a href="/learn/backend-master/http-explained-methods-status-codes-headers" title="HTTP Explained: Methods, Status &amp; Headers">Chapter 3</a> (storage engines, column stores) and <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a> (derived data, CDC).</li>
+<li>Chris Richardson&#39;s <em>Transactional Outbox</em> pattern; Debezium documentation.</li>
+<li>AWS S3 docs: presigned URLs and multipart upload; the &quot;Use cases for object storage&quot; guides.</li>
+<li><em>Database Internals</em> (Petrov) for how these engines work underneath.</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-21-authentication-part-4-security-testing-and-reliability">Up next → Chapter 21: Authentication (Part 4: Security, Testing and Reliability)</h3>
+<p>Part 3 (data) is complete. Part 4 begins with the question every backend answers first: <em>who are you?</em> Password hashing (and why not SHA-256), sessions vs JWTs, refresh-token rotation, OAuth2/OIDC, MFA and the attacks to defend against, all implemented and attacked for real.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Search, OLAP, Time-Series: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Do I need Elasticsearch for search?</h3></summary><p>Often not. PostgreSQL full-text search took a 300,000-row query from 910 ms to 3 ms. Elasticsearch adds typo tolerance, relevance tuning and facets at scale, but is a copy that needs syncing.</p></details>
+<details class="learn-faq-item"><summary><h3>What is the dual-write problem?</h3></summary><p>Updating the database and a second system in two steps with no shared transaction, so a failure between them leaves them inconsistent. Use an outbox or change data capture.</p></details>
+<details class="learn-faq-item"><summary><h3>Why use columnar storage for analytics?</h3></summary><p>Analytical queries read a few columns of many rows. Columnar engines read only those columns and compress well; DuckDB ran our aggregation several times faster than PostgreSQL.</p></details>
+<details class="learn-faq-item"><summary><h3>Where should uploaded files be stored?</h3></summary><p>In object storage such as S3, with metadata in the database. Let browsers upload directly using short-lived presigned URLs.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span>&larr; Previous &middot; Chapter 19</span><strong>Redis: Caching, Rate Limits &amp; Streams</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span>Next &middot; Chapter 21 &rarr;</span><strong>Authentication: Passwords, JWT, OAuth, MFA</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#20-0-why-this-chapter-matters">20.0 Why This Chapter Matters</a></li><li><a href="#20-1-pick-by-access-pattern-not-by-hype">20.1 Pick by Access Pattern, Not by Hype</a></li><li><a href="#20-2-search">20.2 Search</a></li><li><a href="#20-3-time-series-and-partitioning">20.3 Time-Series and Partitioning</a></li><li><a href="#20-4-columnar-and-analytical-stores-olap">20.4 Columnar and Analytical Stores (OLAP)</a></li><li><a href="#20-5-graph-databases-orientation">20.5 Graph Databases (Orientation)</a></li><li><a href="#20-6-object-storage-and-file-uploads">20.6 Object Storage and File Uploads</a></li><li><a href="#20-7-message-logs-kafka-and-friends-orientation">20.7 Message Logs (Kafka and Friends): Orientation</a></li><li><a href="#20-8-polyglot-persistence-and-the-sync-problem">20.8 Polyglot Persistence and the Sync Problem</a></li><li><a href="#20-9-a-decision-framework">20.9 A Decision Framework</a></li><li><a href="#20-10-edge-cases-and-gotchas-checklist">20.10 Edge Cases and Gotchas Checklist</a></li><li><a href="#20-11-chapter-summary">20.11 Chapter Summary</a></li><li><a href="#20-12-revision-notes">20.12 Revision Notes</a></li><li><a href="#20-13-mind-map-ascii">20.13 Mind Map (ASCII)</a></li><li><a href="#20-14-cheat-sheet">20.14 Cheat Sheet</a></li><li><a href="#20-15-key-takeaways">20.15 Key Takeaways</a></li><li><a href="#20-16-20-multiple-choice-questions">20.16 20 Multiple Choice Questions</a></li><li><a href="#20-17-20-hands-on-exercises">20.17 20 Hands-on Exercises</a></li><li><a href="#20-18-5-interview-questions">20.18 5 Interview Questions</a></li><li><a href="#20-19-3-real-projects">20.19 3 Real Projects</a></li><li><a href="#20-20-further-reading">20.20 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "full-text-search-time-series-olap-object-storage"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>

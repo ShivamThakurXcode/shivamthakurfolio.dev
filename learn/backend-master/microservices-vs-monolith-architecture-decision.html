@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Primary SEO -->
+    <title>Microservices vs Monolith: How to Decide | Backend Master</title>
+    <meta name="description" content="Decide between microservices and a monolith: the modular monolith default, service boundaries, data ownership, sync vs async calls and strangler fig.">
+    <meta name="author" content="Shivam Thakur">
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+    <link rel="canonical" href="https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision">
+    <link rel="alternate" hreflang="en" href="https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision">
+    <link rel="alternate" hreflang="x-default" href="https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision">
+    <meta name="theme-color" content="#EBEBEB" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+    <meta name="keywords" content="microservices vs monolith, modular monolith, distributed monolith, service boundaries, strangler fig pattern, conway's law, api gateway, saga, Shivam Thakur">
+    <link rel="prev" href="https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud">
+    <link rel="next" href="https://shivamthakur.me/learn/backend-master/system-design-for-backend-engineers">
+    <meta property="article:published_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:modified_time" content="2026-11-16T00:00:00+05:30">
+    <meta property="article:author" content="https://shivamthakur.me/#about">
+    <meta property="article:section" content="Backend Development">
+    <meta property="article:tag" content="microservices vs monolith">
+    <meta property="article:tag" content="modular monolith">
+    <meta property="article:tag" content="distributed monolith">
+    <meta property="article:tag" content="service boundaries">
+    <meta property="article:tag" content="strangler fig pattern">
+    <meta property="article:tag" content="conway's law">
+    <meta property="article:tag" content="api gateway">
+    <meta property="article:tag" content="saga">
+
+    <!-- Geo -->
+    <meta name="geo.region" content="IN-UP">
+    <meta name="geo.placename" content="Agra, Uttar Pradesh, India">
+    <meta name="geo.position" content="27.1767;78.0081">
+    <meta name="ICBM" content="27.1767, 78.0081">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Shivam Thakur — Full Stack Developer">
+    <meta property="og:locale" content="en_IN">
+    <meta property="og:title" content="Microservices vs Monolith: How to Decide">
+    <meta property="og:description" content="Decide between microservices and a monolith: the modular monolith default, service boundaries, data ownership, sync vs async calls and strangler fig.">
+    <meta property="og:url" content="https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision">
+    <meta property="og:image" content="https://shivamthakur.me/assets/images/learn/backend-master/microservices-vs-monolith-architecture-decision.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Microservices vs Monolith: Choosing Your Architecture and Migrating Safely: Backend Master chapter 33">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Microservices vs Monolith: How to Decide">
+    <meta name="twitter:description" content="Decide between microservices and a monolith: the modular monolith default, service boundaries, data ownership, sync vs async calls and strangler fig.">
+    <meta name="twitter:image" content="https://shivamthakur.me/assets/images/learn/backend-master/microservices-vs-monolith-architecture-decision.png">
+    <meta name="twitter:image:alt" content="Microservices vs Monolith: Choosing Your Architecture and Migrating Safely: Backend Master chapter 33">
+
+    <!-- font -->
+    <link rel="stylesheet" href="../../assets/fonts/fonts.css">
+    <link rel="stylesheet" href="../../assets/fonts/inter/inter.css">
+    <link rel="stylesheet" href="../../assets/icon/icomoon/style.css">
+    <!-- css -->
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/styles.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../assets/images/logo/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../../assets/images/logo/favicon.png">
+    <link rel="stylesheet" href="../../assets/css/hljs-github-dark.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#webpage",
+          "url": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision",
+          "name": "Microservices vs Monolith: How to Decide | Backend Master",
+          "description": "Decide between microservices and a monolith: the modular monolith default, service boundaries, data ownership, sync vs async calls and strangler fig.",
+          "inLanguage": "en",
+          "dateModified": "2026-11-16",
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/#website"
+          },
+          "primaryImageOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#image"
+          },
+          "breadcrumb": {
+            "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#breadcrumb"
+          },
+          "mainEntity": {
+            "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#article"
+          },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".learn-summary",
+              ".learn-faq"
+            ]
+          }
+        },
+        {
+          "@type": "ImageObject",
+          "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#image",
+          "url": "https://shivamthakur.me/assets/images/learn/backend-master/microservices-vs-monolith-architecture-decision.png",
+          "width": 1200,
+          "height": 630,
+          "caption": "Microservices vs Monolith: Choosing Your Architecture and Migrating Safely"
+        },
+        {
+          "@type": [
+            "TechArticle",
+            "LearningResource"
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#article",
+          "mainEntityOfPage": {
+            "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#webpage"
+          },
+          "headline": "Microservices vs Monolith: Choosing Your Architecture and Migrating Safely",
+          "alternativeHeadline": "Microservices vs Monolith — Choosing Your Architecture's Shape",
+          "description": "Decide between microservices and a monolith: the modular monolith default, service boundaries, data ownership, sync vs async calls and strangler fig.",
+          "abstract": "Microservices buy independent deployment and team autonomy at the cost of network failures, eventual consistency and operational complexity. This chapter compares the options, argues for a modular monolith by default, gives a decision framework, covers boundaries, data ownership, communication and the strangler fig migration. It contains no executed examples.",
+          "image": "https://shivamthakur.me/assets/images/learn/backend-master/microservices-vs-monolith-architecture-decision.png",
+          "url": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision",
+          "author": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "publisher": {
+            "@type": "Person",
+            "@id": "https://shivamthakur.me/#person",
+            "name": "Shivam Thakur",
+            "url": "https://shivamthakur.me/"
+          },
+          "inLanguage": "en",
+          "datePublished": "2026-11-16",
+          "dateModified": "2026-11-16",
+          "wordCount": 5204,
+          "timeRequired": "PT24M",
+          "articleSection": "Backend Development",
+          "keywords": "microservices vs monolith, modular monolith, distributed monolith, service boundaries, strangler fig pattern, conway's law, api gateway, saga",
+          "proficiencyLevel": "Advanced",
+          "educationalLevel": "Advanced",
+          "teaches": [
+            "What microservices cost and what they buy",
+            "The modular monolith as the default",
+            "When and how to split a service",
+            "Data ownership, sagas and communication styles",
+            "The strangler fig migration"
+          ],
+          "learningResourceType": "Chapter",
+          "educationalUse": "Self Study",
+          "programmingLanguage": [
+            "JavaScript",
+            "SQL"
+          ],
+          "about": {
+            "@type": "Thing",
+            "name": "microservices vs monolith"
+          },
+          "isAccessibleForFree": true,
+          "position": 33,
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master#course"
+          },
+          "isBasedOn": {
+            "@type": "TechArticle",
+            "@id": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud#article",
+            "name": "CI/CD and Cloud Basics: GitHub Actions, Deployment Strategies and Safe Migrations",
+            "url": "https://shivamthakur.me/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://shivamthakur.me/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Learn",
+              "item": "https://shivamthakur.me/learn"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Backend Master",
+              "item": "https://shivamthakur.me/learn/backend-master"
+            },
+            {
+              "@type": "ListItem",
+              "position": 4,
+              "name": "Microservices vs Monolith: How to Decide",
+              "item": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision"
+            }
+          ],
+          "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#breadcrumb"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Should a new project start with microservices?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Usually no. Start with a well-structured modular monolith and extract services only for named reasons such as independent teams, measured scaling mismatch or compliance isolation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is a distributed monolith?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Services that must be deployed together, share a database or call each other in long synchronous chains: all the costs of microservices with none of the benefits."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why should services not share a database?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Shared schemas couple the services, hide dependencies and make independent deployment impossible. Each service should own its data and expose it through APIs or events."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I migrate from a monolith?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Use the strangler fig pattern: put a gateway in front, extract one loosely coupled capability, route traffic gradually, move its data and delete the old code. Avoid big-bang rewrites."
+              }
+            }
+          ]
+        },
+        {
+          "@type": "Quiz",
+          "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#quiz",
+          "name": "Microservices vs Monolith: How to Decide: 20 multiple choice questions",
+          "educationalLevel": "Advanced",
+          "inLanguage": "en",
+          "about": {
+            "@type": "Thing",
+            "name": "microservices vs monolith"
+          },
+          "isPartOf": {
+            "@id": "https://shivamthakur.me/learn/backend-master/microservices-vs-monolith-architecture-decision#article"
+          },
+          "hasPart": [
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The primary benefit of microservices is:",
+              "text": "The primary benefit of microservices is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Independent deployment and team autonomy"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Faster code"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Less operations work"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Simpler debugging"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A modular monolith differs from a \"big ball of mud\" by having:",
+              "text": "A modular monolith differs from a \"big ball of mud\" by having:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Enforced module boundaries and data ownership"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "More servers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Microservices"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A message broker"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A distributed monolith is:",
+              "text": "A distributed monolith is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Services that must deploy together, share a database or call in lockstep chains"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A monolith on many servers behind a balancer"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A well-designed system"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Serverless"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Ten services in a synchronous chain, each 99.9% available, yield roughly:",
+              "text": "Ten services in a synchronous chain, each 99.9% available, yield roughly:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "99.0%"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "99.9%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "100%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "90%"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A request fans out to 10 services each slow 1% of the time; it's slow about:",
+              "text": "A request fans out to 10 services each slow 1% of the time; it's slow about:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "~9.6%"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "1%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "50%"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "0.1%"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which is a bad reason to adopt microservices?",
+              "text": "Which is a bad reason to adopt microservices?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Because it's trendy or the monolith is messy"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Independent release cadence for separate teams"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Compliance isolation of payments"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Measured scaling mismatch"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A bounded context is:",
+              "text": "A bounded context is:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A boundary within which a model and language are consistent"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A database"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A Docker network"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A queue"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Service boundaries should align with:",
+              "text": "Service boundaries should align with:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Business capabilities and team ownership"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Technical layers"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "File size"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Programming languages"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Sharing one database among services leads to:",
+              "text": "Sharing one database among services leads to:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Tight schema coupling and lockstep changes"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Independent deploys"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Faster queries only"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Better isolation"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "To get product names into Orders without a shared database, you can:",
+              "text": "To get product names into Orders without a shared database, you can:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Snapshot at purchase and/or keep a local copy updated by events"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Join across schemas"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Read the catalogue table directly"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Share credentials"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "For a multi-service business transaction use:",
+              "text": "For a multi-service business transaction use:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A saga with compensating actions"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "2PC across all services"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A global lock"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A shared transaction"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which communication fits \"notify other parts that an order was placed\"?",
+              "text": "Which communication fits \"notify other parts that an order was placed\"?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "An event via outbox and a queue"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "A synchronous call to each"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Shared memory"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A cron job"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "An API gateway should:",
+              "text": "An API gateway should:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Handle cross-cutting concerns like TLS, auth, rate limits and routing"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Contain business logic"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Own the database"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replace services"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Conway's law says systems mirror:",
+              "text": "Conway's law says systems mirror:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The communication structure of the organisation"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Hardware"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Programming languages"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The database"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "The strangler fig pattern:",
+              "text": "The strangler fig pattern:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Gradually routes functionality to new services until the old code can be removed"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Rewrites everything at once"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Splits a database"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Kills the monolith immediately"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Which should usually be extracted first?",
+              "text": "Which should usually be extracted first?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Loosely coupled edge capabilities (notifications, search, media)"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "The transactional core (orders)"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "The shared kernel"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Authentication tables"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Before adopting many services you need:",
+              "text": "Before adopting many services you need:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Automation, observability, resilience patterns and ownership"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Nothing"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A bigger monolith"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A service mesh only"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Consumer-driven contract tests help by:",
+              "text": "Consumer-driven contract tests help by:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Catching breaking API changes between independently deployed services"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "Speeding builds"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Replacing unit tests"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Generating code"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "Synchronous chains should be:",
+              "text": "Synchronous chains should be:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Shallow, with timeouts, breakers and caching"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "As long as possible"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Retried infinitely"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Unmonitored"
+                }
+              ]
+            },
+            {
+              "@type": "Question",
+              "eduQuestionType": "Multiple choice",
+              "name": "A recommended default for a small, young team:",
+              "text": "A recommended default for a small, young team:",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A modular monolith with clear module boundaries"
+              },
+              "suggestedAnswer": [
+                {
+                  "@type": "Answer",
+                  "text": "30 microservices"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "Only serverless functions"
+                },
+                {
+                  "@type": "Answer",
+                  "text": "A big-bang rewrite"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body class="counter-scroll inner-page learn-reader-page">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+
+    <!-- Preload -->
+    <div class="preload preload-container" id="preload">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /Preload -->
+
+    <!-- Body Background -->
+    <div class="body-background">
+        <div class="bg-item">
+            <img loading="lazy" width="1440" height="900" src="../../assets/images/item/cloud-bg.png" alt="Ambient cloud background">
+        </div>
+    </div>
+    <!-- /Body Background -->
+
+    <!-- Menu Mobile -->
+    <div class="action-open-mobile d-lg-none">
+        <div class="tf-btn-icon style-2">
+            <div class="btn-mobile-menu">
+                <span></span>
+            </div>
+        </div>
+        <div class="nav-mobile-list">
+            <ul class="nav-mobile-item">
+                <li class="nav-item">
+                    <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                        <p class="tool-tip text-caption">Home</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                        <p class="tool-tip text-caption">About</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                        <p class="tool-tip text-caption">Case Studies</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                        <p class="tool-tip text-caption">Services</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                        <p class="tool-tip text-caption">Blog</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                        <p class="tool-tip text-caption">Learn</p>
+                    </a>
+                </li>
+                <li class="br-line"></li>
+                <li class="nav-item">
+                    <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                        <p class="tool-tip text-caption">Contact</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Menu Mobile -->
+
+    <!-- Tool Sidebar -->
+    <div class="sidebar-tools pst-v1">
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/#home" class="item-link"><i class="icon icon-home"></i>
+                    <p class="tool-tip text-caption">Home</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/#about" class="item-link"><i class="icon icon-user-circle"></i>
+                    <p class="tool-tip text-caption">About</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i>
+                    <p class="tool-tip text-caption">Case Studies</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../services" class="item-link"><i class="icon icon-service"></i>
+                    <p class="tool-tip text-caption">Services</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../blog" class="item-link"><i class="icon icon-quote"></i>
+                    <p class="tool-tip text-caption">Blog</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="../../learn" class="item-link active"><i class="icon icon-edu"></i>
+                    <p class="tool-tip text-caption">Learn</p>
+                </a>
+            </li>
+            <li class="br-line"></li>
+            <li class="nav-item">
+                <a href="/contact" class="item-link"><i class="icon icon-send"></i>
+                    <p class="tool-tip text-caption">Contact</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- /Tool Sidebar -->
+
+    <div class="overlay-pop"></div>
+    <main id="wrapper">
+
+        <!-- Time Local -->
+        <div class="tf-header-wrap">
+            <a href="/" class="logo-site">
+                <img class="image-switch" data-light="../../assets/images/logo/logo-s-w.svg" data-dark="../../assets/images/logo/logo-s-w.svg" loading="lazy" width="40"
+                    height="40" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="logo-site-name" aria-hidden="true">Shivam Thakur</span>
+            </a>
+            <div class="header-theme"><div class="tf-btn-icon toggle-switch-mode" role="button" tabindex="0" aria-label="Toggle dark mode"><i class="icon icon-light"></i></div></div>
+            
+        </div>
+        <!-- /Time Local -->
+
+
+        <div class="main-content" id="main-content">
+            <nav class="learn-crumbbar" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/learn">Learn</a></li>
+                    <li><a href="/learn/backend-master">Backend Master</a></li>
+                    <li><span aria-current="page">Microservices vs Monolith: How to Decide</span></li>
+                </ol>
+            </nav>
+            <div class="learn-shell">
+                <button type="button" class="learn-toggle" id="learnToggle" aria-expanded="false" aria-controls="learnSide">
+                    <i class="icon icon-edu"></i> Chapters
+                </button>
+
+                <aside class="learn-side" id="learnSide" aria-label="Backend Master chapters">
+                    <div class="learn-side-head">
+                        <p class="learn-side-title"><a href="/learn/backend-master">Backend Master</a></p>
+                        <p class="learn-side-sub text-caption">36 chapters &middot; free course</p>
+                        <div class="learn-progress" aria-hidden="true"><span style="width:91.7%"></span></div>
+                        <input type="search" id="learnFilter" class="learn-filter" placeholder="Filter chapters" aria-label="Filter chapters" autocomplete="off">
+                    </div>
+                    <nav class="learn-nav" id="learnNav" aria-label="Chapters">
+<div class="learn-item" data-text="1 what is backend development? start here"><a class="learn-link" href="/learn/backend-master/what-is-backend-development"><span class="num">01</span><span class="name">What Is Backend Development? Start Here</span></a></div>
+<div class="learn-item" data-text="2 how the internet works: dns, tcp &amp; tls"><a class="learn-link" href="/learn/backend-master/how-the-internet-works-dns-tcp-tls"><span class="num">02</span><span class="name">How the Internet Works: DNS, TCP &amp; TLS</span></a></div>
+<div class="learn-item" data-text="3 http explained: methods, status &amp; headers"><a class="learn-link" href="/learn/backend-master/http-explained-methods-status-codes-headers"><span class="num">03</span><span class="name">HTTP Explained: Methods, Status &amp; Headers</span></a></div>
+<div class="learn-item" data-text="4 linux, terminal &amp; git for backend devs"><a class="learn-link" href="/learn/backend-master/linux-terminal-git-for-backend-developers"><span class="num">04</span><span class="name">Linux, Terminal &amp; Git for Backend Devs</span></a></div>
+<div class="learn-item" data-text="5 node.js event loop, streams &amp; threads"><a class="learn-link" href="/learn/backend-master/nodejs-event-loop-streams-worker-threads"><span class="num">05</span><span class="name">Node.js Event Loop, Streams &amp; Threads</span></a></div>
+<div class="learn-item" data-text="6 build a node.js server: routing &amp; middleware"><a class="learn-link" href="/learn/backend-master/nodejs-http-server-routing-middleware-express"><span class="num">06</span><span class="name">Build a Node.js Server: Routing &amp; Middleware</span></a></div>
+<div class="learn-item" data-text="7 express 5 &amp; fastify: validation &amp; security"><a class="learn-link" href="/learn/backend-master/express-5-fastify-validation-zod-security-middleware"><span class="num">07</span><span class="name">Express 5 &amp; Fastify: Validation &amp; Security</span></a></div>
+<div class="learn-item" data-text="8 rest api design: pagination &amp; idempotency"><a class="learn-link" href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning"><span class="num">08</span><span class="name">REST API Design: Pagination &amp; Idempotency</span></a></div>
+<div class="learn-item" data-text="9 graphql with node.js: dataloader &amp; limits"><a class="learn-link" href="/learn/backend-master/graphql-api-nodejs-dataloader-security"><span class="num">09</span><span class="name">GraphQL with Node.js: DataLoader &amp; Limits</span></a></div>
+<div class="learn-item" data-text="10 sse, websockets, webhooks &amp; grpc"><a class="learn-link" href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs"><span class="num">10</span><span class="name">SSE, WebSockets, Webhooks &amp; gRPC</span></a></div>
+<div class="learn-item" data-text="11 backend architecture: modular monolith"><a class="learn-link" href="/learn/backend-master/backend-architecture-patterns-modular-monolith"><span class="num">11</span><span class="name">Backend Architecture: Modular Monolith</span></a></div>
+<div class="learn-item" data-text="12 database fundamentals: acid, cap &amp; mvcc"><a class="learn-link" href="/learn/backend-master/database-fundamentals-acid-cap-mvcc"><span class="num">12</span><span class="name">Database Fundamentals: ACID, CAP &amp; MVCC</span></a></div>
+<div class="learn-item" data-text="13 postgresql sql: joins &amp; window functions"><a class="learn-link" href="/learn/backend-master/postgresql-sql-tutorial-joins-window-functions"><span class="num">13</span><span class="name">PostgreSQL SQL: Joins &amp; Window Functions</span></a></div>
+<div class="learn-item" data-text="14 schema design &amp; normalization: migrations"><a class="learn-link" href="/learn/backend-master/database-schema-design-normalization-migrations"><span class="num">14</span><span class="name">Schema Design &amp; Normalization: Migrations</span></a></div>
+<div class="learn-item" data-text="15 postgresql indexes &amp; explain analyze"><a class="learn-link" href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance"><span class="num">15</span><span class="name">PostgreSQL Indexes &amp; EXPLAIN ANALYZE</span></a></div>
+<div class="learn-item" data-text="16 transactions, isolation &amp; concurrency"><a class="learn-link" href="/learn/backend-master/database-transactions-isolation-levels-concurrency"><span class="num">16</span><span class="name">Transactions, Isolation &amp; Concurrency</span></a></div>
+<div class="learn-item" data-text="17 orms vs query builders: prisma, drizzle"><a class="learn-link" href="/learn/backend-master/orm-vs-query-builder-prisma-drizzle-knex-kysely"><span class="num">17</span><span class="name">ORMs vs Query Builders: Prisma, Drizzle</span></a></div>
+<div class="learn-item" data-text="18 mongodb data modeling &amp; aggregation"><a class="learn-link" href="/learn/backend-master/mongodb-data-modeling-aggregation-mongoose"><span class="num">18</span><span class="name">MongoDB Data Modeling &amp; Aggregation</span></a></div>
+<div class="learn-item" data-text="19 redis: caching, rate limits &amp; streams"><a class="learn-link" href="/learn/backend-master/redis-tutorial-caching-rate-limiting-streams"><span class="num">19</span><span class="name">Redis: Caching, Rate Limits &amp; Streams</span></a></div>
+<div class="learn-item" data-text="20 search, olap, time-series &amp; object storage"><a class="learn-link" href="/learn/backend-master/full-text-search-time-series-olap-object-storage"><span class="num">20</span><span class="name">Search, OLAP, Time-Series &amp; Object Storage</span></a></div>
+<div class="learn-item" data-text="21 authentication: passwords, jwt, oauth, mfa"><a class="learn-link" href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa"><span class="num">21</span><span class="name">Authentication: Passwords, JWT, OAuth, MFA</span></a></div>
+<div class="learn-item" data-text="22 authorization: rbac, idor &amp; rls"><a class="learn-link" href="/learn/backend-master/authorization-rbac-idor-row-level-security"><span class="num">22</span><span class="name">Authorization: RBAC, IDOR &amp; RLS</span></a></div>
+<div class="learn-item" data-text="23 web &amp; api security: xss, csrf, ssrf, cors"><a class="learn-link" href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp"><span class="num">23</span><span class="name">Web &amp; API Security: XSS, CSRF, SSRF, CORS</span></a></div>
+<div class="learn-item" data-text="24 backend testing strategy: node.js guide"><a class="learn-link" href="/learn/backend-master/backend-testing-strategy-node-test-integration-property"><span class="num">24</span><span class="name">Backend Testing Strategy: Node.js Guide</span></a></div>
+<div class="learn-item" data-text="25 logging, monitoring &amp; tracing in node.js"><a class="learn-link" href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability"><span class="num">25</span><span class="name">Logging, Monitoring &amp; Tracing in Node.js</span></a></div>
+<div class="learn-item" data-text="26 error handling &amp; resilience: retries"><a class="learn-link" href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker"><span class="num">26</span><span class="name">Error Handling &amp; Resilience: Retries</span></a></div>
+<div class="learn-item" data-text="27 caching: http headers, redis &amp; invalidation"><a class="learn-link" href="/learn/backend-master/caching-strategies-http-cache-redis-invalidation"><span class="num">27</span><span class="name">Caching: HTTP Headers, Redis &amp; Invalidation</span></a></div>
+<div class="learn-item" data-text="28 message queues &amp; background jobs: outbox"><a class="learn-link" href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs"><span class="num">28</span><span class="name">Message Queues &amp; Background Jobs: Outbox</span></a></div>
+<div class="learn-item" data-text="29 scaling backends: load balancing &amp; pgbouncer"><a class="learn-link" href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer"><span class="num">29</span><span class="name">Scaling Backends: Load Balancing &amp; PgBouncer</span></a></div>
+<div class="learn-item" data-text="30 distributed systems: cap, raft &amp; sagas"><a class="learn-link" href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas"><span class="num">30</span><span class="name">Distributed Systems: CAP, Raft &amp; Sagas</span></a></div>
+<div class="learn-item" data-text="31 docker for node.js: dockerfile &amp; compose"><a class="learn-link" href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes"><span class="num">31</span><span class="name">Docker for Node.js: Dockerfile &amp; Compose</span></a></div>
+<div class="learn-item" data-text="32 ci/cd &amp; cloud: github actions deployments"><a class="learn-link" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span class="num">32</span><span class="name">CI/CD &amp; Cloud: GitHub Actions Deployments</span></a></div>
+<div class="learn-item active" data-text="33 microservices vs monolith: how to decide"><a class="learn-link" href="/learn/backend-master/microservices-vs-monolith-architecture-decision" aria-current="page"><span class="num">33</span><span class="name">Microservices vs Monolith: How to Decide</span></a></div>
+<div class="learn-item" data-text="34 system design for backend engineers"><a class="learn-link" href="/learn/backend-master/system-design-for-backend-engineers"><span class="num">34</span><span class="name">System Design for Backend Engineers</span></a></div>
+<div class="learn-item" data-text="35 capstone: build a production backend"><a class="learn-link" href="/learn/backend-master/backend-capstone-project-build-ecommerce-api"><span class="num">35</span><span class="name">Capstone: Build a Production Backend</span></a></div>
+<div class="learn-item" data-text="36 backend cheat sheets, glossary &amp; q&amp;a"><a class="learn-link" href="/learn/backend-master/backend-cheat-sheets-glossary-interview-questions"><span class="num">36</span><span class="name">Backend Cheat Sheets, Glossary &amp; Q&amp;A</span></a></div>
+                    </nav>
+                </aside>
+
+                <div class="learn-main" id="learnMain">
+                  <div class="learn-body">
+                    <article class="learn-article" id="learnArticle">
+                        <p class="learn-eyebrow">Chapter 33 of 36 &middot; Advanced</p>
+                        <h1>Microservices vs Monolith: Choosing Your Architecture and Migrating Safely</h1>
+                        <p class="learn-book-title">Microservices vs Monolith — Choosing Your Architecture's Shape</p>
+                        <ul class="learn-meta text-caption">
+                            <li>24 min read</li>
+                            <li>Advanced</li>
+                            <li>Updated <time datetime="2026-11-16">16 Nov 2026</time></li>
+                            <li>By <a href="/#about">Shivam Thakur</a></li>
+                        </ul>
+                        <figure class="learn-hero"><picture><source type="image/webp" srcset="../../assets/images/learn/backend-master/microservices-vs-monolith-architecture-decision.webp"><img src="../../assets/images/learn/backend-master/microservices-vs-monolith-architecture-decision.png" width="1200" height="630" fetchpriority="high" decoding="async" alt="Microservices vs Monolith: Choosing Your Architecture and Migrating Safely: Backend Master chapter 33 cover"></picture></figure>
+                        <section class="learn-summary" aria-label="Chapter summary">
+                            <p>Microservices buy independent deployment and team autonomy at the cost of network failures, eventual consistency and operational complexity. This chapter compares the options, argues for a modular monolith by default, gives a decision framework, covers boundaries, data ownership, communication and the strangler fig migration. It contains no executed examples.</p>
+                            <p class="learn-box-title">In this chapter you will learn</p>
+                            <ul><li>What microservices cost and what they buy</li><li>The modular monolith as the default</li><li>When and how to split a service</li><li>Data ownership, sagas and communication styles</li><li>The strangler fig migration</li></ul>
+                        </section>
+<hr>
+
+<h2 id="33-0-why-this-chapter-matters">33.0 Why This Chapter Matters</h2>
+<p>At some point every engineer hears: <em>&quot;We should move to microservices.&quot;</em> Sometimes it&#39;s the right call. Often it&#39;s a fashionable way to turn a manageable problem into a distributed-systems problem, and a team of five into the operators of forty services.</p>
+<p>The honest truth, repeated by teams that have done both: <strong>most systems should start as a well-structured monolith</strong>, and <strong>many should stay one</strong>. Microservices are a trade: they buy <em>independent deployment and team autonomy at scale</em> and they cost <em>network failures, data consistency, operational complexity and debugging pain.</em> You pay the cost whether or not you needed the benefit.</p>
+<p>You have already built the pieces of this decision across the book: the <strong>layered/modular</strong> architecture of <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a>, the <strong>distributed-systems</strong> costs of <a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">Chapter 30</a>, the <strong>queues and sagas</strong> of Chapters <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">28</a>/30, the <strong>observability</strong> of <a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>, the <strong>resilience</strong> patterns of <a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>, and the <strong>delivery pipeline</strong> of <a href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud" title="CI/CD &amp; Cloud: GitHub Actions Deployments">Chapter 32</a>. This chapter assembles them into a decision framework, with the structural patterns on both sides.</p>
+<aside class="callout callout-warn">
+<h3 id="what-was-and-wasn-t-run-fast-mode" class="callout-title" data-callout="warn"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><span>What was and wasn&#39;t run (fast mode)</span></h3>
+<p><strong>Nothing in this chapter was executed.</strong> It&#39;s an architecture and judgement chapter, written in &quot;fast mode&quot;: diagrams, trade-off tables, and short code sketches that I did <strong>not</strong> run and that <strong>may contain mistakes</strong>. The only <em>measured</em> facts used are from earlier chapters (for instance, <a href="/learn/backend-master/error-handling-resilience-retries-circuit-breaker" title="Error Handling &amp; Resilience: Retries">Chapter 26</a>&#39;s resilience experiments, <a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>&#39;s scaling numbers, <a href="/learn/backend-master/message-queues-background-jobs-outbox-nodejs" title="Message Queues &amp; Background Jobs: Outbox">Chapter 28</a>&#39;s outbox test). The latency-amplification arithmetic below is standard maths, not a benchmark.</p>
+</aside>
+<aside class="callout callout-idea">
+<h3 id="did-you-know" class="callout-title" data-callout="idea"><span class="callout-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></span><span>Did You Know?</span></h3>
+<p>In 2023, Amazon Prime Video&#39;s engineering team published that moving one monitoring component <strong>from a distributed serverless microservice architecture back to a single-process monolith</strong> cut its infrastructure cost by about 90%. And Shopify, one of the largest e-commerce platforms on earth, runs on a <strong>modular monolith</strong> (a very large Rails application). Architecture follows needs, not fashion.</p>
+</aside>
+<hr>
+
+<h2 id="33-1-the-spectrum-not-a-binary">33.1 The Spectrum, Not a Binary</h2>
+<pre class="is-plain"><code> Big ball of mud      Layered monolith       Modular monolith       Service-based        Microservices
+ (no structure)  ──►  (Ch 11: layers)  ──►   (modules with strict ──► (few coarse    ──► (many fine-grained
+                                              boundaries, one deploy)  services)          services)
+   ◄── simpler to run, change across modules is easy ──────────── independent deploy &amp; scale, harder to run ──►</code></pre>
+<div class="table-wrap"><table><thead><tr>
+<th></th>
+<th><strong>Monolith</strong></th>
+<th><strong>Modular monolith</strong></th>
+<th><strong>Microservices</strong></th>
+</tr>
+</thead><tbody><tr>
+<td>Deployment unit</td>
+<td>One</td>
+<td>One</td>
+<td>Many, independently</td>
+</tr>
+<tr>
+<td>Code boundaries</td>
+<td>Often weak</td>
+<td><strong>Enforced</strong> modules (Ch 11: architecture tests)</td>
+<td>Process/network boundaries</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>One database</td>
+<td>One database, <strong>schema-per-module ownership</strong></td>
+<td><strong>Database per service</strong></td>
+</tr>
+<tr>
+<td>Calls between parts</td>
+<td>In-process function calls (ns, can&#39;t fail independently)</td>
+<td>In-process via module interfaces</td>
+<td>Network calls (ms, can fail, timeout, be slow)</td>
+</tr>
+<tr>
+<td>Transactions</td>
+<td>ACID across everything</td>
+<td>ACID across modules (use sparingly)</td>
+<td><strong>Sagas/outbox</strong>, eventual consistency</td>
+</tr>
+<tr>
+<td>Refactoring across boundaries</td>
+<td>IDE rename</td>
+<td>Easy, compiler/test-checked</td>
+<td>Multi-repo, versioned API changes</td>
+</tr>
+<tr>
+<td>Debugging</td>
+<td>One stack trace</td>
+<td>One stack trace</td>
+<td>Distributed traces (Ch 25)</td>
+</tr>
+<tr>
+<td>Scaling</td>
+<td>Whole app together</td>
+<td>Whole app together</td>
+<td>Each service independently</td>
+</tr>
+<tr>
+<td>Team autonomy</td>
+<td>Low</td>
+<td>Medium</td>
+<td>High (when well designed)</td>
+</tr>
+<tr>
+<td>Operational cost</td>
+<td>Low</td>
+<td>Low</td>
+<td><strong>High</strong></td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Small team, young product</td>
+<td><strong>Most products for a long time</strong></td>
+<td>Large orgs, clear domains, proven scale/autonomy needs</td>
+</tr>
+</tbody></table></div>
+<hr>
+
+<h2 id="33-2-what-microservices-actually-buy-you">33.2 What Microservices Actually Buy You</h2>
+<ol>
+<li><strong>Independent deployability</strong>: Team A ships the catalogue without coordinating with Team B&#39;s payments. (The most important benefit; if your services must be deployed together, you have none of it.)</li>
+<li><strong>Independent scaling</strong>: scale the search service 20× without scaling checkout.</li>
+<li><strong>Fault isolation</strong>: a crash or leak in one service doesn&#39;t take down the others (if designed with timeouts, breakers, bulkheads: Chapter 26).</li>
+<li><strong>Technology freedom</strong>: the recommendation service in Python, the API in Node (at a cost in tooling and hiring).</li>
+<li><strong>Team autonomy and clear ownership</strong>: small teams own services end to end (&quot;you build it, you run it&quot;). This is largely an <strong>organisational</strong> benefit.</li>
+</ol>
+<p>And what they <strong>cost</strong>: every call can fail or be slow (Chapter 26&#39;s whole toolkit becomes mandatory); data consistency is eventual (<a href="/learn/backend-master/distributed-systems-cap-raft-consensus-sagas" title="Distributed Systems: CAP, Raft &amp; Sagas">Chapter 30</a>); testing needs contracts and environments (<a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>); observability needs tracing everywhere (<a href="/learn/backend-master/logging-monitoring-tracing-nodejs-observability" title="Logging, Monitoring &amp; Tracing in Node.js">Chapter 25</a>); deployments multiply (<a href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud" title="CI/CD &amp; Cloud: GitHub Actions Deployments">Chapter 32</a>); security surface grows (each service authenticates and authorises: Chapters <a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">21</a>–22); and you need a <strong>platform</strong> (service discovery, config, CI templates, secrets, tracing, gateways).</p>
+<h3 id="the-latency-tax-with-arithmetic-standard-maths-not-a-benchmark">The latency tax, with arithmetic <em>(standard maths; not a benchmark)</em></h3>
+<p>In a monolith a function call costs nanoseconds. A network hop costs roughly <strong>0.5–5 ms</strong> within a datacenter, plus serialisation, plus the chance of failure. If rendering a product page requires <strong>8 sequential</strong> service calls at 3 ms each, you&#39;ve added ~24 ms <em>before any work</em>; fan-out calls in parallel are as slow as the slowest, and <strong>tail latency amplifies</strong>: if each of 10 services has a 1% chance of being slow, a request touching all ten is slow <code>1 − 0.99¹⁰ ≈ 9.6%</code> of the time (Chapter 30). Availability multiplies too: ten services at 99.9% each give at best <code>0.999¹⁰ ≈ 99.0%</code> for a request that needs all of them (≈ 7 hours of downtime a month instead of 43 minutes). <strong>Every synchronous dependency is a multiplier on failure.</strong></p>
+<hr>
+
+<h2 id="33-3-the-modular-monolith-the-default-choice">33.3 The Modular Monolith: The Default Choice</h2>
+<p>A <strong>modular monolith</strong> is one deployable application internally divided into <strong>modules with strict boundaries</strong>, each owning its logic <strong>and its data</strong>, communicating through <strong>explicit interfaces</strong> (and events), so that <em>any module could be extracted into a service later with minimal change.</em> It captures most of the design benefits of microservices (clear boundaries, ownership, low coupling) while keeping the monolith&#39;s operational simplicity (one deploy, in-process calls, ACID transactions).</p>
+<p>You built this in <a href="/learn/backend-master/backend-architecture-patterns-modular-monolith" title="Backend Architecture: Modular Monolith">Chapter 11</a>: <code>src/modules/&lt;feature&gt;/</code> with services, repositories and ports; a composition root; <strong>architecture tests</strong> that fail the build if module A imports module B&#39;s internals. Make the boundaries real:</p>
+<pre class="is-plain"><code>src/modules/
+  catalog/     { api.js (public interface), service.js, repo.js, events.js, tables: catalog_* }
+  orders/      { api.js, service.js, repo.js, events.js, tables: orders_*, order_items }
+  payments/    { … tables: payments_* }
+  inventory/   { … tables: inventory_* }
+  shared/      { kernel: ids, money, errors, clock }      ← tiny, stable</code></pre>
+<p>Rules that keep it modular <em>(enforce with tests/lint, as in Chapter 11)</em>:</p>
+<ul>
+<li>Modules call each other <strong>only through their public <code>api.js</code></strong> (or by publishing events), never by importing internals or reading another module&#39;s tables.</li>
+<li><strong>Each module owns its tables</strong> (separate PostgreSQL <strong>schemas</strong> per module, with DB roles that can only touch their own schema, <a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a>): &quot;no cross-module joins&quot; is a rule you can enforce in the database.</li>
+<li><strong>Cross-module consistency</strong>: either a transaction when it truly must be atomic (an explicit, rare exception) or <strong>in-process events via an outbox</strong> (Chapter 28) so a later service split changes the transport, not the design.</li>
+<li>Keep the dependency graph <strong>acyclic</strong> (orders → catalog, payments → orders; never the reverse).</li>
+</ul>
+<p><strong>The payoff:</strong> if a module later needs its own scale, team or technology, you extract it, replacing the in-process <code>api.js</code> call with an HTTP/gRPC client and the in-process event with a message, with the contract already defined. Premature extraction is expensive; <em>late extraction of a well-bounded module is cheap.</em></p>
+<hr>
+
+<h2 id="33-4-when-to-split-a-decision-framework">33.4 When to Split: A Decision Framework</h2>
+<p>Ask these in order. A &quot;no&quot; to the early questions should end the conversation:</p>
+<ol>
+<li><strong>Do you have a problem that a modular monolith can&#39;t solve?</strong> (Not &quot;microservices are modern.&quot;) Name it: <em>deployment contention, scaling mismatch, team scaling, fault-isolation need, regulatory isolation.</em></li>
+<li><strong>Is the team large enough that coordination cost dominates?</strong> Rough heuristic: under ~20–30 engineers, one deployable almost always wins. Microservices solve <strong>organisational</strong> scaling.</li>
+<li><strong>Are the boundaries stable and well understood?</strong> A wrong boundary baked into a network API is <strong>very</strong> costly to change. Early in a product&#39;s life the domain is still being discovered; keep it in one codebase until the seams are obvious.</li>
+<li><strong>Do parts have genuinely different scaling, availability or technology profiles?</strong> (A CPU-heavy image-processing pipeline vs a CRUD API; a payment service needing PCI isolation.)</li>
+<li><strong>Do you have the platform and skills?</strong> CI/CD per service, tracing, alerting, on-call, service discovery, secrets, a way to run the whole system locally. If not, you&#39;ll build them under pressure.</li>
+<li><strong>Can the data be partitioned?</strong> If two services need constant joins and shared transactions, they&#39;re one service with a network in the middle.</li>
+</ol>
+<h3 id="good-reasons-to-extract-a-service">Good reasons to extract a service</h3>
+<ul>
+<li>A distinct <strong>team</strong> wants an independent release cadence and the boundary is clear.</li>
+<li><strong>Independent scaling</strong> is measured and expensive in the monolith (e.g., search or media processing).</li>
+<li><strong>Different runtime needs</strong> (GPU, long-running jobs, a different language ecosystem).</li>
+<li><strong>Isolation for risk/compliance</strong> (payments, PII vault).</li>
+<li>A genuinely <strong>separate product</strong> domain (an identity provider, a notification platform).</li>
+</ul>
+<h3 id="bad-reasons">Bad reasons</h3>
+<ul>
+<li>&quot;It&#39;s modern / everyone does it / our résumés.&quot;</li>
+<li>&quot;The codebase is messy&quot;: splitting a mess gives you a <strong>distributed</strong> mess; fix the modularity first.</li>
+<li>&quot;To scale&quot;: most scaling problems are queries, caches and connection limits (Chapters <a href="/learn/backend-master/postgresql-indexes-explain-analyze-query-performance" title="PostgreSQL Indexes &amp; EXPLAIN ANALYZE">15</a>, 27, 29), not process count.</li>
+<li>&quot;To use a new language&quot;: a service per language multiplies ops cost.</li>
+</ul>
+<h3 id="the-anti-pattern-the-distributed-monolith">The anti-pattern: the distributed monolith</h3>
+<p>Services that <strong>must be deployed together</strong>, share a database, call each other synchronously in long chains, or change in lockstep. You get all the costs of microservices and none of the benefits. Tell-tale signs: a feature change touches 5 repos; the whole system is down if any service is; &quot;release trains&quot; coordinate versions; one shared database schema is edited by many services.</p>
+<hr>
+
+<h2 id="33-5-defining-service-boundaries">33.5 Defining Service Boundaries</h2>
+<h3 id="domain-driven-design-vocabulary-the-useful-parts">Domain-driven design vocabulary (the useful parts)</h3>
+<ul>
+<li><strong>Bounded context</strong>: a boundary within which a model and its language are consistent. &quot;Customer&quot; means something different to <em>Orders</em> (a purchaser with addresses), <em>Billing</em> (a payer with a tax id), and <em>Support</em> (a person with tickets). Each context has its own model; they are <strong>not</strong> one shared <code>Customer</code> table.</li>
+<li><strong>Aggregate</strong>: a cluster of objects changed together under one consistency rule (an <strong>Order</strong> with its lines). <em>Transactions don&#39;t cross aggregate boundaries; service boundaries shouldn&#39;t cut through aggregates.</em></li>
+<li><strong>Context map</strong>: how contexts relate (customer-supplier, conformist, anti-corruption layer, shared kernel).</li>
+<li><strong>Ubiquitous language</strong>: the team uses the domain&#39;s words in code and conversation.</li>
+</ul>
+<h3 id="drawing-boundaries-for-shopline">Drawing boundaries for ShopLine</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Context (candidate service)</th>
+<th>Owns</th>
+<th>Key data</th>
+<th>Why a boundary here</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Catalogue</strong></td>
+<td>Products, categories, attributes, search index</td>
+<td><code>products</code>, <code>categories</code></td>
+<td>Read-heavy, cacheable, different scaling</td>
+</tr>
+<tr>
+<td><strong>Orders</strong></td>
+<td>Carts, orders, order lifecycle</td>
+<td><code>orders</code>, <code>order_items</code></td>
+<td>The transactional core</td>
+</tr>
+<tr>
+<td><strong>Inventory</strong></td>
+<td>Stock levels, reservations</td>
+<td><code>stock</code>, <code>reservations</code></td>
+<td>Needs strong consistency, high write contention (Ch 16/24)</td>
+</tr>
+<tr>
+<td><strong>Payments</strong></td>
+<td>Payment attempts, refunds, provider integration</td>
+<td><code>payments</code></td>
+<td>Compliance isolation, idempotency (Ch 26)</td>
+</tr>
+<tr>
+<td><strong>Identity</strong></td>
+<td>Users, auth, sessions</td>
+<td><code>users</code>, credentials</td>
+<td>Security-critical, reusable (or buy: Ch 21)</td>
+</tr>
+<tr>
+<td><strong>Notifications</strong></td>
+<td>Email/SMS/push, templates</td>
+<td><code>outbox</code>, delivery log</td>
+<td>Async by nature (Ch 28)</td>
+</tr>
+<tr>
+<td><strong>Search / Analytics</strong></td>
+<td>Derived read models</td>
+<td>Elasticsearch, warehouse</td>
+<td>Derived data (Ch 20)</td>
+</tr>
+</tbody></table></div>
+<p>Boundary heuristics: <strong>align with teams and business capabilities</strong>, not with technical layers (never a &quot;database service&quot; or &quot;validation service&quot;); prefer <strong>coarser first</strong> (3–5 services) and split further only on evidence; look for <strong>high cohesion inside, low coupling across</strong>; and watch for <strong>chatty</strong> boundaries (two services that call each other constantly belong together).</p>
+<h3 id="conway-s-law">Conway&#39;s Law</h3>
+<blockquote>
+<p><em>&quot;Organisations design systems that mirror their communication structures.&quot;</em> (Melvin Conway, 1968)</p>
+</blockquote>
+<p>Your architecture will end up shaped like your org chart. The <strong>inverse Conway manoeuvre</strong>: shape the teams (small, cross-functional, owning a business capability end to end) to get the architecture you want. Splitting services without splitting ownership produces a distributed monolith with cross-team dependencies on every change.</p>
+<hr>
+
+<h2 id="33-6-data-ownership-and-consistency">33.6 Data Ownership and Consistency</h2>
+<p>The hardest part of microservices is data. The rule: <strong>each service owns its data and exposes it only through its API/events.</strong> No shared database, no reading another service&#39;s tables.</p>
+<p>Why a <strong>shared database</strong> is the cardinal sin: it couples schemas (any change breaks others), hides dependencies, lets anyone bypass invariants, and makes independent deploys impossible: the distributed monolith&#39;s usual root cause.</p>
+<p>How services still get data they don&#39;t own:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Need</th>
+<th>Pattern</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Query another service&#39;s data right now</strong></td>
+<td>Synchronous API/gRPC call (with timeout, breaker, cache: Chapters 26–27)</td>
+</tr>
+<tr>
+<td><strong>Reference data used often</strong> (product name/price in Orders)</td>
+<td>Keep a <strong>local read-only copy</strong> updated via events (replication by events) or <strong>snapshot at the time of use</strong> (<a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>: the order stores name and price at purchase)</td>
+</tr>
+<tr>
+<td><strong>Composite views</strong> (&quot;order with product images and payment status&quot;)</td>
+<td><strong>API composition</strong> (a gateway/BFF queries several services) or a <strong>CQRS read model</strong> built from events</td>
+</tr>
+<tr>
+<td><strong>Multi-service business transaction</strong></td>
+<td><strong>Saga</strong> with compensations, orchestrated or choreographed (Chapter 30)</td>
+</tr>
+<tr>
+<td><strong>Reliable event publishing</strong></td>
+<td><strong>Transactional outbox</strong> (Chapter 28: we saw naive dual-write lose 60 of 300 events)</td>
+</tr>
+<tr>
+<td><strong>Idempotent consumers</strong></td>
+<td>Dedup by event id (Chapter 28: absorbed 100 duplicate deliveries)</td>
+</tr>
+</tbody></table></div>
+<p>Reporting needs across all services go to a <strong>data warehouse</strong> fed by events/CDC (<a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>), not cross-service SQL joins.</p>
+<hr>
+
+<h2 id="33-7-communication-between-services">33.7 Communication Between Services</h2>
+<h3 id="synchronous-request-response">Synchronous (request/response)</h3>
+<p>REST/JSON (<a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>), <strong>gRPC</strong> (<a href="/learn/backend-master/sse-websockets-webhooks-grpc-nodejs" title="SSE, WebSockets, Webhooks &amp; gRPC">Chapter 10</a>: typed contracts, deadlines, streaming), GraphQL for client-facing composition (<a href="/learn/backend-master/graphql-api-nodejs-dataloader-security" title="GraphQL with Node.js: DataLoader &amp; Limits">Chapter 9</a>). Simple to reason about, but couples availability and latency: <strong>service A is only as available as everything it calls synchronously.</strong> Use <strong>timeouts, retries (idempotent only), circuit breakers and bulkheads</strong> (Chapter 26), and keep call chains <strong>shallow</strong> (≤ 2–3 hops).</p>
+<h3 id="asynchronous-events-and-commands">Asynchronous (events and commands)</h3>
+<p>Queues, streams, pub/sub (Chapter 28). The sender doesn&#39;t wait; consumers process at their pace; failures are isolated and retried. Prefer async for anything that doesn&#39;t need an immediate answer, and for <em>notifying</em> about facts (&quot;OrderPlaced&quot;) rather than <em>asking</em> for data.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Choose</th>
+<th>When</th>
+</tr>
+</thead><tbody><tr>
+<td><strong>Sync</strong></td>
+<td>You need the answer to continue (price lookup at checkout, auth check); low-latency queries</td>
+</tr>
+<tr>
+<td><strong>Async events</strong></td>
+<td>Decoupling reactions (email, search index, analytics, inventory updates); long-running work</td>
+</tr>
+<tr>
+<td><strong>Async commands via a queue</strong></td>
+<td>Work that must happen but not now, with retries</td>
+</tr>
+</tbody></table></div>
+<h3 id="api-contracts-and-versioning">API contracts and versioning</h3>
+<p>The API between services is a <strong>public API</strong> (<a href="/learn/backend-master/rest-api-design-pagination-idempotency-versioning" title="REST API Design: Pagination &amp; Idempotency">Chapter 8</a>): version it, evolve additively, deprecate gradually. <strong>Consumer-driven contract tests</strong> (Pact; <a href="/learn/backend-master/backend-testing-strategy-node-test-integration-property" title="Backend Testing Strategy: Node.js Guide">Chapter 24</a>) catch breaking changes in CI. Use <strong>schema registries / OpenAPI / protobuf</strong> and the <strong>tolerant reader</strong> principle (ignore unknown fields). <strong>Backward compatibility</strong> is non-negotiable because services deploy independently (Chapter 32&#39;s two-version overlap, now between services).</p>
+<h3 id="the-edge-api-gateway-and-bff">The edge: API gateway and BFF</h3>
+<ul>
+<li>An <strong>API gateway</strong> (Kong, Envoy, AWS API Gateway, nginx) is the single entry point: TLS termination, authentication, rate limiting (<a href="/learn/backend-master/web-api-security-xss-csrf-ssrf-cors-owasp" title="Web &amp; API Security: XSS, CSRF, SSRF, CORS">Chapter 23</a>), routing to services, request/response transformation, aggregation. Keep it thin: <strong>no business logic</strong> in the gateway.</li>
+<li>A <strong>BFF (Backend-for-Frontend)</strong> is a small server per client type (web, mobile) that composes calls to services into exactly what that UI needs, reducing chattiness over slow mobile networks.</li>
+<li><strong>Service discovery</strong> (Kubernetes DNS, Consul) lets services find each other as instances come and go; a <strong>service mesh</strong> (Istio, Linkerd) can add mTLS, retries, timeouts, traffic splitting and telemetry outside the application code, at the price of more moving parts <em>(none of these run here)</em>.</li>
+<li><strong>Internal service-to-service auth</strong>: mutual TLS or signed service tokens (<a href="/learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" title="Authentication: Passwords, JWT, OAuth, MFA">Chapter 21</a>), plus authorisation at each service (<a href="/learn/backend-master/authorization-rbac-idor-row-level-security" title="Authorization: RBAC, IDOR &amp; RLS">Chapter 22</a>): <strong>never trust the network just because it&#39;s &quot;internal&quot;</strong>.</li>
+</ul>
+<hr>
+
+<h2 id="33-8-operating-many-services">33.8 Operating Many Services</h2>
+<p>What you must have <strong>before</strong> you split (the &quot;microservices prerequisites&quot;, per Martin Fowler):</p>
+<ul>
+<li><strong>Rapid provisioning</strong> and <strong>automated deployment</strong> per service (Chapter 32: pipelines, IaC, containers: <a href="/learn/backend-master/docker-for-nodejs-dockerfile-compose-kubernetes" title="Docker for Node.js: Dockerfile &amp; Compose">Chapter 31</a>).</li>
+<li><strong>Observability</strong>: centralised logs with correlation ids, metrics per service (RED), <strong>distributed tracing</strong> (Chapter 25), dashboards and SLOs per service.</li>
+<li><strong>Resilience patterns built in</strong> (Chapter 26) and <strong>chaos testing</strong>.</li>
+<li><strong>A platform</strong>: service templates (&quot;golden paths&quot;), shared libraries for logging/metrics/auth/retries, a service catalogue with owners and runbooks.</li>
+<li><strong>Testing strategy</strong>: unit and contract tests per service, a few end-to-end tests; test environments that don&#39;t require running 40 services locally (Compose subsets, contract stubs, ephemeral environments).</li>
+<li><strong>On-call and ownership</strong>: each service has a team that is paged for it.</li>
+<li><strong>Cost visibility</strong>: each service multiplies baseline compute, observability and network costs.</li>
+</ul>
+<p><strong>Versioning and compatibility across the fleet:</strong> support at least N-1 versions of every API; deploy producers before consumers for additive changes and consumers before producers for removals (the same expand/contract thinking as <a href="/learn/backend-master/database-schema-design-normalization-migrations" title="Schema Design &amp; Normalization: Migrations">Chapter 14</a>, applied to APIs).</p>
+<hr>
+
+<h2 id="33-9-migrating-the-strangler-fig">33.9 Migrating: The Strangler Fig</h2>
+<p>If you must move from a monolith to services, <strong>do not rewrite</strong>. The <strong>Strangler Fig pattern</strong> (Martin Fowler) grows new services around the monolith, gradually routing functionality to them until the old code can be removed:</p>
+<pre class="is-plain"><code>1. Put a facade/gateway in front of the monolith (all traffic passes through it).
+2. Pick ONE well-bounded capability (e.g., notifications or search), the least entangled.
+3. Build it as a new service; keep the monolith's version running.
+4. Route a small % of traffic via the gateway to the new service (canary: Chapter 32); compare.
+5. Move data ownership (sync, then switch the source of truth; use outbox/CDC to keep them aligned during the transition).
+6. Cut over fully; delete the old code. Repeat.</code></pre>
+<p>Guidelines: <strong>modularise inside the monolith first</strong> (this is cheaper and often sufficient); extract the <strong>edges</strong> before the <strong>core</strong> (notifications, search, media processing are easier than orders); introduce an <strong>anti-corruption layer</strong> so the new service&#39;s model isn&#39;t polluted by the monolith&#39;s; keep the migration <strong>incremental and reversible</strong>; measure outcomes (deploy frequency, incident rate, lead time) to confirm the split helped; and be willing to <strong>stop</strong> once the pain is solved. The big-bang rewrite (&quot;version 2 in 18 months&quot;) fails far more often than it succeeds.</p>
+<hr>
+
+<h2 id="33-10-serverless-and-nanoservices">33.10 Serverless and &quot;Nanoservices&quot;</h2>
+<p><strong>Functions-as-a-service</strong> (Lambda, Cloud Functions) push decomposition further: one function per event/route. They suit <strong>spiky, event-driven, glue</strong> workloads (resize an image on upload, handle a webhook) with no servers to manage (Chapter 32). Cautions: cold starts, execution time limits, <strong>database connection exhaustion</strong> (needs a proxy/pooler: <a href="/learn/backend-master/scaling-backend-load-balancing-nginx-pgbouncer" title="Scaling Backends: Load Balancing &amp; PgBouncer">Chapter 29</a>), vendor lock-in, hard local testing/observability, and <strong>function sprawl</strong> that becomes an unmaintainable web of triggers. Use them where they fit, not as the default shape of a whole backend.</p>
+<hr>
+
+<h2 id="33-11-shopline-a-recommended-path">33.11 ShopLine: A Recommended Path</h2>
+<ol>
+<li><strong>Now (team ≤ ~10):</strong> one <strong>modular monolith</strong> (Chapter 11&#39;s structure), one PostgreSQL with <strong>schema-per-module</strong>, Redis, a worker process from the same codebase (Chapter 28), managed hosting (Chapter 32). Enforce module boundaries with architecture tests; events inside the monolith via the outbox.</li>
+<li><strong>Extract when evidence appears:</strong> <em>search</em> (different scaling/technology: <a href="/learn/backend-master/full-text-search-time-series-olap-object-storage" title="Search, OLAP, Time-Series &amp; Object Storage">Chapter 20</a>) and <em>media processing</em> are classic first candidates; <em>notifications</em> is naturally async; <em>payments</em> may deserve isolation for compliance.</li>
+<li><strong>Keep orders + inventory + catalogue core together</strong> as long as possible: they share transactional invariants (stock, price snapshots, <a href="/learn/backend-master/database-transactions-isolation-levels-concurrency" title="Transactions, Isolation &amp; Concurrency">Chapter 16</a>/24); splitting them forces sagas for what is currently one <code>BEGIN … COMMIT</code>.</li>
+<li><strong>Before each extraction:</strong> the module already has an <code>api.js</code> boundary and its own schema; contract tests exist; tracing and a pipeline template are ready; ownership is assigned.</li>
+<li><strong>After:</strong> measure deploy frequency, p99, error budget burn, cost and on-call load; if they got worse, you&#39;ve learned the split wasn&#39;t worth it.</li>
+</ol>
+<hr>
+
+<h2 id="33-12-edge-cases-and-gotchas-checklist">33.12 Edge Cases and Gotchas Checklist</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Choosing microservices for résumé/fashion reasons; splitting before the domain is understood; a &quot;rewrite&quot; instead of a strangler.</li>
+<li><input disabled="" type="checkbox"> A shared database between services; cross-service joins; services reading each other&#39;s tables.</li>
+<li><input disabled="" type="checkbox"> Services that must deploy together (distributed monolith); chatty synchronous chains; no timeouts/breakers.</li>
+<li><input disabled="" type="checkbox"> Boundaries drawn by technical layer (&quot;DB service&quot;, &quot;utility service&quot;) instead of business capability; aggregates split across services.</li>
+<li><input disabled="" type="checkbox"> No contract tests or API versioning; breaking changes shipped to consumers.</li>
+<li><input disabled="" type="checkbox"> No tracing/correlation ids; per-service dashboards missing; no on-call ownership; no platform.</li>
+<li><input disabled="" type="checkbox"> Distributed transactions attempted (2PC) instead of sagas + outbox; non-idempotent consumers.</li>
+<li><input disabled="" type="checkbox"> Trusting the internal network: no service-to-service auth/authorisation.</li>
+<li><input disabled="" type="checkbox"> Gateways containing business logic; one giant gateway team as a bottleneck.</li>
+<li><input disabled="" type="checkbox"> A monolith with no internal boundaries (so that neither modularity nor extraction is possible).</li>
+<li><input disabled="" type="checkbox"> Ignoring Conway&#39;s law: service boundaries that don&#39;t match team ownership.</li>
+<li><input disabled="" type="checkbox"> Cost of N services&#39; baseline (compute, logging, monitoring) not budgeted.</li>
+</ul>
+<hr>
+
+<h2 id="33-13-chapter-summary">33.13 Chapter Summary</h2>
+<ul>
+<li>Architecture is a <strong>spectrum</strong>; <strong>microservices trade operational and consistency complexity for independent deployment and team autonomy.</strong> Their main benefit is <strong>organisational</strong>.</li>
+<li>Costs are concrete: every call can fail/slow; tail latency amplifies (<code>1 − 0.99¹⁰ ≈ 9.6%</code>); availability multiplies (ten 99.9% services ≈ 99.0%); eventual consistency; testing, tracing, security and platform overhead.</li>
+<li>The <strong>modular monolith</strong> (Chapter 11 made enforceable: public module APIs, schema-per-module ownership, acyclic dependencies, in-process events via outbox) is the <strong>default</strong>; extraction later is cheap if boundaries are real.</li>
+<li><strong>Split only for named reasons</strong> (independent teams/release cadence with clear boundaries, measured scaling mismatch, different runtime needs, compliance isolation). Avoid the <strong>distributed monolith</strong>.</li>
+<li><strong>Boundaries</strong> follow business capabilities/bounded contexts and aggregates, not layers; <strong>Conway&#39;s law</strong>: align teams with services.</li>
+<li><strong>Data</strong>: each service owns its data; never share a database; use APIs, events with local copies/snapshots, composition/CQRS, <strong>sagas</strong>, and the <strong>outbox</strong>; analytics via a warehouse.</li>
+<li><strong>Communication</strong>: sync with timeouts/breakers/shallow chains; async events/queues for decoupling; versioned, contract-tested APIs; gateway/BFF kept thin; authenticate internal calls.</li>
+<li><strong>Prerequisites</strong> for many services: automation, observability, resilience, platform, ownership, cost visibility.</li>
+<li><strong>Migrate with the strangler fig</strong>, edges first, never a big-bang rewrite; serverless for glue, not as the default.</li>
+<li><em>Fast mode: no examples in this chapter were run.</em></li>
+</ul>
+<hr>
+
+<h2 id="33-14-revision-notes">33.14 Revision Notes</h2>
+<ul>
+<li>Default: modular monolith; schema-per-module; public module API only; events via outbox.</li>
+<li>Split reasons: independent teams/deploys, measured scale mismatch, runtime/compliance isolation.</li>
+<li>Distributed monolith = shared DB + lockstep deploys + chatty sync chains.</li>
+<li>Boundaries: bounded contexts, aggregates, business capabilities; Conway&#39;s law.</li>
+<li>Data ownership; no shared DB; snapshot/replicate-by-events; saga + outbox + idempotent consumers.</li>
+<li>Sync (answer needed) vs async (reactions); shallow chains; contracts + versioning; thin gateway; BFF.</li>
+<li>Prereqs: CI/CD, tracing, resilience, platform, on-call.</li>
+<li>Strangler fig: facade → extract edge capability → route gradually → move data → delete old.</li>
+<li>Availability multiplies; tail latency amplifies.</li>
+</ul>
+<hr>
+
+<h2 id="33-15-mind-map-ascii">33.15 Mind Map (ASCII)</h2>
+<pre class="is-plain"><code>                          MONOLITH vs MICROSERVICES
+                                      │
+      ┌───────────┬───────────┬───────┴───────┬────────────┬──────────────┐
+   SPECTRUM    BENEFITS     COSTS          BOUNDARIES    DATA &amp; COMMS    MIGRATION
+      │            │           │                │              │              │
+  monolith     independent   network/failure   bounded       own your data  strangler fig
+  modular ★    deploy        consistency       contexts      no shared DB   edges first
+  services     scale/fault   testing/tracing   aggregates    saga + outbox  anti-corruption
+  micro        team autonomy platform/ops      Conway        sync vs async  no big-bang
+  serverless                 latency/availability              gateway/BFF</code></pre>
+<hr>
+
+<h2 id="33-16-cheat-sheet">33.16 Cheat Sheet</h2>
+<pre class="is-plain"><code>Start: modular monolith. Boundaries by business capability. One module = one schema = one owner.
+Split when: (a) independent team + stable boundary, (b) measured scaling mismatch, (c) different runtime, (d) compliance isolation.
+Never: shared database · lockstep deploys · layer-based services · big-bang rewrite.
+Sync call: timeout + breaker + (idempotent) retry + cache + ≤3 hops.   Async: outbox → queue → idempotent consumer.
+Multi-service transaction: saga (orchestrated) + compensations.      Reporting: warehouse via CDC/events.
+Availability ≈ ∏ availability_i.   P(slow | fan-out N) = 1 − (1−p)^N.
+Migrate: strangler fig — facade, extract an edge capability, route gradually, move data, delete.</code></pre>
+<hr>
+
+<h2 id="33-17-key-takeaways">33.17 Key Takeaways</h2>
+<ol>
+<li><strong>Microservices are an organisational scaling tool with a steep technical price.</strong> Pay it only when you need what it buys.</li>
+<li><strong>A modular monolith gets you 80% of the design benefit at 20% of the operational cost</strong>; extraction later is cheap if boundaries are real.</li>
+<li><strong>Never share a database across services</strong>; data ownership is the heart of the split.</li>
+<li><strong>Every network call is a failure mode</strong>: apply Chapter 26&#39;s patterns, keep chains shallow, prefer events.</li>
+<li><strong>Align boundaries with teams and business capabilities</strong> (Conway&#39;s law).</li>
+<li><strong>Migrate incrementally</strong> with the strangler fig; measure whether it helped.</li>
+</ol>
+<hr>
+
+<h2 id="33-18-20-multiple-choice-questions">33.18 20 Multiple Choice Questions</h2>
+<div class="quiz" data-quiz>
+<p class="quiz-intro">Tap an answer to check it. Your score updates as you go.</p>
+<p class="quiz-score" aria-live="polite">Score: 0 / 0 answered (20 questions)</p>
+<ol class="quiz-list">
+<li class="quiz-q" data-answer="b" data-why="Autonomy."><p class="quiz-text">The primary benefit of microservices is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Faster code</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Independent deployment and team autonomy</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Less operations work</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Simpler debugging</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Enforced boundaries."><p class="quiz-text">A modular monolith differs from a &quot;big ball of mud&quot; by having:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">More servers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Enforced module boundaries and data ownership</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Microservices</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A message broker</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Coupled services."><p class="quiz-text">A distributed monolith is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A monolith on many servers behind a balancer</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Services that must deploy together, share a database or call in lockstep chains</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A well-designed system</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Serverless</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="0.999^10 ≈ 99.0%."><p class="quiz-text">Ten services in a synchronous chain, each 99.9% available, yield roughly:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">99.9%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">99.0%</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">100%</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">90%</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="1−0.99^10."><p class="quiz-text">A request fans out to 10 services each slow 1% of the time; it&#39;s slow about:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">1%</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">~9.6%</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">50%</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">0.1%</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Fashion/mess."><p class="quiz-text">Which is a <em>bad</em> reason to adopt microservices?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Independent release cadence for separate teams</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Because it&#39;s trendy or the monolith is messy</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Compliance isolation of payments</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Measured scaling mismatch</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Model boundary."><p class="quiz-text">A bounded context is:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A database</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A boundary within which a model and language are consistent</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A Docker network</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A queue</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Capabilities/teams."><p class="quiz-text">Service boundaries should align with:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Technical layers</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Business capabilities and team ownership</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">File size</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Programming languages</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Coupling."><p class="quiz-text">Sharing one database among services leads to:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Independent deploys</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Tight schema coupling and lockstep changes</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Faster queries only</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Better isolation</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Snapshot/local copy."><p class="quiz-text">To get product names into Orders without a shared database, you can:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Join across schemas</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Snapshot at purchase and/or keep a local copy updated by events</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Read the catalogue table directly</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Share credentials</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Saga."><p class="quiz-text">For a multi-service business transaction use:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">2PC across all services</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A saga with compensating actions</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A global lock</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A shared transaction</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Event."><p class="quiz-text">Which communication fits &quot;notify other parts that an order was placed&quot;?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">A synchronous call to each</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">An event via outbox and a queue</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Shared memory</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A cron job</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Cross-cutting only."><p class="quiz-text">An API gateway should:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Contain business logic</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Handle cross-cutting concerns like TLS, auth, rate limits and routing</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Own the database</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Replace services</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Org structure."><p class="quiz-text">Conway&#39;s law says systems mirror:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Hardware</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">The communication structure of the organisation</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Programming languages</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">The database</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Incremental."><p class="quiz-text">The strangler fig pattern:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Rewrites everything at once</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Gradually routes functionality to new services until the old code can be removed</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Splits a database</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Kills the monolith immediately</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Edges first."><p class="quiz-text">Which should usually be extracted first?</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">The transactional core (orders)</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Loosely coupled edge capabilities (notifications, search, media)</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">The shared kernel</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Authentication tables</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Prerequisites."><p class="quiz-text">Before adopting many services you need:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Nothing</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Automation, observability, resilience patterns and ownership</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">A bigger monolith</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A service mesh only</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Compatibility."><p class="quiz-text">Consumer-driven contract tests help by:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">Speeding builds</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Catching breaking API changes between independently deployed services</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Replacing unit tests</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Generating code</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Shallow + protected."><p class="quiz-text">Synchronous chains should be:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">As long as possible</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">Shallow, with timeouts, breakers and caching</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Retried infinitely</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">Unmonitored</span></button></li></ul><p class="quiz-note" hidden></p></li>
+<li class="quiz-q" data-answer="b" data-why="Default."><p class="quiz-text">A recommended default for a small, young team:</p><ul class="quiz-opts"><li><button type="button" class="quiz-opt" data-k="a"><span class="k">a</span><span class="t">30 microservices</span></button></li><li><button type="button" class="quiz-opt" data-k="b"><span class="k">b</span><span class="t">A modular monolith with clear module boundaries</span></button></li><li><button type="button" class="quiz-opt" data-k="c"><span class="k">c</span><span class="t">Only serverless functions</span></button></li><li><button type="button" class="quiz-opt" data-k="d"><span class="k">d</span><span class="t">A big-bang rewrite</span></button></li></ul><p class="quiz-note" hidden></p></li>
+</ol>
+<details class="quiz-key"><summary>Show the answer key</summary><p>1-b, 2-b, 3-b, 4-b, 5-b, 6-b, 7-b, 8-b, 9-b, 10-b, 11-b, 12-b, 13-b, 14-b, 15-b, 16-b, 17-b, 18-b, 19-b, 20-b</p></details>
+</div>
+<h2 id="33-19-20-hands-on-exercises">33.19 20 Hands-on Exercises</h2>
+<p><em>(Suggestions; none were run by me.)</em></p>
+<p><strong>Easy</strong></p>
+<ol>
+<li>List five costs a network boundary adds compared to a function call.</li>
+<li>Compute availability for a request needing 5 services at 99.9%, 99.95% and 99.99%.</li>
+<li>Draw ShopLine&#39;s bounded contexts and the events between them.</li>
+<li>Identify any shared-database coupling in a project you know.</li>
+<li>Write down three reasons to split and three reasons not to for your own system.</li>
+</ol>
+<p><strong>Medium</strong></p>
+<ol start="6">
+<li>Refactor ShopLine into modules with <code>api.js</code> boundaries and add architecture tests enforcing them (Chapter 11).</li>
+<li>Give each module its own PostgreSQL schema and DB role; prove cross-module table access fails.</li>
+<li>Replace one cross-module call with an outbox event and an idempotent consumer.</li>
+<li>Write consumer-driven contract tests between two modules/services.</li>
+<li>Design a saga for checkout with compensations and decide orchestration vs choreography.</li>
+<li>Create an API gateway config (routing, auth, rate limits) for three services.</li>
+<li>Draw a context map showing customer-supplier and anti-corruption relationships.</li>
+</ol>
+<p><strong>Hard</strong></p>
+<ol start="13">
+<li>Extract the notifications module into a separate service with a queue; keep the contract; measure latency and failure behaviour.</li>
+<li>Use the strangler fig to route 5% of search traffic to a new service with comparison logging.</li>
+<li>Build a distributed trace across gateway → orders → inventory → payments.</li>
+<li>Chaos-test a three-service chain (timeouts, breakers, bulkheads) and report availability.</li>
+<li>Implement CQRS read models for &quot;order with product and payment status&quot; built from events.</li>
+<li>Create a service template (logging, metrics, tracing, auth, health checks) and generate two services from it.</li>
+<li>Perform a cost model: monolith vs 8 services (compute, logging, monitoring, people).</li>
+<li>Write an architecture decision record (ADR) for &quot;stay modular monolith&quot; vs &quot;extract search&quot;.</li>
+</ol>
+<hr>
+
+<h2 id="33-20-5-interview-questions">33.20 5 Interview Questions</h2>
+<p><strong>1. Monolith or microservices for a new product?</strong>
+<em>Model answer:</em> Start with a modular monolith: one deployable with enforced module boundaries and data ownership, giving clear design and low operational cost. Extract services only for named reasons (independent team cadence with stable boundaries, measured scaling mismatch, different runtime, compliance isolation) once the domain is understood and the platform (CI/CD, tracing, resilience) exists.</p>
+<p><strong>2. What is a distributed monolith and how do you avoid it?</strong>
+<em>Model answer:</em> Services that can&#39;t be deployed independently because they share a database, change in lockstep, or form long synchronous call chains: all the costs, none of the benefits. Avoid with data ownership per service, backward-compatible versioned APIs, async events, shallow call chains, and boundaries aligned to business capabilities and teams.</p>
+<p><strong>3. How do you handle a transaction spanning several services?</strong>
+<em>Model answer:</em> Avoid distributed ACID transactions. Use a saga: local transactions with compensating actions, orchestrated by a durable coordinator or choreographed through events, with idempotent steps, the outbox for reliable publishing, and a UX that tolerates pending states. Also reconsider whether those capabilities should be one service.</p>
+<p><strong>4. How would you migrate a monolith to services?</strong>
+<em>Model answer:</em> Modularise the monolith first; then apply the strangler fig: put a gateway in front, extract a loosely coupled edge capability, route traffic gradually with comparison/canary, migrate data ownership with outbox/CDC, cut over and delete the old code; repeat, measuring benefit and stopping when the pain is solved. Avoid big-bang rewrites.</p>
+<p><strong>5. What does Conway&#39;s law mean for architecture?</strong>
+<em>Model answer:</em> System structure mirrors the organisation&#39;s communication structure. To get independently deployable services you need small, autonomous teams owning capabilities end to end; splitting code without splitting ownership yields cross-team dependencies on every change. Use the inverse Conway manoeuvre: design the team structure you want the architecture to reflect.</p>
+<hr>
+
+<h2 id="33-21-3-real-projects">33.21 3 Real Projects</h2>
+<p><strong>Project 1: Modularise ShopLine (intermediate, ~12 hours).</strong>
+Restructure into modules with public APIs, schema-per-module ownership with DB roles, architecture tests, and in-process events via the outbox; prove a boundary violation fails CI and that one module can be run with its dependencies stubbed.</p>
+<p><strong>Project 2: Extract a Service with the Strangler Fig (advanced, ~16 hours).</strong>
+Extract notifications (or search) behind a gateway: contract tests, canary routing with comparison, data migration via outbox/CDC, rollback plan, and a before/after report on deploy frequency, latency and incident rate.</p>
+<p><strong>Project 3: Architecture Decision Records (intermediate, ~6 hours).</strong>
+Write five ADRs for ShopLine (modular monolith vs services; database per module; sync vs async between orders and inventory; gateway choice; saga orchestration), each with context, options, trade-offs, decision and review triggers.</p>
+<hr>
+
+<h2 id="33-22-further-reading">33.22 Further Reading</h2>
+<ul>
+<li>Martin Fowler: <em>Microservices</em> (with James Lewis), <em>MonolithFirst</em>, <em>MicroservicePrerequisites</em>, <em>StranglerFigApplication</em>, <em>BoundedContext</em>.</li>
+<li>Sam Newman, <em>Building Microservices</em> and <em>Monolith to Microservices</em>.</li>
+<li>Eric Evans, <em>Domain-Driven Design</em>; Vaughn Vernon, <em>Implementing Domain-Driven Design</em>; Matthew Skelton &amp; Manuel Pais, <em>Team Topologies</em>.</li>
+<li>Chris Richardson, <em>Microservices Patterns</em> (saga, outbox, API composition, CQRS); microservices.io.</li>
+<li>Simon Brown, <em>Modular Monoliths</em> talks; Kamil Grzybek&#39;s modular monolith with DDD (GitHub).</li>
+<li>Amazon Prime Video engineering blog (2023): scaling up the video monitoring service; Shopify Engineering: <em>Deconstructing the Monolith</em>.</li>
+<li>Melvin Conway, <em>How Do Committees Invent?</em> (1968).</li>
+</ul>
+<hr>
+<h3 id="up-next-chapter-34-system-design-part-7-mastery">Up next → Chapter 34: System Design (Part 7: Mastery)</h3>
+<p>Part 6 is complete. Part 7 turns knowledge into mastery: how to <em>design</em> a system from a vague requirement, estimate capacity on the back of an envelope, and communicate trade-offs, with worked designs (URL shortener, e-commerce checkout, notifications, rate limiter, news feed), written in fast mode.</p>
+
+<section class="learn-faq" aria-labelledby="faq-title">
+<h2 id="faq-title">Microservices vs Monolith: frequently asked questions</h2>
+<details class="learn-faq-item"><summary><h3>Should a new project start with microservices?</h3></summary><p>Usually no. Start with a well-structured modular monolith and extract services only for named reasons such as independent teams, measured scaling mismatch or compliance isolation.</p></details>
+<details class="learn-faq-item"><summary><h3>What is a distributed monolith?</h3></summary><p>Services that must be deployed together, share a database or call each other in long synchronous chains: all the costs of microservices with none of the benefits.</p></details>
+<details class="learn-faq-item"><summary><h3>Why should services not share a database?</h3></summary><p>Shared schemas couple the services, hide dependencies and make independent deployment impossible. Each service should own its data and expose it through APIs or events.</p></details>
+<details class="learn-faq-item"><summary><h3>How do I migrate from a monolith?</h3></summary><p>Use the strangler fig pattern: put a gateway in front, extract one loosely coupled capability, route traffic gradually, move its data and delete the old code. Avoid big-bang rewrites.</p></details>
+</section>
+                        <aside class="learn-author">
+                            <p><strong>Written by <a href="/#about">Shivam Thakur</a></strong>, a full stack developer based in Agra, India. Backend Master is free to read. If you are hiring or need something built, <a href="/contact">get in touch</a>.</p>
+                        </aside>
+                    <nav class="learn-pager" id="learnPager" aria-label="Chapter navigation">
+                        <a class="prev" rel="prev" href="/learn/backend-master/ci-cd-github-actions-deployment-strategies-cloud"><span>&larr; Previous &middot; Chapter 32</span><strong>CI/CD &amp; Cloud: GitHub Actions Deployments</strong></a>
+                        <a class="next" rel="next" href="/learn/backend-master/system-design-for-backend-engineers"><span>Next &middot; Chapter 34 &rarr;</span><strong>System Design for Backend Engineers</strong></a>
+                    </nav>
+                    </article>
+                  </div>
+                </div>
+
+                <details class="learn-toc" id="learnToc" open>
+                    <summary>On this page</summary>
+                    <nav aria-label="On this page"><ul><li><a href="#33-0-why-this-chapter-matters">33.0 Why This Chapter Matters</a></li><li><a href="#33-1-the-spectrum-not-a-binary">33.1 The Spectrum, Not a Binary</a></li><li><a href="#33-2-what-microservices-actually-buy-you">33.2 What Microservices Actually Buy You</a></li><li><a href="#33-3-the-modular-monolith-the-default-choice">33.3 The Modular Monolith: The Default Choice</a></li><li><a href="#33-4-when-to-split-a-decision-framework">33.4 When to Split: A Decision Framework</a></li><li><a href="#33-5-defining-service-boundaries">33.5 Defining Service Boundaries</a></li><li><a href="#33-6-data-ownership-and-consistency">33.6 Data Ownership and Consistency</a></li><li><a href="#33-7-communication-between-services">33.7 Communication Between Services</a></li><li><a href="#33-8-operating-many-services">33.8 Operating Many Services</a></li><li><a href="#33-9-migrating-the-strangler-fig">33.9 Migrating: The Strangler Fig</a></li><li><a href="#33-10-serverless-and-nanoservices">33.10 Serverless and Nanoservices</a></li><li><a href="#33-11-shopline-a-recommended-path">33.11 ShopLine: A Recommended Path</a></li><li><a href="#33-12-edge-cases-and-gotchas-checklist">33.12 Edge Cases and Gotchas Checklist</a></li><li><a href="#33-13-chapter-summary">33.13 Chapter Summary</a></li><li><a href="#33-14-revision-notes">33.14 Revision Notes</a></li><li><a href="#33-15-mind-map-ascii">33.15 Mind Map (ASCII)</a></li><li><a href="#33-16-cheat-sheet">33.16 Cheat Sheet</a></li><li><a href="#33-17-key-takeaways">33.17 Key Takeaways</a></li><li><a href="#33-18-20-multiple-choice-questions">33.18 20 Multiple Choice Questions</a></li><li><a href="#33-19-20-hands-on-exercises">33.19 20 Hands-on Exercises</a></li><li><a href="#33-20-5-interview-questions">33.20 5 Interview Questions</a></li><li><a href="#33-21-3-real-projects">33.21 3 Real Projects</a></li><li><a href="#33-22-further-reading">33.22 Further Reading</a></li><li><a href="#faq-title">Frequently asked questions</a></li></ul></nav>
+                </details>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer id="footer" class="tf-footer flat-spacing spacing-tight">
+            <div class="br-line"></div>
+            <div class="foot-dark">
+                <div class="foot-top">
+                    <a href="/" class="f-logo-link" aria-label="Shivam Thakur home">
+                        <img loading="lazy" width="30" height="30" src="../../assets/images/logo/logo-s-w.svg" alt="Shivam Thakur logo"><span class="f-logo-name" aria-hidden="true">Shivam Thakur</span></a>
+                    <ul class="build-social-list foot-socials">
+                        <li><a href="https://github.com/ShivamThakurXcode/" target="_blank" rel="noopener" aria-label="GitHub profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504c.5.092.682-.217.682-.483c0-.237-.008-.868-.013-1.703c-2.782.605-3.369-1.343-3.369-1.343c-.454-1.158-1.11-1.466-1.11-1.466c-.908-.62.069-.608.069-.608c1.003.07 1.531 1.032 1.531 1.032c.892 1.53 2.341 1.088 2.91.832c.092-.647.35-1.088.636-1.338c-2.22-.253-4.555-1.113-4.555-4.951c0-1.093.39-1.988 1.029-2.688c-.103-.253-.446-1.272.098-2.65c0 0 .84-.27 2.75 1.026A9.6 9.6 0 0 1 12 6.844c.85.004 1.705.115 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027c.546 1.379.203 2.398.1 2.651c.64.7 1.028 1.595 1.028 2.688c0 3.848-2.339 4.695-4.566 4.943c.359.309.678.919.678 1.852c0 1.336-.012 2.415-.012 2.743c0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2"/></svg></a></li>
+                        <li><a href="https://www.linkedin.com/in/shivam-thakur-9b1a54311/" target="_blank" rel="noopener" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .92.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"/></svg></a></li>
+                        <li><a href="https://www.instagram.com/shivamthakur.dev" target="_blank" rel="noopener" aria-label="Instagram profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4zm9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3"/></svg></a></li>
+                    </ul>
+                    <div class="foot-cta">
+                        <a href="../../contact" class="foot-btn foot-btn-outline">Hire me <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                        <a href="https://wa.me/918958394972" class="foot-btn foot-btn-wa" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>Chat on WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="foot-divider foot-divider-top"></div>
+
+                <div class="foot-main">
+                    <nav class="foot-col" aria-label="Services">
+                        <span class="foot-col-title text-caption fw-medium">Services</span>
+                        <ul class="foot-list">
+                            <li><a href="../../services/web-development" class="text-body-3">Full-Stack Web Apps</a></li>
+                            <li><a href="../../services/saas-product-development" class="text-body-3">SaaS Product Development</a></li>
+                            <li><a href="../../services/ai-integration" class="text-body-3">AI Integration</a></li>
+                            <li><a href="../../services/mobile-app-development" class="text-body-3">Mobile App Development</a></li>
+                            <li><a href="../../services/api-integrations" class="text-body-3">APIs &amp; Integrations</a></li>
+                            <li><a href="../../services/crm-erp-development" class="text-body-3">Business Software</a></li>
+                            <li><a href="../../services/ecommerce-development" class="text-body-3">E-commerce Development</a></li>
+                            <li><a href="../../services/cloud-devops-services" class="text-body-3">Cloud, DevOps &amp; Care</a></li>
+                            <li><a href="../../services" class="text-body-3">View all services</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Case studies">
+                        <span class="foot-col-title text-caption fw-medium">Case Studies</span>
+                        <ul class="foot-list">
+                            <li><a href="../../case-studies/mydigisense-digital-presence-marketplace-platform" class="text-body-3">MyDigiSense</a></li>
+                            <li><a href="../../case-studies/prodigichat-whatsapp-marketing-automation-platform" class="text-body-3">ProDigiChat</a></li>
+                            <li><a href="../../case-studies/digicrm-invoice-payment-management-crm" class="text-body-3">DigiCRM</a></li>
+                            <li><a href="../../case-studies/mailmaster-bulk-email-marketing-platform" class="text-body-3">MailMaster</a></li>
+                            <li><a href="../../case-studies/idmats-digital-marketing-technical-skills-institute" class="text-body-3">IDMATS</a></li>
+                            <li><a href="../../case-studies/digiconn-unite-digital-marketing-agency-website" class="text-body-3">DigiConn Unite</a></li>
+                            <li><a href="../../case-studies/flayermarketing-digital-marketing-agency-website" class="text-body-3">FlayerMarketing</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">All case studies</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Learn">
+                        <span class="foot-col-title text-caption fw-medium">Learn</span>
+                        <ul class="foot-list">
+                            <li><a href="../../learn/dsa-master" class="text-body-3">DSA Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master" class="text-body-3">Backend Master (all chapters)</a></li>
+                            <li><a href="../../learn/backend-master/how-the-internet-works-dns-tcp-tls" class="text-body-3">How the Internet Works</a></li>
+                            <li><a href="../../learn/backend-master/postgresql-indexes-explain-analyze-query-performance" class="text-body-3">PostgreSQL Indexes</a></li>
+                            <li><a href="../../learn/backend-master/authentication-passwords-sessions-jwt-oauth-mfa" class="text-body-3">Authentication in Node.js</a></li>
+                            <li><a href="../../learn/backend-master/system-design-for-backend-engineers" class="text-body-3">System Design for Backend</a></li>
+                            <li><a href="../../learn/dsa-master/big-o-notation-time-complexity" class="text-body-3">Big-O &amp; Time Complexity</a></li>
+                            <li><a href="../../learn/dsa-master/dynamic-programming-1d" class="text-body-3">Dynamic Programming</a></li>
+                        </ul>
+                    </nav>
+
+                    <nav class="foot-col" aria-label="Company">
+                        <span class="foot-col-title text-caption fw-medium">Company</span>
+                        <ul class="foot-list">
+                            <li><a href="/#about" class="text-body-3">About</a></li>
+                            <li><a href="../../services" class="text-body-3">Services</a></li>
+                            <li><a href="../../case-studies" class="text-body-3">Case Studies</a></li>
+                            <li><a href="../../blog" class="text-body-3">Blog</a></li>
+                            <li><a href="../../learn" class="text-body-3">Learn</a></li>
+                            <li><a href="../../contact" class="text-body-3">Contact</a></li>
+                        </ul>
+                    </nav>
+
+                    <div class="foot-col">
+                        <span class="foot-col-title text-caption fw-medium">Contact</span>
+                        <ul class="foot-contact-list">
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2m0 4.7l-8 5.334L4 8.7V6.297l8 5.333l8-5.333z"/></svg><a href="mailto:shivam.it1311@gmail.com" class="text-body-3">shivam.it1311@gmail.com</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24a11.4 11.4 0 0 0 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02z"/></svg><a href="tel:+918958394972" class="text-body-3">+91 89583 94972</a></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7m0 9.5A2.5 2.5 0 1 1 14.5 9A2.5 2.5 0 0 1 12 11.5"/></svg><span class="text-body-3">Agra, Uttar Pradesh, India</span></li>
+                            <li class="foot-contact-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 0 0 0-20m1 5v5.41l3.29 3.3l-1.41 1.41L11 13V7z"/></svg><span class="text-body-3">Replies within 24 hours</span></li>
+                        </ul>
+                        <div class="foot-badge">
+                            <span class="foot-status-dot" aria-hidden="true"></span>
+                            <span><span class="foot-badge-cap text-caption">Availability</span><strong class="text-body-3">Open to freelance &amp; full-time</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="foot-divider"></div>
+
+                <div class="foot-bottom">
+                    <p class="text-nocopy text-caption">&copy; 2026 Shivam Thakur &middot; Full Stack Developer</p>
+                    <p class="foot-bottom-mid text-caption">Based in Agra, India &middot; working worldwide</p>
+                    <div class="foot-meta">
+                        <a href="/sitemap.xml" class="text-caption">Sitemap</a>
+                        <a href="#" class="text-caption go-top">Back to top</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- /Footer -->
+    </main>
+
+
+    <!-- Javascript -->
+    <script defer src="../../assets/js/jquery.min.js"></script>
+    <script defer src="../../assets/js/bootstrap.min.js"></script>
+    <script defer src="../../assets/js/jquery.nice-select.min.js"></script>
+    <script defer src="../../assets/js/jquery-validate.js"></script>
+    <script defer src="../../assets/js/swiper-bundle.min.js"></script>
+    <script defer src="../../assets/js/carousel.js"></script>
+    <script defer src="../../assets/js/infinityslide.js"></script>
+    <script defer src="../../assets/js/ScrollSmooth.js"></script>
+    <script defer src="../../assets/js/gsap.min.js"></script>
+    <script defer src="../../assets/js/SplitText.min.js"></script>
+    <script defer src="../../assets/js/ScrollTrigger.min.js"></script>
+    <script defer src="../../assets/js/ScrollToPlugin.min.js"></script>
+    <script defer src="../../assets/js/gsapAnimation.js"></script>
+    <script defer src="../../assets/js/countto.js"></script>
+    <script defer src="../../assets/js/animation-change-text.js"></script>
+    <script defer src="../../assets/js/main.js"></script>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav d-lg-none">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="/#home" class="item-link"><i class="icon icon-home"></i><span class="tool-tip">Home</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/#about" class="item-link"><i class="icon icon-user-circle"></i><span class="tool-tip">About</span></a></li>
+            <li class="nav-item"><a href="../../case-studies" class="item-link"><i class="icon icon-tech-stack"></i><span class="tool-tip">Cases</span></a></li>
+            <li class="nav-item"><a href="../../services" class="item-link"><i class="icon icon-service"></i><span class="tool-tip">Services</span></a></li>
+            <li class="nav-item"><a href="../../blog" class="item-link"><i class="icon icon-quote"></i><span class="tool-tip">Blog</span></a></li>
+            <li class="nav-item"><a href="../../learn" class="item-link active"><i class="icon icon-edu"></i><span class="tool-tip">Learn</span></a></li>
+            <li class="br-line"></li>
+            <li class="nav-item"><a href="/contact" class="item-link"><i class="icon icon-send"></i><span class="tool-tip">Contact</span></a></li>
+        </ul>
+    </div>
+    <!-- /Mobile Bottom Navigation Bar -->
+    <!-- Floating Contact Buttons -->
+    <div class="float-contact">
+        <a href="#" class="float-btn float-top go-top" aria-label="Back to top"><i class="icon icon-arrow-top" aria-hidden="true"></i></a>
+        <a href="https://wa.me/918958394972" class="float-btn float-whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 8.24 8.25c0 4.54-3.7 8.21-8.24 8.21Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.16-.48-.29Z"/></svg>
+        </a>
+        <a href="tel:+918958394972" class="float-btn float-call" aria-label="Call us">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.62 10.79a15.53 15.53 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2Z"/></svg>
+        </a>
+    </div>
+    <!-- /Floating Contact Buttons -->
+
+
+    <script>
+    (function () {
+      var side = document.getElementById('learnSide'), toggle = document.getElementById('learnToggle'), filter = document.getElementById('learnFilter'), nav = document.getElementById('learnNav');
+      try { localStorage.setItem('backendMasterLast', "microservices-vs-monolith-architecture-decision"); } catch (e) {}
+      toggle.addEventListener('click', function () { toggle.setAttribute('aria-expanded', side.classList.toggle('open')); });
+      filter.addEventListener('input', function () {
+        var q = filter.value.trim().toLowerCase();
+        nav.querySelectorAll('.learn-item').forEach(function (el) { el.hidden = !!q && el.dataset.text.indexOf(q) === -1; });
+      });
+      var act = nav.querySelector('.learn-item.active');
+      if (act) nav.scrollTop = Math.max(act.offsetTop - nav.offsetTop - 12, 0);
+
+      var toc = document.getElementById('learnToc'), mq = window.matchMedia('(min-width: 1200px)');
+      function syncToc() { toc.open = mq.matches; }
+      syncToc();
+      if (mq.addEventListener) mq.addEventListener('change', syncToc);
+      var subs = {};
+      toc.querySelectorAll('a').forEach(function (a) { subs[a.getAttribute('href').slice(1)] = a; });
+      if ('IntersectionObserver' in window) {
+        var cur = null;
+        var io = new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            if (!e.isIntersecting || !subs[e.target.id]) return;
+            if (cur) cur.classList.remove('is-current');
+            cur = subs[e.target.id]; cur.classList.add('is-current');
+          });
+        }, { rootMargin: '-72px 0px -70% 0px' });
+        document.querySelectorAll('.learn-article h2[id]').forEach(function (h) { io.observe(h); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('.code-copy');
+        if (!b) return;
+        var code = b.closest('.code-block').querySelector('code');
+        var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); };
+        if (navigator.clipboard) navigator.clipboard.writeText(code.innerText).then(done, function () {});
+      });
+
+      var quiz = document.querySelector('[data-quiz]');
+      if (quiz) {
+        var score = 0, done = 0, total = quiz.querySelectorAll('.quiz-q').length, out = quiz.querySelector('.quiz-score');
+        quiz.addEventListener('click', function (e) {
+          var b = e.target.closest('.quiz-opt');
+          if (!b) return;
+          var q = b.closest('.quiz-q');
+          if (q.classList.contains('answered')) return;
+          q.classList.add('answered');
+          var ans = q.dataset.answer, ok = b.dataset.k === ans, note = q.querySelector('.quiz-note'), why = q.dataset.why ? ' ' + q.dataset.why : '';
+          if (ok) { score++; b.classList.add('is-correct'); } else { b.classList.add('is-wrong'); q.querySelector('[data-k="' + ans + '"]').classList.add('is-correct'); }
+          done++;
+          note.hidden = false;
+          note.textContent = (ok ? 'Correct.' : 'Not quite. The correct answer is ' + ans.toUpperCase() + '.') + why;
+          out.textContent = 'Score: ' + score + ' / ' + done + ' answered (' + total + ' questions)';
+        });
+      }
+    })();
+    </script>
+</body>
+</html>
